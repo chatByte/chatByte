@@ -11,9 +11,8 @@ def index(request):
     context = {'latest_list': latest_list}
     return render(request, 'chat/index.html', context)
 
-   
 # Create your views here.
 def home_view(request):
     context ={}
     context['form']= InputForm()
-    return render(request, "home.html", context)
+    return render(request, "chat/signup.html", context)
