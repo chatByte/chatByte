@@ -9,6 +9,7 @@ class Author(models.Model):
     GITHUB = models.CharField(max_length=200)
     FRIENDS = models.ManyToManyField("self", null=True, blank=True)
     FOLLOWERS = models.ManyToManyField("self", null=True, blank=True)
+    TIMELINE = models.ManyToManyField("Post", null=True, blank=True)
 
 class Comment(models.Model):
     ID = models.CharField(max_length=200, primary_key=True)
@@ -37,5 +38,5 @@ class Post(models.Model):
     FRIEND = 'friend'
     VISIBILITY_CHOICES = [ (PUBLIC, 'Public'), (FRIEND, 'Friend'), ]
     VISIBILITY = models.CharField(max_length=6, choices=VISIBILITY_CHOICES, default=PUBLIC,)
-    UNLISTED = models.CharField(max_length=7, default='false', editable=False)
+    UNLISTED = models.CharField(max_length=5, default='false', editable=False)
 
