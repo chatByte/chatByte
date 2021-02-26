@@ -1,0 +1,396 @@
+img.profile-photo{
+  height: 58px;
+  width: 58px;
+  border-radius: 50%;
+}
+
+img.profile-photo-lg{
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+}
+
+img.profile-photo-md{
+	height: 50px;
+	width: 50px;
+	border-radius: 50%;
+}
+
+img.profile-photo-sm{
+	height: 40px;
+	width: 40px;
+	border-radius: 50%;
+}
+
+img.profile-photo-xs{
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+}
+
+.follow-status{
+  color: #8dc63f;
+  font-size: 12px;
+  margin-left: 0px;
+}
+
+h1, h2, h3, h4, h5, h6{color: #27aae1;}
+h1.grey, h2.grey, h3.grey, h4.grey, h5.grey, h6.grey{
+  color: #6d6e71;
+  margin: 0 auto 20px;
+}
+
+.profile-link{font-weight: 600;}
+
+.text-green{color: #8dc63f;}
+
+.text-green:hover{color: #39b54a;}
+
+.text-red{color: #ef4136;}
+
+.text-red:hover{color: #d6100b;}
+
+hr.solid {
+  border-top: 1px solid #e6e6e6;
+}
+
+.static{
+  position: static;
+}
+
+.btn-primary{
+	background: #27aae1;
+	padding: 7px 25px;
+	border: none;
+	font-size: 14px;
+	border-radius: 4px;
+	color: #fff;
+	position: relative;
+  font-weight: 600;
+  outline: none;
+  border-radius: 30px;
+}
+
+/*==================================================
+  Header
+  ==================================================*/
+img .logo{
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  border: 10px solid #fff;
+}
+#header{
+  min-height: 50px;
+}
+.menu{
+  background: #231F20;
+  border: none;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.navbar-default .navbar-collapse, .navbar-default .navbar-form{
+  border: 0;
+}
+
+
+.menu ul.main-menu li a{
+  line-height: 26px;
+}
+
+.menu ul.main-menu li.dropdown a{
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.menu ul.main-menu li.dropdown a:hover, .menu ul.main-menu li.dropdown a:active, .menu ul.main-menu li.dropdown a:focus{
+  color: #27aae1;
+  background: none;
+}
+
+.menu ul.main-menu li.open a, .menu ul.main-menu li.open a:active, .menu ul.main-menu li.open a:focus{
+  background: transparent;
+  color: #27aae1;
+}
+
+.menu ul.main-menu li ul.dropdown-menu{
+  background: #231F20;
+  box-shadow: none;
+  border: 0;
+  padding: 0;
+}
+
+.menu ul.main-menu li ul.dropdown-menu li{
+  list-style: none;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255,255,255, 0.1)
+}
+
+.menu ul.main-menu li ul.dropdown-menu li a, .menu ul.main-menu li.open ul.dropdown-menu li a{
+  color: #fff;
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.menu ul.main-menu li ul.dropdown-menu li a:hover, .menu ul.main-menu li.open ul.dropdown-menu li a:hover{
+  color: #e6e6e6;
+}
+
+
+/*======================--------------------------
+Timeline
+==================================================*/
+
+.timeline-cover{
+  background: url("https://images.unsplash.com/photo-1512273222628-4daea6e55abb?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80") no-repeat;
+  background-position: center;
+  background-size: cover;
+  min-height: 360px;
+  border-radius: 0 0 4px 4px;
+  position: relative;
+}
+
+.timeline-cover .timeline-nav-bar{
+  background: rgba(0,0,0, .7);
+  width: 100%;
+  position: absolute;
+  bottom: 25px;
+}
+
+.timeline-cover .timeline-nav-bar .profile-info{
+  position: absolute;
+  text-align: center;
+  padding-left: 20px;
+  padding-right: 20px;
+  top: -100px;
+  z-index: 0;
+}
+
+
+.timeline-cover .timeline-nav-bar .profile-info img.profile-photo{
+  height: 200px;
+  width: 200px;
+  border-radius: 50%;
+  border: 10px solid #fff;
+}
+
+.timeline-cover .timeline-nav-bar ul.profile-menu{
+  margin: 0; /* To remove default bottom margin */
+  padding: 0; /* To remove default left padding */
+  display: table; /* Horizontal display*/
+}
+
+.timeline-cover .timeline-nav-bar .profile-menu li{
+  display: table-cell;
+  vertical-align: middle;
+  padding: 15px 0;
+}
+
+.timeline-cover .timeline-nav-bar .profile-menu li a{
+  color: #fff;
+  padding: 15px;
+  text-decoration: none;
+}
+
+.timeline-cover .timeline-nav-bar .profile-menu li a.active{
+  color: #27aae1;
+}
+
+.timeline-cover .timeline-nav-bar .profile-menu li a:hover{
+  color: #27aae1;
+}
+
+
+/*==================================================
+  Post Contents CSS
+  ==================================================*/
+#page-contents{
+  padding: 30px 0 50px;
+}
+
+.posts {
+  position: absolute;
+  padding-top: 80px;
+}
+
+
+.post-content{
+  background: #f8f8f8;
+  border-radius: 4px;
+  width: 100%;
+  border: 1px solid #f1f2f2;
+  margin-bottom: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.post-content img.post-image{
+  width: 100%;
+  height: auto;
+}
+
+.post-content .google-maps .map{
+  height: 300px;
+}
+
+.post-content .post-container{
+  padding: 20px;
+}
+
+.post-content .post-container .post-detail{
+  margin-left: 65px;
+  position: relative;
+}
+
+.post-content .post-container .post-detail .post-text{
+  line-height: 24px;
+  margin: 0;
+}
+
+.post-content .post-container .post-detail .reaction-img{
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.post-content .post-container .post-detail .reaction-text{
+  position: relative;
+  text-align: right;
+  height: 1px;
+  right: 0;
+  top: -10px;
+  margin: 0;
+  padding: 0;
+}
+
+
+.post-content .post-container .post-detail .post-comment{
+  display: inline-flex;
+  margin: 10px auto;
+  width: 100%;
+}
+
+.post-content .post-container .post-detail .post-comment img.profile-photo-sm{
+  margin-right: 10px;
+}
+
+.post-content .post-container .post-detail .post-comment .form-control{
+  height: 30px;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  margin: 7px 10px;
+  min-width: 0;
+}
+
+
+/*==================================================
+ Post Date
+==================================================*/
+
+.timeline .post-content{
+  position: relative;
+  overflow: visible;
+}
+
+.timeline .post-content::before{
+  content: "";
+  position: absolute;
+  background: none;
+  width: 1px;
+  height: 98%;
+  left: -145px;
+  border-left: 2px solid #8dc63f;
+  top: 0px;
+}
+
+.timeline .post-content .post-date{
+  position: absolute;
+  margin-left: -125px;
+}
+
+.timeline .post-content .post-date::before{
+  content: "";
+  background: #8dc63f;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  left: -30px;
+  top: 10px;
+  border: 2px solid #fff;
+}
+
+.timeline .post-content img.post-image{
+  border-radius: 4px 4px 0 0;
+}
+/*==================================================
+  Timeline Sidebar Right
+  ==================================================*/
+
+.feed-item{
+  text-align: left;
+  margin-bottom: 13px;
+  padding: 0 20px;
+  position: relative;
+}
+
+.feed-item::before{
+  border-left: 2px solid #8dc63f;
+  position: absolute;
+  height: 30px;
+  content: "";
+  left: 0;
+  top: 5px;
+}
+
+
+.feed-item .live-activity{
+  border-bottom: 1px solid #f1f2f2;
+}
+
+/*==================================================
+  Preloader Animation CSS
+  ==================================================*/
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  background-color: #27aae1;
+  position: absolute;
+  top: 48%;
+  left: 48%;
+  box-shadow: 0 0 8px rgba(0,0,0, .3);
+  -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+  animation: sk-rotateplane 1.2s infinite ease-in-out;
+}
+
+@-webkit-keyframes sk-rotateplane {
+  0% { -webkit-transform: perspective(120px) }
+  50% { -webkit-transform: perspective(120px) rotateY(180deg) }
+  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+}
+
+@keyframes sk-rotateplane {
+  0% {
+    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
+  } 50% {
+    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
+  } 100% {
+    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+  }
+}
+
+#spinner-wrapper{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  z-index: 9999999;
+}
