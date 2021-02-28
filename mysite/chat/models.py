@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-from django.utils import timezone
+import django
 
 # Create your models here.
 class Author(models.Model):
@@ -9,17 +9,17 @@ class Author(models.Model):
     DISPLAY_NAME = models.CharField(max_length=200, unique=True)
     URL = models.CharField(max_length=200)
     GITHUB = models.CharField(max_length=200)
-    FRIENDS = models.ManyToManyField("self", null=True, blank=True)
-    FOLLOWERS = models.ManyToManyField("self", null=True, blank=True)
-    TIMELINE = models.ManyToManyField("Post", null=True, blank=True)
-    FRIEND_REQUESTS = models.ManyToManyField("self", null=True, blank=True)
+    FRIENDS = models.ManyToManyField("self", blank=True)
+    FOLLOWERS = models.ManyToManyField("self", blank=True)
+    TIMELINE = models.ManyToManyField("Post", blank=True)
+    FRIEND_REQUESTS = models.ManyToManyField("self", blank=True)
 
 class Comment(models.Model):
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     AUTHOR = models.ForeignKey('Author', on_delete=models.DO_NOTHING,)
     COMMENT = models.TextField()
     CONTENT_TYPE = models.CharField(max_length=200)
-    PUBLISHED = models.DateTimeField(default=timezone.now())
+    PUBLISHED = models.DateTimeField(default=django.utils.timezone.now)
 
 class Post(models.Model):
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
@@ -34,8 +34,8 @@ class Post(models.Model):
     COMMENTS_NO = models.IntegerField()
     PAGE_SIZE = models.IntegerField()
     COMMENTS_FIRST_PAGE = models.CharField(max_length=200)
-    COMMENTS = models.ForeignKey('Comment', on_delete=models.DO_NOTHING, null=True, blank=True)
-    PUBLISHED = models.DateTimeField(default=timezone.now())
+    COMMENTS = models.ForeignKey('Comment', on_delete=models.DO_NOTHING, blank=True)
+    PUBLISHED = models.DateTimeField(default=django.utils.timezone.now)
 
     PUBLIC = 'public'
     FRIEND = 'friend'
