@@ -5,6 +5,7 @@ from .models import Post
 
 # Create your views here.
 def index(request):
-    latest_list = Author.objects.order_by('host')[:5]
+    latest_list = Author.objects.all()
     context = {'latest_list': latest_list}
+    # Author.objects.create(HOST='cat', DISPLAY_NAME='cat', URL='cat', GITHUB='cat')
     return render(request, 'chat/index.html', context)

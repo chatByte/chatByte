@@ -1,8 +1,9 @@
 from django.db import models
+import uuid
 
 # Create your models here.
 class Author(models.Model):
-    ID = models.CharField(max_length=200, primary_key=True)
+    ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     HOST = models.CharField(max_length=200)
     DISPLAY_NAME = models.CharField(max_length=200)
     URL = models.CharField(max_length=200)
@@ -12,14 +13,14 @@ class Author(models.Model):
     TIMELINE = models.ManyToManyField("Post", null=True, blank=True)
 
 class Comment(models.Model):
-    ID = models.CharField(max_length=200, primary_key=True)
+    ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     AUTHOR = models.ForeignKey('Author', on_delete=models.DO_NOTHING,)
     COMMENT = models.TextField()
     CONTENT_TYPE = models.CharField(max_length=200)
     PUBLISHED = models.DateTimeField()
 
 class Post(models.Model):
-    ID = models.CharField(max_length=200, primary_key=True)
+    ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     TITLE = models.TextField()
     SOURCE = models.CharField(max_length=200)
     ORIGIN = models.CharField(max_length=200)
