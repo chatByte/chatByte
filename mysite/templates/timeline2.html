@@ -1,60 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>My Timeline | This is My Coolest Profile</title>
+{% extends 'base2.html' %}
 
-    <!-- Stylesheets
-    ================================================= -->
-		<link rel="stylesheet" href="css/bootstrap.min.css" />
-		<link rel="stylesheet" href="css/style2.css" />
-		<link rel="stylesheet" href="css/ionicons.min.css" />
-    <link rel="stylesheet" href="css/font-awesome.min.css" />
-    <link href="css/emoji.css" rel="stylesheet">
+{% block title %}Other's Timeline{% endblock %}
 
-    <!--Google Font-->
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,700i" rel="stylesheet">
-
-    <!--Favicon-->
-    <link rel="shortcut icon" type="image/png" href="images/fav.png"/>
-	</head>
-  <body>
-
-    <!-- Header
-    ================================================= -->
-		<header id="header">
-      <nav class="navbar menu">
-        <div class="container">
-
-          <!-- Brand and toggle get grouped for better mobile display -->
-					<!-- left most logo -->
-          <div class="navbar-header">
-            <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
-          </div>
-
-          <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right main-menu">
-
-							<li class="dropdown"><a href="">My Home</a></li>
-							<li class="dropdown"><a href="">My Friends</a></li>
-
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="images/down-arrow.png" alt="" /></span></a>
-								<ul class="dropdown-menu">
-									<li><a href="">Edit Profile</a></li>
-								</ul>
-							</li>
-							<li class="dropdown"><a href="">Contact</a></li>
-
-            </ul>
-
-          </div><!-- /.navbar-collapse -->
-        </div><!-- /.container -->
-      </nav>
-    </header>
-    <!--Header End-->
 
     <div class="container">
 
@@ -126,7 +73,7 @@
 											<hr class="solid">
 	                    <div class="post-comment">
 	                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-	                      <p><a href="" class="profile-link">Dad </a><i class="em em-laughing"></i> Sooooo goood brooooooooooo </p>
+	                      <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
 	                    </div>
 	                    <div class="post-comment">
 	                      <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
@@ -176,7 +123,7 @@
 											<hr class="solid">
 											<div class="post-comment">
 	                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-	                      <p><a href="" class="profile-link">Dad </a><i class="em em-laughing"></i> Sooooo goood brooooooooooo </p>
+	                      <p><a href="" class="profile-link">Dad </a>Sooooo goood brooooooooooo </p>
 	                    </div>
 	                    <div class="post-comment">
 	                      <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
@@ -226,19 +173,3 @@
     <!-- Footer
     ================================================= -->
     <!--  -->
-
-    <!--preloader-->
-    <div id="spinner-wrapper">
-      <div class="spinner"></div>
-    </div>
-
-    <!-- Scripts
-    ================================================= -->
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.sticky-kit.min.js"></script>
-    <script src="js/jquery.scrollbar.min.js"></script>
-    <script src="js/script.js"></script>
-
-  </body>
-</html>

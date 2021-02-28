@@ -1,3 +1,8 @@
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
 img.profile-photo{
   height: 58px;
   width: 58px;
@@ -70,7 +75,27 @@ hr.solid {
   outline: none;
   border-radius: 30px;
 }
+.btn-primary:hover{
+  background: #149AC9;
+  transition: all 1s;
+}
 
+.btn-secondary{
+	background: linear-gradient(to bottom, rgba(67, 67, 67, 0.8), rgba(0,0,0,1));
+	padding: 0 40px;
+	border: none;
+	min-height: 36px;
+	font-size: 18px;
+	border-radius: 6px;
+	color: #fff;
+	position: relative;
+  outline: none;
+}
+
+.btn-secondary:hover{
+	background: #000;
+  transition: all 1s;
+}
 /*==================================================
   Header
   ==================================================*/
@@ -138,6 +163,168 @@ img .logo{
   color: #e6e6e6;
 }
 
+.back{
+	/* background: url("../images/tech_back.jpg") fixed no-repeat; */
+  background-position: center;
+	background-size: cover;
+	max-height: 100%;
+  width: 100%;
+	position: relative;
+  top: 0;
+
+}
+
+/*==================================================
+  Homepage Signin Form
+  ==================================================*/
+
+.sign-in-form{
+  background: linear-gradient(to bottom, rgba(0, 90, 167, .6), rgba(0, 12, 64, 0.8) 75%);
+  position: absolute;
+  width: 500px;
+  min-height: 600px;
+  top: 0;
+  padding: 100px 30px;
+  text-align: center;
+  color: #fff;
+  z-index: 1000;
+}
+
+.sign-in-form:after{
+  content: "";
+  border-color: rgba(0, 12, 64, 0.8) transparent transparent;
+  border-style: solid;
+  border-width: 40px 250px 0;
+  bottom: -40px;
+  height: 0;
+  left: 0;
+  position: absolute;
+  width: 0;
+}
+
+.sign-in-form h1{
+  font-family:'Titillium Web';
+  font-weight: bold;
+  color: #141E30;
+  margin: 100px 0 20px;
+}
+
+
+.sign-in-form .form-wrapper{
+  padding: 20px 20px 0;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-top: none;
+  margin-bottom: 30px;
+}
+
+.sign-in-form .form-wrapper .signin-text{
+  font-size: 15px;
+}
+
+
+.sign-in-form .form-wrapper .form-group .form-control{
+  border: none;
+  box-shadow: none;
+  border-radius: 17px;
+  padding-left: 20px;
+
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.sign-in-form .form-wrapper button{
+  position: relative;
+  top: 20px;
+  border-radius: 17px;
+}
+
+.sign-in-form a{
+  color: #fff;
+}
+
+.sign-in-form img.form-shadow{
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 100%;
+}
+
+/*=============================
+Sign up Page
+====================================*/
+#sign-up-page{
+  background: linear-gradient(to right, rgba(76, 161, 175, 0.6) , rgba(196, 224, 229, 0.6)), url("../images/tech_back.jpg") fixed no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
+#sign-up-page .wrapper{
+  padding-top: 140px;
+  padding-bottom: 140px;
+}
+
+#sign-up-page h1,h2,h3{
+  font-family: 'Titillium Web';
+  margin-bottom: 30px;
+  font-weight: 700;
+  color: #141E30;
+}
+
+.intro-texts{
+  color: #141E30;
+  font-size: 14px;
+  transform: translateY(100px);
+}
+
+.intro-texts h1{
+  font-size: 60px;
+}
+
+.reg-form-container{
+  background: #fff;
+  box-shadow: 0 0 35px rgba(0,0,0, .4);
+  padding: 40px 40px 40px 60px;
+  border-radius: 6px;
+  position: relative;
+  min-height: 550px;
+  z-index: 10;
+}
+
+/*Sign Up Form*/
+
+#sign_up_form .form-group{
+  margin-bottom: 10px;
+}
+
+
+
+#registration_form .form-control,
+#Login_form .form-control{
+  background: #fff;
+  color: #939598;
+  border-radius: 30px;
+  box-shadow: none;
+  width: 100%;
+  border: 1px solid #f1f2f2;
+  padding-left: 15px;
+}
+
+#registration_form select.form-control{
+  background: rgba(0, 0, 0, 0) url("../images/down-arrow.png") no-repeat scroll calc(100% - 10px) center / 8px auto;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  color: #939598;
+}
+
+#registration_form p.birth{
+  margin-left: 10px;
+}
 
 /*======================--------------------------
 Timeline

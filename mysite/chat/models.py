@@ -7,8 +7,8 @@ class Author(models.Model):
     DISPLAY_NAME = models.CharField(max_length=200)
     URL = models.CharField(max_length=200)
     GITHUB = models.CharField(max_length=200)
-    FRIENDS = models.ManyToManyField("self", null=True, blank=True)
-    FOLLOWERS = models.ManyToManyField("self", null=True, blank=True)
+    # FRIENDS = models.ManyToManyField("self", null=True, blank=True)
+    # FOLLOWERS = models.ManyToManyField("self", null=True, blank=True)
 
 class Comment(models.Model):
     ID = models.CharField(max_length=200, primary_key=True)
@@ -38,4 +38,3 @@ class Post(models.Model):
     VISIBILITY_CHOICES = [ (PUBLIC, 'Public'), (FRIEND, 'Friend'), ]
     VISIBILITY = models.CharField(max_length=6, choices=VISIBILITY_CHOICES, default=PUBLIC,)
     UNLISTED = models.CharField(max_length=7, default='false', editable=False)
-
