@@ -2,14 +2,20 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Author
 from .models import Post
+<<<<<<< HEAD
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+=======
+from .forms import InputForm
+
+>>>>>>> origin
 
 # Create your views here.
 def index(request):
     latest_list = Author.objects.all()
     context = {'latest_list': latest_list}
+<<<<<<< HEAD
     Author.objects.create(HOST='cat', DISPLAY_NAME='cat', URL='cat', GITHUB='cat')
     return render(request, 'chat/index.html', context)
 
@@ -30,3 +36,12 @@ def usr_post(request, ID):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('results', args=(post.id,))) # 'polls:results'
+=======
+    return render(request, 'chat/index.html', context)
+
+# Create your views here.
+def home_view(request):
+    context ={}
+    context['form']= InputForm()
+    return render(request, "chat/signup.html", context)
+>>>>>>> origin
