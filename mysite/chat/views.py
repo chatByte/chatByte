@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Author
 from .models import Post
-from .forms import InputForm
+from .form import InputForm
 
 
 # Create your views here.
