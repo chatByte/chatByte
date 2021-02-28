@@ -12,6 +12,7 @@ class Author(models.Model):
     FRIENDS = models.ManyToManyField("self", null=True, blank=True)
     FOLLOWERS = models.ManyToManyField("self", null=True, blank=True)
     TIMELINE = models.ManyToManyField("Post", null=True, blank=True)
+    FRIEND_REQUESTS = models.ManyToManyField("self", null=True, blank=True)
 
 class Comment(models.Model):
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
