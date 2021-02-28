@@ -1,0 +1,9 @@
+{% if latest_list %}
+    <ul>
+    {% for a in latest_list %}
+        <li>{{ a.SOURCE }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
