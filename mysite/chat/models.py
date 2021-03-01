@@ -9,10 +9,10 @@ class Author(models.Model):
     DISPLAY_NAME = models.CharField(max_length=200, unique=True)
     URL = models.CharField(max_length=200)
     GITHUB = models.CharField(max_length=200)
-    FRIENDS = models.ManyToManyField("self", null=True, blank=True)
-    FOLLOWERS = models.ManyToManyField("self", null=True, blank=True)
     TIMELINE = models.ManyToManyField("Post", null=True, blank=True)
     FRIEND_REQUESTS = models.ManyToManyField("self", null=True, blank=True)
+    FRIENDS = models.ManyToManyField("self", blank=True)
+    FOLLOWERS = models.ManyToManyField("self", blank=True)
 
 class Comment(models.Model):
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
@@ -34,8 +34,10 @@ class Post(models.Model):
     COMMENTS_NO = models.IntegerField()
     PAGE_SIZE = models.IntegerField()
     COMMENTS_FIRST_PAGE = models.CharField(max_length=200)
-    COMMENTS = models.ForeignKey('Comment', on_delete=models.DO_NOTHING, null=True, blank=True)
     PUBLISHED = models.DateTimeField(default=timezone.now())
+
+    COMMENTS = models.ForeignKey('Comment', on_delete=models.DO_NOTHING, blank=True)
+
 
     PUBLIC = 'public'
     FRIEND = 'friend'
