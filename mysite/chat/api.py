@@ -3,51 +3,97 @@ from .models import Post
 from .models import Comment
 
 def addFriend(name, friend_name):
-    author = Author.objects.filter(DISPLAY_NAME=name)[0]
-    friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
-    author.FRIENDS.add(friend)
+    try:
+        author = Author.objects.filter(DISPLAY_NAME=name)[0]
+        friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
+        author.FRIENDS.add(friend)
+        return True
+    except:
+        return False
 
 def getTimeline(id):
-    author = Author.objects.filter(ID=id)
-    return author.TIMELINE
+    try:
+        author = Author.objects.filter(ID=id)
+        return author.TIMELINE
+    except:
+        return None
 
 def getAuthor(name):
-    return Author.objects.filter(DISPLAY_NAME=name)[0]
+    try:
+        return Author.objects.filter(DISPLAY_NAME=name)[0]
+    except:
+        return None
 
 def createAuthor(host, display_name, url, github):
-    Author.objects.create(HOST=host, DISPLAY_NAME=display_name, URL=url, GITHUB=github)
+    try:
+        Author.objects.create(HOST=host, DISPLAY_NAME=display_name, URL=url, GITHUB=github)
+        return True
+    except:
+        return False
 
 def updateAuthor(id):
     #TODO
-    author = Author.objects.filter(ID=id)
-    # update element here
-    author.save()
+    try:
+        author = Author.objects.filter(ID=id)
+        # update element here
+        author.save()
+        return True
+    except:
+        return False
 
 def deleteAuthor(id):
-    Author.objects.filter(ID=id).delete()
+    try:
+        Author.objects.filter(ID=id).delete()
+        return True
+    except:
+        return False
 
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
     #TODO keep track of COMMENTS_NO and PAGE_SIZE, COMMENTS_FIRST_PAGE
-    Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCIPTION=description, CONTENT_TYPE=content_type, CONTENT=content\
-        , AUTHOR=author, CATEGORIES=categories, COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY=visibility)
+    try:
+        Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
+            , AUTHOR=author, CATEGORIES=categories, COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY=visibility)
+        return True
+    except:
+        return False
 
 def updatePost(id):
     #TODO
-    post = Post.objects.filter(ID=id)
-    # update field here
-    post.save()
+    try:
+        post = Post.objects.filter(ID=id)
+        # update field here
+        post.save()
+        return True
+    except:
+        return False
 
 def deletePost(id):
-    Post.objects.filter(ID=id).delete()
+    try:
+        Post.objects.filter(ID=id).delete()
+        return True
+    except:
+        return False
 
 def createComment(author, comment, comment_type):
-    Comment.objects.create(AUTHOR=author, COMMENT=comment, COMMENT_TYPE=comment_type)
+    try:
+        Comment.objects.create(AUTHOR=author, COMMENT=comment, COMMENT_TYPE=comment_type)
+        return True
+    except:
+        return False
 
 def updateComment(id):
     #TODO
-    comment = Comment.objects.filter(ID=id)
-    # update field here
-    comment.save()
+    try:
+        comment = Comment.objects.filter(ID=id)
+        # update field here
+        comment.save()
+        return True
+    except:
+        return False
 
 def deleteComment(id):
-    Comment.objects.filter(ID=id).delete()
+    try:
+        Comment.objects.filter(ID=id).delete()
+        return True
+    except:
+        return False

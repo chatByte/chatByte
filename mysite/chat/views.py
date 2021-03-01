@@ -23,7 +23,7 @@ def index(request):
     # assuming obj is a model instance
     serialized_obj = serializers.serialize('json', [ post, ])
     print(serialized_obj)
-    print(getAuthor('cat'))
+    print(getAuthor('nothing'))
     addFriend("cat", "123")
     # deletePost(post.ID)
     return render(request, 'chat/index.html', context)
