@@ -10,11 +10,9 @@ def updateAuthor(id):
     author = Author.objects.filter(ID=id)
     # update element here
     author.save()
-    pass
 
-def deleteAuthor():
-    #TODO
-    pass
+def deleteAuthor(id):
+    Author.objects.filter(ID=id).delete()
 
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
     #TODO keep track of COMMENTS_NO and PAGE_SIZE, COMMENTS_FIRST_PAGE
@@ -22,25 +20,22 @@ def createPost(title, source, origin, description, content_type, content, author
         , AUTHOR=author, CATEGORIES=categories, COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY=visibility)
 
 def updatePost(id):
+    #TODO
     post = Post.objects.filter(ID=id)
     # update field here
     post.save()
 
-def deletePost():
-    #TODO
-    pass
+def deletePost(id):
+    Post.objects.filter(ID=id).delete()
 
-def createComment():
-    #TODO
-    pass
+def createComment(author, comment, comment_type):
+    Comment.objects.create(AUTHOR=author, COMMENT=comment, COMMENT_TYPE=comment_type)
 
 def updateComment(id):
     #TODO
     comment = Comment.objects.filter(ID=id)
     # update field here
     comment.save()
-    pass
 
-def deleteComment():
-    #TODO
-    pass
+def deleteComment(id):
+    Comment.objects.filter(ID=id).delete()
