@@ -6,26 +6,45 @@ from .form import InputForm
 
 
 # Create your views here.
-def index(request):
+def home(request):
+	#context = {}
     latest_list = Post.objects.all()
     context = {'latest_list': latest_list}
-	# Create an author
-    # Author.objects.create(HOST='cat', DISPLAY_NAME='cat', URL='cat', GITHUB='cat')
-
-    # Create a post
-    # author = Author.objects.get(HOST="cat")
-    # Post.objects.create(TITLE='', SOURCE='testing', ORIGIN='', DESCIPTION='', CONTENT_TYPE='', CONTENT=''\
-    #     , AUTHOR=author, CATEGORIES='', COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY='public')
-
-    # change a field in the post
-    # post = Post.objects.filter(SOURCE='testing')[0]
-    # print(post)
-    # post.SOURCE = "changed"
-    # post.save()
-    return render(request, 'chat/index.html', context)
+    return render(request, 'chat/home.html', context)
 
 # Create your views here.
 def home_view(request):
     context ={}
     context['form']= InputForm()
     return render(request, "chat/signup.html", context)
+
+def login(request):
+	context = {}
+	return render(request, "chat/login.html", context)
+
+def signup(request):
+	context = {}
+	return render(request, "chat/signup.html", context)
+
+def my_timeline(request):
+	timeline = {}
+	# query to database
+	# timeline = 
+	return render(request, "chat/timeline1.html", timeline)
+
+
+def others_timeline(request):
+	timeline = {}
+	# query to database
+	# timeline = 
+	return render(request, "chat/timeline2.html", timeline)
+
+def make_post(request):
+	post = {}
+	# get post
+	return render(request, "chat/feed.html", post)
+
+def profile(request):
+	author = {}
+	# query to database
+	return render(request, "chat/profile.html", author)
