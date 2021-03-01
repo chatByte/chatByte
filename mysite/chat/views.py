@@ -11,6 +11,7 @@ def home(request):
 	#context = {}
     latest_list = Post.objects.all()
     context = {'latest_list': latest_list}
+    print("---------------------", getAuthor("kuro"))
     return render(request, 'chat/home.html', context)
     # Create an author
     # Author.objects.create(HOST='cat', DISPLAY_NAME='cat', URL='cat', GITHUB='cat')
