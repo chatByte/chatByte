@@ -7,11 +7,22 @@ from .form import InputForm
 
 # Create your views here.
 def index(request):
-    latest_list = Author.objects.order_by('host')[:5]
+    latest_list = Post.objects.all()
     context = {'latest_list': latest_list}
-    # return render(request, 'chat/index.html', context)
-    return render(request, '../templates/timeline2.html', context)
+    # Create an author
+    # Author.objects.create(HOST='cat', DISPLAY_NAME='cat', URL='cat', GITHUB='cat')
 
+    # Create a post
+    # author = Author.objects.get(HOST="cat")
+    # Post.objects.create(TITLE='', SOURCE='testing', ORIGIN='', DESCIPTION='', CONTENT_TYPE='', CONTENT=''\
+    #     , AUTHOR=author, CATEGORIES='', COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY='public')
+
+    # change a field in the post
+    # post = Post.objects.filter(SOURCE='testing')[0]
+    # print(post)
+    # post.SOURCE = "changed"
+    # post.save()
+    return render(request, 'chat/index.html', context)
 
 # Create your views here.
 def home_view(request):
