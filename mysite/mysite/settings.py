@@ -113,6 +113,6 @@ STATIC_URL = '/static/'
 DATABASES = {
        'default': {
            'ENGINE': 'djongo',
-           'NAME': 'mongoDB',
+           'NAME': 'mongoDB-404',
        }
    }
