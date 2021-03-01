@@ -4,6 +4,12 @@ from .models import Author
 from .models import Post
 from .form import InputForm
 
+# chatByte/mysite/chat contains : css , js, docs..
+
+# chatByte/mysite/chat/templates/chat$ contains HTML pages
+
+# Can be delete later
+# project/chatByte/mysite/templatesw
 
 # Create your views here.
 def index(request):
@@ -22,7 +28,7 @@ def index(request):
     # print(post)
     # post.SOURCE = "changed"
     # post.save()
-    return render(request, 'chat/index.html', context)
+    return render(request, 'chat/home.html', context)
 
 # Create your views here.
 def home_view(request):
