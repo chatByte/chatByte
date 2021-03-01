@@ -7,6 +7,7 @@ class Author(models.Model):
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     HOST = models.CharField(max_length=200)
     DISPLAY_NAME = models.CharField(max_length=200, unique=True)
+    # PASSWORD = models.CharField(max_length=50, unique=True)
     URL = models.CharField(max_length=200)
     GITHUB = models.CharField(max_length=200)
     FRIENDS = models.ManyToManyField("self", blank=True)

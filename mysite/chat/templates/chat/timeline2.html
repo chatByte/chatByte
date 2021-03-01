@@ -1,16 +1,17 @@
 <html lang="en">
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Zoe's Timeline | Meet new people</title>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zoe's Timeline | Meet new people</title>
 
     <!-- Stylesheets
     ================================================= -->
-		<link rel="stylesheet" href="css/bootstrap.min.css" />
-		<link rel="stylesheet" href="css/style2.css" />
-		<link rel="stylesheet" href="css/ionicons.min.css" />
-    <link rel="stylesheet" href="css/font-awesome.min.css" />
-    <link href="css/emoji.css" rel="stylesheet">
+      {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style2.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
+    <link href="{% static 'css/emoji.css' %}" rel="stylesheet">
 
     <!--Google Font-->
     <link href="https://fonts.googleapis.com/css?family=Archivo" rel="stylesheet">
@@ -20,17 +21,17 @@
         font-family:'Archivo';
       }
     </style>
-	</head>
+  </head>
   <body>
 
     <!-- Header
     ================================================= -->
-		<header id="header">
+    <header id="header">
       <nav class="navbar menu">
         <div class="container">
 
           <!-- Brand and toggle get grouped for better mobile display -->
-					<!-- left most logo -->
+          <!-- left most logo -->
           <div class="navbar-header">
             <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
           </div>
@@ -39,23 +40,23 @@
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right main-menu">
 
-							<li class="dropdown"><a href="">My Home</a></li>
-							<li class="dropdown"><a href="">My Friends</a></li>
-
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="images/down-arrow.png" alt="" /></span></a>
-								<ul class="dropdown-menu">
-									<li><a href="">Edit Profile</a></li>
-								</ul>
-							</li>
+              <li class="dropdown"><a href="">My Home</a></li>
+              <li class="dropdown"><a href="">My Friends</a></li>
 
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Notification <span><img src="images/down-arrow.png" alt="" /></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="">Edit Profile</a></li>
+                </ul>
+              </li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Notification <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
                   <!-- <li><a href="">Edit Profile</a></li> -->
                 </ul>
               </li>
-							<li class="dropdown"><a href="">Contact</a></li>
+              <li class="dropdown"><a href="">Contact</a></li>
 
             </ul>
 
@@ -77,17 +78,17 @@
             <div class="row">
               <div class="col-md-3">
                 <div class="profile-info">
-                  <img src="images/snow-mount.jpg" alt="" class="img-responsive profile-photo" />
+                  <img src="{% static 'images/snow-mount.jpg' %}" alt="" class="img-responsive profile-photo" />
                   <h3 id="fullName">Zoe Smith</h3>
-									<p class="text-muted"> 1,000 people is following her</p>
+                  <p class="text-muted"> 1,000 people is following her</p>
                 </div>
               </div>
               <div class="col-md-9">
                 <ul class="list-inline profile-menu">
                   <li><a href="" class="active">Her Timeline</a></li>
                   <li><a href="">Her Friends</a></li>
-									<li><button class="btn-primary unfollow">Unfollow</button></li>
-									<li><button class="btn-primary follow">Follow</button></li>
+                  <li><button class="btn-primary unfollow">Unfollow</button></li>
+                  <li><button class="btn-primary follow">Follow</button></li>
                 </ul>
               </div>
             </div>
@@ -124,108 +125,108 @@
             </div>
             <div class="col-sm-1"></div>
             <div class="col-md-6">
-							<div class="posts">
+              <div class="posts">
 
 
-	              <!-- Post Content
-	              ================================================= -->
-	              <div class="post-content">
+                <!-- Post Content
+                ================================================= -->
+                <div class="post-content">
 
-	                <!--Post Date-->
-	                <div class="post-date">
-	                  <h5 id="name">Zoe</h5>
-	                  <p class="text-grey">12:09, Jan 31</p>
-	                </div><!--Post Date End-->
+                  <!--Post Date-->
+                  <div class="post-date">
+                    <h5 id="name">Zoe</h5>
+                    <p class="text-grey">12:09, Jan 31</p>
+                  </div><!--Post Date End-->
 
-	                <img src="https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8Zm9ycmVzdHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60" alt="post-image" class="img-responsive post-image" />
-	                <div class="post-container">
-	                  <img src="images/snow-mount.jpg" alt="user" class="profile-photo-md pull-left" />
-	                  <div class="post-detail">
-	                    <div class="user-info">
-	                      <h5><a href="" class="profile-link" id="fullName">Zoe Smith</a> <span class="follow-status">following</span></h5>
-	                      <p class="text-muted">Posted a photo</p>
-	                    </div>
-
-
-											<hr class="solid">
-	                    <div class="post-text">
-	                      <p> Same sothing asdkjha di iahsd o1h2e,khsdakhdsao dhashd asj dopqwu d!!!lsid oias doashd asd asoid o ashd .
-												</p>
-	                    </div>
-
-											<div class="reaction-img">
-	                      <a class="btn text-red"><i class="icon ion-ios-heart"></i> 13</a>
-	                      <a class="btn text-green"><i class="icon ion-share"></i></a>
-	                    </div>
-
-											<hr class="solid">
-	                    <div class="post-comment">
-	                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-	                      <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
-	                    </div>
-	                    <div class="post-comment">
-	                      <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
-	                      <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
-	                    </div>
-	                    <div class="post-comment">
-	                      <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
-	                      <a href="" class="profile-link">Me </a>
-												<input type="text" class="form-control" placeholder="Post a comment">
-	                    </div>
-	                  </div>
-	                </div>
-	              </div>
+                  <img src="https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8Zm9ycmVzdHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60" alt="post-image" class="img-responsive post-image" />
+                  <div class="post-container">
+                    <img src="{% static 'images/snow-mount.jpg' %}" alt="user" class="profile-photo-md pull-left" />
+                    <div class="post-detail">
+                      <div class="user-info">
+                        <h5><a href="" class="profile-link" id="fullName">Zoe Smith</a> <span class="follow-status">following</span></h5>
+                        <p class="text-muted">Posted a photo</p>
+                      </div>
 
 
-	              <!-- Post Content
-	              ================================================= -->
-	              <div class="post-content">
+                      <hr class="solid">
+                      <div class="post-text">
+                        <p> Same sothing asdkjha di iahsd o1h2e,khsdakhdsao dhashd asj dopqwu d!!!lsid oias doashd asd asoid o ashd .
+                        </p>
+                      </div>
 
-	                <!--Post Date-->
-	                <div class="post-date hidden-xs hidden-sm">
-	                  <h5>Zoe</h5>
-	                  <p class="text-grey">10/21/2020</p>
-	                </div><!--Post Date End-->
+                      <div class="reaction-img">
+                        <a class="btn text-red"><i class="icon ion-ios-heart"></i> 13</a>
+                        <a class="btn text-green"><i class="icon ion-share"></i></a>
+                      </div>
 
-	                <div class="post-container">
-	                  <img src="images/snow-mount.jpg" alt="user" class="profile-photo-md pull-left" />
-	                  <div class="post-detail">
-	                    <div class="user-info">
-	                      <h5><a href="timeline.html" class="profile-link" id="fullName">Zoe Smith</a> <span class="follow-status">following</span></h5>
-	                      <p class="text-muted">Posted text</p>
-	                    </div>
+                      <hr class="solid">
+                      <div class="post-comment">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
+                        <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
+                      </div>
+                      <div class="post-comment">
+                        <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
+                        <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
+                      </div>
+                      <div class="post-comment">
+                        <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
+                        <a href="" class="profile-link">Me </a>
+                        <input type="text" class="form-control" placeholder="Post a comment">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!-- Post Content
+                ================================================= -->
+                <div class="post-content">
+
+                  <!--Post Date-->
+                  <div class="post-date hidden-xs hidden-sm">
+                    <h5>Zoe</h5>
+                    <p class="text-grey">10/21/2020</p>
+                  </div><!--Post Date End-->
+
+                  <div class="post-container">
+                    <img src="{% static 'images/snow-mount.jpg' %}" alt="user" class="profile-photo-md pull-left" />
+                    <div class="post-detail">
+                      <div class="user-info">
+                        <h5><a href="timeline.html" class="profile-link" id="fullName">Zoe Smith</a> <span class="follow-status">following</span></h5>
+                        <p class="text-muted">Posted text</p>
+                      </div>
 
 
 
-											<hr class="solid">
-	                    <div class="post-text">
-	                      <p>asdfghjklkjhgfdfghjo;likujyfvbgho;alskdjygaiolskijdlwehiyubsadykcilwvuydfgaksdai  a sid soiydaoi yd !!asd  asodiua doyawuo
-												</p>
-	                    </div>
+                      <hr class="solid">
+                      <div class="post-text">
+                        <p>asdfghjklkjhgfdfghjo;likujyfvbgho;alskdjygaiolskijdlwehiyubsadykcilwvuydfgaksdai  a sid soiydaoi yd !!asd  asodiua doyawuo
+                        </p>
+                      </div>
 
-	                    <div class="reaction-text">
-												<a class="btn text-red"><i class="icon ion-ios-heart"></i> 100000</a>
-	                      <a class="btn text-green"><i class="icon ion-share"></i></a>
-	                    </div>
+                      <div class="reaction-text">
+                        <a class="btn text-red"><i class="icon ion-ios-heart"></i> 100000</a>
+                        <a class="btn text-green"><i class="icon ion-share"></i></a>
+                      </div>
 
-											<hr class="solid">
-											<div class="post-comment">
-	                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-	                      <p><a href="" class="profile-link">Dad </a>Sooooo goood brooooooooooo </p>
-	                    </div>
-	                    <div class="post-comment">
-	                      <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
-	                      <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
-	                    </div>
-	                    <div class="post-comment">
-	                      <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
-	                      <a href="" class="profile-link">Me </a>
-												<input type="text" class="form-control" placeholder="Post a comment">
-	                    </div>
-	                  </div>
-	                </div>
-	              </div>
-							</div>
+                      <hr class="solid">
+                      <div class="post-comment">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
+                        <p><a href="" class="profile-link">Dad </a>Sooooo goood brooooooooooo </p>
+                      </div>
+                      <div class="post-comment">
+                        <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
+                        <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
+                      </div>
+                      <div class="post-comment">
+                        <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
+                        <a href="" class="profile-link">Me </a>
+                        <input type="text" class="form-control" placeholder="Post a comment">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
 
@@ -244,10 +245,10 @@
 
     <!-- Scripts
     ================================================= -->
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.sticky-kit.min.js"></script>
-    <script src="js/jquery.scrollbar.min.js"></script>
-    <script src="js/script.js"></script>
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
+    <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
   </body>
 </html>

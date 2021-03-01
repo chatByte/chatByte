@@ -15,6 +15,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print("-------------------------------------------------------------------------\n", BASE_DIR)
 
 
 # Quick-start development settings - unsuitable for production
@@ -121,6 +122,10 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'mysite')
 STATIC_URL = '/static/'
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'chat/static'),
+# )
+STATIC_ROOT = os.path.join(BASE_DIR, 'chat/static')
 
 
 STATICFILES_DIRS = (

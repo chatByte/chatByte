@@ -1,5 +1,3 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -8,10 +6,9 @@
 		<title>ChatByte | This is the Coolest Social Network</title>
 		<!-- Stylesheets
     ================================================= -->
-
-		<!-- <link rel="stylesheet"  href="{% static '/css/bootstrap.min.css' %}"/> -->
-		<link rel="stylesheet"  href="{% static '/css/bootstrap.min.css' %}"/>
-		<link rel="stylesheet" href="{% static '/css/style2.css' %}" />
+        {% load static %}
+		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/style2.css' %}" />
 		<link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
 
@@ -55,7 +52,7 @@
 					</form>
 				</div>
 				<a href="#">Do not have an account?</a>
-				<img class="form-shadow" src= "{% static 'images/bottom-shadow.png' %}" alt="" />
+				<img class="form-shadow" src="{% static 'images/bottom-shadow.png' %}" alt="" />
 			</div><!-- Sign Up Form End -->
 
 
@@ -77,9 +74,9 @@
 
 	<!-- Scripts
 	================================================= -->
-	<script src="js/jquery-3.1.1.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/jquery.sticky-kit.min.js"></script>
-	<script src="js/jquery.scrollbar.min.js"></script>
-	<script src="js/script.js"></script>
+	<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
+	<script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+	<script src="{% static 'js/script.js' %}"></script>
 </body>

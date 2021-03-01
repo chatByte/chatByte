@@ -1,26 +1,14 @@
 from django.urls import path
 from . import views
 
-from django.conf.urls import include, url
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-
-admin.autodiscover()
-
-
 urlpatterns = [
-
-	path('', views.index, name='index')
-
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
-
-# urlpatterns = patterns('',
-# ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-urlpatterns += staticfiles_urlpatterns()
-
-
+  path('', views.home, name='home'),
+  path("login/", views.login, name='login'),
+  path("signup/", views.signup, name="signup"),
+  path("mystream/", views.my_timeline, name="my_timeline"),
+  path("seeothers/", views.others_timeline, name="others_timeline"),
+  path("feed/", views.make_post, name="feed"),
+  path("profile/", views.profile, name="profile"),
+  #path('', views.index, name='index'),
+  #path('home', views.home_view, name='home')
+]

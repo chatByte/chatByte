@@ -2,6 +2,18 @@ from .models import Author
 from .models import Post
 from .models import Comment
 
+def addFriend(name, friend_name):
+    author = Author.objects.filter(DISPLAY_NAME=name)[0]
+    friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
+    author.FRIENDS.add(friend)
+
+def getTimeline(id):
+    author = Author.objects.filter(ID=id)
+    return author.TIMELINE
+
+def getAuthor(name):
+    return Author.objects.filter(DISPLAY_NAME=name)[0]
+
 def createAuthor(host, display_name, url, github):
     Author.objects.create(HOST=host, DISPLAY_NAME=display_name, URL=url, GITHUB=github)
 
