@@ -1,3 +1,8 @@
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
 img.profile-photo{
   height: 58px;
   width: 58px;
@@ -40,6 +45,7 @@ h1.grey, h2.grey, h3.grey, h4.grey, h5.grey, h6.grey{
   margin: 0 auto 20px;
 }
 
+
 .profile-link{font-weight: 600;}
 
 .text-green{color: #8dc63f;}
@@ -70,7 +76,27 @@ hr.solid {
   outline: none;
   border-radius: 30px;
 }
+.btn-primary:hover{
+  background: #149AC9;
+  transition: all 1s;
+}
 
+.btn-secondary{
+	background: linear-gradient(to bottom, rgba(67, 67, 67, 0.8), rgba(0,0,0,1));
+	padding: 0 40px;
+	border: none;
+	min-height: 36px;
+	font-size: 18px;
+	border-radius: 6px;
+	color: #fff;
+	position: relative;
+  outline: none;
+}
+
+.btn-secondary:hover{
+	background: #000;
+  transition: all 1s;
+}
 /*==================================================
   Header
   ==================================================*/
@@ -90,7 +116,7 @@ img .logo{
   margin-bottom: 0;
 }
 
-.navbar-default .navbar-collapse, .navbar-default .navbar-form{
+.navbar-default .navbar-collapse, .navbar-default{
   border: 0;
 }
 
@@ -138,6 +164,168 @@ img .logo{
   color: #e6e6e6;
 }
 
+.back{
+	/* background: url("../images/tech_back.jpg") fixed no-repeat; */
+  background-position: center;
+	background-size: cover;
+	max-height: 100%;
+  width: 100%;
+	position: relative;
+  top: 0;
+
+}
+
+/*==================================================
+  Homepage Signin Form
+  ==================================================*/
+
+.sign-in-form{
+  background: linear-gradient(to bottom, rgba(0, 90, 167, .6), rgba(0, 12, 64, 0.8) 75%);
+  position: absolute;
+  width: 500px;
+  min-height: 600px;
+  top: 0;
+  padding: 100px 30px;
+  text-align: center;
+  color: #fff;
+  z-index: 1000;
+}
+
+.sign-in-form:after{
+  content: "";
+  border-color: rgba(0, 12, 64, 0.8) transparent transparent;
+  border-style: solid;
+  border-width: 40px 250px 0;
+  bottom: -40px;
+  height: 0;
+  left: 0;
+  position: absolute;
+  width: 0;
+}
+
+.sign-in-form h1{
+  font-family:'Titillium Web';
+  font-weight: bold;
+  color: #141E30;
+  margin: 100px 0 20px;
+}
+
+
+.sign-in-form .form-wrapper{
+  padding: 20px 20px 0;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-top: none;
+  margin-bottom: 30px;
+}
+
+.sign-in-form .form-wrapper .signin-text{
+  font-size: 15px;
+}
+
+
+.sign-in-form .form-wrapper .form-group .form-control{
+  border: none;
+  box-shadow: none;
+  border-radius: 17px;
+  padding-left: 20px;
+
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.sign-in-form .form-wrapper button{
+  position: relative;
+  top: 20px;
+  border-radius: 17px;
+}
+
+.sign-in-form a{
+  color: #fff;
+}
+
+.sign-in-form img.form-shadow{
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 100%;
+}
+
+/*=============================
+Sign up Page
+====================================*/
+#sign-up-page{
+  background: linear-gradient(to right, rgba(76, 161, 175, 0.6) , rgba(196, 224, 229, 0.6)), url("../images/tech_back.jpg") fixed no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
+#sign-up-page .wrapper{
+  padding-top: 140px;
+  padding-bottom: 140px;
+}
+
+#sign-up-page h1,h2,h3{
+  font-family: 'Titillium Web';
+  margin-bottom: 30px;
+  font-size: 28px;
+  color: #141E30;
+}
+
+.intro-texts{
+  color: #141E30;
+  font-size: 14px;
+  transform: translateY(100px);
+}
+
+.intro-texts h1{
+  font-size: 60px;
+}
+
+.reg-form-container{
+  background: #fff;
+  box-shadow: 0 0 35px rgba(0,0,0, .4);
+  padding: 40px 40px 40px 60px;
+  border-radius: 6px;
+  position: relative;
+  min-height: 550px;
+  z-index: 10;
+}
+
+/*Sign Up Form*/
+
+#sign_up_form .form-group{
+  margin-bottom: 10px;
+}
+
+
+
+#registration_form .form-control,
+#Login_form .form-control{
+  background: #fff;
+  color: #939598;
+  border-radius: 30px;
+  box-shadow: none;
+  width: 100%;
+  border: 1px solid #f1f2f2;
+  padding-left: 15px;
+}
+
+#registration_form select.form-control{
+  background: rgba(0, 0, 0, 0) url("../images/down-arrow.png") no-repeat scroll calc(100% - 10px) center / 8px auto;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  color: #939598;
+}
+
+#registration_form p.birth{
+  margin-left: 10px;
+}
 
 /*======================--------------------------
 Timeline
@@ -174,6 +362,13 @@ Timeline
   width: 200px;
   border-radius: 50%;
   border: 10px solid #fff;
+}
+
+.timeline-cover .timeline-nav-bar .profile-info h3{
+  font-family: 'Archivo';
+  font-weight: 700;
+  color:#141E30;
+  margin-bottom: 0;
 }
 
 .timeline-cover .timeline-nav-bar ul.profile-menu{
@@ -249,6 +444,11 @@ Timeline
   margin: 0;
 }
 
+.post-content .post-container .post-detail .post-text .edit{
+  position: relative;
+  text-align: right;
+}
+
 .post-content .post-container .post-detail .reaction-img{
   position: absolute;
   right: 0;
@@ -257,10 +457,10 @@ Timeline
 
 .post-content .post-container .post-detail .reaction-text{
   position: relative;
-  text-align: right;
+  text-align: left;
   height: 1px;
   right: 0;
-  top: -10px;
+  top: -28px;
   margin: 0;
   padding: 0;
 }
@@ -325,10 +525,15 @@ Timeline
 .timeline .post-content img.post-image{
   border-radius: 4px 4px 0 0;
 }
-/*==================================================
-  Timeline Sidebar Right
-  ==================================================*/
 
+
+/*==================================================
+  Timeline Sidebar Left
+  ==================================================*/
+.activities {
+  position: absolute;
+  top: 110px;
+}
 .feed-item{
   text-align: left;
   margin-bottom: 13px;
@@ -349,6 +554,132 @@ Timeline
 .feed-item .live-activity{
   border-bottom: 1px solid #f1f2f2;
 }
+
+/*==================================================
+  Create Post Box CSS
+  ==================================================*/
+
+.create-post{
+  width: 100%;
+  min-height: 120px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f1f2f2;
+}
+
+.create-post .form-group{
+  margin: 0;
+  display: inline-flex;
+}
+
+.create-post .form-group .form-group-col{
+  display: inline-block;
+}
+
+.create-post .form-group .form-control{
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  resize: vertical;
+  min-height: 100px;
+
+}
+
+.create-post .form-group .form-group-col .dropdown{
+  position: relative;
+  display: inline-block;
+}
+
+.create-post .form-group .form-group-col .publicity{
+  padding-top: 10px;
+  margin:0;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 270px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: #6d6e71;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {background-color: #ddd;}
+.dropdown-content a:active {background-color: #27aae1;}
+
+
+
+.dropdown:hover .dropdown-content {display: block;}
+
+
+.create-post .form-group img.profile-photo-lg{
+  margin-right: 15px;
+}
+
+.create-post .tools{
+  padding: 8px 0 0px;
+}
+
+.create-post .tools ul.publishing-tools{
+  display: inline-block;
+  text-align:left;
+  margin: 0;
+  padding:5px 0;
+}
+
+.create-post .tools ul.publishing-tools li a{
+  color: #6d6e71;
+  font-size: 18px;
+}
+
+.create-post .tools ul.publishing-tools li a:hover{
+  color: #27aae1;
+}
+
+
+/*==================================================
+  Feed Page Friend List CSS
+  ==================================================*/
+.friend-list.affix{
+  position:fixed !important;
+}
+
+.friend-list{
+  padding: 20px;
+}
+
+.friend-list h3{
+  color: #27aae1;
+  font-weight: 600;
+  font-family: "Archivo";
+  margin-bottom: 0;
+}
+.friend{
+  margin-bottom: 20px;
+}
+
+.friend div{
+  margin-left: 50px;
+  position: relative;
+}
+
+.friend div::after{
+  content: "";
+  background: none;
+  border-top: 1px solid #f1f2f2;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: -10px;
+}
+
+
+
 
 /*==================================================
   Preloader Animation CSS

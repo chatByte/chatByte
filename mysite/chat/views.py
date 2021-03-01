@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from .models import Author
 from .models import Post
 
@@ -11,35 +10,35 @@ from .form import InputForm
 
 
 
+from .api import deletePost, addFriend, getAuthor
+from django.core import serializers
+
+
 # Create your views here.
 def index(request):
     latest_list = Author.objects.all()
     context = {'latest_list': latest_list}
+    # Create an author
     # Author.objects.create(HOST='cat', DISPLAY_NAME='cat', URL='cat', GITHUB='cat')
+
+    # Create a post
+    # author = Author.objects.get(HOST="cat")
+    # Post.objects.create(TITLE='', SOURCE='testing', ORIGIN='', DESCIPTION='', CONTENT_TYPE='', CONTENT=''\
+    #     , AUTHOR=author, CATEGORIES='', COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY='public')
+
+    # change a field in the post
+    post = Post.objects.filter(SOURCE='changed')[0]
+    # assuming obj is a model instance
+    serialized_obj = serializers.serialize('json', [ post, ])
+    print(serialized_obj)
+    print(getAuthor('cat'))
+    addFriend("cat", "123")
+    # deletePost(post.ID)
     return render(request, 'chat/index.html', context)
-
-# ...
-def usr_post(request, ID):
-    post = get_object_or_404(Post, pk=ID)
-    try:
-        post_content = Post.get(pk=request.POST['post'])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(request, 'polls/detail.html', {
-            'post': post,
-            'error_message': "You didn't select a choice.",
-        })
-    else:
-        post_content.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('results', args=(post.id,))) # 'polls:results'
-
 
 # Create your views here.
 def home_view(request):
     context ={}
     context['form']= InputForm()
-    return render(request, "chat/signup.html", context)
+    return render(request, "chat/home.html", context)
 

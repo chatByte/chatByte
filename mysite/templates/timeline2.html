@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>My Timeline | This is My Coolest Profile</title>
+		<title>Zoe's Timeline | Meet new people</title>
 
     <!-- Stylesheets
     ================================================= -->
@@ -14,10 +13,13 @@
     <link href="css/emoji.css" rel="stylesheet">
 
     <!--Google Font-->
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Archivo" rel="stylesheet">
 
-    <!--Favicon-->
-    <link rel="shortcut icon" type="image/png" href="images/fav.png"/>
+    <style media="screen">
+      body{
+        font-family:'Archivo';
+      }
+    </style>
 	</head>
   <body>
 
@@ -46,6 +48,13 @@
 									<li><a href="">Edit Profile</a></li>
 								</ul>
 							</li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Notification <span><img src="images/down-arrow.png" alt="" /></span></a>
+                <ul class="dropdown-menu">
+                  <!-- <li><a href="">Edit Profile</a></li> -->
+                </ul>
+              </li>
 							<li class="dropdown"><a href="">Contact</a></li>
 
             </ul>
@@ -87,8 +96,34 @@
         </div>
         <div id="page-contents">
           <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-7">
+            <div class="col-md-3">
+              <div class="activities">
+                <!--Activity SUmmary-->
+                <div id="sticky-sidebar">
+                  <h4 class="grey"><a href="" class="profile-link" id="name">Zoe</a>'s activity</h4>
+                  <div class="feed-item">
+                    <div class="live-activity">
+                      <p><a href="#" class="profile-link" id="name">Zoe</a> Posted on a Photo</p>
+                      <p class="text-muted"> xxxx mins ago</p>
+                    </div>
+                  </div>
+                  <div class="feed-item">
+                    <div class="live-activity">
+                      <p><a href="#" class="profile-link" id="name">Zoe</a> Has posted text</p>
+                      <p class="text-muted">xxxx days ago</p>
+                    </div>
+                  </div>
+                  <div class="feed-item">
+                    <div class="live-activity">
+                      <p><a href="#" class="profile-link" id="name">Zoe</a> Liked her friend's post</p>
+                      <p class="text-muted">1 month ago</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-md-6">
 							<div class="posts">
 
 
@@ -126,7 +161,7 @@
 											<hr class="solid">
 	                    <div class="post-comment">
 	                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-	                      <p><a href="" class="profile-link">Dad </a><i class="em em-laughing"></i> Sooooo goood brooooooooooo </p>
+	                      <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
 	                    </div>
 	                    <div class="post-comment">
 	                      <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
@@ -176,7 +211,7 @@
 											<hr class="solid">
 											<div class="post-comment">
 	                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-	                      <p><a href="" class="profile-link">Dad </a><i class="em em-laughing"></i> Sooooo goood brooooooooooo </p>
+	                      <p><a href="" class="profile-link">Dad </a>Sooooo goood brooooooooooo </p>
 	                    </div>
 	                    <div class="post-comment">
 	                      <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
@@ -193,28 +228,7 @@
 							</div>
             </div>
 
-						<!-- Activity Summary -->
-            <div class="col-md-2 static">
-              <div id="sticky-sidebar">
-                <h4 class="grey"><a href="" class="profile-link" id="name">Zoe</a>'s activity</h4>
-                <div class="feed-item">
-                  <div class="live-activity">
-                    <p><a href="#" class="profile-link" id="name">Zoe</a> Posted on a Photo</p>
-                    <p class="text-muted"> xxxx mins ago</p>
-                  </div>
-                </div>
-                <div class="feed-item">
-                  <div class="live-activity">
-                    <p><a href="#" class="profile-link" id="name">Zoe</a> Has posted text</p>
-                    <p class="text-muted">xxxx days ago</p>
-                  </div>
-                </div>
-                <div class="feed-item">
-                  <div class="live-activity">
-                    <p><a href="#" class="profile-link" id="name">Zoe</a> Liked her friend's post</p>
-                    <p class="text-muted">1 month ago</p>
-                  </div>
-                </div>
+
 
               </div>
             </div>
@@ -222,10 +236,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Footer
-    ================================================= -->
-    <!--  -->
 
     <!--preloader-->
     <div id="spinner-wrapper">
@@ -239,6 +249,5 @@
     <script src="js/jquery.sticky-kit.min.js"></script>
     <script src="js/jquery.scrollbar.min.js"></script>
     <script src="js/script.js"></script>
-
   </body>
 </html>
