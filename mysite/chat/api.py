@@ -1,12 +1,15 @@
 from .models import Author
 from .models import Post
-
+from .models import Comment
 
 def createAuthor(host, display_name, url, github):
     Author.objects.create(HOST=host, DISPLAY_NAME=display_name, URL=url, GITHUB=github)
 
-def updateAuthor():
+def updateAuthor(id):
     #TODO
+    author = Author.objects.filter(ID=id)
+    # update element here
+    author.save()
     pass
 
 def deleteAuthor():
@@ -20,8 +23,7 @@ def createPost(title, source, origin, description, content_type, content, author
 
 def updatePost(id):
     post = Post.objects.filter(ID=id)
-    print(post)
-    post.SOURCE = "changed"
+    # update field here
     post.save()
 
 def deletePost():
@@ -34,6 +36,9 @@ def createComment():
 
 def updateComment(id):
     #TODO
+    comment = Comment.objects.filter(ID=id)
+    # update field here
+    comment.save()
     pass
 
 def deleteComment():
