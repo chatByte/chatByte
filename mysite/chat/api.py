@@ -1,6 +1,4 @@
-from .models import Author
-from .models import Post
-from .models import Comment
+from .models import Author, Post, Comment
 
 def addFriend(name, friend_name):
     try:
