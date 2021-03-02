@@ -10,10 +10,14 @@ from django.core import serializers
 """
 views.py receive request and create repose to client
 """
+cur_author = None
 
+# deisign
 
+# cur_author obj created
 # Create your views here.
 def home(request):
+
     #context = {}
     latest_list = Post.objects.all()
     context = {'latest_list': latest_list}
@@ -47,10 +51,23 @@ def signup(request):
     return render(request, "chat/signup.html", context)
 
 def my_timeline(request):
-    timeline = {}
+
+    # hard coding ??
+    cur_author = getAuthor('Ritsu Onodera')
+
+
+    dynamic_contain = {
+
+        'fullName': cur_author.DISPLAY_NAME
+        
+    }
+
     # query to database
     # timeline = 
-    return render(request, "chat/timeline1.html", timeline)
+
+
+    # getTimeline()
+    return render(request, "chat/timeline1.html", dynamic_contain)
 
 
 def others_timeline(request):
@@ -60,9 +77,24 @@ def others_timeline(request):
     return render(request, "chat/timeline2.html", timeline)
 
 def make_post(request):
-    post = {}
+    # post = {}
+
+    # hard coding ??
+    cur_author = getAuthor('Ritsu Onodera')
+    # ??
+
+    # testcase
+    dynamic_contain = {  
+        'fullName':'Ritsu Onodera',
+        
+        'test_name': cur_author.DISPLAY_NAME
+    }  
+    # Get the current pages' author
+
+
+
     # get post
-    return render(request, "chat/feed.html", post)
+    return render(request, "chat/feed.html", dynamic_contain)
 
 def profile(request):
     author = {}
