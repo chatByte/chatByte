@@ -1,18 +1,18 @@
 from django.test import TestCase
-from .models import Author, Post, Comment
-from .api import validUser
+ 
+from chat.models import Author, Post, Comment
+from chat.api import validUser
 # Create your tests here.
-class UserApiCase(TestCase):
+class UserTestCase(TestCase):
     def setUp(self):
         #TODO
-        Author.objects.create(USERNAME='test', PASSWORD='123')
+        # Author.objects.create(NAME='test', PASSWORD='123')
         pass
 
-    def validUserTest(self):
-        #TODO
-        pass
+    def test_validUser(self):
+        self.assertEqual(validUser('test', '123'), False)
 
-class AuthorApiCase(TestCase):
+class AuthorTestCase(TestCase):
     def setUp(self):
         #TODO
         # Animal.objects.create(name="lion", sound="roar")
@@ -43,7 +43,7 @@ class AuthorApiCase(TestCase):
         #TODO
         pass
 
-class PostApiCase(TestCase):
+class PostTestCase(TestCase):
     def setUp(self):
         #TODO
         pass
@@ -60,7 +60,7 @@ class PostApiCase(TestCase):
         #TODO
         pass
 
-class CommentApiCase(TestCase):
+class CommentTestCase(TestCase):
     def setUp(self):
         #TODO
         pass

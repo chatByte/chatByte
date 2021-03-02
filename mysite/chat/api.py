@@ -2,19 +2,21 @@ from .models import Author, Post, Comment, User
 
 
 # connec to db , validate user
-def validUser(username, password):
-    # try:
-    #     user = User.objects.filter(USERNAME=username)
-    #     if password == user.PASSWORD:
-    #         return True
-    #     else:
-    #         return False
-    # except:
-    #     return False
-    user = User.objects.filter(USERNAME=username)[0]
-    if password == user.PASSWORD:
+def createUser(username, password):
+    try:
+        User.objects.create(USERNAME=username, PASSWORD=password)
         return True
-    else:
+    except:
+        return False
+
+def validUser(username, password):
+    try:
+        user = User.objects.filter(USERNAME=username)
+        if password == user.PASSWORD:
+            return True
+        else:
+            return False
+    except:
         return False
 
 # add friend 
@@ -43,13 +45,6 @@ def getAuthor(name):
 def createAuthor(host, display_name, url, github):
     try:
         Author.objects.create(HOST=host, DISPLAY_NAME=display_name, URL=url, GITHUB=github)
-        return True
-    except:
-        return False
-
-def createUser(username, password):
-    try:
-        User.objects.create(USERNAME=username, PASSWORD=password)
         return True
     except:
         return False
