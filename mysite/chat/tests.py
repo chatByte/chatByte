@@ -2,9 +2,18 @@ from django.test import TestCase
 from .models import Author, Post, Comment
 
 # Create your tests here.
+class UserApiCase(TestCase):
+    def setUp(self):
+        #TODO
+        pass
+
+    def validUserTest(self):
+        #TODO
+        pass
 
 class AuthorApiCase(TestCase):
     def setUp(self):
+        #TODO
         # Animal.objects.create(name="lion", sound="roar")
         # Animal.objects.create(name="cat", sound="meow")
         pass

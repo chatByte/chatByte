@@ -1,5 +1,16 @@
 from .models import Author, Post, Comment
 
+
+def validUser(username, password):
+    try:
+        user = User.objects.filter(USERNAME=username)[0]
+        if password == user.PASSWORD:
+            return True
+        else:
+            return False
+    except:
+        return False
+
 def addFriend(name, friend_name):
     try:
         author = Author.objects.filter(DISPLAY_NAME=name)[0]
