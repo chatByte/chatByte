@@ -14,8 +14,8 @@ def getTimeline(id):
 def getAuthor(name):
     return Author.objects.filter(DISPLAY_NAME=name)[0]
 
-def createAuthor(host, display_name, url, github):
-    Author.objects.create(HOST=host, DISPLAY_NAME=display_name, URL=url, GITHUB=github)
+def createAuthor(host, display_name, url, github, password):
+    Author.objects.create(HOST=host, DISPLAY_NAME=display_name, URL=url, GITHUB=github, PASSWORD=password)
 
 def updateAuthor(id):
     #TODO
