@@ -1,4 +1,4 @@
-from .models import Author, Post, Comment
+from .models import Author, Post, Comment, User
 
 
 def validUser(username, password):
