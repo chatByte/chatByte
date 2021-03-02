@@ -13,23 +13,18 @@ def home(request):
     context = {'latest_list': latest_list}
     # print("---------------------", getAuthor("kuro"))
     return render(request, 'chat/home.html', context)
-    # Create an author
-    # Author.objects.create(HOST='cat', DISPLAY_NAME='cat', URL='cat', GITHUB='cat')
 
-    # Create a post
-    # author = Author.objects.get(HOST="cat")
-    # Post.objects.create(TITLE='', SOURCE='testing', ORIGIN='', DESCIPTION='', CONTENT_TYPE='', CONTENT=''\
-    #     , AUTHOR=author, CATEGORIES='', COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY='public')
-
+    # from jeremy
     # change a field in the post
-    # post = Post.objects.filter(SOURCE='changed')[0]
-    # # assuming obj is a model instance
-    # serialized_obj = serializers.serialize('json', [ post, ])
-    # print(serialized_obj)
-    # print(getAuthor('cat'))
-    # addFriend("cat", "123")
-    # # deletePost(post.ID)
-    # return render(request, 'chat/index.html', context)
+    post = Post.objects.filter(SOURCE='changed')[0]
+    # assuming obj is a model instance
+    serialized_obj = serializers.serialize('json', [ post, ])
+    print(serialized_obj)
+    print(getAuthor('nothing'))
+    addFriend("cat", "123")
+    # deletePost(post.ID)
+    return render(request, 'chat/index.html', context)
+
 
 # Create your views here.
 def home_view(request):
