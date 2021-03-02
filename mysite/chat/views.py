@@ -1,10 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Author
 from .models import Post
-from .form import InputForm
-from .api import deletePost, addFriend, getAuthor, getTimeline
+
+from .form import InputForm, CreateAuthorForm
+from .api import *
+
 from django.core import serializers
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 
 
 """
@@ -18,37 +22,48 @@ cur_author = None
 # Create your views here.
 def home(request):
 
-    #context = {}
-    latest_list = Post.objects.all()
-    context = {'latest_list': latest_list}
-    # print("---------------------", getAuthor("kuro"))
-    return render(request, 'chat/home.html', context)
-
-    # from jeremy
-    # change a field in the post
-    post = Post.objects.filter(SOURCE='changed')[0]
-    # assuming obj is a model instance
-    serialized_obj = serializers.serialize('json', [ post, ])
-    print(serialized_obj)
-    print(getAuthor('nothing'))
-    addFriend("cat", "123")
-    # deletePost(post.ID)
-    return render(request, 'chat/index.html', context)
-
-
-# Create your views here.
-def home_view(request):
-    context ={}
-    context['form']= InputForm()
-    return render(request, "chat/signup.html", context)
-
-def login(request):
     context = {}
-    return render(request, "chat/login.html", context)
+    context['form']= InputForm()
+    if request.method == "GET":
+    	return render(request, "chat/home.html", context)
+    elif request.method == "POST":
+    	username = request.POST.get("User_name")
+    	password = request.POST.get("Password")
+    	valid = validUser(username, password)
+    	if valid:
+    		return redirect("/chat/profile")
+    	else:
+    		messages.error(request, "Invalid user name or password!")
+    		return render(request, 'chat/home.html', context)
+   
+# # Create your views here.
+# def home_view(request):
+#     context ={}
+#     context['form'] = InputForm()
+#     return render(request, "chat/signup.html", context)
 
 def signup(request):
-    context = {}
-    return render(request, "chat/signup.html", context)
+	context = {}
+	context['form'] = CreateAuthorForm()
+	if request.method == "GET":
+		return render(request, "chat/signup.html", context)
+	elif request.method == "POST":
+		url = request.POST.get("Url")
+		username = request.POST.get("User_name")
+		github = request.POST.get("Github")
+		password = request.POST.get("Password")
+		if getAuthor(username) != None:
+			messages.error(request, 'User name exists!')
+			return render(request, "chat/signup.html", context)
+		else:
+			print(createUser(username, password))
+			createAuthor("this", username, url, github)
+			return redirect("/chat/profile/")
+		# if createAuthor("this", username, url, github):
+		# 	return redirect("/chat/profile/")
+		# else:
+		# 	messages.error(request, 'User name exists!')
+		# 	return render(request, "chat/signup.html", context)
 
 def my_timeline(request):
 
@@ -68,7 +83,6 @@ def my_timeline(request):
 
     # getTimeline()
     return render(request, "chat/timeline1.html", dynamic_contain)
-
 
 def others_timeline(request):
     timeline = {}
