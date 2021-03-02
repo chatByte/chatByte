@@ -107,34 +107,38 @@
             ================================================= -->
             <div class="create-post">
               <div class="row">
-                <div class="col-md-7">
-                  <h3> test, {{ test_name }} </h3>
-                  <div class="form-group">
-                    <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="profile-photo-lg" />
-                    <div class="form-group-col">
-                      <textarea name="texts" id="textArea" cols="70" rows="3" class="form-control" placeholder="Anything exciting?"></textarea>
-                      <div class="dropdown">
-                        <div class="publicity"><a href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-users"></i><a></div>
-                          <div class="dropdown-content">
-                            <a href="#" ><i class="fas fa-users"></i>&ensp;Allow everyone to see the post</a>
-                            <a href="#"><i class="fas fa-user-friends"></i>&ensp;Allow only friends to see the post</a>
-                            <a href="#"><i class="fas fa-user"></i>&ensp;Post only to myself</a>
+                <form method="post" id="testformid">
+                  {% csrf_token %}
+                  <div class="col-md-7">
+                    <h3> test, {{ test_name }} </h3>
+                    <div class="form-group">
+                      <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="profile-photo-lg" />
+                      <div class="form-group-col">
+                        <textarea form="testformid" name="post_content" id="textArea" cols="70" rows="3" class="form-control" placeholder="Anything exciting?"></textarea>
+                        <div class="dropdown">
+                          <div class="publicity"><a href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-users"></i><a></div>
+                            <div class="dropdown-content">
+                              <a href="#" ><i class="fas fa-users"></i>&ensp;Allow everyone to see the post</a>
+                              <a href="#"><i class="fas fa-user-friends"></i>&ensp;Allow only friends to see the post</a>
+                              <a href="#"><i class="fas fa-user"></i>&ensp;Post only to myself</a>
+                            </div>
                           </div>
-                        </div>
+                      </div>
                     </div>
-                  </div>
 
-                </div>
-                <div class="col-md-5">
-                  <div class="tools">
-                    <ul class="publishing-tools list-inline">
-                      <li><a href="#"><i class="fab fa-github"></i></a></li>
-                      <li><a href="#"><i class="ion-images"></i></a></li>
-                    </ul>
-                    &ensp;
-                    <button class="btn btn-primary">Publish</button>
                   </div>
-                </div>
+                  <div class="col-md-5">
+                      <div class="tools">
+                        <ul class="publishing-tools list-inline">
+                          <li><a href="#"><i class="fab fa-github"></i></a></li>
+                          <li><a href="#"><i class="ion-images"></i></a></li>
+                        </ul>
+                        &ensp;
+      <!--                   <input type="submit" > Publish </input> -->
+                        <button class="btn btn-primary" type="submit">Publish</button>
+                      </div>
+                  </div>
+                </form> 
               </div>
             </div><!-- Post Create Box End-->
 
