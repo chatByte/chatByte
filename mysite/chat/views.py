@@ -3,8 +3,14 @@ from django.http import HttpResponse
 from .models import Author
 from .models import Post
 from .form import InputForm
-from .api import deletePost, addFriend, getAuthor
+from .api import deletePost, addFriend, getAuthor, getTimeline
 from django.core import serializers
+
+
+"""
+views.py receive request and create repose to client
+"""
+
 
 # Create your views here.
 def home(request):

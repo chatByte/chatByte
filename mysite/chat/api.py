@@ -1,6 +1,7 @@
 from .models import Author, Post, Comment, User
 
 
+# connec to db , validate user
 def validUser(username, password):
     try:
         user = User.objects.filter(USERNAME=username)[0]
@@ -11,6 +12,7 @@ def validUser(username, password):
     except:
         return False
 
+# add friend 
 def addFriend(name, friend_name):
     try:
         author = Author.objects.filter(DISPLAY_NAME=name)[0]
