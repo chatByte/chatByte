@@ -1,10 +1,11 @@
 from django.test import TestCase
 from .models import Author, Post, Comment
-
+from .api import validUser
 # Create your tests here.
 class UserApiCase(TestCase):
     def setUp(self):
         #TODO
+        Author.objects.create(USERNAME='test', PASSWORD='123')
         pass
 
     def validUserTest(self):

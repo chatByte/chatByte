@@ -6,8 +6,8 @@ import django
 class User(models.Model):
     # for authorization only
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-    USERNAME = models.CharField(max_length=50)
-    PASSSWORD = models.CharField(max_length=50)
+    USERNAME = models.CharField(max_length=50, unique=True)
+    PASSWORD = models.CharField(max_length=50)
 
 class Author(models.Model):
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
