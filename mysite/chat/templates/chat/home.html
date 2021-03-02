@@ -36,6 +36,7 @@
 
 				<div class="form-wrapper">
 					<p class="signin-text">Sign in now and connect with awesome programming enthusiatics around the world!</p>
+
 					<form action="http://localhost:8000/chat/", class="form-inline", method="POST">
 						<!-- <fieldset class="form-group">
 							<input type="text" class="form-control" id="example-name" placeholder="Enter name">
@@ -46,6 +47,13 @@
 						<fieldset class="form-group">
 							<input type="password" class="form-control" id="example-password" placeholder="Enter a password">
 						</fieldset> -->
+						{% if messages %}
+							<ul>
+								{% for message in messages %}
+	                                 <li style="position: relative; right: -25px; color: red;">{{ message }}</li>
+	                            {% endfor %}
+                            </ul>
+						{% endif %}
 					    {% csrf_token %}
 					    {{ form.as_p }}
 					    <button type="submit" class="btn-secondary">Sign in</button>
