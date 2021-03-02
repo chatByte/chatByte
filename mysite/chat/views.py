@@ -9,7 +9,6 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # Create your views here.
 def home(request):
-	#context = {}
     context = {}
     context['form']= InputForm()
     if request.method == "GET":
@@ -21,7 +20,6 @@ def home(request):
     	else:
     		return render(request, 'chat/home.html', {'form': form})
    
-
 # # Create your views here.
 # def home_view(request):
 #     context ={}
@@ -43,24 +41,24 @@ def signup(request):
 		return redirect("/chat/profile/")
 
 def my_timeline(request):
-	timeline = {}
-	# query to database
-	# timeline = 
-	return render(request, "chat/timeline1.html", timeline)
+    timeline = {}
+    # query to database
+    # timeline = 
+    return render(request, "chat/timeline1.html", timeline)
 
 
 def others_timeline(request):
-	timeline = {}
-	# query to database
-	# timeline = 
-	return render(request, "chat/timeline2.html", timeline)
+    timeline = {}
+    # query to database
+    # timeline = 
+    return render(request, "chat/timeline2.html", timeline)
 
 def make_post(request):
-	post = {}
-	# get post
-	return render(request, "chat/feed.html", post)
+    post = {}
+    # get post
+    return render(request, "chat/feed.html", post)
 
 def profile(request):
-	author = {}
-	# query to database
-	return render(request, "chat/profile.html", author)
+    author = {}
+    # query to database
+    return render(request, "chat/profile.html", author)
