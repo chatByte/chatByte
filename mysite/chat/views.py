@@ -68,22 +68,32 @@ def signup(request):
 
 def my_timeline(request):
 
-    # hard coding ??
-    cur_author = getAuthor(cur_user_name)
 
+    cur_author = getAuthor(cur_user_name)
+    # a list of post
+    mytimeline = getTimeline(cur_author.ID)
 
     dynamic_contain = {
 
-        'fullName': cur_author.DISPLAY_NAME
+        'fullName': cur_author.DISPLAY_NAME,
+        'posts': mytimeline
         
     }
 
     # query to database
     # timeline = 
 
+    if request.method == "GET":
 
-    # getTimeline()
-    return render(request, "chat/timeline1.html", dynamic_contain)
+        # getTimeline()
+        return render(request, "chat/timeline1.html", dynamic_contain)
+
+    elif request.method == "POST":
+
+        # change later
+        return render(request, "chat/timeline1.html", dynamic_contain)
+
+
 
 def others_timeline(request):
     timeline = {}
@@ -116,15 +126,15 @@ def make_post(request):
         info = request.POST.get("post_content", "")
         # print("---------/n",request_post)
 
-        title = "Noli flere"
+        title = "Noli flere" # ??
         source = cur_user_name # Who share it to me
         origin = cur_user_name # who origin create 
-        description = "Noli flere"
-        content_type = "Latin"
+        description = "Noli flere" # post about wt, high abstract
+        content_type = "Latin" # texts, markdown imgs # ?? dropdown
         content = info
-        author = cur_author
-        categories = "text"
-        visibility = ""
+        author = cur_author 
+        categories = "text" # web, tutorial, can be delete  # ?? dropdown
+        visibility = "" # direct get id name form web 
 
         createFlag = createPost(title, source, origin, description, content_type, content, author, categories, visibility)
         if createFlag:

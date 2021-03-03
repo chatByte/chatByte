@@ -130,7 +130,13 @@
 
 	              <!-- Post Content
 	              ================================================= -->
+	              {% for cur_post in posts %}
+
 	              <div class="post-content">
+
+	              	    <div class="row"> 
+        					{{ cur_post.CONTENT }} 
+    					</div> 	
 
 	                <!--Post Date-->
 	                <div class="post-date">
@@ -179,7 +185,7 @@
 	                </div>
 	              </div>
 
-
+	              {% endfor %}
 	              <!-- Post Content
 	              ================================================= -->
 	              <div class="post-content">
