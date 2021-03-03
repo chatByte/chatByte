@@ -38,6 +38,7 @@ def getTimeline(id):
 
 def getAuthor(name):
     try:
+        print(Author.objects.filter(DISPLAY_NAME=name))
         return Author.objects.filter(DISPLAY_NAME=name)[0]
     except:
         return None

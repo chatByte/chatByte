@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-from django.shortcuts import render
-=======
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
->>>>>>> b5f38b7e64d51034d558e2992913f26a8e25bc77
 from .models import Author
 from .models import Post
 
@@ -13,15 +9,9 @@ from django.urls import reverse
 
 from .form import InputForm
 
-<<<<<<< HEAD
-
-
-from .api import deletePost, addFriend, getAuthor
-=======
 from .form import InputForm, CreateAuthorForm
 from .api import *
 
->>>>>>> b5f38b7e64d51034d558e2992913f26a8e25bc77
 from django.core import serializers
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
@@ -32,41 +22,12 @@ views.py receive request and create repose to client,
 Create your views here.
 """
 
-<<<<<<< HEAD
-
-# Create your views here.
-def index(request):
-    latest_list = Author.objects.all()
-    context = {'latest_list': latest_list}
-    # Create an author
-    # Author.objects.create(HOST='cat', DISPLAY_NAME='cat', URL='cat', GITHUB='cat')
-
-    # Create a post
-    # author = Author.objects.get(HOST="cat")
-    # Post.objects.create(TITLE='', SOURCE='testing', ORIGIN='', DESCIPTION='', CONTENT_TYPE='', CONTENT=''\
-    #     , AUTHOR=author, CATEGORIES='', COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY='public')
-
-    # change a field in the post
-    post = Post.objects.filter(SOURCE='changed')[0]
-    # assuming obj is a model instance
-    serialized_obj = serializers.serialize('json', [ post, ])
-    print(serialized_obj)
-    print(getAuthor('cat'))
-    addFriend("cat", "123")
-    # deletePost(post.ID)
-    return render(request, 'chat/index.html', context)
-
-# Create your views here.
-def home_view(request):
-    context ={}
-=======
 # default value
 cur_user_name = "Ritsu Onodera" 
 
 
 def home(request):
     context = {}
->>>>>>> b5f38b7e64d51034d558e2992913f26a8e25bc77
     context['form']= InputForm()
     if request.method == "GET":
         return render(request, "chat/home.html", context)

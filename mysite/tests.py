@@ -1,16 +1,26 @@
 from django.test import TestCase
- 
 from chat.models import Author, Post, Comment
 from chat.api import validUser
 # Create your tests here.
-class UserTestCase(TestCase):
-    def setUp(self):
-        #TODO
-        # Author.objects.create(NAME='test', PASSWORD='123')
-        pass
 
+class UserTestCase(TestCase):
+    
+    def setUp(self):
+        # set up 
+        # User.objects.create(USERNAME='test', PASSWORD='123')
+        pass
+        
     def test_validUser(self):
-        self.assertEqual(validUser('test', '123'), False)
+        pass
+        # self.assertEqual(validUser('test123', '123'), False)
+        # self.assertEqual(validUser('test', '123'), True)
+
+    def test_addFriend(self):
+        # addFriend('test', 'testFriend')
+        # self.assertEqual(addFriend(), True)
+        pass
+    
+
 
 class AuthorTestCase(TestCase):
     def setUp(self):
@@ -76,3 +86,4 @@ class CommentTestCase(TestCase):
     def deleteCommentTest(self):
         #TODO
         pass
+
