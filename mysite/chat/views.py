@@ -2,10 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Author
 from .models import Post
-<<<<<<< HEAD
-=======
 from .form import InputForm
->>>>>>> main
 
 from .form import InputForm, CreateAuthorForm
 from .api import *
