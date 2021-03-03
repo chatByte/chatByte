@@ -2,9 +2,10 @@ from .models import Author, Post, Comment, User
 
 
 # connec to db , validate user
-def createUser(username, password):
+def createUser(username, password, host, url, github):
     try:
         User.objects.create(USERNAME=username, PASSWORD=password)
+        createAuthor(host, username, url, github)
         return True
     except:
         return False
@@ -19,26 +20,52 @@ def validUser(username, password):
     except:
         return False
 
-# add friend 
-def addFriend(name, friend_name):
+def addToFriendRequest(name, friend_name):
     try:
-        author = Author.objects.filter(DISPLAY_NAME=name)[0]
-        friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
+        author = Author.objects.filter(DISPLAY_NAME=name)
+        friend = Author.objects.filter(DISPLAY_NAME=friend_name)
+        author.FRIEND_REQUESTS.add(friend)
+        return True
+    except:
+        return False
+
+def addToFollowers(name, friend_name):
+    try:
+        author = Author.objects.filter(DISPLAY_NAME=name)
+        friend = Author.objects.filter(DISPLAY_NAME=friend_name)
+        author.FOLLOWERS.add(friend)
+        return True
+    except:
+        return False
+
+def addToTimeline(name, post):
+    try:
+        author = Author.objects.filter(DISPLAY_NAME=name)
+        author.TIMELINE.add(post)
+        return True
+    except:
+        return False
+
+# add as friend 
+def addToFriends(name, friend_name):
+    try:
+        author = Author.objects.filter(DISPLAY_NAME=name)
+        friend = Author.objects.filter(DISPLAY_NAME=friend_name)
         author.FRIENDS.add(friend)
         return True
     except:
         return False
 
-def getTimeline(id):
+def getTimeline(name):
     try:
-        author = Author.objects.filter(ID=id)
+        author = Author.objects.filter(DISPLAY_NAME=name)
         return author.TIMELINE
     except:
         return None
 
 def getAuthor(name):
     try:
-        return Author.objects.filter(DISPLAY_NAME=name)[0]
+        return Author.objects.filter(DISPLAY_NAME=name)
     except:
         return None
 
@@ -49,19 +76,19 @@ def createAuthor(host, display_name, url, github):
     except:
         return False
 
-def updateAuthor(id):
+def updateAuthor(name):
     #TODO
     try:
-        author = Author.objects.filter(ID=id)
+        author = Author.objects.filter(DISPLAY_NAME=name)
         # update element here
         author.save()
         return True
     except:
         return False
 
-def deleteAuthor(id):
+def deleteAuthor(name):
     try:
-        Author.objects.filter(ID=id).delete()
+        Author.objects.filter(DISPLAY_NAME=name).delete()
         return True
     except:
         return False
