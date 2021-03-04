@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='post',
             name='AUTHOR',
-            field=models.ForeignKey(default=django.utils.timezone.now, on_delete=django.db.models.deletion.DO_NOTHING, to='chat.Author'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.DO_NOTHING, to='chat.Author'),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -65,7 +65,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='post',
             name='ID',
-            field=models.CharField(default=django.utils.timezone.now, max_length=200, primary_key=True, serialize=False),
+            field=models.CharField(default=1, max_length=200, primary_key=True, serialize=False),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='post',
             name='PAGE_SIZE',
-            field=models.IntegerField(default=django.utils.timezone.now),
+            field=models.IntegerField(default=1),
             preserve_default=False,
         ),
         migrations.AddField(

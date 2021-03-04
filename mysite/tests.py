@@ -7,60 +7,54 @@ class UserTestCase(TestCase):
     
     def setUp(self):
         # set up 
-        # User.objects.create(USERNAME='test', PASSWORD='123')
-        pass
+        User.objects.create(USERNAME='test', PASSWORD='123')
+        User.objects.create(USERNAME='testfriend', PASSWORD='123')
+        # User.objects.create(USERNAME='testfriend', PASSWORD='123')
+        # pass
         
     def test_validUser(self):
-        pass
-        # self.assertEqual(validUser('test123', '123'), False)
-        # self.assertEqual(validUser('test', '123'), True)
+        
+        self.assertEqual(validUser('test123', '123'), False)
+        self.assertEqual(validUser('test', '123'), True)
 
     def test_addFriend(self):
-        # addFriend('test', 'testFriend')
-        # self.assertEqual(addFriend(), True)
-        pass
+        self.assertEqual(addFriend('test', 'testFriend'), True)
+        
     
-
+    def test_getAuthor(self):
+        self.assertEqual(getAuthor(), A)
 
 class AuthorTestCase(TestCase):
     def setUp(self):
-        #TODO
-        # Animal.objects.create(name="lion", sound="roar")
-        # Animal.objects.create(name="cat", sound="meow")
-        pass
-
+        User.objects.create(USERNAME='test', PASSWORD='123')
+        User.objects.create(USERNAME='testfriend', PASSWORD='123')
+        
     def addFriendTest(self):
-        #TODO
-        pass
+        self.assertEqual(addFriend('test', 'testFriend'), True)
 
     def getTimelineTest(self):
-        #TODO
+        # To do
         pass
 
     def getAuthorTest(self):
-        #TODO
-        pass
+        self.assertEqual(getAuthor('test'),Author.objects.filter(DISPLAY_NAME=test)[0])
 
     def createAuthorTest(self):
-        #TODO
-        pass
+        self.assertEqual(createAuthor('testHost','testAuthor','',''), True)
 
     def updateAuthorTest(self):
-        #TODO
-        pass
+        self.assertEqual(updateAuthor('test'), True)
+        # pass
 
     def deleteAuthorTest(self):
-        #TODO
-        pass
+        self.assertEqual(deleteAuthor('test'), True)
 
 class PostTestCase(TestCase):
     def setUp(self):
-        #TODO
-        pass
+        self.assertEqual()
 
     def createPostTest(self):
-        #TODO
-        pass
+        self.assertEqual()
 
     def updatePostTest(self):
         #TODO

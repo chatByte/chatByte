@@ -50,19 +50,19 @@ def createAuthor(host, display_name, url, github):
     except:
         return False
 
-def updateAuthor(id):
+def updateAuthor(username)):
     #TODO
     try:
-        author = Author.objects.filter(ID=id)
+        author = Author.objects.filter(USERNAME=username)
         # update element here
         author.save()
         return True
     except:
         return False
 
-def deleteAuthor(id):
+def deleteAuthor(username):
     try:
-        Author.objects.filter(ID=id).delete()
+        Author.objects.filter(USERNAME=username).delete()
         return True
     except:
         return False
