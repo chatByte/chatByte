@@ -33,8 +33,7 @@ class AuthorTestCase(TestCase):
         self.assertEqual(addFriend('test', 'testFriend'), True)
 
     def getTimelineTest(self):
-        # To do
-        pass
+        self.assertEqual(getTimeline('test'), Author.objects.filter('test').TIMELINE)
 
     def getAuthorTest(self):
         self.assertEqual(getAuthor('test'),Author.objects.filter(DISPLAY_NAME=test)[0])
@@ -50,11 +49,12 @@ class AuthorTestCase(TestCase):
         self.assertEqual(deleteAuthor('test'), True)
 
 class PostTestCase(TestCase):
+    title, source, origin, description, content_type, content, author, categories, visibility
     def setUp(self):
-        self.assertEqual()
+        pass
 
     def createPostTest(self):
-        self.assertEqual()
+        self.assertEqual(createPost)
 
     def updatePostTest(self):
         #TODO

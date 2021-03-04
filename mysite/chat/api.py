@@ -29,9 +29,9 @@ def addFriend(name, friend_name):
     except:
         return False
 
-def getTimeline(id):
+def getTimeline(name):
     try:
-        author = Author.objects.filter(ID=id)
+        author = Author.objects.filter(USERNAME=name)
         return author.TIMELINE
     except:
         return None
