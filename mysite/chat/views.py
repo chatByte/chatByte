@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Author
 from .models import Post
+from .form import InputForm
 
 from .form import InputForm, CreateAuthorForm
 from .api import *
@@ -22,7 +23,6 @@ cur_user_name = "teemo"
 
 
 def home(request):
-
     context = {}
     context['form']= InputForm()
     if request.method == "GET":

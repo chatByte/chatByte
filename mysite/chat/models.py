@@ -3,10 +3,10 @@ import uuid
 import django
 
 # Create your models here.
-class User(models.Model):
+class Actor(models.Model):
     # for authorization only
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-    USERNAME = models.CharField(max_length=50)
+    USERNAME = models.CharField(max_length=50, unique=True)
     PASSWORD = models.CharField(max_length=50)
 
 class Author(models.Model):
@@ -43,9 +43,6 @@ class Post(models.Model):
     COMMENTS = models.ForeignKey('Comment', on_delete=models.DO_NOTHING, blank=True)
     PUBLISHED = models.DateTimeField(default=django.utils.timezone.now)
 
-    PUBLIC = 'public'
-    FRIEND = 'friend'
-    VISIBILITY_CHOICES = [ (PUBLIC, 'Public'), (FRIEND, 'Friend'), ]
-    VISIBILITY = models.CharField(max_length=6, choices=VISIBILITY_CHOICES, default=PUBLIC,)
-    UNLISTED = models.CharField(max_length=5, default='false', editable=False)
+    VISIBILITY = models.CharField(max_length=50)
+    UNLISTED = models.CharField(max_length=50, default='false', editable=False)
 
