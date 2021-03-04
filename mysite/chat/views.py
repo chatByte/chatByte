@@ -30,7 +30,7 @@ def home(request):
     elif request.method == "POST":
         username = request.POST.get("User_name")
         password = request.POST.get("Password")
-        valid = validUser(username, password)
+        valid = validActor(username, password)
         if valid:
             cur_user_name = username
             return redirect("/chat/profile")
@@ -58,7 +58,7 @@ def signup(request):
             messages.error(request, 'User name exists!')
             return render(request, "chat/signup.html", context)
         else:
-            print(createUser(username, password))
+            print(createActor(username, password))
             createAuthor("this", username, url, github)
             return redirect("/chat/profile/")
         # if createAuthor("this", username, url, github):
@@ -73,7 +73,7 @@ def my_timeline(request):
     cur_author = getAuthor(cur_user_name)
     # a list of post
     # mytimeline = getTimeline(cur_user_name)
-    mytimeline = cur_author.TIMELINE
+    mytimeline = getTimeline(cur_user_name)
 
 
     dynamic_contain = {
@@ -95,7 +95,7 @@ def my_timeline(request):
 
 
 
-        print ("Request URL Path = [" + request.path() + "], ")
+        # print ("Request URL Path = [" + request.path() + "], ")
 
         # getTimeline()
         return render(request, "chat/timeline1.html", dynamic_contain)
