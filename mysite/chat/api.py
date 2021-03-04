@@ -29,10 +29,12 @@ def addFriend(name, friend_name):
     except:
         return False
 
-def getTimeline(id):
+def getTimeline(username):
+    # need to change to user name
     try:
-        author = Author.objects.filter(ID=id)
-        return author.TIMELINE
+        author = Author.objects.filter(DISPLAY_NAME=username)[0]
+
+        return author.TIMELINE.all()
     except:
         return None
 
