@@ -1,20 +1,22 @@
-from .models import Author, Post, Comment, User
+from .models import Author, Post, Comment, Actor
 
 
 # connec to db , validate user
-def validUser(username, password):
-    # try:
-    #     user = User.objects.filter(USERNAME=username)
-    #     if password == user.PASSWORD:
-    #         return True
-    #     else:
-    #         return False
-    # except:
-    #     return False
-    user = User.objects.filter(USERNAME=username)[0]
-    if password == user.PASSWORD:
+def createActor(username, password):
+    try:
+        Actor.objects.create(USERNAME=username, PASSWORD=password)
         return True
-    else:
+    except:
+        return False
+
+def validActor(username, password):
+    try:
+        actor = Actor.objects.filter(USERNAME=username)[0]
+        if password == actor.PASSWORD:
+            return True
+        else:
+            return False
+    except:
         return False
 
 # add friend 
@@ -28,6 +30,7 @@ def addFriend(name, friend_name):
         return False
 
 def getTimeline(id):
+    # need to change to user name
     try:
         author = Author.objects.filter(ID=id)
         return author.TIMELINE
@@ -43,13 +46,6 @@ def getAuthor(name):
 def createAuthor(host, display_name, url, github):
     try:
         Author.objects.create(HOST=host, DISPLAY_NAME=display_name, URL=url, GITHUB=github)
-        return True
-    except:
-        return False
-
-def createUser(username, password):
-    try:
-        User.objects.create(USERNAME=username, PASSWORD=password)
         return True
     except:
         return False
@@ -74,8 +70,10 @@ def deleteAuthor(id):
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
     #TODO keep track of COMMENTS_NO and PAGE_SIZE, COMMENTS_FIRST_PAGE
     try:
-        Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
+        post = Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
             , AUTHOR=author, CATEGORIES=categories, COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY=visibility)
+        author.TIMELINE.add(post)
+        author.save()
         return True
     except:
         return False
