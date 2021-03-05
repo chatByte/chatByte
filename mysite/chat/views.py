@@ -75,24 +75,21 @@ def home(request):
     # mytimeline = getTimeline(cur_user_name)
     mytimeline = getTimeline(cur_user_name)
     dynamic_contain = {
-
-        'fullName': cur_author.DISPLAY_NAME,
+        'myName' : cur_author.DISPLAY_NAME,
         'timeline': mytimeline
         
     }
-    print("_____")
-    print (cur_author.DISPLAY_NAME)
-    print (cur_author)
-    print (cur_author.TIMELINE)
-    print("mytimeline" , mytimeline)
+
     # query to database
     # timeline = 
 
     if request.method == "GET":
+
         # print ("Request URL Path = [" + request.path() + "], ")
         # getTimeline()
         return render(request, "chat/home.html", dynamic_contain)
     elif request.method == "POST":
+
         # change later
         return render(request, "chat/home.html", dynamic_contain)
 

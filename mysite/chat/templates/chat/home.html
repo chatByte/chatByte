@@ -39,16 +39,16 @@
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right main-menu">
-
-							<!-- <li class="dropdown"><a href="">My Home</a></li>
-							<li class="dropdown"><a href="../">My Friends</a></li>
+<!-- 
+							<li class="dropdown"><a href="">My Home</a></li>
+							<li class="dropdown"><a href="../friend">My Friends</a></li> -->
 
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
 								<ul class="dropdown-menu">
 									<li><a href="">Edit Profile</a></li>
 								</ul>
-							</li> -->
+							</li>
 
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Notification <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
@@ -80,7 +80,7 @@
                 <div class="profile-info">
                   <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="img-responsive profile-photo" />
 
-                  <h3 id="fullName"> {{fullName}} </h3>
+                  <h3 id="myName"> {{myName}} </h3>
 									<p class="text-muted"> 1,000 people is following him</p>
                 </div>
               </div>
@@ -125,30 +125,22 @@
             </div>
             <div class="col-sm-1"></div>
             <div class="col-md-6">
-							<div class="posts">
+				<div class="posts">
 
 
 				<!-- 							?? -->
-      	    	<h5>below ? </h5> 
-	              {% for cur_post in timeline %}
+  	    		<h5>below is my post? </h5> 
+              	{% for cur_post in timeline %}
 
-					<h5>{{cur_post.content }} </h5> 
-	              {% endfor %}
 	              <!-- Post Content
 	              ================================================= -->
 
-
 	              <div class="post-content">
-
-
-
 	                <!--Post Date-->
 	                <div class="post-date">
 
-
-
 	                  <h5>Me</h5>
-	                  <p class="text-grey">12:09, Jan 31</p>
+	                  <p id ="post_date" class="text-grey">{{cur_post.PUBLISHED}} </p>
 	                </div><!--Post Date End-->
 
 	                <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" />
@@ -156,15 +148,14 @@
 	                  <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
 	                  <div class="post-detail">
 	                    <div class="user-info">
-	                      <h5><a href="" class="profile-link" id="fullName">KISHIBE ROHAN</a> </h5>
+	                      <h5><a href="" class="profile-link" id="fullName">{{cur_post.ORIGIN}}</a> </h5>
 	                      <p class="text-muted">Posted a photo</p>
 	                    </div>
 
 
 											<hr class="solid">
 	                    <div class="post-text">
-	                      <p> Same sothing asdkjha di iahsd o1h2e,khsdakhdsao dhashd asj dopqwu d!!!lsid oias doashd asd asoid o ashd .
-												</p>
+	                      <p> {{cur_post.CONTENT}} </p>
 												<div class="edit"><a>Edit</a>&emsp;<a href="#" class="text-red">Delete</a></div>
 
 	                    </div>
@@ -175,74 +166,34 @@
 	                    </div>
 
 											<hr class="solid">
+<!-- 						show nested comment	 -->				
+						{% for comment in cur_post.COMMENTS.all %}
 	                    <div class="post-comment">
 	                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
 	                      <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
 	                    </div>
-	                    <div class="post-comment">
+	                    {% endfor %}
+<!-- 	                    end -->
+
+<!-- 	                    <div class="post-comment">
 	                      <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
 	                      <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
-	                    </div>
+	                    </div> -->
+
+
+
 	                    <div class="post-comment">
 	                      <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
-	                      <a href="" class="profile-link">Me </a>
+	                      <a href="" class="profile-link">{{myName}} </a>
 												<input type="text" class="form-control" placeholder="Post a comment">
 	                    </div>
 	                  </div>
 	                </div>
 	              </div>
 
-
+	              {% endfor %}
 	              <!-- Post Content
 	              ================================================= -->
-	              <div class="post-content">
-
-	                <!--Post Date-->
-	                <div class="post-date hidden-xs hidden-sm">
-	                  <h5>Me</h5>
-	                  <p class="text-grey">10/21/2020</p>
-	                </div><!--Post Date End-->
-
-	                <div class="post-container">
-	                  <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
-	                  <div class="post-detail">
-	                    <div class="user-info">
-	                      <h5><a href="timeline.html" class="profile-link" id="fullName">KISHIBE ROHAN</a> </h5>
-	                      <p class="text-muted">Posted text</p>
-	                    </div>
-
-
-
-											<hr class="solid">
-	                    <div class="post-text">
-	                      <p>asdfghjklkjhgfdfghjo;likujyfvbgho;alskdjygaiolskijdlwehiyubsadykcilwvuydfgaksdai  a sid soiydaoi yd !!asd  asodiua doyawuo
-												</p>
-												<div class="edit"><a>Edit</a>&emsp;<a class="text-red">Delete</a></div>
-	                    </div>
-
-	                    <div class="reaction-text">
-												<a class="btn text-red"><i class="icon ion-ios-heart"></i> 100000</a>
-	                      <a class="btn text-green"><i class="icon ion-share"></i></a>
-	                    </div>
-
-											<hr class="solid">
-											<div class="post-comment">
-	                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-	                      <p><a href="" class="profile-link">Dad </a>Sooooo goood brooooooooooo </p>
-	                    </div>
-	                    <div class="post-comment">
-	                      <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
-	                      <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
-	                    </div>
-	                    <div class="post-comment">
-	                      <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
-	                      <a href="" class="profile-link">Me </a>
-												<input type="text" class="form-control" placeholder="Post a comment">
-	                    </div>
-	                  </div>
-	                </div>
-	              </div>
-							</div>
             </div>
 
 
@@ -266,5 +217,9 @@
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
+
+
+
+
   </body>
 </html>
