@@ -4,7 +4,7 @@ from .models import Author
 from .models import Post
 from .form import InputForm
 
-from .form import InputForm, CreateAuthorForm
+from .form import InputForm, CreateAuthorForm, CreatePostForm
 from .api import *
 
 from django.core import serializers
@@ -13,12 +13,12 @@ from django.contrib import messages
 
 
 """
-views.py receive request and create repose to client, 
+views.py receive request and create repose to client,
 Create your views here.
 """
 
 # default value
-cur_user_name = "Ritsu Onodera" 
+cur_user_name = "Ritsu Onodera"
 
 
 def home(request):
@@ -36,7 +36,7 @@ def home(request):
         else:
             messages.error(request, "Invalid user name or password!")
             return render(request, 'chat/home.html', context)
-   
+
 # # Create your views here.
 # def home_view(request):
 #     context ={}
@@ -75,11 +75,11 @@ def my_timeline(request):
     dynamic_contain = {
 
         'fullName': cur_author.DISPLAY_NAME
-        
+
     }
 
     # query to database
-    # timeline = 
+    # timeline =
 
 
     # getTimeline()
@@ -88,7 +88,7 @@ def my_timeline(request):
 def others_timeline(request):
     timeline = {}
     # query to database
-    # timeline = 
+    # timeline =
     return render(request, "chat/timeline2.html", timeline)
 
 def make_post(request):
@@ -99,11 +99,13 @@ def make_post(request):
     # ??
     # cur_user_name = cur_author.DISPLAY_NAME # or we can use global
     # testcase
-    dynamic_contain = {  
+    dynamic_contain = {
         'fullName':'Ritsu Onodera',
-        
+
         'test_name': cur_user_name
-    }  
+    }
+    dynamic_contain['form'] = CreatePostForm()
+
     # Get the current pages' author
 
     if request.method == "GET":
@@ -113,13 +115,13 @@ def make_post(request):
     elif request.method == "POST":
 
         request_post = request.POST
-        info = request.POST.get("post_content", "")
-        # print("---------/n",request_post)
 
-        title = "Noli flere"
+        info = request_post.get("description", "")
+
+        title = request_post.get("title", "")
         source = cur_user_name # Who share it to me
-        origin = cur_user_name # who origin create 
-        description = "Noli flere"
+        origin = cur_user_name # who origin create
+        description = request_post.get("description", "")
         content_type = "Latin"
         content = info
         author = cur_author
