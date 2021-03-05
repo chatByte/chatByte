@@ -80,9 +80,21 @@ def home(request):
     # a list of post
     # mytimeline = getTimeline(cur_user_name)
     mytimeline = getTimeline(cur_user_name)
+
+    # print("??",cur_author.FOLLOWERS)
+
+    # follwers = cur_author.FOLLOWERS
+    author_num_follwers = 10
+    # if  (follwers == None):
+    #     author_num_follwers = 0
+    #     print("haha")
+    # else:
+    #     author_num_follwers = len(follwers)
+
     dynamic_contain = {
         'myName' : cur_author.DISPLAY_NAME,
-        'timeline': mytimeline
+        'timeline': mytimeline,
+        'author_num_follwers': author_num_follwers
 
     }
 
