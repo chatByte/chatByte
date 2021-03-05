@@ -41,8 +41,6 @@ def addFriend(name, friend_name):
     try:
         author = Author.objects.filter(DISPLAY_NAME=name)
         friend = Author.objects.filter(DISPLAY_NAME=friend_name)
-        print(author)
-        print(friend)
         author.FRIENDS.add(friend)
         return True
     except BaseException as e:
@@ -60,7 +58,6 @@ def getTimeline(username):
 
 def getAuthor(name):
     try:
-        print(Author.objects.filter(DISPLAY_NAME=name))
         return Author.objects.filter(DISPLAY_NAME=name)[0]
     except:
         return None
