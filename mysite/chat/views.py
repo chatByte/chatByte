@@ -23,11 +23,11 @@ Create your views here.
 """
 
 # default value
-cur_user_name = "teemo"
+# cur_user_name = "teemo"
 
 
 def login(request):
-    global cur_user_name
+    cur_user_name = request.COOKIES.get('user')
     context = {}
     context['form']= LoginForm()
     if request.method == "GET":
@@ -39,11 +39,14 @@ def login(request):
         valid = validActor(username, password)
         if valid:
             cur_user_name = username
-            return redirect("/chat/home")
+            response = redirect("/chat/home")
+            response.set_cookie(key='user', value=cur_user_name)
+            return response
         else:
             messages.error(request, "Invalid user name or password!")
-
-            return render(request, 'chat/login.html', context)
+            response = render(request, 'chat/login.html', context)
+            response.set_cookie(key='user', value=cur_user_name)
+            return response
 
 
 # # Create your views here.
@@ -53,11 +56,13 @@ def login(request):
 #     return render(request, "chat/signup.html", context)
 
 def signup(request):
-    global cur_user_name
+    cur_user_name = request.COOKIES.get('user')
     context = {}
     context['form'] = CreateAuthorForm()
+    response = render(request, "chat/signup.html", context)
+    response.set_cookie(key='user', value=cur_user_name)
     if request.method == "GET":
-        return render(request, "chat/signup.html", context)
+        return response
     elif request.method == "POST":
         url = request.POST.get("Url")
         username = request.POST.get("User_name")
@@ -67,15 +72,17 @@ def signup(request):
         host = request.POST.get("Host")
         if getAuthor(username) != None:
             messages.error(request, 'User name exists!')
-            return render(request, "chat/signup.html", context)
+            return response
         else:
             if retype_password != password:
                 messages.error(request, 'Password does not match!')
-                return render(request, "chat/signup.html", context)
+                return response
             print(createActor(username, password))
             createAuthor(host, username, url, github)
             cur_user_name = username
-            return redirect("/chat/home/")
+            response = redirect("/chat/home/")
+            response.set_cookie(key='user', value=cur_user_name)
+            return response
         # if createAuthor("this", username, url, github):
         #   return redirect("/chat/profile/")
         # else:
@@ -83,7 +90,7 @@ def signup(request):
         #   return render(request, "chat/signup.html", context)
 
 def home(request):
-    global cur_user_name
+    cur_user_name = request.COOKIES.get('user')
     cur_author = getAuthor(cur_user_name)
     # a list of post
     # mytimeline = getTimeline(cur_user_name)
@@ -93,6 +100,8 @@ def home(request):
         'timeline': mytimeline
 
     }
+    response = render(request, "chat/home.html", dynamic_contain)
+    response.set_cookie(key='user', value=cur_user_name)
 
     # query to database
     # timeline =
@@ -101,25 +110,28 @@ def home(request):
 
         # print ("Request URL Path = [" + request.path() + "], ")
         # getTimeline()
-        return render(request, "chat/home.html", dynamic_contain)
+        return response
     elif request.method == "POST":
 
         # change later
-        return render(request, "chat/home.html", dynamic_contain)
+        return response
 
 
 
 def friend_profile(request):
+    cur_user_name = request.COOKIES.get('user')
     timeline = {}
     # query to database
 
     # timeline =
-    return render(request, "chat/friendProfile.html", timeline)
+    response = render(request, "chat/friendProfile.html", timeline)
+    response.set_cookie(key='user', value=cur_user_name)
+    return response
 
 
 
 def make_post(request):
-
+    cur_user_name = request.COOKIES.get('user')
     """
     so far, only support text-only post and post with img and caption
 
@@ -138,8 +150,9 @@ def make_post(request):
     # Get the current pages' author
 
     if request.method == "GET":
-
-        return render(request, "chat/feed.html", dynamic_contain)
+        response = render(request, "chat/feed.html", dynamic_contain)
+        response.set_cookie(key='user', value=cur_user_name)
+        return response
 
     elif request.method == "POST":
 
@@ -170,14 +183,16 @@ def make_post(request):
         else:
             print("sever feels sad ", description)
 
-        return render(request, "chat/feed.html", dynamic_contain)
+        response = render(request, "chat/feed.html", dynamic_contain)
+        response.set_cookie(key='user', value=cur_user_name)
+        return response
 
 
     # # get post
     # return render(request, "chat/feed.html", dynamic_contain)
 
 def profile(request):
-    global cur_user_name
+    cur_user_name = request.COOKIES.get('user')
     author = getAuthor(cur_user_name)
     actor = getActor(cur_user_name)
     print(author)
@@ -193,7 +208,9 @@ def profile(request):
     print(context)
     # query to database
     if request.method == "GET":
-        return render(request, "chat/myProfile.html", context)
+        response = render(request, "chat/myProfile.html", context)
+        response.set_cookie(key='user', value=cur_user_name)
+        return response
     elif request.method == "POST":
         url = request.POST.get("Url")
         username = request.POST.get("User_name")
@@ -203,4 +220,6 @@ def profile(request):
         print("update author: ", updateAuthor(username, host, url, github))
         print("update actor: ", updateActor(username, password))
         cur_user_name = username
-        return render(request, "chat/myProfile.html", context)
+        response = render(request, "chat/myProfile.html", context)
+        response.set_cookie(key='user', value=cur_user_name)
+        return response
