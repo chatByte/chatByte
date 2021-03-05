@@ -197,3 +197,22 @@ def profile(request):
         print("update actor: ", updateActor(username, password))
         cur_user_name = username
         return render(request, "chat/myProfile.html", context)
+
+
+def delete(request, ID):
+    cur_user_name = request.COOKIES.get('user')
+    # post_id = request.build_absolute_uri().split("/")[-2][6:]
+    cur_author = getAuthor(cur_user_name)
+    deletePost(ID)
+    response = redirect("/chat/home/")
+    setCookie(response, 'user', cur_user_name)
+    return response
+
+def delete_in_feed(request, ID):
+    cur_user_name = request.COOKIES.get('user')
+    # post_id = request.build_absolute_uri().split("/")[-2][6:]
+    cur_author = getAuthor(cur_user_name)
+    deletePost(ID)
+    response = redirect("/chat/feed/")
+    setCookie(response, 'user', cur_user_name)
+    return response
