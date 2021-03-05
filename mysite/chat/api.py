@@ -107,11 +107,20 @@ def createPost(title, source, origin, description, content_type, content, author
     except:
         return False
 
-def updatePost(id):
-    #TODO
+def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
+    # title, source, origin, description, content_type, content, author, categories, visibility
     try:
         post = Post.objects.filter(ID=id)[0]
-        # update field here
+        post.title = title
+        post.source = source
+        post.origin = origin
+        post.description = description
+        post.content_type = content_type
+        post.contetn = content
+        # post.author = author
+        post.categories = categories
+        post.visibility = visibility
+        
         post.save()
         return True
     except Exception as e:

@@ -52,7 +52,7 @@ class PostTestCase(TestCase):
         self.assertEqual(createPost('test_title','test','test','abc','text','content', self.author,'',''), True)
 
     def test_updatePost(self):
-        self.assertEqual(updatePost(), True)
+        self.assertEqual(updatePost(1, '', '', '', '', '', '', '',''), True)
 
     def test_deletePost(self):
         self.assertEqual(deletePost(1), True)
