@@ -42,7 +42,8 @@ class AuthorTestCase(TestCase):
 
 class PostTestCase(TestCase):
     def setUp(self):
-        Post.objects.create(ID=1)
+        Post.objects.create(ID='1')
+        pass
 
     def test_createPost(self):
         self.assertEqual(createPost('test_title','test','test','abc','text','content','test','',''), True)
@@ -55,10 +56,11 @@ class PostTestCase(TestCase):
 
 class CommentTestCase(TestCase):
     def setUp(self):
-        author = Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
+        self.author = Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
+        pass
 
     def test_createComment(self):
-        self.assertEqual(createPost(author, '', 'text'), True)
+        self.assertEqual(createPost(self.author, '', 'text'), True)
 
     def test_updateComment(self):
         self.assertEqual(updateComment(1), True)
