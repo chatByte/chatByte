@@ -22,6 +22,8 @@
         font-family:'Archivo';
         /* background: linear-gradient(to right, rgba(192, 192, 170, 0.8), rgba(28, 239, 255, 0.5)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */ */
       }
+
+      .btn-on-top{position: relative; margin-left: 5px; margin-top: -38px; z-index: 10;}
     </style>
 
   </head>
@@ -121,11 +123,7 @@
                       <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="profile-photo-lg" />
                       <div class="form-group-col">
                         {% csrf_token %}
-                        <!-- {{ form.as_p }} -->
-                        <!-- {{form.title}}
-                        {{form.description}} -->
-
-                        <textarea  id="title" cols="45" rows="1" class="form-title-control" placeholder="Title"></textarea>
+                        <textarea  id="title" cols="45" rows="1" class="form-title-control" placeholder="Title" required></textarea>
                         <!-- <span class="zoom"><img id="uploadImg"></span> -->
                         <img id="uploadImg">
                         <textarea  id="description" cols="45" rows="4" class="form-control" placeholder="Description: Anything exciting?"></textarea>
@@ -161,7 +159,7 @@
                         </ul>
                         &ensp; -->
                         <!-- <button class="btn btn-primary" type="submit">Publish</button> -->
-                        <button class="btn btn-primary" id="publishBtn"><a href="../feed">Publish </a></button> 
+                        <button class="btn btn-primary" id="publishBtn"><a href="../feed">Publish </a></button>
 
                       </div>
                   </div>
@@ -170,7 +168,7 @@
 
 
 
-<!--             post content mine 
+<!--             post content mine
 =====================================================-->
           {% for cur_post in timeline %}
 
@@ -181,8 +179,7 @@
                   <!--Post Date-->
                   <div class="post-date">
 
-                    <h5>{{ cur_post.TITLE}}</h5> 
-                    <p id ="post_date" class="text-grey">{{cur_post.PUBLISHED}} </p>
+
                   </div><!--Post Date End-->
                   {% if 'image/' in cur_post.CATEGORIES  %}
                   {% load image_filter %}
@@ -194,14 +191,26 @@
                     <div class="post-detail">
                       <div class="user-info">
                         <h5><a href="" class="profile-link" id="fullName">{{cur_post.ORIGIN}}</a> </h5>
+                        <p class="text-grey post_date" >{{cur_post.PUBLISHED}} </p>
+
                         <p class="text-muted">{{cur_post.CATEGORIES}}</p>
                       </div>
                       <hr class="solid">
                       <div class="post-text">
+
+                        <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">{{ cur_post.TITLE}}</p>
+
                         {% if 'text/' in cur_post.CATEGORIES  %}
                         <p> {{cur_post.CONTENT}} </p>
+                        <form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
+                            {% csrf_token %}
+                            <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.CONTENT}}</textarea>
+                            <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
+
+                        </form>
                         {% endif %}
-                        <div class="edit"><a>Edit</a>&emsp;<a href="/chat/feed/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div>
+
+                        <div class="edit"><a href="/chat/feed/edit{{ cur_post.ID }}/" class="editBtn"/>Edit</a>&emsp;<a href="/chat/feed/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div>
 
                       </div>
 
@@ -211,7 +220,7 @@
                       </div>
 
                       <hr class="solid">
-<!--            show nested comment  -->        
+<!--            show nested comment  -->
             {% for comment in cur_post.COMMENTS.all %}
                       <div class="post-comment">
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />

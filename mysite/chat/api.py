@@ -1,4 +1,4 @@
-  
+
 from .models import Author, Post, Comment, Actor
 import datetime
 from django.conf import settings
@@ -61,7 +61,7 @@ def validActor(username, password):
         print(e)
         return False
 
-# add friend 
+# add friend
 def addFriend(name, friend_name):
     try:
         author = Author.objects.filter(DISPLAY_NAME=name)[0]
@@ -122,6 +122,8 @@ def deleteAuthor(username):
         print(e)
         return False
 
+
+
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
     #TODO keep track of COMMENTS_NO and PAGE_SIZE, COMMENTS_FIRST_PAGE
     try:
@@ -147,7 +149,7 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
         # post.author = author
         post.categories = categories
         post.visibility = visibility
-        
+
         post.save()
         return True
     except BaseException as e:
@@ -161,6 +163,7 @@ def deletePost(id):
     except BaseException as e:
         print(e)
         return False
+
 
 def createComment(author, comment, content_type):
     try:

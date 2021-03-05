@@ -33,7 +33,7 @@
           <!-- Brand and toggle get grouped for better mobile display -->
           <!-- left most logo -->
           <div class="navbar-header">
-            <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
+            <a class="navbar-brand" href=""><img src="" alt="chatByte" width="80" height="30" /></a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -81,7 +81,7 @@
                   <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="img-responsive profile-photo" />
 
                   <h3 id="myName"> {{myName}} </h3>
-                  <p class="text-muted"> 1,000 people is following him</p>
+                  <p class="text-muted"> {{author_num_follwers}} people is following him</p>
                 </div>
               </div>
               <div class="col-md-9">
@@ -135,13 +135,11 @@
 
                 <!-- Post Content
                 ================================================= -->
-                <h5>{{ cur_post.TITLE}}</h5>
+
                 <div class="post-content">
                   <!--Post Date-->
                   <div class="post-date">
 
-                    <h5>Me</h5>
-                    <p id ="post_date" class="text-grey">{{cur_post.PUBLISHED}} </p>
                   </div><!--Post Date End-->
                   {% if 'image/' in cur_post.CATEGORIES  %}
                   {% load image_filter %}
@@ -153,14 +151,25 @@
                     <div class="post-detail">
                       <div class="user-info">
                         <h5><a href="" class="profile-link" id="fullName">{{cur_post.ORIGIN}}</a> </h5>
-                        <p class="text-muted">Posted a photo</p>
+												<p class="text-grey post_date" >{{cur_post.PUBLISHED}} </p>
+
+                        <p class="text-muted">{{cur_post.CATEGORIES}}</p>
                       </div>
                       <hr class="solid">
                       <div class="post-text">
+												<p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">{{ cur_post.TITLE}}</p>
+
                         {% if 'text/' in cur_post.CATEGORIES  %}
                         <p> {{cur_post.CONTENT}} </p>
                         {% endif %}
-                        <div class="edit"><a>Edit</a>&emsp;<a href="/chat/home/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div>
+												
+												<form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
+                            {% csrf_token %}
+                            <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.CONTENT}}</textarea>
+                            <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
+                        </form>
+
+                        <div class="edit"><a href="/chat/home/edit{{ cur_post.ID }}/">Edit</a>&emsp;<a href="/chat/home/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div>
 
                       </div>
 
@@ -220,7 +229,7 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'script/home.js' %}"></script>
 
 
 

@@ -99,6 +99,10 @@ hr.solid {
 	background: #000;
   transition: all 1s;
 }
+
+a.disabled {
+  pointer-events: none;
+}
 /*==================================================
   Header
   ==================================================*/
@@ -446,6 +450,16 @@ Timeline
   margin: 0;
 }
 
+.post-content .post-container .post-title{
+  font-size: 60px;
+  color: #fff000;
+}
+
+.post-content .post-container .post-date{
+  padding-left: 30px;
+}
+
+
 .post-content .post-container .post-detail .post-text .edit{
   position: relative;
   text-align: right;
@@ -646,20 +660,12 @@ Timeline
   padding: 5px 0 0px 100px;
 }
 
-.create-post .tools ul.publishing-tools{
-  display: inline-block;
-  text-align:left;
-  margin: 0;
-  padding:5px 0;
+.create-post .tools  a{
+  color: #FFFFFF;
 }
 
-.create-post .tools ul.publishing-tools li a{
-  color: #6d6e71;
-  font-size: 18px;
-}
-
-.create-post .tools ul.publishing-tools li a:hover{
-  color: #27aae1;
+.create-post .tools  a:hover{
+  color: #152238;
 }
 
 

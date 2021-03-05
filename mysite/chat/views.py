@@ -253,3 +253,20 @@ def delete_in_feed(request, ID):
     response = redirect("/chat/feed/")
     setCookie(response, 'user', cur_user_name)
     return response
+
+def edit(request, ID):
+    print(request.POST)
+    new_description = request.POST.get("editText")
+    print(new_description)
+    # editPostDescription(ID, new_description)
+    response = redirect("/home/feed/")
+    return response
+
+def edit_in_feed(request, ID):
+    print(request.POST)
+    new_description = request.POST.get("editText")
+    print(new_description)
+    # editPostDescription(ID, new_description)
+    response = redirect("/chat/feed/")
+
+    return response
