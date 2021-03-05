@@ -217,19 +217,10 @@ def profile(request):
         cur_user_name = username
         return render(request, "chat/myProfile.html", context)
 
-def delete(request):
+def delete(request, ID):
     global cur_user_name
-
-    post_id = request.build_absolute_uri().split("/")[-1].split("delete")[-1]
+    # post_id = request.build_absolute_uri().split("/")[-2][6:]
     cur_author = getAuthor(cur_user_name)
-    deletePost(post_id)
-    mytimeline = getTimeline(cur_user_name)
+    deletePost(ID)
 
-    
-    dynamic_contain = {
-        'myName' : cur_author.DISPLAY_NAME,
-        'timeline': mytimeline
-
-    }
-    
-    return render(request, "chat/home.html", dynamic_contain) 
+    return redirect("/chat/home/") 
