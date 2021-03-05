@@ -26,7 +26,8 @@ def createActor(username, password):
     try:
         Actor.objects.create(USERNAME=username, PASSWORD=password)
         return True
-    except:
+    except BaseException as e:
+        print(e)
         return False
 
 def updateActor(username, password):
@@ -36,14 +37,16 @@ def updateActor(username, password):
         actor.PASSWORD = password
         actor.save()
         return True
-    except:
+    except BaseException as e:
+        print(e)
         return False
 
 def getActor(username):
     try:
         actor = Actor.objects.filter(USERNAME=username)[0]
         return actor
-    except:
+    except BaseException as e:
+        print(e)
         return None
 
 def validActor(username, password):
@@ -53,7 +56,8 @@ def validActor(username, password):
             return True
         else:
             return False
-    except:
+    except BaseException as e:
+        print(e)
         return False
 
 # add friend 
@@ -72,20 +76,23 @@ def getTimeline(username):
     try:
         author = Author.objects.filter(DISPLAY_NAME=username)[0]
         return author.TIMELINE.all()
-    except:
+    except BaseException as e:
+        print(e)
         return None
 
 def getAuthor(name):
     try:
         return Author.objects.filter(DISPLAY_NAME=name)[0]
-    except:
+    except BaseException as e:
+        print(e)
         return None
 
 def createAuthor(host, display_name, url, github):
     try:
         Author.objects.create(HOST=host, DISPLAY_NAME=display_name, URL=url, GITHUB=github)
         return True
-    except:
+    except BaseException as e:
+        print(e)
         return False
 
 def updateAuthor(username, host, url, github):
@@ -110,8 +117,8 @@ def deleteAuthor(username):
     try:
         Author.objects.filter(DISPLAY_NAME=username).delete()
         return True
-    except Exception as e:
-        # print(e, '-----------')
+    except BaseException as e:
+        print(e)
         return False
 
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
@@ -122,7 +129,8 @@ def createPost(title, source, origin, description, content_type, content, author
         author.TIMELINE.add(post)
         author.save()
         return True
-    except:
+    except BaseException as e:
+        print(e)
         return False
 
 def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
@@ -141,15 +149,16 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
         
         post.save()
         return True
-    except Exception as e:
-        print(e, '*********************')
+    except BaseException as e:
+        print(e)
         return False
 
 def deletePost(id):
     try:
         Post.objects.filter(ID=id).delete()
         return True
-    except:
+    except BaseException as e:
+        print(e)
         return False
 
 def createComment(author, comment, content_type):
@@ -157,8 +166,8 @@ def createComment(author, comment, content_type):
         commentObj = Comment.objects.create(AUTHOR=author, COMMENT=comment, CONTENT_TYPE=content_type)
         # print('comment:',commentObj)
         return True
-    except Exception as e:
-        # print(e, '*******')
+    except BaseException as e:
+        print(e)
         return False
 
 def updateComment(id):
@@ -169,14 +178,14 @@ def updateComment(id):
         # update field here
         comment.save()
         return True
-    except Exception as e:
-        # print(e, '*********************')
+    except BaseException as e:
+        print(e)
         return False
 
 def deleteComment(id):
     try:
         Comment.objects.filter(ID=id).delete()
         return True
-    except Exception as e:
-        # print(e, '*********************')
+    except BaseException as e:
+        print(e)
         return False
