@@ -1,7 +1,7 @@
 from django import forms
 
 # creating a form
-class InputForm(forms.Form):
+class LoginForm(forms.Form):
 
     # first_name = forms.CharField(initial='Your first name', max_length = 200)
     Username = forms.CharField(max_length = 200)

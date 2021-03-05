@@ -2,9 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Author
 from .models import Post
-from .form import InputForm
 
-from .form import InputForm, CreateAuthorForm
+from .form import *
 from .api import *
 
 from django.core import serializers
@@ -22,21 +21,23 @@ Create your views here.
 cur_user_name = "teemo" 
 
 
-def home(request):
+def login(request):
+    global cur_user_name
     context = {}
-    context['form']= InputForm()
+    context['form']= LoginForm()
     if request.method == "GET":
-        return render(request, "chat/home.html", context)
+        return render(request, "chat/login.html", context)
     elif request.method == "POST":
-        username = request.POST.get("User_name")
+        username = request.POST.get("Username")
         password = request.POST.get("Password")
+        print(username, password)
         valid = validActor(username, password)
         if valid:
             cur_user_name = username
-            return redirect("/chat/profile")
+            return redirect("/chat/home")
         else:
             messages.error(request, "Invalid user name or password!")
-            return render(request, 'chat/home.html', context)
+            return render(request, 'chat/login.html', context)
    
 # # Create your views here.
 # def home_view(request):
@@ -67,15 +68,12 @@ def signup(request):
         #   messages.error(request, 'User name exists!')
         #   return render(request, "chat/signup.html", context)
 
-def my_timeline(request):
-
-
+def home(request):
+    global cur_user_name
     cur_author = getAuthor(cur_user_name)
     # a list of post
     # mytimeline = getTimeline(cur_user_name)
     mytimeline = getTimeline(cur_user_name)
-
-
     dynamic_contain = {
 
         'fullName': cur_author.DISPLAY_NAME,
@@ -86,32 +84,25 @@ def my_timeline(request):
     print (cur_author.DISPLAY_NAME)
     print (cur_author)
     print (cur_author.TIMELINE)
-
     print("mytimeline" , mytimeline)
     # query to database
     # timeline = 
 
     if request.method == "GET":
-
-
-
         # print ("Request URL Path = [" + request.path() + "], ")
-
         # getTimeline()
-        return render(request, "chat/timeline1.html", dynamic_contain)
-
+        return render(request, "chat/home.html", dynamic_contain)
     elif request.method == "POST":
-
         # change later
-        return render(request, "chat/timeline1.html", dynamic_contain)
+        return render(request, "chat/home.html", dynamic_contain)
 
 
 
-def others_timeline(request):
+def friend_profile(request):
     timeline = {}
     # query to database
     # timeline = 
-    return render(request, "chat/timeline2.html", timeline)
+    return render(request, "chat/friendProfile.html", timeline)
 
 def make_post(request):
     # post = {}
