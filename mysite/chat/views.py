@@ -21,10 +21,10 @@ views.py receive request and create repose to client,
 Create your views here.
 """
 
-# default value
-# cur_user_name = "teemo"
 
-
+"""
+Generate response at login page  
+"""
 def login(request):
     cur_user_name = request.COOKIES.get('user')
     context = {}
@@ -46,12 +46,9 @@ def login(request):
             setCookie(response, 'user', cur_user_name)
             return response
 
-
-# # Create your views here.
-# def home_view(request):
-#     context ={}
-#     context['form'] = InputForm()
-#     return render(request, "chat/signup.html", context)
+"""
+Generate response at signup page  
+"""
 
 def signup(request):
     cur_user_name = request.COOKIES.get('user')
@@ -68,6 +65,7 @@ def signup(request):
         password = request.POST.get("Password")
         retype_password = request.POST.get("Retype_password")
         host = request.POST.get("Host")
+        # first method to handle user name exist, can be optimize later
         if getAuthor(username) != None:
             messages.error(request, 'User name exists!')
             return response
@@ -80,28 +78,24 @@ def signup(request):
             response = redirect("/chat/home/")
             setCookie(response, 'user', cur_user_name)
             return response
+        # second method to handle user name exist, can be optimize later
         # if createAuthor("this", username, url, github):
         #   return redirect("/chat/profile/")
         # else:
         #   messages.error(request, 'User name exists!')
         #   return render(request, "chat/signup.html", context)
 
+
+"""
+Generate response at home page  
+"""
 def home(request):
     cur_user_name = request.COOKIES.get('user')
     cur_author = getAuthor(cur_user_name)
     # a list of post
-    # mytimeline = getTimeline(cur_user_name)
     mytimeline = getTimeline(cur_user_name)
 
-    # print("??",cur_author.FOLLOWERS)
-
-    # follwers = cur_author.FOLLOWERS
-    author_num_follwers = 10
-    # if  (follwers == None):
-    #     author_num_follwers = 0
-    #     print("haha")
-    # else:
-    #     author_num_follwers = len(follwers)
+    author_num_follwers = len(cur_author.FOLLOWERS.all())
 
     dynamic_contain = {
         'myName' : cur_author.DISPLAY_NAME,
@@ -109,16 +103,15 @@ def home(request):
         'author_num_follwers': author_num_follwers
 
     }
+
+
     response = render(request, "chat/home.html", dynamic_contain)
     setCookie(response, 'user', cur_user_name)
 
     # query to database
-    # timeline =
 
     if request.method == "GET":
 
-        # print ("Request URL Path = [" + request.path() + "], ")
-        # getTimeline()
         return response
     elif request.method == "POST":
 
@@ -126,34 +119,39 @@ def home(request):
         return response
 
 
-
+"""
+Generate response at friend_profile page , Now is deafault friend Zoe, need to be handled later 
+"""
 def friend_profile(request):
     cur_user_name = request.COOKIES.get('user')
     timeline = {}
-    # query to database
 
-    # timeline =
     response = render(request, "chat/friendProfile.html", timeline)
     setCookie(response, 'user', cur_user_name)
     return response
 
 
 
+"""
+Generate response at feed page ,
+"""
 def make_post(request):
     cur_user_name = request.COOKIES.get('user')
     """
     so far, only support text-only post and post with img and caption
-
     Prob: 1. createPost return error!
     """
     cur_author = getAuthor(cur_user_name)
-    # ??
-    # cur_user_name = cur_author.DISPLAY_NAME # or we can use global
-    # testcase
+    mytimeline = getTimeline(cur_user_name)
+    author_num_follwers = 10
+
     dynamic_contain = {
         'fullName':'Ritsu Onodera',
+        'author_num_follwers': author_num_follwers,
+        'test_name': cur_user_name,
+        'myName' : cur_author.DISPLAY_NAME,
+        'timeline': mytimeline
 
-        'test_name': cur_user_name
     }
 
     # Get the current pages' author
@@ -186,6 +184,9 @@ def make_post(request):
         createFlag = createPost(title, source, origin, description, content_type, content, author, categories, visibility)
         if createFlag:
             print("haha, successful create post, info: ", description)
+            response = redirect("/chat/home/")
+            setCookie(response, 'user', cur_user_name)
+            return response
         else:
             print("sever feels sad ", description)
 
@@ -194,9 +195,10 @@ def make_post(request):
         return response
 
 
-    # # get post
-    # return render(request, "chat/feed.html", dynamic_contain)
 
+"""
+Generate response at my profile page , 
+"""
 def profile(request):
     cur_user_name = request.COOKIES.get('user')
     author = getAuthor(cur_user_name)
@@ -229,11 +231,28 @@ def profile(request):
         setCookie(response, 'user', cur_user_name)
         return response
 
+
+"""
+Generate response ,when delete user at home  page , 
+"""
 def delete(request, ID):
     cur_user_name = request.COOKIES.get('user')
     # post_id = request.build_absolute_uri().split("/")[-2][6:]
     cur_author = getAuthor(cur_user_name)
     deletePost(ID)
     response = redirect("/chat/home/") 
+    setCookie(response, 'user', cur_user_name)
+    return response
+
+
+"""
+Generate response ,when delete user at feed page , 
+"""
+def delete_in_feed(request, ID):
+    cur_user_name = request.COOKIES.get('user')
+    # post_id = request.build_absolute_uri().split("/")[-2][6:]
+    cur_author = getAuthor(cur_user_name)
+    deletePost(ID)
+    response = redirect("/chat/feed/") 
     setCookie(response, 'user', cur_user_name)
     return response

@@ -36,7 +36,7 @@
           <!-- Brand and toggle get grouped for better mobile display -->
           <!-- left most logo -->
           <div class="navbar-header">
-            <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
+            <a class="navbar-brand" href=""><img src="" alt="chatByte" width="80" height="30" /></a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -107,6 +107,13 @@
 
             <!-- Post Create Box
             ================================================= -->
+            {% if messages %}
+							<ul>
+								{% for message in messages %}
+	                                 <li style="position: relative; right: -25px; color: red;">{{ message }}</li>
+	                            {% endfor %}
+                            </ul>
+						{% endif %}
             <div class="create-post">
               <div class="row">
                   <div class="col-md-7">
@@ -154,16 +161,92 @@
                         </ul>
                         &ensp; -->
                         <!-- <button class="btn btn-primary" type="submit">Publish</button> -->
-                        <button class="btn btn-primary" id="publishBtn"><a href="/chat/home/">Publish</button>
+                        <button class="btn btn-primary" id="publishBtn"><a href="../feed">Publish </a></button> 
 
                       </div>
                   </div>
               </div>
             </div><!-- Post Create Box End-->
 
+
+
+<!--             post content mine 
+=====================================================-->
+          {% for cur_post in timeline reversed %}
+
+                <!-- Post Content
+                ================================================= -->
+
+                <div class="post-content">
+                  <!--Post Date-->
+                  <div class="post-date">
+
+                    <h5>{{ cur_post.TITLE}}</h5> 
+                    <p id ="post_date" class="text-grey">{{cur_post.PUBLISHED}} </p>
+                  </div><!--Post Date End-->
+                  {% if 'image/' in cur_post.CATEGORIES  %}
+                  {% load image_filter %}
+                  <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.CONTENT | bin_2_img }}"/>
+                  {% endif %}
+                  <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
+                  <div class="post-container">
+                    <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
+                    <div class="post-detail">
+                      <div class="user-info">
+                        <h5><a href="" class="profile-link" id="fullName">{{cur_post.ORIGIN}}</a> </h5>
+                        <p class="text-muted">{{cur_post.CATEGORIES}}</p>
+                      </div>
+                      <hr class="solid">
+                      <div class="post-text">
+                        {% if 'text/' in cur_post.CATEGORIES  %}
+                        <p> {{cur_post.CONTENT}} </p>
+                        {% endif %}
+                        <div class="edit"><a>Edit</a>&emsp;<a href="/chat/feed/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div>
+
+                      </div>
+
+                      <div class="reaction-img">
+                        <a class="btn text-red"><i class="icon ion-ios-heart"></i> 13</a>
+                        <a class="btn text-green"><i class="icon ion-share"></i></a>
+                      </div>
+
+                      <hr class="solid">
+<!--            show nested comment  -->        
+            {% for comment in cur_post.COMMENTS.all %}
+                      <div class="post-comment">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
+                        <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
+                      </div>
+                      {% endfor %}
+<!--                      end -->
+
+<!--                      <div class="post-comment">
+                        <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
+                        <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
+                      </div> -->
+
+
+
+                      <div class="post-comment">
+                        <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
+                        <a href="" class="profile-link">{{myName}} </a>
+                        <input type="text" class="form-control" placeholder="Post a comment">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {% endfor %}
+
+
+
+
+
+
+
             <!-- Post Content
             ================================================= -->
-            <div class="post-content">
+<!--             <div class="post-content">
 
               <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" />
               <div class="post-container">
@@ -204,7 +287,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <!-- Post Content
             ================================================= -->

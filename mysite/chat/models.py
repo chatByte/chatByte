@@ -42,7 +42,7 @@ class Post(models.Model):
     COMMENTS_NO = models.IntegerField()
     PAGE_SIZE = models.IntegerField()
     COMMENTS_FIRST_PAGE = models.CharField(max_length=200)
-    COMMENTS = models.ForeignKey('Comment', on_delete=models.DO_NOTHING, blank=True)
+    COMMENTS = models.ManyToManyField('Comment', blank=True)
     PUBLISHED = models.DateTimeField(default=django.utils.timezone.now)
 
     VISIBILITY = models.CharField(max_length=50)

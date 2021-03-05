@@ -48,7 +48,6 @@ class PostTestCase(TestCase):
         Post.objects.create(ID=1)
         self.author = Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
 
-
     def test_createPost(self):
         self.assertEqual(createPost('test_title','test','test','abc','text','content', self.author,'',''), True)
 
@@ -73,4 +72,3 @@ class CommentTestCase(TestCase):
     def test_deleteComment(self):
         new_comment = Comment.objects.create(AUTHOR=self.author, COMMENT='delete comment test', CONTENT_TYPE='text')
         self.assertEqual(deleteComment(new_comment.ID), True)
-
