@@ -157,4 +157,4 @@ def profile(request):
 
 
     # query to database
-    return render(request, "chat/profile.html", author)
+    return render(request, "chat/myProfile.html", author)
