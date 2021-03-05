@@ -11,7 +11,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 
 from django.http import JsonResponse
-from django.forms.models import model_to_dict
 
 from .form import *
 from .api import *
@@ -35,17 +34,16 @@ def login(request):
     elif request.method == "POST":
         username = request.POST.get("Username")
         password = request.POST.get("Password")
-        print(username, password)
         valid = validActor(username, password)
         if valid:
             cur_user_name = username
             response = redirect("/chat/home")
-            response.set_cookie(key='user', value=cur_user_name)
+            setCookie(response, 'user', cur_user_name)
             return response
         else:
             messages.error(request, "Invalid user name or password!")
             response = render(request, 'chat/login.html', context)
-            response.set_cookie(key='user', value=cur_user_name)
+            setCookie(response, 'user', cur_user_name)
             return response
 
 
@@ -60,7 +58,7 @@ def signup(request):
     context = {}
     context['form'] = CreateAuthorForm()
     response = render(request, "chat/signup.html", context)
-    response.set_cookie(key='user', value=cur_user_name)
+    setCookie(response, 'user', cur_user_name)
     if request.method == "GET":
         return response
     elif request.method == "POST":
@@ -77,11 +75,10 @@ def signup(request):
             if retype_password != password:
                 messages.error(request, 'Password does not match!')
                 return response
-            print(createActor(username, password))
             createAuthor(host, username, url, github)
             cur_user_name = username
             response = redirect("/chat/home/")
-            response.set_cookie(key='user', value=cur_user_name)
+            setCookie(response, 'user', cur_user_name)
             return response
         # if createAuthor("this", username, url, github):
         #   return redirect("/chat/profile/")
@@ -95,13 +92,25 @@ def home(request):
     # a list of post
     # mytimeline = getTimeline(cur_user_name)
     mytimeline = getTimeline(cur_user_name)
+
+    # print("??",cur_author.FOLLOWERS)
+
+    # follwers = cur_author.FOLLOWERS
+    author_num_follwers = 10
+    # if  (follwers == None):
+    #     author_num_follwers = 0
+    #     print("haha")
+    # else:
+    #     author_num_follwers = len(follwers)
+
     dynamic_contain = {
         'myName' : cur_author.DISPLAY_NAME,
-        'timeline': mytimeline
+        'timeline': mytimeline,
+        'author_num_follwers': author_num_follwers
 
     }
     response = render(request, "chat/home.html", dynamic_contain)
-    response.set_cookie(key='user', value=cur_user_name)
+    setCookie(response, 'user', cur_user_name)
 
     # query to database
     # timeline =
@@ -125,7 +134,7 @@ def friend_profile(request):
 
     # timeline =
     response = render(request, "chat/friendProfile.html", timeline)
-    response.set_cookie(key='user', value=cur_user_name)
+    setCookie(response, 'user', cur_user_name)
     return response
 
 
@@ -151,15 +160,12 @@ def make_post(request):
 
     if request.method == "GET":
         response = render(request, "chat/feed.html", dynamic_contain)
-        response.set_cookie(key='user', value=cur_user_name)
+        setCookie(response, 'user', cur_user_name)
         return response
 
     elif request.method == "POST":
 
         request_post = request.POST
-        print(request.POST)
-        print(request.FILES)
-
         title = request_post.get("title", "")
         source = cur_user_name # Who share it to me
         origin = cur_user_name # who origin create
@@ -169,14 +175,14 @@ def make_post(request):
         author = cur_author
         categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
         visibility = request_post.get("visibility", "")
+
         if len(f) > 0:
             categories = "image/" + os.path.splitext(f.name)[-1][1:]
-            print("category: ", categories)
             with f.open("rb") as image_file:
                 content = base64.b64encode(image_file.read())
         else:
             content = description
-        print(author)
+
         createFlag = createPost(title, source, origin, description, content_type, content, author, categories, visibility)
         if createFlag:
             print("haha, successful create post, info: ", description)
@@ -184,7 +190,7 @@ def make_post(request):
             print("sever feels sad ", description)
 
         response = render(request, "chat/feed.html", dynamic_contain)
-        response.set_cookie(key='user', value=cur_user_name)
+        setCookie(response, 'user', cur_user_name)
         return response
 
 
@@ -195,8 +201,6 @@ def profile(request):
     cur_user_name = request.COOKIES.get('user')
     author = getAuthor(cur_user_name)
     actor = getActor(cur_user_name)
-    print(author)
-    # context = model_to_dict(author)
     form = ProfileForm()
     form.fields['User_name'].initial = author.DISPLAY_NAME
     form.fields['Host'].initial = author.HOST
@@ -205,11 +209,12 @@ def profile(request):
     form.fields['Password'].initial = actor.PASSWORD
     context = {}
     context['form']= form
-    print(context)
+    context['myName']= author.DISPLAY_NAME
+
     # query to database
     if request.method == "GET":
         response = render(request, "chat/myProfile.html", context)
-        response.set_cookie(key='user', value=cur_user_name)
+        setCookie(response, 'user', cur_user_name)
         return response
     elif request.method == "POST":
         url = request.POST.get("Url")
@@ -217,9 +222,18 @@ def profile(request):
         github = request.POST.get("GitHub")
         password = request.POST.get("Password")
         host = request.POST.get("Host")
-        print("update author: ", updateAuthor(username, host, url, github))
-        print("update actor: ", updateActor(username, password))
+        updateAuthor(username, host, url, github)
+        updateActor(username, password)
         cur_user_name = username
         response = render(request, "chat/myProfile.html", context)
-        response.set_cookie(key='user', value=cur_user_name)
+        setCookie(response, 'user', cur_user_name)
         return response
+
+def delete(request, ID):
+    cur_user_name = request.COOKIES.get('user')
+    # post_id = request.build_absolute_uri().split("/")[-2][6:]
+    cur_author = getAuthor(cur_user_name)
+    deletePost(ID)
+    response = redirect("/chat/home/") 
+    setCookie(response, 'user', cur_user_name)
+    return response

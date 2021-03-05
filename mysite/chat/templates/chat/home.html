@@ -130,12 +130,12 @@
 
 
 				<!-- 							?? -->
-  	    		<h5>below is my post? </h5> 
+
               	{% for cur_post in timeline %}
 
 	              <!-- Post Content
 	              ================================================= -->
-
+                <h5>{{ cur_post.TITLE}}</h5> 
 	              <div class="post-content">
 	                <!--Post Date-->
 	                <div class="post-date">
@@ -155,7 +155,7 @@
 											<hr class="solid">
 	                    <div class="post-text">
 	                      <p> {{cur_post.CONTENT}} </p>
-												<div class="edit"><a>Edit</a>&emsp;<a href="#" class="text-red">Delete</a></div>
+												<div class="edit"><a>Edit</a>&emsp;<a href="/chat/home/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div>
 
 	                    </div>
 
