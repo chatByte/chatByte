@@ -118,9 +118,11 @@
                         <!-- {{form.title}}
                         {{form.description}} -->
 
-                        <textarea  id="title" cols="35" rows="1" class="form-title-control" placeholder="Title"></textarea>
-                        <textarea  id="description" cols="35" rows="4" class="form-control" placeholder="Description: Anything exciting?"></textarea>
-                        <input type='file' id='imageFile' accept="image/*">
+                        <textarea  id="title" cols="45" rows="1" class="form-title-control" placeholder="Title"></textarea>
+                        <!-- <span class="zoom"><img id="uploadImg"></span> -->
+                        <img id="uploadImg">
+                        <textarea  id="description" cols="45" rows="4" class="form-control" placeholder="Description: Anything exciting?"></textarea>
+                        <input type='file' id='imageFile' accept="image/*" onchange="readImg(this);">
 
                           <div class="dropdown">
                             <div class="publicity"><a id="visibility" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-users"></i><a></div>

@@ -60,6 +60,7 @@ def getTimeline(username):
 
 def getAuthor(name):
     try:
+        print(Author.objects.filter(DISPLAY_NAME=name))
         return Author.objects.filter(DISPLAY_NAME=name)[0]
     except:
         return None
@@ -71,7 +72,7 @@ def createAuthor(host, display_name, url, github):
     except:
         return False
 
-def updateAuthor(username, host, url, github, password):
+def updateAuthor(username, host, url, github):
     #TODO
     try:
         author = Author.objects.filter(DISPLAY_NAME=username)[0]
@@ -80,16 +81,15 @@ def updateAuthor(username, host, url, github, password):
         author.HOST = host
         author.URL = url
         author.GITHUB = github
-        author.PASSWORD = password
         author.save()
         return True
     except BaseException as e:
         print(e)
         return False
 
-def deleteAuthor(id):
+def deleteAuthor(username):
     try:
-        Author.objects.filter(ID=id).delete()
+        Author.objects.filter(USERNAME=username).delete()
         return True
     except:
         return False

@@ -594,6 +594,10 @@ Timeline
   min-height: 10px;
 }
 
+.create-post .form-group #uploadImg{
+  margin-top: 10px;
+}
+
 .create-post .form-group input{
   display: none;
   margin-top: 10px;
@@ -639,7 +643,7 @@ Timeline
 }
 
 .create-post .tools{
-  padding: 8px 0 0px;
+  padding: 5px 0 0px 100px;
 }
 
 .create-post .tools ul.publishing-tools{
@@ -695,8 +699,18 @@ Timeline
   bottom: -10px;
 }
 
+/*=======================================
+  Img Zoom in effect
+==========================================*/
+.zoom {
+      transition: transform .2s; /* Animation */
+}
 
-
+.zoom:hover {
+  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  position:absolute;
+  right:0;
+}
 
 /*==================================================
   Preloader Animation CSS
