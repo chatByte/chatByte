@@ -11,7 +11,8 @@ class LoginForm(forms.Form):
     Password = forms.CharField(widget = forms.PasswordInput()) 
 
 class CreateAuthorForm(forms.Form):
-	User_name = forms.CharField(max_length = 200)
-	Github = forms.CharField(max_length = 200)
-	Url = forms.CharField(max_length = 200)
-	Password = forms.CharField(widget = forms.PasswordInput())
+    User_name = forms.CharField(max_length=200)
+    Password = forms.CharField(max_length=200)
+    Host = forms.CharField(max_length=200)
+    Url = forms.CharField(max_length=200)
+    GitHub = forms.CharField(max_length=200)

@@ -11,6 +11,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
 
 """
 views.py receive request and create repose to client, 
@@ -54,14 +55,16 @@ def signup(request):
     elif request.method == "POST":
         url = request.POST.get("Url")
         username = request.POST.get("User_name")
-        github = request.POST.get("Github")
+        github = request.POST.get("GitHub")
         password = request.POST.get("Password")
+        host = request.POST.get("Host")
         if getAuthor(username) != None:
+            print(getAuthor(username))
             messages.error(request, 'User name exists!')
             return render(request, "chat/signup.html", context)
         else:
             print(createActor(username, password))
-            createAuthor("this", username, url, github)
+            createAuthor(host, username, url, github)
             cur_user_name = username
             return redirect("/chat/home/")
         # if createAuthor("this", username, url, github):
@@ -153,8 +156,30 @@ def make_post(request):
     # return render(request, "chat/feed.html", dynamic_contain)
 
 def profile(request):
-    author = {}
-
-
+    global cur_user_name
+    author = getAuthor(cur_user_name)
+    actor = getActor(cur_user_name)
+    print(author)
+    # context = model_to_dict(author)
+    form = CreateAuthorForm()
+    form.fields['User_name'].initial = author.DISPLAY_NAME
+    form.fields['Host'].initial = author.HOST
+    form.fields['Url'].initial = author.URL
+    form.fields['GitHub'].initial = author.GITHUB
+    form.fields['Password'].initial = actor.PASSWORD
+    context = {}
+    context['form']= form
+    print(context)
     # query to database
-    return render(request, "chat/profile.html", author)
+    if request.method == "GET":
+        return render(request, "chat/myProfile.html", context)
+    elif request.method == "POST":
+        url = request.POST.get("Url")
+        username = request.POST.get("User_name")
+        github = request.POST.get("GitHub")
+        password = request.POST.get("Password")
+        host = request.POST.get("Host")
+        print("update author: ", updateAuthor(username, host, url, github, password))
+        print("update actor: ", updateActor(username, password))
+        cur_user_name = username
+        return render(request, "chat/myProfile.html", context)
