@@ -22,11 +22,14 @@ def validActor(username, password):
 # add friend 
 def addFriend(name, friend_name):
     try:
-        author = Author.objects.filter(DISPLAY_NAME=name)[0]
-        friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
+        author = Author.objects.filter(DISPLAY_NAME=name)
+        friend = Author.objects.filter(DISPLAY_NAME=friend_name)
+        print(author)
+        print(friend)
         author.FRIENDS.add(friend)
         return True
-    except:
+    except BaseException as e:
+        print(e)
         return False
 
 def getTimeline(username):
