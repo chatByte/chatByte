@@ -2,6 +2,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>My Home Feed</title>
 
     <!-- Stylesheets
@@ -22,6 +23,7 @@
         /* background: linear-gradient(to right, rgba(192, 192, 170, 0.8), rgba(28, 239, 255, 0.5)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */ */
       }
     </style>
+
   </head>
   <body>
 
@@ -107,39 +109,41 @@
             ================================================= -->
             <div class="create-post">
               <div class="row">
-                <form method="post" id="testformid">
-                  {% csrf_token %}
                   <div class="col-md-7">
-                    <!-- <h3> test, {{ test_name }} </h3> -->
                     <div class="form-group">
                       <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="profile-photo-lg" />
                       <div class="form-group-col">
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        <!-- <textarea  name="post_title" id="title" cols="35" rows="1" class="form-title-control" placeholder="Title"></textarea>
-                        <textarea  name="post_content" id="description" cols="35" rows="4" class="form-control" placeholder="Description: Anything exciting?"></textarea> -->
+                        <!-- {{ form.as_p }} -->
+                        <!-- {{form.title}}
+                        {{form.description}} -->
+
+                        <textarea  id="title" cols="35" rows="1" class="form-title-control" placeholder="Title"></textarea>
+                        <textarea  id="description" cols="35" rows="4" class="form-control" placeholder="Description: Anything exciting?"></textarea>
+                        <input type='file' id='imageFile' accept="image/*">
+
                           <div class="dropdown">
-                            <div class="publicity"><a href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-users"></i><a></div>
+                            <div class="publicity"><a id="visibility" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-users"></i><a></div>
                               <div class="dropdown-content">
-                                <a href="#" ><i class="fas fa-users"></i>&ensp;Allow everyone to see the post</a>
-                                <a href="#"><i class="fas fa-user-friends"></i>&ensp;Allow only friends to see the post</a>
-                                <a href="#"><i class="fas fa-user"></i>&ensp;Post only to myself</a>
+                                <a href="#" id="public"><i class="fas fa-users"></i>&ensp;<span>Allow everyone to see the post</span></a>
+                                <a href="#" id="friend"><i class="fas fa-user-friends"></i>&ensp;<span>Allow only friends to see the post</span></a>
+                                <a href="#" id="private"><i class="fas fa-user"></i>&ensp;<span>Post only to myself</span></a>
                               </div>
                             </div>
                             &thinsp;
                             <div class="dropdown">
-                               <div class="publicity"><a href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-edit"></i><a></div>
+                               <div class="publicity"><a id="contentType" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-edit"></i><a></div>
                                 <div class="dropdown-content">
-                                  <a href="#" ><i class="fas fa-edit"></i>&ensp;This is simply a text post</a>
-                                  <a href="#"><i class="fab fa-github"></i>&ensp;This is a Github stream</a>
-                                  <a href="#"><i class="ion-images"></i>&ensp;This is an image post</a>
-                                  <a href="#"><i class="far fa-file"></i>&ensp;This is a Common Markdown post</a>
+                                  <a href="#" id="text"><i class="fas fa-edit"></i>&ensp;<span>This is simply a text post</span></a>
+                                  <a href="#" id="github"><i class="fab fa-github"></i>&ensp;<span>This is a Github stream</span></a>
+                                  <a href="#" id="image"><i class="ion-images"></i>&ensp;<span>This is an image post</span></a>
+                                  <a href="#" id="markdown"><i class="far fa-file"></i>&ensp;<span>This is a Common Markdown post</span></a>
                                 </div>
                             </div>
                       </div>
                     </div>
-
                   </div>
+
                   <div class="col-md-5">
                       <div class="tools">
                         <!-- <ul class="publishing-tools list-inline">
@@ -147,10 +151,11 @@
                           <li><a href="#"><i class="ion-images"></i></a></li>
                         </ul>
                         &ensp; -->
-                        <button class="btn btn-primary" type="submit">Publish</button>
+                        <!-- <button class="btn btn-primary" type="submit">Publish</button> -->
+                        <button class="btn btn-primary" id="publishBtn">Publish</button>
+
                       </div>
                   </div>
-                </form>
               </div>
             </div><!-- Post Create Box End-->
 
@@ -260,7 +265,7 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'script/feed.js' %}"></script>
     <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
   </body>
 </html>

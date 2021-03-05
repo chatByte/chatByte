@@ -594,6 +594,12 @@ Timeline
   min-height: 10px;
 }
 
+.create-post .form-group input{
+  display: none;
+  margin-top: 10px;
+}
+
+
 
 .create-post .form-group .form-group-col .dropdown{
   position: none;
