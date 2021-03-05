@@ -11,6 +11,7 @@ from django.core import serializers
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 
+from django.http import JsonResponse
 
 """
 views.py receive request and create repose to client,
@@ -18,7 +19,7 @@ Create your views here.
 """
 
 # default value
-cur_user_name = "Ritsu Onodera"
+cur_user_name = "teemo"
 
 
 def home(request):
@@ -29,7 +30,7 @@ def home(request):
     elif request.method == "POST":
         username = request.POST.get("User_name")
         password = request.POST.get("Password")
-        valid = validUser(username, password)
+        valid = validActor(username, password)
         if valid:
             cur_user_name = username
             return redirect("/chat/profile")
@@ -57,7 +58,7 @@ def signup(request):
             messages.error(request, 'User name exists!')
             return render(request, "chat/signup.html", context)
         else:
-            print(createUser(username, password))
+            print(createActor(username, password))
             createAuthor("this", username, url, github)
             return redirect("/chat/profile/")
         # if createAuthor("this", username, url, github):
@@ -68,22 +69,43 @@ def signup(request):
 
 def my_timeline(request):
 
-    # hard coding ??
+
     cur_author = getAuthor(cur_user_name)
+    # a list of post
+    # mytimeline = getTimeline(cur_user_name)
+    mytimeline = getTimeline(cur_user_name)
 
 
     dynamic_contain = {
 
-        'fullName': cur_author.DISPLAY_NAME
+        'fullName': cur_author.DISPLAY_NAME,
+        'timeline': mytimeline
 
     }
+    print("_____")
+    print (cur_author.DISPLAY_NAME)
+    print (cur_author)
+    print (cur_author.TIMELINE)
 
+    print("mytimeline" , mytimeline)
     # query to database
     # timeline =
 
+    if request.method == "GET":
 
-    # getTimeline()
-    return render(request, "chat/timeline1.html", dynamic_contain)
+
+
+        # print ("Request URL Path = [" + request.path() + "], ")
+
+        # getTimeline()
+        return render(request, "chat/timeline1.html", dynamic_contain)
+
+    elif request.method == "POST":
+
+        # change later
+        return render(request, "chat/timeline1.html", dynamic_contain)
+
+
 
 def others_timeline(request):
     timeline = {}
@@ -125,8 +147,8 @@ def make_post(request):
         content_type = "Latin"
         content = info
         author = cur_author
-        categories = "text"
-        visibility = ""
+        categories = "text" # web, tutorial, can be delete  # ?? dropdown
+        visibility = "" # direct get id name form web
 
         createFlag = createPost(title, source, origin, description, content_type, content, author, categories, visibility)
         if createFlag:
@@ -144,5 +166,7 @@ def make_post(request):
 
 def profile(request):
     author = {}
+
+
     # query to database
     return render(request, "chat/profile.html", author)

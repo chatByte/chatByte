@@ -1,18 +1,18 @@
-from .models import Author, Post, Comment, User
+from .models import Author, Post, Comment, Actor
 
 
 # connec to db , validate user
-def createUser(username, password):
+def createActor(username, password):
     try:
-        User.objects.create(USERNAME=username, PASSWORD=password)
+        Actor.objects.create(USERNAME=username, PASSWORD=password)
         return True
     except:
         return False
 
-def validUser(username, password):
+def validActor(username, password):
     try:
-        user = User.objects.filter(USERNAME=username)
-        if password == user.PASSWORD:
+        actor = Actor.objects.filter(USERNAME=username)[0]
+        if password == actor.PASSWORD:
             return True
         else:
             return False
@@ -29,10 +29,12 @@ def addFriend(name, friend_name):
     except:
         return False
 
-def getTimeline(id):
+def getTimeline(username):
+    # need to change to user name
     try:
-        author = Author.objects.filter(ID=id)
-        return author.TIMELINE
+        author = Author.objects.filter(DISPLAY_NAME=username)[0]
+
+        return author.TIMELINE.all()
     except:
         return None
 
@@ -69,8 +71,10 @@ def deleteAuthor(id):
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
     #TODO keep track of COMMENTS_NO and PAGE_SIZE, COMMENTS_FIRST_PAGE
     try:
-        Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
+        post = Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
             , AUTHOR=author, CATEGORIES=categories, COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY=visibility)
+        author.TIMELINE.add(post)
+        author.save()
         return True
     except:
         return False

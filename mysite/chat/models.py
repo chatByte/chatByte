@@ -3,7 +3,7 @@ import uuid
 import django
 
 # Create your models here.
-class User(models.Model):
+class Actor(models.Model):
     # for authorization only
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     USERNAME = models.CharField(max_length=50, unique=True)

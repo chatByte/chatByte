@@ -1,16 +1,16 @@
 from django.test import TestCase
  
-from chat.models import Author, Post, Comment
-from chat.api import validUser
+from chat.models import Author, Post, Comment, Actor
+from chat.api import validActor
 # Create your tests here.
 class UserTestCase(TestCase):
     def setUp(self):
         #TODO
-        # Author.objects.create(NAME='test', PASSWORD='123')
+        Actor.objects.create(ID='1', USERNAME='test', PASSWORD='123')
         pass
 
-    def test_validUser(self):
-        self.assertEqual(validUser('test', '123'), False)
+    def test_validActor(self):
+        self.assertEqual(validActor('test', '123'), True)
 
 class AuthorTestCase(TestCase):
     def setUp(self):

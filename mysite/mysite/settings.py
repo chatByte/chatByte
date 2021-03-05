@@ -138,6 +138,6 @@ STATICFILES_DIRS = (
 DATABASES = {
        'default': {
            'ENGINE': 'djongo',
-           'NAME': 'yooooo',
+           'NAME': 'mongoDB',
        }
    }

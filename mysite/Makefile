@@ -3,3 +3,6 @@ run:
 
 test:
 	python manage.py test
+
+user:
+	python manage.py createsuperuser
