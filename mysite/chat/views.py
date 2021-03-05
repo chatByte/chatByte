@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
 
-from .form import LoginForm, CreateAuthorForm, CreatePostForm
+from .form import *
 
 from .api import *
 
@@ -65,12 +65,15 @@ def signup(request):
         username = request.POST.get("User_name")
         github = request.POST.get("GitHub")
         password = request.POST.get("Password")
+        retype_password = request.POST.get("Retype_password")
         host = request.POST.get("Host")
         if getAuthor(username) != None:
-            print(getAuthor(username))
             messages.error(request, 'User name exists!')
             return render(request, "chat/signup.html", context)
         else:
+            if retype_password != password:
+                messages.error(request, 'Password does not match!')
+                return render(request, "chat/signup.html", context)
             print(createActor(username, password))
             createAuthor(host, username, url, github)
             cur_user_name = username
@@ -174,7 +177,7 @@ def profile(request):
     actor = getActor(cur_user_name)
     print(author)
     # context = model_to_dict(author)
-    form = CreateAuthorForm()
+    form = ProfileForm()
     form.fields['User_name'].initial = author.DISPLAY_NAME
     form.fields['Host'].initial = author.HOST
     form.fields['Url'].initial = author.URL
