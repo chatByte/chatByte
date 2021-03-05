@@ -156,6 +156,18 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
         print(e)
         return False
 
+def editPostDescription(id, description):
+    try:
+        post = Post.objects.filter(ID=id)[0]
+        post.DESCRIPTION = description
+        if 'text/' in post.CATEGORIES:
+            post.CONTENT = description
+        post.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
 def deletePost(id):
     try:
         Post.objects.filter(ID=id).delete()
