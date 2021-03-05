@@ -3,6 +3,7 @@ import datetime
 from django.conf import settings
 
 def setCookie(response, key, value, days_expire=1):
+    # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
     if days_expire is None:
         max_age = 365 * 24 * 60 * 60  # one year
     else:

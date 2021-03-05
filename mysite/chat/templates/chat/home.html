@@ -143,8 +143,11 @@
 	                  <h5>Me</h5>
 	                  <p id ="post_date" class="text-grey">{{cur_post.PUBLISHED}} </p>
 	                </div><!--Post Date End-->
-
-	                <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" />
+                  {% if 'image/' in cur_post.CATEGORIES  %}
+                  {% load image_filter %}
+                  <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.CONTENT | bin_2_img }}"/>
+                  {% endif %}
+	                <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
 	                <div class="post-container">
 	                  <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
 	                  <div class="post-detail">
@@ -154,7 +157,9 @@
 	                    </div>
 											<hr class="solid">
 	                    <div class="post-text">
+                        {% if 'text/' in cur_post.CATEGORIES  %}
 	                      <p> {{cur_post.CONTENT}} </p>
+                        {% endif %}
 												<div class="edit"><a>Edit</a>&emsp;<a href="/chat/home/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div>
 
 	                    </div>
