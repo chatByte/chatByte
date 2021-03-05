@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import django_on_heroku
 from pathlib import Path
 import os
 
@@ -117,27 +117,18 @@ MEDIA_URL = '/media/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-# STATIC_ROOT = 'static/'
-# STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'mysite')
+
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, 'chat/static'),
-# )
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'chat/static')
 
 
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_DIR, 'staticfiles'),
-    os.path.join(BASE_DIR, "staticfiles"),
-
-    os.path.join(BASE_DIR,'boot')
-)
-
 DATABASES = {
-       'default': {
-           'ENGINE': 'djongo',
-           'NAME': 'mongoDB',
-       }
-   }
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'mongoDB',
+    }
+}
+
+django_on_heroku.settings(locals())
