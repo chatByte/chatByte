@@ -41,36 +41,28 @@ class AuthorTestCase(TestCase):
         self.assertEqual(deleteAuthor('test'), True)
 
 class PostTestCase(TestCase):
-    # title, source, origin, description, content_type, content, author, categories, visibility
     def setUp(self):
-        # Author.objects.create(USERNAME='test', PASSWORD='123')
-        pass
+        Post.objects.create(ID=1)
 
-    def createPostTest(self):
+    def test_createPost(self):
         self.assertEqual(createPost('test_title','test','test','abc','text','content','test','',''), True)
 
-    def updatePostTest(self):
-        #TODO
-        pass
+    def test_updatePost(self):
+        self.assertEqual(updatePost(1), True)
 
-    def deletePostTest(self):
-        #TODO
-        pass
+    def test_deletePost(self):
+        self.assertEqual(deletePost(1), True)
 
 class CommentTestCase(TestCase):
     def setUp(self):
-        #TODO
-        pass
+        author = Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
 
-    def createCommentTest(self):
-        #TODO
-        pass
+    def test_createComment(self):
+        self.assertEqual(createPost(author, '', 'text'), True)
 
-    def updateCommentTest(self):
-        #TODO
-        pass
+    def test_updateComment(self):
+        self.assertEqual(updateComment(1), True)
 
-    def deleteCommentTest(self):
-        #TODO
-        pass
+    def test_deleteComment(self):
+        self.assertEqual(deleteComment(1), True)
 

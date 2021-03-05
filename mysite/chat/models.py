@@ -15,10 +15,12 @@ class Author(models.Model):
     DISPLAY_NAME = models.CharField(max_length=200, unique=True)
     URL = models.CharField(max_length=200)
     GITHUB = models.CharField(max_length=200)
+
     FRIENDS = models.ManyToManyField("self", blank=True)
     FOLLOWERS = models.ManyToManyField("self", blank=True)
     TIMELINE = models.ManyToManyField("Post", blank=True)
     FRIEND_REQUESTS = models.ManyToManyField("self", blank=True)
+
 
 class Comment(models.Model):
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)

@@ -60,6 +60,7 @@ def getTimeline(username):
 
 def getAuthor(name):
     try:
+        print(Author.objects.filter(DISPLAY_NAME=name))
         return Author.objects.filter(DISPLAY_NAME=name)[0]
     except:
         return None
@@ -87,9 +88,9 @@ def updateAuthor(username, host, url, github, password):
         print(e)
         return False
 
-def deleteAuthor(id):
+def deleteAuthor(username):
     try:
-        Author.objects.filter(ID=id).delete()
+        Author.objects.filter(USERNAME=username).delete()
         return True
     except:
         return False
