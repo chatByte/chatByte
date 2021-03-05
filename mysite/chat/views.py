@@ -96,7 +96,7 @@ def home(request):
     # print("??",cur_author.FOLLOWERS)
 
     # follwers = cur_author.FOLLOWERS
-    author_num_follwers = 10
+    author_num_follwers = len(cur_author.FOLLOWERS.all())
     # if  (follwers == None):
     #     author_num_follwers = 0
     #     print("haha")
