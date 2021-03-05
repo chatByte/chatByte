@@ -1,5 +1,25 @@
 from .models import Author, Post, Comment, Actor
+import datetime
+from django.conf import settings
 
+def setCookie(response, key, value, days_expire=1):
+    # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
+    if days_expire is None:
+        max_age = 365 * 24 * 60 * 60  # one year
+    else:
+        max_age = days_expire * 24 * 60 * 60
+    expires = datetime.datetime.strftime(
+        datetime.datetime.utcnow() + datetime.timedelta(seconds=max_age),
+        "%a, %d-%b-%Y %H:%M:%S GMT",
+    )
+    response.set_cookie(
+        key,
+        value,
+        max_age=max_age,
+        expires=expires,
+        domain=settings.SESSION_COOKIE_DOMAIN,
+        secure=settings.SESSION_COOKIE_SECURE or None,
+    )
 
 # connec to db , validate user
 def createActor(username, password):
@@ -41,8 +61,6 @@ def addFriend(name, friend_name):
     try:
         author = Author.objects.filter(DISPLAY_NAME=name)[0]
         friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
-        # print(author)
-        # print(friend)
         author.FRIENDS.add(friend)
         return True
     except BaseException as e:
@@ -53,14 +71,12 @@ def getTimeline(username):
     # need to change to usp zer name
     try:
         author = Author.objects.filter(DISPLAY_NAME=username)[0]
-        print('author:', author)
         return author.TIMELINE.all()
     except:
         return None
 
 def getAuthor(name):
     try:
-        print(Author.objects.filter(DISPLAY_NAME=name))
         return Author.objects.filter(DISPLAY_NAME=name)[0]
     except:
         return None
