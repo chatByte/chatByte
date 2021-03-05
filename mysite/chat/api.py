@@ -39,10 +39,10 @@ def validActor(username, password):
 # add friend 
 def addFriend(name, friend_name):
     try:
-        author = Author.objects.filter(DISPLAY_NAME=name)
-        friend = Author.objects.filter(DISPLAY_NAME=friend_name)
-        print(author)
-        print(friend)
+        author = Author.objects.filter(DISPLAY_NAME=name)[0]
+        friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
+        # print(author)
+        # print(friend)
         author.FRIENDS.add(friend)
         return True
     except BaseException as e:
@@ -50,10 +50,10 @@ def addFriend(name, friend_name):
         return False
 
 def getTimeline(username):
-    # need to change to user name
+    # need to change to usp zer name
     try:
         author = Author.objects.filter(DISPLAY_NAME=username)[0]
-
+        print('author:', author)
         return author.TIMELINE.all()
     except:
         return None
@@ -81,6 +81,9 @@ def updateAuthor(username, host, url, github):
         author.HOST = host
         author.URL = url
         author.GITHUB = github
+
+        # author.PASSWORD = password
+
         author.save()
         return True
     except BaseException as e:
@@ -89,9 +92,10 @@ def updateAuthor(username, host, url, github):
 
 def deleteAuthor(username):
     try:
-        Author.objects.filter(USERNAME=username).delete()
+        Author.objects.filter(DISPLAY_NAME=username).delete()
         return True
-    except:
+    except Exception as e:
+        # print(e, '-----------')
         return False
 
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
@@ -108,11 +112,12 @@ def createPost(title, source, origin, description, content_type, content, author
 def updatePost(id):
     #TODO
     try:
-        post = Post.objects.filter(ID=id)
+        post = Post.objects.filter(ID=id)[0]
         # update field here
         post.save()
         return True
-    except:
+    except Exception as e:
+        print(e, '*********************')
         return False
 
 def deletePost(id):
@@ -122,26 +127,31 @@ def deletePost(id):
     except:
         return False
 
-def createComment(author, comment, comment_type):
+def createComment(author, comment, content_type):
     try:
-        Comment.objects.create(AUTHOR=author, COMMENT=comment, COMMENT_TYPE=comment_type)
+        commentObj = Comment.objects.create(AUTHOR=author, COMMENT=comment, CONTENT_TYPE=content_type)
+        # print('comment:',commentObj)
         return True
-    except:
+    except Exception as e:
+        # print(e, '*******')
         return False
 
 def updateComment(id):
     #TODO
     try:
-        comment = Comment.objects.filter(ID=id)
+        comment = Comment.objects.filter(ID=id)[0]
+        # print('====comment====', comment)
         # update field here
         comment.save()
         return True
-    except:
+    except Exception as e:
+        # print(e, '*********************')
         return False
 
 def deleteComment(id):
     try:
         Comment.objects.filter(ID=id).delete()
         return True
-    except:
+    except Exception as e:
+        # print(e, '*********************')
         return False
