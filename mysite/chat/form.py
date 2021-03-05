@@ -25,6 +25,8 @@ class ProfileForm(forms.Form):
     Url = forms.CharField(max_length=200)
     GitHub = forms.CharField(max_length=200)
 
-class CreatePostForm(forms.Form):
-    title = forms.CharField(label=False, widget=forms.Textarea(attrs={'id':'title', 'cols':35, 'rows':1, 'class':'form-title-control', 'placeholder':'Title'}))
-    description = forms.CharField(label=False, widget=forms.Textarea(attrs={'id':'description', 'cols':35, 'rows':4, 'class':'form-title-control', 'placeholder':'Description: Anything exciting?'}))
+# class CreatePostForm(forms.Form):
+#     title = forms.CharField(label=False, widget=forms.Textarea(attrs={'id':'title', 'cols':35, 'rows':1, 'class':'form-title-control', 'placeholder':'Title'}))
+#     description = forms.CharField(label=False, widget=forms.Textarea(attrs={'id':'description', 'cols':35, 'rows':4, 'class':'form-title-control', 'placeholder':'Description: Anything exciting?'}))
+#     # contentType = forms.CharField(max_length = 200)
+#     # visibility = forms.CharField(max_length = 200)

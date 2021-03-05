@@ -46,7 +46,7 @@ def login(request):
             messages.error(request, "Invalid user name or password!")
 
             return render(request, 'chat/login.html', context)
-   
+
 
 # # Create your views here.
 # def home_view(request):
@@ -115,15 +115,18 @@ def friend_profile(request):
     timeline = {}
     # query to database
 
-    # timeline = 
+    # timeline =
     return render(request, "chat/friendProfile.html", timeline)
 
 
 
 def make_post(request):
-    # post = {}
 
-    # hard coding ??
+    """
+    so far, only support text-only post and post with img and caption
+
+    Prob: 1. createPost return error!
+    """
     cur_author = getAuthor(cur_user_name)
     # ??
     # cur_user_name = cur_author.DISPLAY_NAME # or we can use global
@@ -133,7 +136,6 @@ def make_post(request):
 
         'test_name': cur_user_name
     }
-    dynamic_contain['form'] = CreatePostForm()
 
     # Get the current pages' author
 
@@ -144,6 +146,8 @@ def make_post(request):
     elif request.method == "POST":
 
         request_post = request.POST
+        print(request.POST)
+        print(request.FILES)
 
         info = request_post.get("description", "")
 
@@ -151,11 +155,11 @@ def make_post(request):
         source = cur_user_name # Who share it to me
         origin = cur_user_name # who origin create
         description = request_post.get("description", "")
-        content_type = "Latin"
-        content = info
+        content_type = request_post.get("contentType", "")
+        content = request.FILES.get("file", "")
         author = cur_author
         categories = "text" # web, tutorial, can be delete  # ?? dropdown
-        visibility = "" # direct get id name form web
+        visibility = request_post.get("visibility", "")
 
         createFlag = createPost(title, source, origin, description, content_type, content, author, categories, visibility)
         if createFlag:
@@ -165,7 +169,6 @@ def make_post(request):
             print("sever feels sad ", info)
 
         return render(request, "chat/feed.html", dynamic_contain)
-
 
 
     # # get post
