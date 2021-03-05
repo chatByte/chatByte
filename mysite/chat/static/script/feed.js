@@ -16,6 +16,7 @@ $(window).on('load', function() {
     hidePreloader();
 });
 
+// helper function to get csrf token
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -30,6 +31,22 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+// display selected local image
+function readImg(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+          $('#uploadImg')
+              .attr('src', e.target.result)
+              .width(360)
+              .height(400);
+      };
+
+        reader.readAsDataURL(input.files[0]);
+    }
 }
 
 $( document ).ready(function() {
@@ -61,6 +78,7 @@ $( document ).ready(function() {
          }
        }
     });
+
 
 
 
