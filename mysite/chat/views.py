@@ -202,6 +202,7 @@ def profile(request):
     form.fields['Password'].initial = actor.PASSWORD
     context = {}
     context['form']= form
+    context['myName']= author.DISPLAY_NAME
     print(context)
     # query to database
     if request.method == "GET":
