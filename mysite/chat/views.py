@@ -240,7 +240,7 @@ def delete(request, ID):
     # post_id = request.build_absolute_uri().split("/")[-2][6:]
     cur_author = getAuthor(cur_user_name)
     deletePost(ID)
-    response = redirect("/chat/home/") 
+    response = redirect("/chat/home/")
     setCookie(response, 'user', cur_user_name)
     return response
 
@@ -253,6 +253,23 @@ def delete_in_feed(request, ID):
     # post_id = request.build_absolute_uri().split("/")[-2][6:]
     cur_author = getAuthor(cur_user_name)
     deletePost(ID)
-    response = redirect("/chat/feed/") 
+    response = redirect("/chat/feed/")
     setCookie(response, 'user', cur_user_name)
+    return response
+
+def edit(request, ID):
+    print(request.POST)
+    new_description = request.POST.get("editText")
+    print(new_description)
+    # editPostDescription(ID, new_description)
+    response = redirect("/home/feed/")
+    return response
+
+def edit_in_feed(request, ID):
+    print(request.POST)
+    new_description = request.POST.get("editText")
+    print(new_description)
+    # editPostDescription(ID, new_description)
+    response = redirect("/chat/feed/")
+
     return response
