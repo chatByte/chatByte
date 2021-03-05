@@ -190,6 +190,9 @@ def make_post(request):
         createFlag = createPost(title, source, origin, description, content_type, content, author, categories, visibility)
         if createFlag:
             print("haha, successful create post, info: ", description)
+            response = redirect("/chat/home/")
+            setCookie(response, 'user', cur_user_name)
+            return response
         else:
             print("sever feels sad ", description)
 

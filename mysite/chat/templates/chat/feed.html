@@ -107,6 +107,13 @@
 
             <!-- Post Create Box
             ================================================= -->
+            {% if messages %}
+							<ul>
+								{% for message in messages %}
+	                                 <li style="position: relative; right: -25px; color: red;">{{ message }}</li>
+	                            {% endfor %}
+                            </ul>
+						{% endif %}
             <div class="create-post">
               <div class="row">
                   <div class="col-md-7">
