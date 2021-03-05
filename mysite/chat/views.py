@@ -3,7 +3,9 @@ from django.http import HttpResponse
 from .models import Author
 from .models import Post
 
-from .form import *
+
+from .form import InputForm, CreateAuthorForm, CreatePostForm
+
 from .api import *
 
 from django.core import serializers
@@ -13,12 +15,12 @@ from django.contrib import messages
 from django.http import JsonResponse
 
 """
-views.py receive request and create repose to client, 
+views.py receive request and create repose to client,
 Create your views here.
 """
 
 # default value
-cur_user_name = "teemo" 
+cur_user_name = "teemo"
 
 
 def login(request):
@@ -37,8 +39,10 @@ def login(request):
             return redirect("/chat/home")
         else:
             messages.error(request, "Invalid user name or password!")
+
             return render(request, 'chat/login.html', context)
    
+
 # # Create your views here.
 # def home_view(request):
 #     context ={}
@@ -79,11 +83,11 @@ def home(request):
     dynamic_contain = {
         'myName' : cur_author.DISPLAY_NAME,
         'timeline': mytimeline
-        
+
     }
 
     # query to database
-    # timeline = 
+    # timeline =
 
     if request.method == "GET":
 
@@ -100,8 +104,11 @@ def home(request):
 def friend_profile(request):
     timeline = {}
     # query to database
+
     # timeline = 
     return render(request, "chat/friendProfile.html", timeline)
+
+
 
 def make_post(request):
     # post = {}
@@ -111,11 +118,13 @@ def make_post(request):
     # ??
     # cur_user_name = cur_author.DISPLAY_NAME # or we can use global
     # testcase
-    dynamic_contain = {  
+    dynamic_contain = {
         'fullName':'Ritsu Onodera',
-        
+
         'test_name': cur_user_name
-    }  
+    }
+    dynamic_contain['form'] = CreatePostForm()
+
     # Get the current pages' author
 
     if request.method == "GET":
@@ -125,18 +134,18 @@ def make_post(request):
     elif request.method == "POST":
 
         request_post = request.POST
-        info = request.POST.get("post_content", "")
-        # print("---------/n",request_post)
 
-        title = "Noli flere" # ??
+        info = request_post.get("description", "")
+
+        title = request_post.get("title", "")
         source = cur_user_name # Who share it to me
-        origin = cur_user_name # who origin create 
-        description = "Noli flere" # post about wt, high abstract
-        content_type = "Latin" # texts, markdown imgs # ?? dropdown
+        origin = cur_user_name # who origin create
+        description = request_post.get("description", "")
+        content_type = "Latin"
         content = info
-        author = cur_author 
+        author = cur_author
         categories = "text" # web, tutorial, can be delete  # ?? dropdown
-        visibility = "" # direct get id name form web 
+        visibility = "" # direct get id name form web
 
         createFlag = createPost(title, source, origin, description, content_type, content, author, categories, visibility)
         if createFlag:
@@ -157,4 +166,6 @@ def profile(request):
 
 
     # query to database
+
     return render(request, "chat/myProfile.html", author)
+
