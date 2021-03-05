@@ -55,7 +55,10 @@
                             </ul>
 						{% endif %}
 					    {% csrf_token %}
-					    {{ form.as_p }}
+						<div class="input-box">
+							{{ form.as_p }}
+						</div>
+					    
 					    <button type="submit" class="btn-secondary">Sign in</button>
 					</form>
 				</div>
