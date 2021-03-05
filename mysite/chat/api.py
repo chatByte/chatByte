@@ -72,7 +72,7 @@ def createAuthor(host, display_name, url, github):
     except:
         return False
 
-def updateAuthor(username, host, url, github, password):
+def updateAuthor(username, host, url, github):
     #TODO
     try:
         author = Author.objects.filter(DISPLAY_NAME=username)[0]
@@ -81,7 +81,6 @@ def updateAuthor(username, host, url, github, password):
         author.HOST = host
         author.URL = url
         author.GITHUB = github
-        author.PASSWORD = password
         author.save()
         return True
     except BaseException as e:
