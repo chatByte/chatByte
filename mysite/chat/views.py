@@ -4,7 +4,7 @@ from .models import Author
 from .models import Post
 
 
-from .form import InputForm, CreateAuthorForm, CreatePostForm
+from .form import LoginForm, CreateAuthorForm, CreatePostForm
 
 from .api import *
 
