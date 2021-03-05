@@ -50,7 +50,7 @@ def createAuthor(host, display_name, url, github):
     except:
         return False
 
-def updateAuthor(username)):
+def updateAuthor(username):
     #TODO
     try:
         author = Author.objects.filter(USERNAME=username)
