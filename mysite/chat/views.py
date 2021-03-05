@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Author
 from .models import Post
-from .form import InputForm
 
-from .form import InputForm, CreateAuthorForm, CreatePostForm
+
+from .form import LoginForm, CreateAuthorForm
+
 from .api import *
 
 from django.core import serializers
@@ -12,6 +13,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
+
+# import markdown
 
 """
 views.py receive request and create repose to client,
@@ -22,21 +26,25 @@ Create your views here.
 cur_user_name = "teemo"
 
 
-def home(request):
+def login(request):
+    global cur_user_name
     context = {}
-    context['form']= InputForm()
+    context['form']= LoginForm()
     if request.method == "GET":
-        return render(request, "chat/home.html", context)
+        return render(request, "chat/login.html", context)
     elif request.method == "POST":
-        username = request.POST.get("User_name")
+        username = request.POST.get("Username")
         password = request.POST.get("Password")
+        print(username, password)
         valid = validActor(username, password)
         if valid:
             cur_user_name = username
-            return redirect("/chat/profile")
+            return redirect("/chat/home")
         else:
             messages.error(request, "Invalid user name or password!")
-            return render(request, 'chat/home.html', context)
+
+            return render(request, 'chat/login.html', context)
+
 
 # # Create your views here.
 # def home_view(request):
@@ -45,6 +53,7 @@ def home(request):
 #     return render(request, "chat/signup.html", context)
 
 def signup(request):
+    global cur_user_name
     context = {}
     context['form'] = CreateAuthorForm()
     if request.method == "GET":
@@ -52,71 +61,67 @@ def signup(request):
     elif request.method == "POST":
         url = request.POST.get("Url")
         username = request.POST.get("User_name")
-        github = request.POST.get("Github")
+        github = request.POST.get("GitHub")
         password = request.POST.get("Password")
+        host = request.POST.get("Host")
         if getAuthor(username) != None:
+            print(getAuthor(username))
             messages.error(request, 'User name exists!')
             return render(request, "chat/signup.html", context)
         else:
             print(createActor(username, password))
-            createAuthor("this", username, url, github)
-            return redirect("/chat/profile/")
+            createAuthor(host, username, url, github)
+            cur_user_name = username
+            return redirect("/chat/home/")
         # if createAuthor("this", username, url, github):
         #   return redirect("/chat/profile/")
         # else:
         #   messages.error(request, 'User name exists!')
         #   return render(request, "chat/signup.html", context)
 
-def my_timeline(request):
-
-
+def home(request):
+    global cur_user_name
     cur_author = getAuthor(cur_user_name)
     # a list of post
     # mytimeline = getTimeline(cur_user_name)
     mytimeline = getTimeline(cur_user_name)
-
-
     dynamic_contain = {
-
-        'fullName': cur_author.DISPLAY_NAME,
+        'myName' : cur_author.DISPLAY_NAME,
         'timeline': mytimeline
 
     }
-    print("_____")
-    print (cur_author.DISPLAY_NAME)
-    print (cur_author)
-    print (cur_author.TIMELINE)
 
-    print("mytimeline" , mytimeline)
     # query to database
     # timeline =
 
     if request.method == "GET":
 
-
-
         # print ("Request URL Path = [" + request.path() + "], ")
-
         # getTimeline()
-        return render(request, "chat/timeline1.html", dynamic_contain)
-
+        return render(request, "chat/home.html", dynamic_contain)
     elif request.method == "POST":
 
         # change later
-        return render(request, "chat/timeline1.html", dynamic_contain)
+        return render(request, "chat/home.html", dynamic_contain)
 
 
 
-def others_timeline(request):
+def friend_profile(request):
     timeline = {}
     # query to database
+
     # timeline =
-    return render(request, "chat/timeline2.html", timeline)
+    return render(request, "chat/friendProfile.html", timeline)
+
+
 
 def make_post(request):
-    # post = {}
 
-    # hard coding ??
+    """
+    so far, only support text-only post and post with img and caption
+
+    Prob: 1. createPost return error!
+    """
     cur_author = getAuthor(cur_user_name)
     # ??
     # cur_user_name = cur_author.DISPLAY_NAME # or we can use global
@@ -126,7 +131,6 @@ def make_post(request):
 
         'test_name': cur_user_name
     }
-    dynamic_contain['form'] = CreatePostForm()
 
     # Get the current pages' author
 
@@ -137,6 +141,8 @@ def make_post(request):
     elif request.method == "POST":
 
         request_post = request.POST
+        print(request.POST)
+        print(request.FILES)
 
         info = request_post.get("description", "")
 
@@ -144,11 +150,11 @@ def make_post(request):
         source = cur_user_name # Who share it to me
         origin = cur_user_name # who origin create
         description = request_post.get("description", "")
-        content_type = "Latin"
-        content = info
+        content_type = request_post.get("contentType", "")
+        content = request.FILES.get("file", "")
         author = cur_author
         categories = "text" # web, tutorial, can be delete  # ?? dropdown
-        visibility = "" # direct get id name form web
+        visibility = request_post.get("visibility", "")
 
         createFlag = createPost(title, source, origin, description, content_type, content, author, categories, visibility)
         if createFlag:
@@ -160,13 +166,34 @@ def make_post(request):
         return render(request, "chat/feed.html", dynamic_contain)
 
 
-
     # # get post
     # return render(request, "chat/feed.html", dynamic_contain)
 
 def profile(request):
-    author = {}
-
-
+    global cur_user_name
+    author = getAuthor(cur_user_name)
+    actor = getActor(cur_user_name)
+    print(author)
+    # context = model_to_dict(author)
+    form = CreateAuthorForm()
+    form.fields['User_name'].initial = author.DISPLAY_NAME
+    form.fields['Host'].initial = author.HOST
+    form.fields['Url'].initial = author.URL
+    form.fields['GitHub'].initial = author.GITHUB
+    form.fields['Password'].initial = actor.PASSWORD
+    context = {}
+    context['form']= form
+    print(context)
     # query to database
-    return render(request, "chat/profile.html", author)
+    if request.method == "GET":
+        return render(request, "chat/myProfile.html", context)
+    elif request.method == "POST":
+        url = request.POST.get("Url")
+        username = request.POST.get("User_name")
+        github = request.POST.get("GitHub")
+        password = request.POST.get("Password")
+        host = request.POST.get("Host")
+        print("update author: ", updateAuthor(username, host, url, github, password))
+        print("update actor: ", updateActor(username, password))
+        cur_user_name = username
+        return render(request, "chat/myProfile.html", context)

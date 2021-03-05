@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>ChatByte | This is the Coolest Social Network</title>
+		<!-- Stylesheets
+    ================================================= -->
+        {% load static %}
+		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/style2.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
+
+    <!--Google Font-->
+    <link href="https://fonts.googleapis.com/css?family=Titillium Web" rel="stylesheet">
+
+		<style media="screen">
+			body{
+				overflow: hidden;
+			}
+		</style>
+</head>
+<body>
+	<!-- Top Banner
+	================================================= -->
+	<section class="banner">
+		<div class="container">
+
+			<!-- Sign In Form
+			================================================= -->
+			<div class="sign-in-form">
+				<a href="home.html" class="logo"><img src="" alt="Logo"/></a>
+				<h1 class="text-white">CHATBYTE</h1>
+				<hr class="solid">
+
+				<div class="form-wrapper">
+					<p class="signin-text">Sign in now and connect with awesome programming enthusiatics around the world!</p>
+
+					<form action="http://localhost:8000/chat/login/", class="form-inline", method="POST">
+						<!-- <fieldset class="form-group">
+							<input type="text" class="form-control" id="example-name" placeholder="Enter name">
+						</fieldset>
+						<fieldset class="form-group">
+							<input type="email" class="form-control" id="example-email" placeholder="Enter email">
+						</fieldset>
+						<fieldset class="form-group">
+							<input type="password" class="form-control" id="example-password" placeholder="Enter a password">
+						</fieldset> -->
+						{% if messages %}
+							<ul>
+								{% for message in messages %}
+	                                 <li style="position: relative; right: -25px; color: red;">{{ message }}</li>
+	                            {% endfor %}
+                            </ul>
+						{% endif %}
+					    {% csrf_token %}
+					    {{ form.as_p }}
+					    <button type="submit" class="btn-secondary">Sign in</button>
+					</form>
+				</div>
+				<a href="http://localhost:8000/chat/signup">Do not have an account?</a>
+				<img class="form-shadow" src="{% static 'images/bottom-shadow.png' %}" alt="" />
+			</div><!-- Sign Up Form End -->
+
+
+		</div>
+	</section>
+
+	<img class="back" src="{% static 'images/tech_back.jpg' %}"/>
+
+
+
+
+
+
+
+	<!--preloader-->
+	<div id="spinner-wrapper">
+		<div class="spinner"></div>
+	</div>
+
+	<!-- Scripts
+	================================================= -->
+	<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
+	<script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+	<script src="{% static 'js/script.js' %}"></script>
+</body>

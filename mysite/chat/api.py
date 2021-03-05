@@ -9,6 +9,23 @@ def createActor(username, password):
     except:
         return False
 
+def updateActor(username, password):
+    try:
+        actor = Actor.objects.filter(USERNAME=username)[0]
+        actor.USERNAME = username
+        actor.PASSWORD = password
+        actor.save()
+        return True
+    except:
+        return False
+
+def getActor(username):
+    try:
+        actor = Actor.objects.filter(USERNAME=username)[0]
+        return actor
+    except:
+        return None
+
 def validActor(username, password):
     try:
         actor = Actor.objects.filter(USERNAME=username)[0]
@@ -22,11 +39,14 @@ def validActor(username, password):
 # add friend 
 def addFriend(name, friend_name):
     try:
-        author = Author.objects.filter(DISPLAY_NAME=name)[0]
-        friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
+        author = Author.objects.filter(DISPLAY_NAME=name)
+        friend = Author.objects.filter(DISPLAY_NAME=friend_name)
+        print(author)
+        print(friend)
         author.FRIENDS.add(friend)
         return True
-    except:
+    except BaseException as e:
+        print(e)
         return False
 
 def getTimeline(username):
@@ -51,14 +71,20 @@ def createAuthor(host, display_name, url, github):
     except:
         return False
 
-def updateAuthor(id):
+def updateAuthor(username, host, url, github, password):
     #TODO
     try:
-        author = Author.objects.filter(ID=id)
+        author = Author.objects.filter(DISPLAY_NAME=username)[0]
         # update element here
+        author.DISPLAY_NAME = username
+        author.HOST = host
+        author.URL = url
+        author.GITHUB = github
+        author.PASSWORD = password
         author.save()
         return True
-    except:
+    except BaseException as e:
+        print(e)
         return False
 
 def deleteAuthor(id):
