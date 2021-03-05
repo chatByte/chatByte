@@ -46,6 +46,7 @@ def login(request):
 #     return render(request, "chat/signup.html", context)
 
 def signup(request):
+    global cur_user_name
     context = {}
     context['form'] = CreateAuthorForm()
     if request.method == "GET":
@@ -61,7 +62,8 @@ def signup(request):
         else:
             print(createActor(username, password))
             createAuthor("this", username, url, github)
-            return redirect("/chat/profile/")
+            cur_user_name = username
+            return redirect("/chat/home/")
         # if createAuthor("this", username, url, github):
         #   return redirect("/chat/profile/")
         # else:
