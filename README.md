@@ -1,18 +1,18 @@
-## chatByte
-
+# chatByte
+Project wiki: https://github.com/chatByte/chatByte/wiki 
+Working progress controled by: https://github.com/chatByte/chatByte/projects/1
 
 First install package according to the resources instruction: https://github.com/chatByte/chatByte/wiki/Resources
+Then, source venv/bin/activate
 
-source venv/bin/activate
-
-# Herokuapp login method:
+## Herokuapp login method:
 https://project-chatbyte.herokuapp.com/chat/login/
 
-# Local host:
+## Local host:
 inside chatByte/mysite
 python3 manage.py runserver
 
-# Test:
+## Test:
 inside chatByte/mysite
 
 run:
