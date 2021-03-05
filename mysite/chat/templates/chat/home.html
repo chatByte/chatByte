@@ -216,6 +216,14 @@
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
+    <script type="text/javascript">
+      var timeline = JSON.parse("{{timeline|escapejs}}"); 
+      var d = [...document.getElementsByClassName("img-responsive post-image")];
+      for (var x in timeline){
+        d[x].src = "data:image/jpeg;base64," + timeline[x].CONTENT;
+        console.log(d[x].src);
+      }
+    </script>
 
 
 
