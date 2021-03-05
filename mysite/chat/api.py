@@ -81,7 +81,9 @@ def updateAuthor(username, host, url, github):
         author.HOST = host
         author.URL = url
         author.GITHUB = github
+
         # author.PASSWORD = password
+
         author.save()
         return True
     except BaseException as e:
