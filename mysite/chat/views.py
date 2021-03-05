@@ -146,13 +146,18 @@ def make_post(request):
     Prob: 1. createPost return error!
     """
     cur_author = getAuthor(cur_user_name)
+    mytimeline = getTimeline(cur_user_name)
+    author_num_follwers = 10
     # ??
     # cur_user_name = cur_author.DISPLAY_NAME # or we can use global
     # testcase
     dynamic_contain = {
         'fullName':'Ritsu Onodera',
+        'author_num_follwers': author_num_follwers,
+        'test_name': cur_user_name,
+        'myName' : cur_author.DISPLAY_NAME,
+        'timeline': mytimeline
 
-        'test_name': cur_user_name
     }
 
     # Get the current pages' author
@@ -234,5 +239,14 @@ def delete(request, ID):
     cur_author = getAuthor(cur_user_name)
     deletePost(ID)
     response = redirect("/chat/home/") 
+    setCookie(response, 'user', cur_user_name)
+    return response
+
+def delete_in_feed(request, ID):
+    cur_user_name = request.COOKIES.get('user')
+    # post_id = request.build_absolute_uri().split("/")[-2][6:]
+    cur_author = getAuthor(cur_user_name)
+    deletePost(ID)
+    response = redirect("/chat/feed/") 
     setCookie(response, 'user', cur_user_name)
     return response
