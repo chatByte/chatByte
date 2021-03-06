@@ -4,6 +4,7 @@ Project wiki: https://github.com/chatByte/chatByte/wiki
 Working progress controled by our product backlog: https://github.com/chatByte/chatByte/projects/1
 
 ## Required installation:
+- Django
 - Djongo
 - mongodb
 
