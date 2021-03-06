@@ -12,7 +12,7 @@ Please refer to the resources for more instruction at: https://github.com/chatBy
 ## Start running the app
 First git clone the repo:
 
-    git clone {repo-link}
+    git clone https://github.com/chatByte/chatByte.git
 Then, create a virtual environmen:
 
     cd chatByte
