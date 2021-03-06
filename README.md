@@ -37,13 +37,16 @@ inside chatByte/mysite
 python3 manage.py runserver
 
 ## Some additional command guide:
-inside chatByte/mysite
+In the chatByte/mysite directory:
 
-run:
-	python manage.py runserver, or python3 manage,oy runserver depends on venv
+#### command to start the server:
 
-test:
-	python manage.py test
+    python manage.py runserver, or python3 manage,oy runserver depends on venv
 
-user:
-	python manage.py createsuperuser
+#### command to run the test:
+
+    python manage.py test
+
+#### command to create an admin:
+
+    python manage.py createsuperuser
