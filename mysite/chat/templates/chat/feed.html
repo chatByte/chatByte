@@ -1,75 +1,5 @@
-<html lang="en">
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>My Home Feed</title>
-
-    <!-- Stylesheets
-    ================================================= -->
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
-    <link href="{% static 'css/emoji.css' %}" rel="stylesheet">
-
-    <!--Google Font-->
-    <link href="https://fonts.googleapis.com/css?family=Archivo" rel="stylesheet">
-
-    <style media="screen">
-      body{
-        font-family:'Archivo';
-        /* background: linear-gradient(to right, rgba(192, 192, 170, 0.8), rgba(28, 239, 255, 0.5)); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */ */
-      }
-
-      .btn-on-top{position: relative; margin-left: 5px; margin-top: -38px; z-index: 10;}
-    </style>
-
-  </head>
-  <body>
-
-    <!-- Header
-    ================================================= -->
-    <header id="header">
-      <nav class="navbar menu">
-        <div class="container">
-
-          <!-- Brand and toggle get grouped for better mobile display -->
-          <!-- left most logo -->
-          <div class="navbar-header">
-            <a class="navbar-brand" href=""><img src="" alt="chatByte" width="80" height="30" /></a>
-          </div>
-
-          <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right main-menu">
-
-              <li class="dropdown"><a href="../home">My Home</a></li>
-              <li class="dropdown"><a href="">My Friends</a></li>
-
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="../profile">Edit Profile</a></li>
-                </ul>
-              </li>
-
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Notification <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
-                <ul class="dropdown-menu">
-                  <!-- <li><a href="">Edit Profile</a></li> -->
-                </ul>
-              </li>
-              <li class="dropdown"><a href="">Contact</a></li>
-
-            </ul>
-
-          </div><!-- /.navbar-collapse -->
-        </div><!-- /.container -->
-      </nav>
-    </header>
-    <!--Header End-->
+{% extends "base.html" %}
+{% block content %}
 
     <div class="page-content">
       <div class="container">
@@ -84,21 +14,21 @@
               <div class="friend">
                 <img src="https://i1.sndcdn.com/artworks-000633504211-qcdzak-t500x500.jpg" alt="" class="profile-photo-sm pull-left" />
                 <div>
-                  <h5><a href="../friend">Hirose Koichi</a></h5>
+                  <h5><a href="../friend" class="profile-link">Hirose Koichi</a></h5>
                   <a href="#" class="text-muted">Just Posted</a>
                 </div>
               </div>
               <div class="friend">
                 <img src="https://i.pinimg.com/736x/3c/88/c8/3c88c8510028f627cf58792795629ed1.jpg" alt="" class="profile-photo-sm pull-left" />
                 <div>
-                  <h5><a href="../friend">Higashikata Josuke</a></h5>
+                  <h5><a href="../friend" class="profile-link">Higashikata Josuke</a></h5>
                   <a href="#" class="text-muted">Posted 3 days ago</a>
                 </div>
               </div>
               <div class="friend">
                 <img src="https://media.comicbook.com/2019/01/jotaro-1154567-1280x0.jpeg" alt="" class="profile-photo-sm pull-left" />
                 <div>
-                  <h5><a href="../friend">Kujo Jotaro</a></h5>
+                  <h5><a href="../friend" class="profile-link">Kujo Jotaro</a></h5>
                   <a href="#" class="text-muted">Posted 3 weeks ago</a>
                 </div>
               </div>
@@ -304,6 +234,7 @@
 
               <img src="https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8Zm9ycmVzdHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60" alt="post-image" class="img-responsive post-image" />
               <div class="post-container">
+                {% load static %}
                 <img src="{% static 'images/snow-mount.jpg' %}" alt="user" class="profile-photo-md pull-left" />
                 <div class="post-detail">
                   <div class="user-info">
@@ -353,13 +284,7 @@
       <div class="spinner"></div>
     </div>
 
-    <!-- Scripts
-    ================================================= -->
-    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
-    <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+    {% load static %}
     <script src="{% static 'script/feed.js' %}"></script>
     <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
-  </body>
-</html>
+{% endblock content %}

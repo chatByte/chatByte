@@ -23,7 +23,7 @@ Create your views here.
 
 
 """
-Generate response at login page  
+Generate response at login page
 """
 def login(request):
     cur_user_name = request.COOKIES.get('user')
@@ -47,7 +47,7 @@ def login(request):
             return response
 
 """
-Generate response at signup page  
+Generate response at signup page
 """
 
 def signup(request):
@@ -87,7 +87,7 @@ def signup(request):
 
 
 """
-Generate response at home page  
+Generate response at home page
 """
 def home(request):
     cur_user_name = request.COOKIES.get('user')
@@ -120,7 +120,7 @@ def home(request):
 
 
 """
-Generate response at friend_profile page , Now is deafault friend Zoe, need to be handled later 
+Generate response at friend_profile page , Now is deafault friend Zoe, need to be handled later
 """
 def friend_profile(request):
     cur_user_name = request.COOKIES.get('user')
@@ -196,8 +196,9 @@ def make_post(request):
 
 
 
+
 """
-Generate response at my profile page , 
+Generate response at my profile page ,
 """
 def profile(request):
     cur_user_name = request.COOKIES.get('user')
@@ -209,9 +210,6 @@ def profile(request):
     form.fields['Url'].initial = author.URL
     form.fields['GitHub'].initial = author.GITHUB
     form.fields['Password'].initial = actor.PASSWORD
-    context = {}
-    context['form']= form
-    context['myName']= author.DISPLAY_NAME
 
     # query to database
     if request.method == "GET":
@@ -233,7 +231,7 @@ def profile(request):
 
 
 """
-Generate response ,when delete user at home  page , 
+Generate response ,when delete user at home  page ,
 """
 def delete(request, ID):
     cur_user_name = request.COOKIES.get('user')
@@ -246,7 +244,7 @@ def delete(request, ID):
 
 
 """
-Generate response ,when delete user at feed page , 
+Generate response ,when delete user at feed page ,
 """
 def delete_in_feed(request, ID):
     cur_user_name = request.COOKIES.get('user')
@@ -273,3 +271,6 @@ def edit_in_feed(request, ID):
     response = redirect("/chat/feed/")
 
     return response
+
+def my_friends(request):
+    return render(request, "chat/myFriends.html")
