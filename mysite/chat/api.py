@@ -72,6 +72,10 @@ def addFriend(name, friend_name):
         print(e)
         return False
 
+def getFriends(username):
+    author = Author.objects.filter(DISPLAY_NAME=username)[0]
+    return author.FRIENDS
+
 def getTimeline(username):
     # need to change to usp zer name
     try:
