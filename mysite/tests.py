@@ -41,7 +41,12 @@ class AuthorTestCase(TestCase):
         self.assertEqual(deleteAuthor('test'), True)
 
     def test_addFriend(self):
-        self.assertEqual(addFriend('test', 'testfriend'), True)
+        list_before = list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all())
+        print(list_before)
+        addFriend('test', 'testfriend')
+        list_after = list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all())
+        print("list_after",list_after)
+        self.assertEqual(len(list_after) - len(list_before), 1)
 
     def test_getFriends(self):
         self.assertEqual(list(getFriends('test')), list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all()))
