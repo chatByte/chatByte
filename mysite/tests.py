@@ -32,38 +32,66 @@ class AuthorTestCase(TestCase):
         self.assertEqual(getAuthor('test'), Author.objects.filter(DISPLAY_NAME='test')[0])
 
     def test_createAuthor(self):
-        self.assertEqual(createAuthor('testHost','testAuthor','',''), True)
+        list_before = list(Author.objects.filter(DISPLAY_NAME='testAuthor'))
+        self.assertEqual(len(list_before), 0)
+        createAuthor('testHost','testAuthor','','')
+        list_after = list(Author.objects.filter(DISPLAY_NAME='testAuthor'))
+        print("after create Author:", list_after)
+        self.assertEqual(len(list_after), 1)
 
     def test_updateAuthor(self):
-        self.assertEqual(updateAuthor('test','testAuthor','',''), True)
+        author = Author.objects.filter(DISPLAY_NAME='test')[0]
+        self.assertEqual(author.URL, 'test')
+        updateAuthor('test','testAuthor','','')
+        author = Author.objects.filter(DISPLAY_NAME='test')[0]
+        self.assertEqual(author.URL, '')
 
     def test_deleteAuthor(self):
-        self.assertEqual(deleteAuthor('test'), True)
+        list_before = list(Author.objects.filter(DISPLAY_NAME='test'))
+        deleteAuthor('test')
+        list_after = list(Author.objects.filter(DISPLAY_NAME='test'))
+        self.assertEqual(len(list_before) - len(list_after), 1)
 
     def test_addFriend(self):
         list_before = list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all())
-        print(list_before)
+        # print(list_before)
         addFriend('test', 'testfriend')
         list_after = list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all())
-        print("list_after",list_after)
+        # print("list_after",list_after)
         self.assertEqual(len(list_after) - len(list_before), 1)
 
     def test_getFriends(self):
         self.assertEqual(list(getFriends('test')), list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all()))
 
     def test_deleteFriend(self):
-        self.assertEqual(deleteFriend('test', 'testfriend'), True)
+        addFriend('test', 'testfriend')
+        list_before = list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all())
+        deleteFriend('test', 'testfriend')
+        list_after = list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all())
+        self.assertEqual(len(list_before) - len(list_after), 1)
 
 class PostTestCase(TestCase):
     def setUp(self):
         Post.objects.create(ID=1)
-        self.author = Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
+        Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
 
     def test_createPost(self):
-        self.assertEqual(createPost('test_title','test','test','abc','text','content', self.author,'',''), True)
+        list_before = list(Post.objects.filter(TITLE='test_title'))
+        author = Author.objects.filter(DISPLAY_NAME='test')[0]
+        timeline_before = list(author.TIMELINE.all())
+        
+        createPost('test_title','test','test','abc','text','content', author,'','')
+        list_after = list(Post.objects.filter(TITLE='test_title'))
+        author_after = Author.objects.filter(DISPLAY_NAME='test')[0]
+        timeline_after = list(author_after.TIMELINE.all())
+        self.assertEqual(len(list_after) - len(list_before), 1)
+        self.assertEqual(len(timeline_after) - len(timeline_before), 1)
+        
 
     def test_updatePost(self):
-        self.assertEqual(updatePost(1, '', '', '', '', '', '', '',''), True)
+        
+        self.assertEqual(updatePost(1, 'abc', '', '', '', '', '', '',''), True)
+
 
     def test_deletePost(self):
         self.assertEqual(deletePost(1), True)
