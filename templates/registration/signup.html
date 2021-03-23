@@ -45,11 +45,11 @@
                 <p class="text-muted">好好学习天天向上</p>
 
                 <!--Sign up Form-->
-                {% if messages %}
+                <!-- {% if messages %}
 					{% for message in messages %}
 	   					<p class="text-muted" style="color: red;">{{ message }}</li>
 					{% endfor %}
-				{% endif %}
+				{% endif %} -->
                 <form name="sign_up_form" id='sign_up_form' class="form-inline" method="post" action="../signup/">
 							    {% csrf_token %}
 							    {{ form.as_p }}

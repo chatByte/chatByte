@@ -189,14 +189,15 @@ img .logo{
 }
 
 .sign-in-form{
-  background: linear-gradient(to bottom, rgba(0, 90, 167, .6), rgba(0, 12, 64, 0.8) 75%);
+  background: linear-gradient(to bottom, rgba(0, 90, 167, .6), rgba(0, 12, 64, 0.8) 100%);
   position: absolute;
   width: 500px;
   min-height: 600px;
   top: 0;
   padding: 100px 30px;
   text-align: center;
-  color: #fff;
+  /* color: #fff; */
+  color: black;
   z-index: 1000;
 }
 
