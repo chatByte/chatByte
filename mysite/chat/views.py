@@ -273,6 +273,4 @@ def edit_in_feed(request, ID):
     return response
 
 def my_friends(request):
-    cur_user_name = request.COOKIES.get('user')
-    friends = getFriends(cur_user_name)
     return render(request, "chat/myFriends.html")

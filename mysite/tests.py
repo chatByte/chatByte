@@ -22,9 +22,6 @@ class AuthorTestCase(TestCase):
         post = Post.objects.create(TITLE='title', SOURCE='test', ORIGIN='origin', DESCIPTION='description', CONTENT_TYPE='content_type', CONTENT='content' \
             , AUTHOR=author1, CATEGORIES='categories', COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY='visibility')
         author1.TIMELINE.add(post)
-        
-    def test_addFriend(self):
-        self.assertEqual(addFriend('test', 'testfriend'), True)
 
     def test_getTimeline(self):
         # print('timeline_all:', Author.objects.filter(DISPLAY_NAME='test')[0].TIMELINE.all())
@@ -42,6 +39,15 @@ class AuthorTestCase(TestCase):
 
     def test_deleteAuthor(self):
         self.assertEqual(deleteAuthor('test'), True)
+
+    def test_addFriend(self):
+        self.assertEqual(addFriend('test', 'testfriend'), True)
+
+    def test_getFriends(self):
+        self.assertEqual(list(getFriends('test')), list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all()))
+
+    def test_deleteFriend(self):
+        self.assertEqual(deleteFriend('test', 'testfriend'), True)
 
 class PostTestCase(TestCase):
     def setUp(self):

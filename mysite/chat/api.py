@@ -65,8 +65,22 @@ def validActor(username, password):
 def addFriend(name, friend_name):
     try:
         author = Author.objects.filter(DISPLAY_NAME=name)[0]
+        print("author", author)
         friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
+        print("friend:", friend)
+        print("friend list:", author.FRIENDS.all())
         author.FRIENDS.add(friend)
+        print(author.FRIENDS.all())
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def deleteFriend(username, friend_name):
+    try:
+        cur_author = Author.objects.filter(DISPLAY_NAME=username)[0]
+        friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
+        cur_author.FRIENDS.remove(friend)
         return True
     except BaseException as e:
         print(e)
@@ -74,7 +88,9 @@ def addFriend(name, friend_name):
 
 def getFriends(username):
     author = Author.objects.filter(DISPLAY_NAME=username)[0]
-    return author.FRIENDS
+    friend_list = author.FRIENDS.all()
+    print(friend_list)
+    return friend_list
 
 def getTimeline(username):
     # need to change to usp zer name
