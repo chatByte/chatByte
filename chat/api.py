@@ -1,5 +1,5 @@
 
-from .models import Post, Comment
+from .models import Post, Comment, Profile
 import datetime
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -97,17 +97,17 @@ def updateUser(username, password):
 #         print(e)
 #         return False
 
-def updateProfile(username, url, github):
+def updateProfile(id, username, url, github):
     #TODO
     try:
-        profile = Profile.objects.filter(DISPLAY_NAME=username)[0]
+        profile = Profile.objects.get(pk=id)
         # update element here
         profile.DISPLAY_NAME = username
         profile.URL = url
         profile.GITHUB = github
 
         # author.PASSWORD = password
-        author.save()
+        profile.save()
         return True
     except BaseException as e:
         print(e)
@@ -144,7 +144,7 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
         post.origin = origin
         post.description = description
         post.content_type = content_type
-        post.contetn = content
+        post.content = content
         # post.author = author
         post.categories = categories
         post.visibility = visibility

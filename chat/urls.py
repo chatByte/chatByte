@@ -6,17 +6,20 @@ urlpatterns = [
     # path('login/', views.login, name='login'),
     # path("accounts/signup/", SignUpView.as_view(), name="signup"),
     path("home/", views.home, name="home"),
+    path("", views.start_homepage, name=""), 
     path("friend/", views.friend_profile, name="friend_profile"),
-    path("feed/", views.make_post, name="feed"),
+    # path("author/<str:AUTHOR_ID>/feed", views.make_post, name="feed"),
 
-    path("author/<str:AUTHOR_ID>/profile", views.profile, name="profile"),
-    path("author/<str:AUTHOR_ID>/", views.profile_obj, name="profile"),
+    path("author/<str:AUTHOR_ID>/", views.profile, name="profile"),
+    # path("author/<str:AUTHOR_ID>/", views.profile_obj, name="profile_obj"),
 
-    path(r'feed/make_post/',views.make_post, name='make_post'),
+    path(r'author/<str:AUTHOR_ID>/posts/',views.make_posts, name='make_post'),
+    path(r'author/<str:AUTHOR_ID>/posts/<str: POST_ID>/',views.make_post, name='make_post'),
+
 
     # handle delete
-    path("home/delete<str:ID>/", views.delete, name="delete"),
-    path("feed/delete<str:ID>/", views.delete_in_feed, name="delete_post_in_feed"),
+    # path("home/delete<str:ID>/", views.delete, name="delete"),
+    # path("feed/delete<str:ID>/", views.delete_in_feed, name="delete_post_in_feed"),
 
     # handle edit
     path(r"home/edit<str:ID>/", views.edit, name="edit"),

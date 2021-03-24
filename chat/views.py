@@ -100,6 +100,14 @@ Generate response at login page
 #           messages.error(request, 'User name exists!')
 #           return render(request, "chat/signup.html", context)
 
+@login_required
+def start_homepage(request):
+    cur_author = None
+    if request.user.is_authenticated:
+        print("nibaba", request.user)
+        return redirect("/chat/author/" + str(request.user.id) + "/")
+
+
 
 def signup(request):
     if request.method == 'POST':
@@ -184,7 +192,8 @@ def friend_profile(request):
 Generate response at feed page ,
 """
 @login_required
-def make_post(request):
+@require_http_methods(["GET", "POST"])
+def make_posts(request, AUTHOR_ID):
     """
     so far, only support text-only post and post with img and caption
     Prob: 1. createPost return error!
@@ -237,83 +246,119 @@ def make_post(request):
             response = redirect("/chat/home/")
             return response
         else:
-            print("sever feels sad ", description)
+            print("server feels sad ", description)
 
         response = render(request, "chat/feed.html", dynamic_contain)
         return response
 
 
+"""
+Generate response ,when delete user at feed page , 
+"""
+# only allowed DELETE or POST to delete feed's post
+# @login_required
+# @require_http_methods(["DELETE", "POST"])
+# def delete_in_feed(request, ID):
+#     cur_user_name = None
+#     if request.user.is_authenticated:
+#         cur_user_name = request.user.username
+#     # post_id = request.build_absolute_uri().split("/")[-2][6:]
+
+#     deletePost(ID)
+#     response = redirect("/chat/feed/")
+   
+#     return response
+
+@login_required
+@require_http_methods(["GET", "POST", "PUT", "DELETE"])
+def make_post(request, AUTHOR_ID, POST_ID):
+    ur_user_name = None
+    if request.user.is_authenticated:
+        cur_user_name = request.user.username
+    # post_id = request.build_absolute_uri().split("/")[-2][6:]
+
+    if request.method == "DELETE":
+        deletePost(POST_ID)
+        response = redirect("../posts/")
+        return response
+    elif request.method == "GET":
+        response = redirect("../posts/")
+        return response
+    elif request.method == "POST":
+        pass
 
 """
 Generate response at my profile page , 
 """
 @login_required
-def profile(request):
+@require_http_methods(["GET", "POST"])
+def profile(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
     author = request.user.profile
     form = ProfileForm()
-    form.fields['User_name'].initial = author.DISPLAY_NAME
-    form.fields['Host'].initial = author.HOST
-    form.fields['Url'].initial = author.URL
-    form.fields['GitHub'].initial = author.GITHUB
+    form.fields['DISPLAY_NAME'].initial = author.DISPLAY_NAME
+    # form.fields['HOST'].initial = author.HOST
+    form.fields['URL'].initial = author.URL
+    form.fields['GITHUB'].initial = author.GITHUB
     context = {}
     context['form']= form
-    context['myName']= author.DISPLAY_NAME
 
     # query to database
     if request.method == "GET":
-        response = render(request, "chat/myProfile.html", context)
+        response = render(request, "chat/profile.html", context)
         return response
     elif request.method == "POST":
-        url = request.POST.get("Url")
-        username = request.POST.get("User_name")
-        github = request.POST.get("GitHub")
+        post_obj = request.POST
+        url = post_obj.get("URL")
+        username = post_obj["DISPLAY_NAME"]
+        github = post_obj["GITHUB"]
         # host = request.POST.get("Host")
-        updateProfile(username, url, github)
-        response = render(request, "chat/myProfile.html", context)
+        # updateProfile(username, url, github)
+        updateProfile(request.user.id, username, url, github)
+        response = render(request, "chat/profile.html", context)
         return response
 
 
 """
 REST Author, Generate response at my profile page , 
 """
-@login_required
-def profile_obj(request):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
-    author = request.user.profile
+# @login_required
+# def profile_obj(request):
+    # cur_user_name = None
+    # if request.user.is_authenticated:
+    #     cur_user_name = request.user.username
+    # author = request.user.profile
 
-    obj = {
-    "type":"author",
-    # ID of the Author
-    "id": author.URL,
-    # the home host of the author
-    "host": author.HOST,
-    # the display name of the author
-    "displayName": author.DISPLAY_NAME,
-    # url to the authors profile
-    "url": author.URL,
-    # HATEOS url for Github API
-    "github": author.GITHUB
-    }
+    # obj = {
+    # "type":"author",
+    # # ID of the Author
+    # "id": author.URL,
+    # # the home host of the author
+    # "host": author.HOST,
+    # # the display name of the author
+    # "displayName": author.DISPLAY_NAME,
+    # # url to the authors profile
+    # "url": author.URL,
+    # # HATEOS url for Github API
+    # "github": author.GITHUB
+    # }
 
 
-    # query to database
-    if request.method == "GET":
-        return  json.dumps(obj)
-    elif request.method == "POST":
+    # # query to database
+    # if request.method == "GET":
+    #     return  json.dumps(obj)
+    # elif request.method == "POST":
 
-        post_obj = json.loads(request.body)
-        url = post_obj["url"]
-        displayName = post_obj["displayName"]
-        github = post_obj["github"]
-        # we do not allowed leave our server
-        # host = post_obj["host"]
-        updateProfile(displayName, url, github)
-        return post_obj
+    #     post_obj = json.loads(request.body)
+    #     url = post_obj["url"]
+    #     displayName = post_obj["displayName"]
+    #     github = post_obj["github"]
+    #     # we do not allowed leave our server
+    #     # host = post_obj["host"]
+    #     updateProfile(displayName, url, github)
+    #     return post_obj
 
 
 
@@ -354,23 +399,6 @@ def delete(request, ID):
     response = redirect("/chat/home/")
     return response
 
-
-"""
-Generate response ,when delete user at feed page , 
-"""
-# only allowed DELETE or POST to delete feed's post
-@login_required
-@require_http_methods(["DELETE", "POST"])
-def delete_in_feed(request, ID):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
-    # post_id = request.build_absolute_uri().split("/")[-2][6:]
-
-    deletePost(ID)
-    response = redirect("/chat/feed/")
-   
-    return response
 
 def edit(request, ID):
     print(request.POST)

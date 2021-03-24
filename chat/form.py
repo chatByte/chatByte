@@ -41,5 +41,5 @@ class UserForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('URL', 'HOST', 'GITHUB', 'DISPLAY_NAME')
+        fields = ('URL', 'GITHUB', 'DISPLAY_NAME')
 
