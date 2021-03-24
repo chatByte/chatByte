@@ -2,8 +2,6 @@ from django.db import models
 import uuid
 import django
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 # Create your models here.
 # class Actor(models.Model):
@@ -14,7 +12,7 @@ from django.dispatch import receiver
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     HOST = models.CharField(max_length=200, null=True)
     DISPLAY_NAME = models.CharField(max_length=200, unique=True, null=True)
     URL = models.CharField(max_length=200, null=True)
@@ -26,6 +24,9 @@ class Profile(models.Model):
 
     def __unicode__(self): # for Python 2
         return self.user.username
+    
+    class Meta:
+        managed = False
 
 class Comment(models.Model):
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
@@ -53,17 +54,3 @@ class Post(models.Model):
     VISIBILITY = models.CharField(max_length=50)
     UNLISTED = models.CharField(max_length=50, default='false', editable=False)
 
-# @receiver(post_save, sender=User)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user=instance)
-
-# @receiver(post_save, sender=User)
-# def save_user_profile(sender, instance, **kwargs):
-#     instance.profile.save()
-
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-    instance.profile.save()

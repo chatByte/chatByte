@@ -62,69 +62,62 @@ Generate response at login page
 # """
 # Generate response at signup page  
 # """
-def signup(request):
-    context = {}
-    context['UserForm'] = UserForm()
-    context['ProfileForm'] = ProfileForm()
-    response = render(request, "chat/signup.html", context)
-    if request.method == "GET":
-        return response
-    elif request.method == "POST":
-        url = request.POST.get("URL")
+# def signup(request):
+#     context = {}
+#     context['UserForm'] = UserForm()
+#     context['ProfileForm'] = ProfileForm()
+#     response = render(request, "chat/signup.html", context)
+#     if request.method == "GET":
+#         return response
+#     elif request.method == "POST":
+#         url = request.POST.get("URL")
 
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        github = request.POST.get("GITHUB")
+#         first_name = request.POST.get("first_name")
+#         last_name = request.POST.get("last_name")
+#         github = request.POST.get("GITHUB")
 
-        # password = request.POST.get("Password")
-        # retype_password = request.POST.get("Retype_password")
-        host = request.POST.get("HOST")
-        # first method to handle user name exist, can be optimize later
-        if validActor(username, password):
-            messages.error(request, 'User name exists!')
-            return response
-        else:
-            if retype_password != password:
-                messages.error(request, 'Password does not match!')
-                return response
-            createAuthor(host, username, url, github)
-            createActor(username, password)
-            cur_user_name = username
-            response = redirect("/chat/home/")
-            return response
+#         # password = request.POST.get("Password")
+#         # retype_password = request.POST.get("Retype_password")
+#         host = request.POST.get("HOST")
+#         # first method to handle user name exist, can be optimize later
+#         if validActor(username, password):
+#             messages.error(request, 'User name exists!')
+#             return response
+#         else:
+#             if retype_password != password:
+#                 messages.error(request, 'Password does not match!')
+#                 return response
+#             createAuthor(host, username, url, github)
+#             createActor(username, password)
+#             cur_user_name = username
+#             response = redirect("/chat/home/")
+#             return response
         # second method to handle user name exist, can be optimize later
-        if createAuthor("this", username, url, github):
-          return redirect("/chat/profile/")
-        else:
-          messages.error(request, 'User name exists!')
-          return render(request, "chat/signup.html", context)
+        # if createAuthor("this", username, url, github):
+        #   return redirect("/chat/profile/")
+        # else:
+        #   messages.error(request, 'User name exists!')
+        #   return render(request, "chat/signup.html", context)
 
 
 def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        print("test, beofore if")
-        print("request : ", request.POST)
-        print("form. : ", form)
+    form = UserCreationForm(request.POST)
+    print("--------------", request.POST)
+    print("--------------", form)
+    form.non_field_errors()
+    field_errors = [ (field.label, field.errors) for field in form] 
+    print(field_errors)
 
-        # if form.is_valid():
-        print("gugua, in  if")
-        # form.save()
-        # username = form.cleaned_data.get('username')
-        # raw_password = form.cleaned_data.get('password1')
-        username = request.POST['username']
-        raw_password = request.POST['password1']
-
-        user = authenticate(username=username, password=raw_password)
-        print("authenticate, in  if")
+    if form.is_valid():
+        print("is valid")
+        form.save()
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password1')
+        print("authenticating...")
+        user = authenticate(username=username, password=password)
+        print("logging in...")
         login(request, user)
-        print("test, in  if")
-        return redirect('registration/profile.html')
-
-
-    else:
-        form = UserCreationForm()
-
+        return redirect('home')
     return render(request, 'registration/signup.html', {'form': form})
 
 
