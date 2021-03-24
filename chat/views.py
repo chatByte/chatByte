@@ -12,26 +12,31 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
 
 from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 
 from .form import *
 from .api import *
 import base64
 import os
+
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+
 """
 views.py receive request and create repose to client,
 Create your views here.
 """
 
-
-class SignUpView(generic.CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'registration/signup.html'
+# #class based view
+# class SignUpView(generic.CreateView):
+#     form_class = UserCreationForm
+#     success_url = reverse_lazy('login')
+#     template_name = 'registration/signup.html'
 
 
 """
@@ -54,42 +59,74 @@ Generate response at login page
 #             response = render(request, 'chat/login.html', context)
 #             return response
 
-"""
-Generate response at signup page  
-"""
+# """
+# Generate response at signup page  
+# """
+def signup(request):
+    context = {}
+    context['UserForm'] = UserForm()
+    context['ProfileForm'] = ProfileForm()
+    response = render(request, "chat/signup.html", context)
+    if request.method == "GET":
+        return response
+    elif request.method == "POST":
+        url = request.POST.get("URL")
 
-# def signup(request):
-#     context = {}
-#     context['form'] = CreateAuthorForm()
-#     response = render(request, "chat/signup.html", context)
-#     if request.method == "GET":
-#         return response
-#     elif request.method == "POST":
-#         url = request.POST.get("Url")
-#         username = request.POST.get("User_name")
-#         github = request.POST.get("GitHub")
-#         password = request.POST.get("Password")
-#         retype_password = request.POST.get("Retype_password")
-#         host = request.POST.get("Host")
-#         # first method to handle user name exist, can be optimize later
-#         if validActor(username, password):
-#             messages.error(request, 'User name exists!')
-#             return response
-#         else:
-#             if retype_password != password:
-#                 messages.error(request, 'Password does not match!')
-#                 return response
-#             createAuthor(host, username, url, github)
-#             createActor(username, password)
-#             cur_user_name = username
-#             response = redirect("/chat/home/")
-#             return response
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        github = request.POST.get("GITHUB")
+
+        # password = request.POST.get("Password")
+        # retype_password = request.POST.get("Retype_password")
+        host = request.POST.get("HOST")
+        # first method to handle user name exist, can be optimize later
+        if validActor(username, password):
+            messages.error(request, 'User name exists!')
+            return response
+        else:
+            if retype_password != password:
+                messages.error(request, 'Password does not match!')
+                return response
+            createAuthor(host, username, url, github)
+            createActor(username, password)
+            cur_user_name = username
+            response = redirect("/chat/home/")
+            return response
         # second method to handle user name exist, can be optimize later
-        # if createAuthor("this", username, url, github):
-        #   return redirect("/chat/profile/")
-        # else:
-        #   messages.error(request, 'User name exists!')
-        #   return render(request, "chat/signup.html", context)
+        if createAuthor("this", username, url, github):
+          return redirect("/chat/profile/")
+        else:
+          messages.error(request, 'User name exists!')
+          return render(request, "chat/signup.html", context)
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        print("test, beofore if")
+        print("request : ", request.POST)
+        print("form. : ", form)
+
+        # if form.is_valid():
+        print("gugua, in  if")
+        # form.save()
+        # username = form.cleaned_data.get('username')
+        # raw_password = form.cleaned_data.get('password1')
+        username = request.POST['username']
+        raw_password = request.POST['password1']
+
+        user = authenticate(username=username, password=raw_password)
+        print("authenticate, in  if")
+        login(request, user)
+        print("test, in  if")
+        return redirect('registration/profile.html')
+
+
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'registration/signup.html', {'form': form})
+
 
 
 """
@@ -263,9 +300,11 @@ def update_profile(request):
     })
 
 """
-Generate response ,when delete user at home  page , 
+Generate response ,when delete user at home page , 
+For user frinedly feature 
 """
 @login_required
+@require_http_methods(["DELETE", "POST"])
 def delete(request, ID):
     cur_user_name = None
     if request.user.is_authenticated:
@@ -280,14 +319,18 @@ def delete(request, ID):
 """
 Generate response ,when delete user at feed page , 
 """
+# only allowed DELETE or POST to delete feed's post
 @login_required
+@require_http_methods(["DELETE", "POST"])
 def delete_in_feed(request, ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
     # post_id = request.build_absolute_uri().split("/")[-2][6:]
+
     deletePost(ID)
     response = redirect("/chat/feed/")
+   
     return response
 
 def edit(request, ID):
@@ -296,6 +339,7 @@ def edit(request, ID):
     print(new_description)
     editPostDescription(ID, new_description)
     response = redirect("/chat/feed/")
+
     return response
 
 def edit_in_feed(request, ID):
