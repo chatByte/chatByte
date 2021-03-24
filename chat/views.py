@@ -409,7 +409,10 @@ def edit(request, ID):
 
     return response
 
-def edit_in_feed(request, ID):
+# get feed and 
+# post: comment/like => send post request to host server(edit post function), 
+@require_http_methods(["GET", "POST"])
+def feed(request, ID):
     print(request.POST)
     new_description = request.POST.get("editText")
     print(new_description)

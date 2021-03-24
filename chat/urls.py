@@ -17,6 +17,10 @@ urlpatterns = [
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',views.make_post, name='make_post'),
 
 
+    # show info => get request, views.feed, and able to comment 
+    path(r"author/<str:AUTHOR_ID>/feed", views.feed, name="get_feed"),
+
+
     # handle delete
     # path("home/delete<str:ID>/", views.delete, name="delete"),
     # path("feed/delete<str:ID>/", views.delete_in_feed, name="delete_post_in_feed"),
