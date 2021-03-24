@@ -139,10 +139,13 @@ def signup(request):
 
 
 """
-Generate response at home page  
+Generate response at home page  => eveyones' post here
 """
+# get feed and 
+# post: comment/like => send post request to host server(edit post function), 
+@require_http_methods(["GET", "POST"])
 @login_required
-def home(request):
+def home_public_channel(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
@@ -217,7 +220,7 @@ def make_posts(request, AUTHOR_ID):
     # Get the current pages' author
 
     if request.method == "GET":
-        response = render(request, "chat/feed.html", dynamic_contain)
+        response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
     elif request.method == "POST":
@@ -248,7 +251,7 @@ def make_posts(request, AUTHOR_ID):
         else:
             print("server feels sad ", description)
 
-        response = render(request, "chat/feed.html", dynamic_contain)
+        response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
 
@@ -409,10 +412,11 @@ def edit(request, ID):
 
     return response
 
+# delete later
 # get feed and 
 # post: comment/like => send post request to host server(edit post function), 
 @require_http_methods(["GET", "POST"])
-def feed(request, ID):
+def edit_in_feed(request, ID):
     print(request.POST)
     new_description = request.POST.get("editText")
     print(new_description)

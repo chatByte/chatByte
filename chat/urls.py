@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     # path('login/', views.login, name='login'),
     # path("accounts/signup/", SignUpView.as_view(), name="signup"),
-    path("home/", views.home, name="home"),
+    # path("home/", views.home, name="home"),
     path("", views.start_homepage, name=""), 
     path("friend/", views.friend_profile, name="friend_profile"),
     # path("author/<str:AUTHOR_ID>/feed", views.make_post, name="feed"),
@@ -17,8 +17,8 @@ urlpatterns = [
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',views.make_post, name='make_post'),
 
 
-    # show info => get request, views.feed, and able to comment 
-    path(r"author/<str:AUTHOR_ID>/feed", views.feed, name="get_feed"),
+    # show info => get request, views.public_channel originally called feed, and able to comment 
+    path(r"author/<str:AUTHOR_ID>/public_channel/", views.home_public_channel, name="public_channel"),
 
 
     # handle delete
