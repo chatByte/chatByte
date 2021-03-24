@@ -66,7 +66,7 @@ def signup(request):
         retype_password = request.POST.get("Retype_password")
         host = request.POST.get("Host")
         # first method to handle user name exist, can be optimize later
-        if getAuthor(username) != None:
+        if validActor(username, password):
             messages.error(request, 'User name exists!')
             return response
         else:
@@ -74,6 +74,7 @@ def signup(request):
                 messages.error(request, 'Password does not match!')
                 return response
             createAuthor(host, username, url, github)
+            createActor(username, password)
             cur_user_name = username
             response = redirect("/chat/home/")
             setCookie(response, 'user', cur_user_name)
@@ -259,15 +260,15 @@ def edit(request, ID):
     print(request.POST)
     new_description = request.POST.get("editText")
     print(new_description)
-    # editPostDescription(ID, new_description)
-    response = redirect("/home/feed/")
+    editPostDescription(ID, new_description)
+    response = redirect("/chat/feed/")
     return response
 
 def edit_in_feed(request, ID):
     print(request.POST)
     new_description = request.POST.get("editText")
     print(new_description)
-    # editPostDescription(ID, new_description)
+    print(editPostDescription(ID, new_description))
     response = redirect("/chat/feed/")
 
     return response
