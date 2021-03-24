@@ -89,8 +89,10 @@ class PostTestCase(TestCase):
         
 
     def test_updatePost(self):
-        
-        self.assertEqual(updatePost(1, 'abc', '', '', '', '', '', '',''), True)
+        list_before = list(Post.objects.filter(TITLE='abc'))
+        updatePost(1, 'abc', '', '', '', '', '', '', '')
+        after = list(Post.objects.filter(TITLE='abc'))
+        self.assertEqual(len(after) - len(list_before), 1)
 
 
     def test_deletePost(self):
