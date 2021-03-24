@@ -22,6 +22,7 @@ from .form import *
 from .api import *
 import base64
 import os
+import json
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -61,43 +62,43 @@ Generate response at login page
 
 # """
 # Generate response at signup page  
-# """
-def signup(request):
-    context = {}
-    context['UserForm'] = UserForm()
-    context['ProfileForm'] = ProfileForm()
-    response = render(request, "chat/signup.html", context)
-    if request.method == "GET":
-        return response
-    elif request.method == "POST":
-        url = request.POST.get("URL")
+# # """
+# def signup(request):
+#     context = {}
+#     context['UserForm'] = UserForm()
+#     context['ProfileForm'] = ProfileForm()
+#     response = render(request, "chat/signup.html", context)
+#     if request.method == "GET":
+#         return response
+#     elif request.method == "POST":
+#         url = request.POST.get("URL")
 
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        github = request.POST.get("GITHUB")
+#         first_name = request.POST.get("first_name")
+#         last_name = request.POST.get("last_name")
+#         github = request.POST.get("GITHUB")
 
-        # password = request.POST.get("Password")
-        # retype_password = request.POST.get("Retype_password")
-        host = request.POST.get("HOST")
-        # first method to handle user name exist, can be optimize later
-        if validActor(username, password):
-            messages.error(request, 'User name exists!')
-            return response
-        else:
-            if retype_password != password:
-                messages.error(request, 'Password does not match!')
-                return response
-            createAuthor(host, username, url, github)
-            createActor(username, password)
-            cur_user_name = username
-            response = redirect("/chat/home/")
-            return response
-        # second method to handle user name exist, can be optimize later
-        if createAuthor("this", username, url, github):
-          return redirect("/chat/profile/")
-        else:
-          messages.error(request, 'User name exists!')
-          return render(request, "chat/signup.html", context)
+#         # password = request.POST.get("Password")
+#         # retype_password = request.POST.get("Retype_password")
+#         host = request.POST.get("HOST")
+#         # first method to handle user name exist, can be optimize later
+#         if validActor(username, password):
+#             messages.error(request, 'User name exists!')
+#             return response
+#         else:
+#             if retype_password != password:
+#                 messages.error(request, 'Password does not match!')
+#                 return response
+#             createAuthor(host, username, url, github)
+#             createActor(username, password)
+#             cur_user_name = username
+#             response = redirect("/chat/home/")
+#             return response
+#         # second method to handle user name exist, can be optimize later
+#         if createAuthor("this", username, url, github):
+#           return redirect("/chat/profile/")
+#         else:
+#           messages.error(request, 'User name exists!')
+#           return render(request, "chat/signup.html", context)
 
 
 def signup(request):
@@ -257,7 +258,6 @@ def profile(request):
     form.fields['Host'].initial = author.HOST
     form.fields['Url'].initial = author.URL
     form.fields['GitHub'].initial = author.GITHUB
-    form.fields['Password'].initial = actor.PASSWORD
     context = {}
     context['form']= form
     context['myName']= author.DISPLAY_NAME
@@ -270,34 +270,73 @@ def profile(request):
         url = request.POST.get("Url")
         username = request.POST.get("User_name")
         github = request.POST.get("GitHub")
-        password = request.POST.get("Password")
-        host = request.POST.get("Host")
-        updateAuthor(username, host, url, github)
-        updateActor(username, password)
-        cur_user_name = username
+        # host = request.POST.get("Host")
+        updateProfile(username, url, github)
         response = render(request, "chat/myProfile.html", context)
         return response
 
+
+"""
+REST Author, Generate response at my profile page , 
+"""
 @login_required
-@transaction.atomic
-def update_profile(request):
-    if request.method == 'POST':
-        user_form = UserForm(request.POST, instance=request.user)
-        profile_form = ProfileForm(request.POST, instance=request.user.profile)
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, _('Your profile was successfully updated!'))
-            return redirect('settings:profile')
-        else:
-            messages.error(request, _('Please correct the error below.'))
-    else:
-        user_form = UserForm(instance=request.user)
-        profile_form = ProfileForm(instance=request.user.profile)
-    return render(request, 'profiles/profile.html', {
-        'user_form': user_form,
-        'profile_form': profile_form
-    })
+def profile_obj(request):
+    cur_user_name = None
+    if request.user.is_authenticated:
+        cur_user_name = request.user.username
+    author = request.user.profile
+
+    obj = {
+    "type":"author",
+    # ID of the Author
+    "id": author.URL,
+    # the home host of the author
+    "host": author.HOST,
+    # the display name of the author
+    "displayName": author.DISPLAY_NAME,
+    # url to the authors profile
+    "url": author.URL,
+    # HATEOS url for Github API
+    "github": author.GITHUB
+    }
+
+
+    # query to database
+    if request.method == "GET":
+        return  json.dumps(obj)
+    elif request.method == "POST":
+
+        post_obj = json.loads(request.body)
+        url = post_obj["url"]
+        displayName = post_obj["displayName"]
+        github = post_obj["github"]
+        # we do not allowed leave our server
+        # host = post_obj["host"]
+        updateProfile(displayName, url, github)
+        return post_obj
+
+
+
+# @login_required
+# @transaction.atomic
+# def update_profile(request):
+#     if request.method == 'POST':
+#         user_form = UserForm(request.POST, instance=request.user)
+#         profile_form = ProfileForm(request.POST, instance=request.user.profile)
+#         if user_form.is_valid() and profile_form.is_valid():
+#             user_form.save()
+#             profile_form.save()
+#             messages.success(request, _('Your profile was successfully updated!'))
+#             return redirect('settings:profile')
+#         else:
+#             messages.error(request, _('Please correct the error below.'))
+#     else:
+#         user_form = UserForm(instance=request.user)
+#         profile_form = ProfileForm(instance=request.user.profile)
+#     return render(request, 'profiles/profile.html', {
+#         'user_form': user_form,
+#         'profile_form': profile_form
+#     })
 
 """
 Generate response ,when delete user at home page , 

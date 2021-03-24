@@ -2,6 +2,7 @@
 from .models import Post, Comment
 import datetime
 from django.conf import settings
+from django.contrib.auth.models import User
 
 # def setCookie(response, key, value, days_expire=1):
 #     # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
@@ -31,16 +32,16 @@ from django.conf import settings
 #         print(e)
 #         return False
 
-# def updateActor(username, password):
-#     try:
-#         actor = Actor.objects.filter(USERNAME=username)[0]
-#         actor.USERNAME = username
-#         actor.PASSWORD = password
-#         actor.save()
-#         return True
-#     except BaseException as e:
-#         print(e)
-#         return False
+def updateUser(username, password):
+    try:
+        actor = User.objects.filter(USERNAME=username)[0]
+        actor.username = username
+        actor.password = password
+        actor.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
 
 # def getActor(username):
 #     try:
@@ -96,23 +97,21 @@ from django.conf import settings
 #         print(e)
 #         return False
 
-# def updateAuthor(username, host, url, github):
-#     #TODO
-#     try:
-#         author = Author.objects.filter(DISPLAY_NAME=username)[0]
-#         # update element here
-#         author.DISPLAY_NAME = username
-#         author.HOST = host
-#         author.URL = url
-#         author.GITHUB = github
+def updateProfile(username, url, github):
+    #TODO
+    try:
+        profile = Profile.objects.filter(DISPLAY_NAME=username)[0]
+        # update element here
+        profile.DISPLAY_NAME = username
+        profile.URL = url
+        profile.GITHUB = github
 
-#         # author.PASSWORD = password
-
-#         author.save()
-#         return True
-#     except BaseException as e:
-#         print(e)
-#         return False
+        # author.PASSWORD = password
+        author.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
 
 # def deleteAuthor(username):
 #     try:

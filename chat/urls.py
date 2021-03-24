@@ -8,7 +8,10 @@ urlpatterns = [
     path("home/", views.home, name="home"),
     path("friend/", views.friend_profile, name="friend_profile"),
     path("feed/", views.make_post, name="feed"),
-    path("profile/", views.profile, name="profile"),
+
+    path("author/<str:AUTHOR_ID>/profile", views.profile, name="profile"),
+    path("author/<str:AUTHOR_ID>/", views.profile_obj, name="profile"),
+
     path(r'feed/make_post/',views.make_post, name='make_post'),
 
     # handle delete
