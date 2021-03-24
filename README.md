@@ -51,7 +51,7 @@ In the chatByte/mysite directory:
 
     python manage.py createsuperuser
     
-## Restul endpoints
+## Restful endpoints
 
     chat/author/<author_id>/                                   (profile html / single author endpoint)
     chat/author/<author_id>/posts                              (home html / list of posts endpoint)
