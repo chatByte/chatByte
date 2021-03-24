@@ -14,7 +14,7 @@ urlpatterns = [
     # path("author/<str:AUTHOR_ID>/", views.profile_obj, name="profile_obj"),
 
     path(r'author/<str:AUTHOR_ID>/posts/',views.make_posts, name='make_post'),
-    path(r'author/<str:AUTHOR_ID>/posts/<str: POST_ID>/',views.make_post, name='make_post'),
+    path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',views.make_post, name='make_post'),
 
 
     # handle delete
