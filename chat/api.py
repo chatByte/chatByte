@@ -204,3 +204,22 @@ def deleteComment(id):
     except BaseException as e:
         print(e)
         return False
+
+# get post funcountion
+def getPost(post_id):
+    try:
+        post = Post.objects.get(pk=post_id)
+        return post
+    except BaseException as e:
+        print(e)
+        return None
+# get post comment
+def getComments(post_id):
+    try:
+        post = getPost(post_id)
+        # bu zhi dao zen me xie
+        comments = post.Comment
+        return comments
+    except BaseException as e:
+        print(e)
+        return None

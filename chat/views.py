@@ -275,7 +275,7 @@ Generate response ,when delete user at feed page ,
 @login_required
 @require_http_methods(["GET", "POST", "PUT", "DELETE"])
 def make_post(request, AUTHOR_ID, POST_ID):
-    ur_user_name = None
+    cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
     # post_id = request.build_absolute_uri().split("/")[-2][6:]
@@ -285,11 +285,12 @@ def make_post(request, AUTHOR_ID, POST_ID):
         response = redirect("../posts/")
         return response
     elif request.method == "GET":
-        response = redirect("../posts/")
-        return response
+        post = getPost(POST_ID)
+        # TODO return an object or html?
+        return post
     elif request.method == "POST":
+        # updatePost()
         pass
-
 """
 Generate response at my profile page , 
 """
@@ -424,3 +425,23 @@ def edit_in_feed(request, ID):
     response = redirect("/chat/feed/")
 
     return response
+
+
+# coment views.py 
+@require_http_methods(["GET", "POST"])
+def comments(request, AUTHOR_ID, POST_ID):
+    cur_user_name = None
+    if request.user.is_authenticated:
+        cur_user_name = request.user.username
+    if request.method == "GET":
+        comments = getComments(POST_ID)
+
+        # TODO return objects or html?
+        return comments
+    elif request.method == "POST":
+        request_post = request.POST
+        author = request_post.get("author")
+        contentType = request_post.get("contentType")
+        comment = request_post.get("comment")
+        createComment(author, comment, contentType)
+        return request_post

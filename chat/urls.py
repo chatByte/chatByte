@@ -30,6 +30,7 @@ urlpatterns = [
     path(r"feed/edit<str:ID>/", views.edit_in_feed, name="edit_in_feed"),
     # path(r"feed/edit/", views.edit_in_feed, name="edit_in_feed"),
 
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/", views.comments, name="comments"),
 
 
   #path('', views.index, name='index'),
