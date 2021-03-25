@@ -1,7 +1,7 @@
 from django.test import TestCase
 from chat.models import Post, Comment, Profile
 from django.contrib.auth.models import User
-from chat.backend_api import *
+from chat.backend import *
 # Create your tests here.
 
 # class ActorTestCase(TestCase):

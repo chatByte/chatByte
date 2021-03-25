@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from .form import *
-from .backend_api import *
+from .backend import *
 import base64
 import os
 

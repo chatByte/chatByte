@@ -37,16 +37,76 @@ def updateUser(username, password):
         return False
 
 
-# add friend
-# def addFriend(name, friend_name):
-#     try:
-#         author = Author.objects.filter(DISPLAY_NAME=name)[0]
-#         friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
-#         author.FRIENDS.add(friend)
-#         return True
-#     except BaseException as e:
-#         print(e)
-#         return False
+def addFriend(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        user.profile.FRIENDS.add(friend)
+        user.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def deleteFriend(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        user.profile.FRIENDS.remove(friend)
+        user.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def getFriend(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        if friend in user.profile.FRIENDS.all(): return friend
+        return None
+    except BaseException as e:
+        print(e)
+        return None
+
+def getFriends(usr_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        return user.profile.FRIENDS.all()
+    except BaseException as e:
+        print(e)
+        return None
+
+def addFriendRequest(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        user.profile.FRIEND_REQUESTS.add(friend)
+        user.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def deleteFriendRequest(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        user.profile.FRIEND_REQUESTS.remove(friend)
+        user.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def getALLFriendRequests(usr_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        return user.profile.FRIEND_REQUESTS.all()
+    except BaseException as e:
+        print(e)
+        return None
+
 
 def updateProfile(id, first_name, last_name, email, url, github):
     # Please authenticate before calling this method
@@ -165,6 +225,7 @@ def getPost(post_id):
     except BaseException as e:
         print(e)
         return None
+
 # get post comment
 def getComments(post_id):
     try:
