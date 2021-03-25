@@ -12,11 +12,13 @@ from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     HOST = models.CharField(max_length=200, null=True)
     DISPLAY_NAME = models.CharField(max_length=200, unique=True, null=True)
     URL = models.CharField(max_length=200, null=True)
     GITHUB = models.CharField(max_length=200, null=True)
+
     FRIENDS = models.ManyToManyField(User, related_name='%(class)s_friends', blank=True)
     FOLLOWERS = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
     TIMELINE = models.ManyToManyField("Post", blank=True)

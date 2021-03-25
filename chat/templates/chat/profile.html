@@ -37,7 +37,9 @@
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right main-menu">
 
-              <li class="dropdown"><a href="../home">My Home</a></li>
+
+              <li class="dropdown"><a href="./public_channel/">Home public channel</a></li> 
+
               <li class="dropdown"><a href="../friend">My Friends</a></li>
 
               <li class="dropdown">
@@ -73,16 +75,17 @@
               <div class="col-md-3">
                 <div class="profile-info">
                   <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="img-responsive profile-photo" />
-                  <h3 id="fullName">{{myName}}</h3>
+                  <h3 id="fullName">{{user.username}}</h3>
                   <p class="text-muted"> 1000 people is following me</p>
                 </div>
               </div>
               <div class="col-md-9">
                 <ul class="list-inline profile-menu">
-                  <li><a href="../home">My Timeline</a></li>
-                  <li><a href="../myFriends">My Friends</a></li>
+                  <li><a href="./public_channel/">Home Public Channel</a></li>
+                  <li><a href="./friend/">My Friends</a></li>
                   <li><a href="" class="active">My Profile</a></li>
-                  <li><a href="../feed">Public Feed </a></li>
+                  <li><a href="./posts/">my posts</a></li>
+
                 </ul>
               </div>
             </div>

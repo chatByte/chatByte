@@ -48,16 +48,19 @@ def updateUser(username, password):
 #         print(e)
 #         return False
 
-def updateProfile(id, username, url, github):
+def updateProfile(id, first_name, last_name, email, url, github):
     # Please authenticate before calling this method
     try:
+        user = User.objects.get(pk=id)
         profile = Profile.objects.get(pk=id)
         # update element here
-        profile.DISPLAY_NAME = username
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
         profile.URL = url
         profile.GITHUB = github
 
-        # author.PASSWORD = password
+        user.save()
         profile.save()
         return True
     except BaseException as e:
@@ -162,7 +165,6 @@ def getPost(post_id):
     except BaseException as e:
         print(e)
         return None
-
 # get post comment
 def getComments(post_id):
     try:
