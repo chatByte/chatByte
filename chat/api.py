@@ -75,6 +75,34 @@ def getFriends(usr_id):
         print(e)
         return None
 
+def addFriendRequest(usr_id, friend_id):
+    try:
+        user = User.objects.get(ID=usr_id)
+        friend = User.objects.get(ID=friend_id)
+        return user.profile.FRIEND_REQUESTS.add(friend)
+    except BaseException as e:
+        print(e)
+        return None
+
+def deleteFriendRequest(usr_id, friend_id):
+    try:
+        user = User.objects.get(ID=usr_id)
+        friend = User.objects.get(ID=friend_id)
+        user.profile.FRIEND_REQUESTS.remove(friend)
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def getALLFriendRequests(usr_id):
+    try:
+        user = User.objects.get(ID=usr_id)
+        return user.profile.FRIEND_REQUESTS.all()
+    except BaseException as e:
+        print(e)
+        return None
+
+
 
 
 
