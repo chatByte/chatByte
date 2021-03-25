@@ -27,6 +27,10 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 """
 views.py receive request and create repose to client,
 Create your views here.
@@ -142,6 +146,9 @@ def home(request):
         'author_num_follwers': author_num_follwers
 
     }
+
+    # for user in User.objects.all():
+    #     Token.objects.get_or_create(user=user)
 
 
     response = render(request, "chat/home.html", dynamic_contain)

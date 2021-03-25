@@ -129,7 +129,7 @@ def createPost(title, source, origin, description, content_type, content, author
     try:
         post = Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
             , AUTHOR=author, CATEGORIES=categories, COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY=visibility)
-        author.TIMELINE.add(post)
+        author.profile.TIMELINE.add(post)
         author.save()
         return True
     except BaseException as e:
@@ -139,17 +139,16 @@ def createPost(title, source, origin, description, content_type, content, author
 def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
     # title, source, origin, description, content_type, content, author, categories, visibility
     try:
-        post = Post.objects.filter(ID=id)[0]
+        post = Post.objects.get(pk=id)
         post.title = title
         post.source = source
         post.origin = origin
         post.description = description
         post.content_type = content_type
-        post.contetn = content
+        post.content = content
         # post.author = author
         post.categories = categories
         post.visibility = visibility
-
         post.save()
         return True
     except BaseException as e:
@@ -158,7 +157,7 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
 
 def editPostDescription(id, description):
     try:
-        post = Post.objects.filter(ID=id)[0]
+        post = Post.objects.get(pk=id)
         post.DESCRIPTION = description
         if 'text/' in post.CATEGORIES:
             post.CONTENT = description
@@ -170,7 +169,7 @@ def editPostDescription(id, description):
 
 def deletePost(id):
     try:
-        Post.objects.filter(ID=id).delete()
+        Post.objects.get(pk=id).delete()
         return True
     except BaseException as e:
         print(e)
