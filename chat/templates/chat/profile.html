@@ -1,0 +1,137 @@
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Timeline | This is My Coolest Profile</title>
+
+    <!-- Stylesheets
+    ================================================= -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
+    <link href="{% static 'css/emoji.css' %}" rel="stylesheet">
+
+    <!--Google Font-->
+    <link href="https://fonts.googleapis.com/css?family=Archivo" rel="stylesheet">
+
+    <style media="screen">
+      body{
+        font-family:'Archivo';
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Header
+    ================================================= -->
+    <header id="header">
+      <nav class="navbar menu">
+        <div class="container">
+
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <!-- left most logo -->
+          <div class="navbar-header">
+            <a class="navbar-brand" href="">ChatByte</a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right main-menu">
+
+
+              <li class="dropdown"><a href="./public_channel/">Home public channel</a></li> 
+
+              <li class="dropdown"><a href="../friend">My Friends</a></li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="">Edit Profile</a></li>
+                </ul>
+              </li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Notification <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
+                <ul class="dropdown-menu">
+                  <!-- <li><a href="">Edit Profile</a></li> -->
+                </ul>
+              </li>
+              <li class="dropdown"><a href="">Contact</a></li>
+
+            </ul>
+
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container -->
+      </nav>
+    </header>
+    <!--Header End-->
+    <div class="container">
+
+      <div class="">
+        <div class="timeline-cover">
+
+          <!--Timeline Menu -->
+          <div class="timeline-nav-bar">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="profile-info">
+                  <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="img-responsive profile-photo" />
+                  <h3 id="fullName">{{myName}}</h3>
+                  <p class="text-muted"> 1000 people is following him</p>
+                </div>
+              </div>
+              <div class="col-md-9">
+                <ul class="list-inline profile-menu">
+                  <li><a href="./public_channel/">Home Public Channel</a></li>
+                  <li><a href="./friend/">My Friends</a></li>
+                  <li><a href="" class="active">My Profile</a></li>
+                  <li><a href="./posts/">my posts</a></li>
+
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!--Timeline Menu-->
+          </div>
+          <div id="page-contents">
+            <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-7">
+
+                <!-- Basic Information
+                ================================================= -->
+                <div class="edit-profile-container">
+                  <div class="block-title">
+                    <h4 class="">Edit My Profile</h4>
+                    <hr class="solid">
+                    <p>You can edit your profile information below</p>
+                    <div class="line"></div>
+                  </div>
+                  <div class="edit-block">
+                    <form name="basic-info" id="basic-info" class="form-inline" method="post">
+                      {% csrf_token %}
+                      {{ form.as_p }}
+                      <button class="btn btn-primary">Save Changes</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+
+    </div>
+    <!--preloader-->
+    <div id="spinner-wrapper">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Scripts
+    ================================================= -->
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
+    <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

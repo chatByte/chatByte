@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>ChatByte | This is the Coolest Social Network</title>
+		<!-- Stylesheets
+    ================================================= -->
+    	{% load static %}
+		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
+
+    <!--Google Font-->
+    <link href="https://fonts.googleapis.com/css?family=Titillium Web" rel="stylesheet">
+
+		<style media="screen">
+			body{
+				overflow: hidden;
+			}
+		</style>
+</head>
+<body>
+
+  <!-- Landing Page Contents
+  ================================================= -->
+  <div id="sign-up-page">
+    <div class="container wrapper">
+      <div class="row">
+        <div class="col-sm-5">
+          <div class="intro-texts">
+            <h1 class="text-white">Meet Awesome Programming Enthusiatics Here!</h1>
+            <p>Chaybyte descriptions</p>
+          </div>
+        </div>
+        <div class="col-sm-6 col-sm-offset-1">
+          <div class="reg-form-container">
+
+
+            <!--Registration Form Contents-->
+            <div class="tab-content">
+              <div  id="signup">
+                <h1>Join Today!</h1>
+                <p class="text-muted">An apple a day, keep the doctor away</p>
+
+                <!--Sign up Form-->
+                <!-- {% if messages %}
+					{% for message in messages %}
+	   					<p class="text-muted" style="color: red;">{{ message }}</li>
+					{% endfor %}
+				{% endif %} -->
+                <form name="sign_up_form" id='sign_up_form' class="form-inline" method="post" action="../signup/">
+							    {% csrf_token %}
+							    {{ form.as_p }}
+									<button type="submit" class="btn btn-primary">Sign Up Now</button>
+                </form><!--Sign up  Form Ends-->
+
+                <p><a href="../login">Already have an account?</a></p>
+              </div><!--Registration Form Contents Ends-->
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!--preloader-->
+  <div id="spinner-wrapper">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Scripts
+  ================================================= -->
+  <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
+  <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+  <script src="{% static 'js/script.js' %}"></script>
+</body>
