@@ -50,3 +50,12 @@ In the chatByte/mysite directory:
 #### command to create an admin:
 
     python manage.py createsuperuser
+    
+## Restful endpoints
+
+    chat/author/<author_id>/                                   (profile html / single author endpoint)
+    chat/author/<author_id>/posts                              (home html / list of posts endpoint)
+    chat/author/<author_id>/posts/<post_id>                    (profile html / single post endpoint)
+    chat/author/<author_id>/friends                            (friends html / list of authors endpoint)
+    chat/author/<author_id>/friends/<author_id>                (friendProfile html / list of authors endpoint)
+    chat/author/<author_id>/posts/<post_id>/comments           (profile html / list of comments endpoint)

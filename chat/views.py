@@ -127,7 +127,7 @@ def signup(request):
 
 
 """
-Generate response at home page  
+Generate response at home page
 """
 @login_required
 def home(request):
@@ -165,7 +165,7 @@ def home(request):
 
 
 """
-Generate response at friend_profile page , Now is deafault friend Zoe, need to be handled later 
+Generate response at friend_profile page , Now is deafault friend Zoe, need to be handled later
 """
 @login_required
 def friend_profile(request):
@@ -243,8 +243,9 @@ def make_post(request):
 
 
 
+
 """
-Generate response at my profile page , 
+Generate response at my profile page ,
 """
 @login_required
 def profile(request):
@@ -258,9 +259,6 @@ def profile(request):
     form.fields['Url'].initial = author.URL
     form.fields['GitHub'].initial = author.GITHUB
     form.fields['Password'].initial = actor.PASSWORD
-    context = {}
-    context['form']= form
-    context['myName']= author.DISPLAY_NAME
 
     # query to database
     if request.method == "GET":
@@ -317,7 +315,7 @@ def delete(request, ID):
 
 
 """
-Generate response ,when delete user at feed page , 
+Generate response ,when delete user at feed page ,
 """
 # only allowed DELETE or POST to delete feed's post
 @login_required
@@ -350,3 +348,6 @@ def edit_in_feed(request, ID):
     response = redirect("/chat/feed/")
 
     return response
+
+def my_friends(request):
+    return render(request, "chat/myFriends.html")

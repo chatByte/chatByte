@@ -78,6 +78,8 @@
             <div class="row">
               <div class="col-md-3">
                 <div class="profile-info">
+                  {% load static %}
+
                   <img src="{% static 'images/snow-mount.jpg' %}" alt="" class="img-responsive profile-photo" />
                   <h3 id="fullName">Zoe Smith</h3>
                   <p class="text-muted"> 1,000 people is following her</p>
@@ -243,12 +245,4 @@
       <div class="spinner"></div>
     </div>
 
-    <!-- Scripts
-    ================================================= -->
-    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
-    <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
-  </body>
-</html>
+{% endblock content %}

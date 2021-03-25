@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="">
+    <div class="timeline-cover">
+
+      <!--Timeline Menu -->
+      <div class="timeline-nav-bar">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="profile-info">
+              <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="img-responsive profile-photo" />
+              <h3 id="fullName">{{myName}}</h3>
+              <p class="text-muted"> 1000 people is following him</p>
+            </div>
+          </div>
+          <div class="col-md-9">
+            <ul class="list-inline profile-menu">
+              <li><a href="../home">My Timeline</a></li>
+              <li><a href="../myFriends">My Friends</a></li>
+              <li><a href="" class="active">My Profile</a></li>
+              <li><a href="../feed">Public Feed </a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!--Timeline Menu Ends-->
+    </div>
+      <div id="page-contents">
+        <div class="row">
+          <div class="col-md-3"></div>
+          <div class="col-md-7">
+      <!-- Friend List -->
+            <div class="friend-list">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="friend-card">
+                    <img src="http://placehold.it/1030x360" alt="profile-cover" class="img-responsive cover" />
+                    <div class="card-info">
+                      <img src="https://i1.sndcdn.com/artworks-000633504211-qcdzak-t500x500.jpg" alt="user" class="profile-photo-lg" />
+                      <div class="friend-info">
+                        <button class="btn-primary-sm unfollow pull-right">Unfollow</button>
+
+                        <h5><a href="../friend" class="profile-link">Hirose Koichi</a></h5>
+                        <p class="text-green">Been friends for 10 months</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="friend-card">
+                    <img src="http://placehold.it/1030x360" alt="profile-cover" class="img-responsive cover" />
+                    <div class="card-info">
+                      <img src="https://i.pinimg.com/736x/3c/88/c8/3c88c8510028f627cf58792795629ed1.jpg" alt="user" class="profile-photo-lg" />
+                      <div class="friend-info">
+                        <button class="btn-primary-sm unfollow pull-right">Unfollow</button>
+                        <h5><a href="../friend" class="profile-link">Higashikata Josuke</a></h5>
+                        <p class="text-green">Been friends for 10 months</p>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="friend-card">
+                    <img src="http://placehold.it/1030x360" alt="profile-cover" class="img-responsive cover" />
+                    <div class="card-info">
+                      <img src="https://media.comicbook.com/2019/01/jotaro-1154567-1280x0.jpeg" alt="user" class="profile-photo-lg" />
+                      <div class="friend-info">
+                        <button class="btn-primary-sm unfollow pull-right">Unfollow</button>
+                        <h5><a href="../friend" class="profile-link">Kujo Jotaro</a></h5>
+                        <p class="text-green">Been friends for 10 months</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Friend List End -->
+
+
+</div>
+<!--preloader-->
+<div id="spinner-wrapper">
+  <div class="spinner"></div>
+</div>
+
+
+{% endblock content %}

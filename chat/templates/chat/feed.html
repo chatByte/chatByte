@@ -84,21 +84,21 @@
               <div class="friend">
                 <img src="https://i1.sndcdn.com/artworks-000633504211-qcdzak-t500x500.jpg" alt="" class="profile-photo-sm pull-left" />
                 <div>
-                  <h5><a href="../friend">Hirose Koichi</a></h5>
+                  <h5><a href="../friend" class="profile-link">Hirose Koichi</a></h5>
                   <a href="#" class="text-muted">Just Posted</a>
                 </div>
               </div>
               <div class="friend">
                 <img src="https://i.pinimg.com/736x/3c/88/c8/3c88c8510028f627cf58792795629ed1.jpg" alt="" class="profile-photo-sm pull-left" />
                 <div>
-                  <h5><a href="../friend">Higashikata Josuke</a></h5>
+                  <h5><a href="../friend" class="profile-link">Higashikata Josuke</a></h5>
                   <a href="#" class="text-muted">Posted 3 days ago</a>
                 </div>
               </div>
               <div class="friend">
                 <img src="https://media.comicbook.com/2019/01/jotaro-1154567-1280x0.jpeg" alt="" class="profile-photo-sm pull-left" />
                 <div>
-                  <h5><a href="../friend">Kujo Jotaro</a></h5>
+                  <h5><a href="../friend" class="profile-link">Kujo Jotaro</a></h5>
                   <a href="#" class="text-muted">Posted 3 weeks ago</a>
                 </div>
               </div>
@@ -304,6 +304,7 @@
 
               <img src="https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8Zm9ycmVzdHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60" alt="post-image" class="img-responsive post-image" />
               <div class="post-container">
+                {% load static %}
                 <img src="{% static 'images/snow-mount.jpg' %}" alt="user" class="profile-photo-md pull-left" />
                 <div class="post-detail">
                   <div class="user-info">
@@ -353,13 +354,7 @@
       <div class="spinner"></div>
     </div>
 
-    <!-- Scripts
-    ================================================= -->
-    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
-    <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+    {% load static %}
     <script src="{% static 'script/feed.js' %}"></script>
     <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
-  </body>
-</html>
+{% endblock content %}
