@@ -62,7 +62,9 @@ Generate response at login page
 
 # """
 # Generate response at signup page  
-# # """
+
+# """
+
 # def signup(request):
 #     context = {}
 #     context['UserForm'] = UserForm()
@@ -93,6 +95,7 @@ Generate response at login page
 #             cur_user_name = username
 #             response = redirect("/chat/home/")
 #             return response
+
 #         # second method to handle user name exist, can be optimize later
 #         if createAuthor("this", username, url, github):
 #           return redirect("/chat/profile/")
@@ -109,31 +112,26 @@ def start_homepage(request):
 
 
 
+
 def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        print("test, beofore if")
-        print("request : ", request.POST)
-        print("form. : ", form)
+    form = UserCreationForm(request.POST)
+    print("--------------", request.POST)
+    print("--------------", form)
+    form.non_field_errors()
+    field_errors = [ (field.label, field.errors) for field in form] 
+    print(field_errors)
 
-        # if form.is_valid():
-        print("gugua, in  if")
-        # form.save()
-        # username = form.cleaned_data.get('username')
-        # raw_password = form.cleaned_data.get('password1')
-        username = request.POST['username']
-        raw_password = request.POST['password1']
-
-        user = authenticate(username=username, password=raw_password)
-        print("authenticate, in  if")
+    if form.is_valid():
+        print("is valid")
+        form.save()
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password1')
+        print("authenticating...")
+        user = authenticate(username=username, password=password)
+        print("logging in...")
         login(request, user)
-        print("test, in  if")
-        return redirect('registration/profile.html')
-
-
-    else:
-        form = UserCreationForm()
-
+        
+        return redirect('/chat/author/' + str(user.id))
     return render(request, 'registration/signup.html', {'form': form})
 
 
@@ -246,7 +244,7 @@ def make_posts(request, AUTHOR_ID):
         createFlag = createPost(title, source, origin, description, content_type, content, author, categories, visibility)
         if createFlag:
             print("haha, successful create post, info: ", description)
-            response = redirect("/chat/home/")
+            response = redirect("/chat/author/"+ str(AUTHOR_ID) + "/public_channel/")
             return response
         else:
             print("server feels sad ", description)
@@ -400,7 +398,9 @@ def delete(request, ID):
     # post_id = request.build_absolute_uri().split("/")[-2][6:]
     cur_author = request.user.profile #getAuthor(cur_user_name)
     deletePost(ID)
-    response = redirect("/chat/home/")
+
+    # TODO: may not redirect
+    response = redirect("/chat/author/"+ str(request.user.id) + "/public_channel/")
     return response
 
 
@@ -409,6 +409,7 @@ def edit(request, ID):
     new_description = request.POST.get("editText")
     print(new_description)
     editPostDescription(ID, new_description)
+    # TODO: may not redirect
     response = redirect("/chat/feed/")
 
     return response
