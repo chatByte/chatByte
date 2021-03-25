@@ -43,17 +43,25 @@
               <li class="dropdown"><a href="../home">My Home</a></li>
               <li class="dropdown"><a href="../myFriend">My Friends</a></li>
 
+
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
-                  <li><a href="">Edit Profile</a></li>
+                  <li><a href="author/">Edit Profile</a></li>
                 </ul>
               </li>
 
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Notification <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
-                  <!-- <li><a href="">Edit Profile</a></li> -->
+                  <li>Someone wants to add you as friend!</li>
+                </ul>
+              </li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Notification <span><span class="badge">5</span>&thinsp;<img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="">Some one has sent you a friend request!</a><button>Accept</button><button>Reject</button></li>
                 </ul>
               </li>
               <li class="dropdown"><a href="">Contact</a></li>
@@ -66,11 +74,7 @@
     </header>
     <!--Header End-->
     {% block content %}{% endblock content %}
-    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
-    <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
+  
 
   </body>
 

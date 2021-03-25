@@ -121,6 +121,11 @@ hr.solid {
 a.disabled {
   pointer-events: none;
 }
+
+badge {
+  position: relative;
+  padding-left: 5px;
+}
 /*==================================================
   Header
   ==================================================*/
