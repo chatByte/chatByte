@@ -126,9 +126,9 @@ def updateProfile(id, username, url, github):
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
     #TODO keep track of COMMENTS_NO and PAGE_SIZE, COMMENTS_FIRST_PAGE
     try:
-        post = Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
+        post = Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCRIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
             , AUTHOR=author, CATEGORIES=categories, COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY=visibility)
-        author.TIMELINE.add(post)
+        author.profile.TIMELINE.add(post)
         author.save()
         return True
     except BaseException as e:
@@ -138,16 +138,18 @@ def createPost(title, source, origin, description, content_type, content, author
 def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
     # title, source, origin, description, content_type, content, author, categories, visibility
     try:
-        post = Post.objects.filter(ID=id)[0]
-        post.title = title
-        post.source = source
-        post.origin = origin
-        post.description = description
-        post.content_type = content_type
-        post.content = content
+        post = Post.objects.get(ID=id)
+        print("old title:", post.TITLE)
+        post.TITLE = title
+        
+        post.SOURCE = source
+        post.ORIGIN = origin
+        post.DESCIPTION = description
+        post.CONTENT_TYPE = content_type
+        post.CONTENT = content
         # post.author = author
-        post.categories = categories
-        post.visibility = visibility
+        post.CATEGORIES = categories
+        post.VISIBILITY = visibility
 
         post.save()
         return True
@@ -157,7 +159,7 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
 
 def editPostDescription(id, description):
     try:
-        post = Post.objects.filter(ID=id)[0]
+        post = Post.objects.get(ID=id)
         post.DESCRIPTION = description
         if 'text/' in post.CATEGORIES:
             post.CONTENT = description
@@ -169,17 +171,20 @@ def editPostDescription(id, description):
 
 def deletePost(id):
     try:
-        Post.objects.filter(ID=id).delete()
+        Post.objects.get(ID=id).delete()
         return True
     except BaseException as e:
         print(e)
         return False
 
 
-def createComment(author, comment, content_type):
+def createComment(author, post_id, comment, content_type):
     try:
+        post = Post.objects.get(ID=post_id)
         commentObj = Comment.objects.create(AUTHOR=author, COMMENT=comment, CONTENT_TYPE=content_type)
-        # print('comment:',commentObj)
+        post.COMMENTS.add(commentObj)
+        print('comment:',commentObj)
+        post.save()
         return True
     except BaseException as e:
         print(e)
@@ -218,7 +223,7 @@ def getComments(post_id):
     try:
         post = getPost(post_id)
         # bu zhi dao zen me xie
-        comments = post.Comment
+        comments = post.COMMENTS
         return comments
     except BaseException as e:
         print(e)

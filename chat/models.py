@@ -39,7 +39,7 @@ class Profile(models.Model):
     class Meta:
         managed = False
 
-        
+
 class Comment(models.Model):
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     AUTHOR = models.ForeignKey(User, on_delete=models.CASCADE,)
@@ -52,7 +52,7 @@ class Post(models.Model):
     TITLE = models.TextField()
     SOURCE = models.CharField(max_length=200)
     ORIGIN = models.CharField(max_length=200)
-    DESCIPTION = models.TextField()
+    DESCRIPTION = models.TextField()
     CONTENT_TYPE = models.CharField(max_length=200)
     CONTENT = models.TextField()
     AUTHOR = models.ForeignKey(User, on_delete=models.CASCADE,)
