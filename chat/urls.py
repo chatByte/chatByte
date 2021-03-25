@@ -3,24 +3,20 @@ from . import views
 # from .views import SignUpView
 
 urlpatterns = [
-    # path('login/', views.login, name='login'),
-    # path("accounts/signup/", SignUpView.as_view(), name="signup"),
-    # path("home/", views.home, name="home"),
     path("", views.start_homepage, name=""),
     path("friend/", views.friend_profile, name="friend_profile"),
-    # path("author/<str:AUTHOR_ID>/feed", views.make_post, name="feed"),
 
     path("author/<str:AUTHOR_ID>/profile/", views.profile, name="profile"),
     path("author/<str:AUTHOR_ID>/", views.profile_obj, name="profile_obj"),
 
-    path(r'author/<str:AUTHOR_ID>/posts/',views.make_posts, name='make_post'),
-    path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',views.make_post, name='make_post'),
+    # TODO: my_posts view only my own post
+    path(r"author/<str:AUTHOR_ID>/my_posts/", views.make_posts, name="make_posts"),
+    path(r'author/<str:AUTHOR_ID>/posts/',views.make_posts_obj, name='make_posts_obj'),
+    path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',views.make_post_obj, name='make_post_obj'),
 
 
     # show info => get request, views.public_channel originally called feed, and able to comment
     path(r"author/<str:AUTHOR_ID>/public_channel/", views.home_public_channel, name="public_channel"),
-    # TODO: my_posts view only my own post
-    # path(r"author/<str:AUTHOR_ID>/my_posts/", views.home_public_channel, name="public_channel"),
 
 
     # handle delete

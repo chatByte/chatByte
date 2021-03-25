@@ -257,6 +257,9 @@ def make_posts(request, AUTHOR_ID):
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
+def make_posts_obj():
+    pass
+
 
 """
 Generate response ,when delete user at feed page ,
@@ -277,7 +280,7 @@ Generate response ,when delete user at feed page ,
 
 @login_required
 @require_http_methods(["GET", "POST", "PUT", "DELETE"])
-def make_post(request, AUTHOR_ID, POST_ID):
+def make_post_obj(request, AUTHOR_ID, POST_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
