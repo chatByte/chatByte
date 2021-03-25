@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import api
 # from .views import SignUpView
 
 urlpatterns = [
@@ -10,9 +11,9 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/", views.profile_obj, name="profile_obj"),
 
     # TODO: my_posts view only my own post
-    path(r"author/<str:AUTHOR_ID>/my_posts/", views.make_posts, name="make_posts"),
-    path(r'author/<str:AUTHOR_ID>/posts/',views.make_posts_obj, name='make_posts_obj'),
-    path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',views.make_post_obj, name='make_post_obj'),
+    path(r"author/<str:AUTHOR_ID>/my_posts/", views.posts, name="make_posts"),
+    path(r'author/<str:AUTHOR_ID>/posts/',views.posts_obj, name='make_posts_obj'),
+    path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',views.post_obj, name='make_post_obj'),
 
 
     # show info => get request, views.public_channel originally called feed, and able to comment
@@ -28,13 +29,13 @@ urlpatterns = [
     # path(r"feed/edit<str:ID>/", views.edit_in_feed, name="edit_in_feed"),
     # path(r"feed/edit/", views.edit_in_feed, name="edit_in_feed"),
 
-    path("author/<str:AUTHOR_ID>/friends/<str:FRIEND_ID>/", views.my_friends, name="my_friends"),
+    path("author/<str:AUTHOR_ID>/friends/", views.my_friends, name="my_friends"),
 
     # show friend list
-    path("author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", views.delete_friend, name="friend_delete"),
+    path("author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", api.delete_friend_obj, name="friend_delete"),
 
     # add friend
-    path("author/<str:AUTHOR_ID>/friends/add/<str:FRIEND_ID>", views.add_friend, name="friend_add"),
+    path("author/<str:AUTHOR_ID>/friends/add/<str:FRIEND_ID>", api.add_friend_obj, name="friend_add"),
 
     # delete friend
 

@@ -1,36 +1,15 @@
-from django.shortcuts import render, redirect, render_to_response
-from django.http import HttpResponse
-
-from .models import Post
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
-from django.db import transaction
-
-from django.core import serializers
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
-from django.views import generic
-
-from django.http import JsonResponse
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from .form import *
 from .api import *
 import base64
 import os
-import json
 
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
-
-from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 
 """
 views.py receive request and create repose to client,
@@ -199,7 +178,7 @@ Generate response at feed page ,
 """
 @login_required
 @require_http_methods(["GET", "POST"])
-def make_posts(request, AUTHOR_ID):
+def posts(request, AUTHOR_ID):
     """
     so far, only support text-only post and post with img and caption
     Prob: 1. createPost return error!
@@ -257,9 +236,6 @@ def make_posts(request, AUTHOR_ID):
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
-def make_posts_obj():
-    pass
-
 
 """
 Generate response ,when delete user at feed page ,
@@ -278,25 +254,7 @@ Generate response ,when delete user at feed page ,
 
 #     return response
 
-@login_required
-@require_http_methods(["GET", "POST", "PUT", "DELETE"])
-def make_post_obj(request, AUTHOR_ID, POST_ID):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
-    # post_id = request.build_absolute_uri().split("/")[-2][6:]
 
-    if request.method == "DELETE":
-        deletePost(POST_ID)
-        response = redirect("../posts/")
-        return response
-    elif request.method == "GET":
-        post = getPost(POST_ID)
-        # TODO return an object or html?
-        return post
-    elif request.method == "POST":
-        # updatePost()
-        pass
 """
 Generate response at my profile page ,
 """
@@ -332,44 +290,6 @@ def profile(request, AUTHOR_ID):
         return response
 
 
-"""
-REST Author, Generate response at my profile page ,
-"""
-# @login_required
-def profile_obj(request):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
-    author = request.user.profile
-
-    obj = {
-    "type":"author",
-    # ID of the Author
-    "id": author.URL,
-    # the home host of the author
-    "host": author.HOST,
-    # the display name of the author
-    "displayName": author.DISPLAY_NAME,
-    # url to the authors profile
-    "url": author.URL,
-    # HATEOS url for Github API
-    "github": author.GITHUB
-    }
-
-
-    # query to database
-    if request.method == "GET":
-        return  json.dumps(obj)
-    elif request.method == "POST":
-
-        post_obj = json.loads(request.body)
-        url = post_obj["url"]
-        displayName = post_obj["displayName"]
-        github = post_obj["github"]
-        # we do not allowed leave our server
-        # host = post_obj["host"]
-        updateProfile(displayName, url, github)
-        return post_obj
 
 
 
@@ -437,24 +357,7 @@ def edit_in_feed(request, ID):
     return response
 
 
-# coment views.py
-@require_http_methods(["GET", "POST"])
-def comments(request, AUTHOR_ID, POST_ID):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
-    if request.method == "GET":
-        comments = getComments(POST_ID)
 
-        # TODO return objects or html?
-        return comments
-    elif request.method == "POST":
-        request_post = request.POST
-        author = request_post.get("author")
-        contentType = request_post.get("contentType")
-        comment = request_post.get("comment")
-        createComment(author, comment, contentType)
-        return request_post
 
 @require_http_methods(["GET"])
 def my_friends(request, AUTHOR_ID, FRIEND_ID):
@@ -471,9 +374,4 @@ def my_friends(request, AUTHOR_ID, FRIEND_ID):
     # return render(request, "chat/myFriends.html", dynamic_contain)
     return render(request, "chat/myFriends.html")
 
-@require_http_methods(["GET"])
-def delete_friend(request, AUTHOR_ID, FRIEND_ID):
-    return True
 
-def add_friend(request, AUTHOR_ID, FRIEND_ID):
-    return True
