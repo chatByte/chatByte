@@ -31,6 +31,7 @@ class Profile(models.Model):
         managed = False
 
 class Comment(models.Model):
+    TYPE = models.CharField(max_length=200, default="comment")
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     AUTHOR = models.ForeignKey(User, on_delete=models.CASCADE,)
     COMMENT = models.TextField()
@@ -38,6 +39,8 @@ class Comment(models.Model):
     PUBLISHED = models.DateTimeField(default=django.utils.timezone.now)
 
 class Post(models.Model):
+    TYPE = models.CharField(max_length=200, default="post")
+
     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     TITLE = models.TextField()
     SOURCE = models.CharField(max_length=200)

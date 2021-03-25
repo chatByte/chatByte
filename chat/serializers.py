@@ -15,6 +15,7 @@ class CommentSerializer(serializers.Serializer):
     # author_id = serializers.IntegerField()
 
 
+    TYPE = models.CharField(max_length=200, default="comment")
     ID = serializers.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     AUTHOR = serializers.ForeignKey(User, on_delete=serializers.CASCADE,)
     COMMENT = serializers.TextField()
@@ -25,7 +26,7 @@ class CommentSerializer(serializers.Serializer):
         return Comment.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-
+    	instance.TYPE = validated_data.get('TYPE', instance.TYPE)
     	instance.ID = validated_data.get('ID', instance.ID)
         instance.AUTHOR = validated_data.get('AUTHOR', instance.AUTHOR)
         instance.COMMENT = validated_data.get('COMMENT', instance.COMMENT)
@@ -39,7 +40,7 @@ class CommentSerializer(serializers.Serializer):
 
 class PostSerializer(serializers.Serializer):
 
-
+	TYPE = models.CharField(max_length=200, default="post")
 	ID = serializers.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     TITLE = serializers.TextField()
     SOURCE = serializers.CharField(max_length=200)
@@ -69,6 +70,8 @@ class PostSerializer(serializers.Serializer):
         return Post.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
+    	instance.TYPE = validated_data.get('TYPE', instance.TYPE)
+    	
         instance.ID = validated_data.get('ID', instance.ID)
         instance.TITLE = validated_data.get('TITLE', instance.TITLE)
         instance.SOURCE = validated_data.get('SOURCE', instance.SOURCE)
