@@ -45,7 +45,7 @@ Create your views here.
 
 
 """
-Generate response at login page  
+Generate response at login page
 """
 # def login(request):
 #     context = {}
@@ -65,7 +65,7 @@ Generate response at login page
 #             return response
 
 # """
-# Generate response at signup page  
+# Generate response at signup page
 
 # """
 
@@ -110,7 +110,7 @@ Generate response at login page
 @login_required
 def start_homepage(request):
     if request.user.is_authenticated:
-        return redirect("/chat/author/" + str(request.user.id) + "/")
+        return redirect("/chat/author/" + str(request.user.id) + "/profile/")
 
 
 
@@ -120,7 +120,7 @@ def signup(request):
     print("--------------", request.POST)
     print("--------------", form)
     form.non_field_errors()
-    field_errors = [ (field.label, field.errors) for field in form] 
+    field_errors = [ (field.label, field.errors) for field in form]
     print(field_errors)
 
     if form.is_valid():
@@ -132,7 +132,7 @@ def signup(request):
         user = authenticate(username=username, password=password)
         print("logging in...")
         login(request, user)
-        
+
         return redirect('/chat/author/' + str(user.id))
     return render(request, 'registration/signup.html', {'form': form})
 
@@ -141,8 +141,8 @@ def signup(request):
 """
 Generate response at home page  => eveyones' post here
 """
-# get feed and 
-# post: comment/like => send post request to host server(edit post function), 
+# get feed and
+# post: comment/like => send post request to host server(edit post function),
 @require_http_methods(["GET", "POST"])
 @login_required
 def home_public_channel(request, AUTHOR_ID):
@@ -259,7 +259,7 @@ def make_posts(request, AUTHOR_ID):
 
 
 """
-Generate response ,when delete user at feed page , 
+Generate response ,when delete user at feed page ,
 """
 # only allowed DELETE or POST to delete feed's post
 # @login_required
@@ -272,7 +272,7 @@ Generate response ,when delete user at feed page ,
 
 #     deletePost(ID)
 #     response = redirect("/chat/feed/")
-   
+
 #     return response
 
 @login_required
@@ -330,43 +330,43 @@ def profile(request, AUTHOR_ID):
 
 
 """
-REST Author, Generate response at my profile page , 
+REST Author, Generate response at my profile page ,
 """
 # @login_required
-# def profile_obj(request):
-    # cur_user_name = None
-    # if request.user.is_authenticated:
-    #     cur_user_name = request.user.username
-    # author = request.user.profile
+def profile_obj(request):
+    cur_user_name = None
+    if request.user.is_authenticated:
+        cur_user_name = request.user.username
+    author = request.user.profile
 
-    # obj = {
-    # "type":"author",
-    # # ID of the Author
-    # "id": author.URL,
-    # # the home host of the author
-    # "host": author.HOST,
-    # # the display name of the author
-    # "displayName": author.DISPLAY_NAME,
-    # # url to the authors profile
-    # "url": author.URL,
-    # # HATEOS url for Github API
-    # "github": author.GITHUB
-    # }
+    obj = {
+    "type":"author",
+    # ID of the Author
+    "id": author.URL,
+    # the home host of the author
+    "host": author.HOST,
+    # the display name of the author
+    "displayName": author.DISPLAY_NAME,
+    # url to the authors profile
+    "url": author.URL,
+    # HATEOS url for Github API
+    "github": author.GITHUB
+    }
 
 
-    # # query to database
-    # if request.method == "GET":
-    #     return  json.dumps(obj)
-    # elif request.method == "POST":
+    # query to database
+    if request.method == "GET":
+        return  json.dumps(obj)
+    elif request.method == "POST":
 
-    #     post_obj = json.loads(request.body)
-    #     url = post_obj["url"]
-    #     displayName = post_obj["displayName"]
-    #     github = post_obj["github"]
-    #     # we do not allowed leave our server
-    #     # host = post_obj["host"]
-    #     updateProfile(displayName, url, github)
-    #     return post_obj
+        post_obj = json.loads(request.body)
+        url = post_obj["url"]
+        displayName = post_obj["displayName"]
+        github = post_obj["github"]
+        # we do not allowed leave our server
+        # host = post_obj["host"]
+        updateProfile(displayName, url, github)
+        return post_obj
 
 
 
@@ -392,8 +392,8 @@ REST Author, Generate response at my profile page ,
 #     })
 
 """
-Generate response ,when delete user at home page , 
-For user frinedly feature 
+Generate response ,when delete user at home page ,
+For user frinedly feature
 """
 @login_required
 @require_http_methods(["DELETE", "POST"])
@@ -421,8 +421,8 @@ def edit(request, ID):
     return response
 
 # delete later
-# get feed and 
-# post: comment/like => send post request to host server(edit post function), 
+# get feed and
+# post: comment/like => send post request to host server(edit post function),
 @require_http_methods(["GET", "POST"])
 def edit_in_feed(request, ID):
     print(request.POST)
@@ -434,7 +434,7 @@ def edit_in_feed(request, ID):
     return response
 
 
-# coment views.py 
+# coment views.py
 @require_http_methods(["GET", "POST"])
 def comments(request, AUTHOR_ID, POST_ID):
     cur_user_name = None
@@ -452,3 +452,25 @@ def comments(request, AUTHOR_ID, POST_ID):
         comment = request_post.get("comment")
         createComment(author, comment, contentType)
         return request_post
+
+@require_http_methods(["GET"])
+def my_friends(request, AUTHOR_ID, FRIEND_ID):
+    # cur_user_name = request.COOKIES.get('user')
+    # cur_author = getAuthor(cur_user_name)
+    # friend_list = getFriend(cur_user_name)
+    # author_num_follwers = 10;
+    # dynamic_contain = {
+    #     'myName' : cur_author.DISPLAY_NAME,
+    #     'friend_list': friend_list,
+    #     'author_num_follwers': author_num_follwers,
+    #
+    # }
+    # return render(request, "chat/myFriends.html", dynamic_contain)
+    return render(request, "chat/myFriends.html")
+
+@require_http_methods(["GET"])
+def delete_friend(request, AUTHOR_ID, FRIEND_ID):
+    return True
+
+def add_friend(request, AUTHOR_ID, FRIEND_ID):
+    return True

@@ -15,7 +15,6 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 print("-------------------------------------------------------------------------\n", BASE_DIR)
 
 
@@ -72,7 +71,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
