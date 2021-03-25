@@ -26,57 +26,21 @@
 	================================================= -->
 	<section class="banner">
 		<div class="container">
-
-			<!-- Sign In Form
-			================================================= -->
 			<div class="sign-in-form">
 				<a href="home.html" class="logo"><img src="" alt="Logo"/></a>
 				<h1 class="text-white">CHATBYTE</h1>
 				<hr class="solid">
 
 				<div class="form-wrapper">
-					<p class="signin-text">Sign in now and connect with awesome programming enthusiatics around the world!</p>
-
-					<form action="../login/", class="form-inline", method="POST">
-						<!-- <fieldset class="form-group">
-							<input type="text" class="form-control" id="example-name" placeholder="Enter name">
-						</fieldset>
-						<fieldset class="form-group">
-							<input type="email" class="form-control" id="example-email" placeholder="Enter email">
-						</fieldset>
-						<fieldset class="form-group">
-							<input type="password" class="form-control" id="example-password" placeholder="Enter a password">
-						</fieldset> -->
-						{% if messages %}
-							<ul>
-								{% for message in messages %}
-	                                 <li style="position: relative; right: -25px; color: red;">{{ message }}</li>
-	                            {% endfor %}
-                            </ul>
-						{% endif %}
-					    {% csrf_token %}
-						<div class="input-box">
-							{{ form.as_p }}
-						</div>
-					    
-					    <button type="submit" class="btn-secondary">Sign in</button>
-					</form>
+					{% block content %}{% endblock %}
 				</div>
-				<a href="../signup">Do not have an account?</a>
 				<img class="form-shadow" src="{% static 'images/bottom-shadow.png' %}" alt="" />
-			</div><!-- Sign Up Form End -->
-
-
+			</div>
+            
 		</div>
 	</section>
 
 	<img class="back" src="{% static 'images/tech_back.jpg' %}"/>
-
-
-
-
-
-
 
 	<!--preloader-->
 	<div id="spinner-wrapper">
