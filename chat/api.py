@@ -37,16 +37,49 @@ def updateUser(username, password):
         return False
 
 
-# add friend
-# def addFriend(name, friend_name):
-#     try:
-#         author = Author.objects.filter(DISPLAY_NAME=name)[0]
-#         friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
-#         author.FRIENDS.add(friend)
-#         return True
-#     except BaseException as e:
-#         print(e)
-#         return False
+def addFriend(usr_id, friend_id):
+    try:
+        user = User.objects.get(ID=usr_id)
+        friend = User.objects.get(ID=friend_id)
+        user.profile.FRIENDS.add(friend)
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def deleteFriend(usr_id, friend_id):
+    try:
+        user = User.objects.get(ID=usr_id)
+        friend = User.objects.get(ID=friend_id)
+        user.profile.FRIENDS.remove(friend)
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def getFriend(usr_id, friend_id):
+    try:
+        user = User.objects.get(ID=usr_id)
+        friend = User.objects.get(ID=friend_id)
+        return friend
+    except BaseException as e:
+        print(e)
+        return {}
+
+def getFriends(usr_id):
+    try:
+        user = User.objects.get(ID=usr_id)
+        friend = User.objects.get(ID=friend_id)
+        user.profile.FRIENDS.add(friend)
+        return user.profile.FRIENDS.all()
+    except BaseException as e:
+        print(e)
+        return {}
+
+
+
+
+
 
 def updateProfile(id, username, url, github):
     # Please authenticate before calling this method
