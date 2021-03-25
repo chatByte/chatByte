@@ -35,6 +35,33 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function deletePost(id){
+  console.log(id);
+  var url = "../posts/"+id+"/";
+  console.log(url);
+  var csrftoken = getCookie('csrftoken');
+  console.log(csrftoken);
+  $.ajax({
+        url : "../posts/"+id+"/", // the endpoint
+        type : "DELETE", // http method
+        dataType: 'text', // what to expect back from the server
+        cache: false,
+        contentType: false,
+        processData: false,
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+        },
+
+        data: {},
+
+        // handle a successful response
+        success : function(json) {
+            console.log("success"); // sanity check
+            location.reload();
+        },
+      });
+}
+
 // display selected local image
 function readImg(input) {
     if (input.files && input.files[0]) {
@@ -55,7 +82,7 @@ $( document ).ready(function() {
 
     // get csrftoken, used in AJAX Request
     const csrftoken = getCookie('csrftoken');
-    // console.log("csrftoken = ", csrftoken);
+    console.log("csrftoken = ", csrftoken);
 
 
     // deal with 2 dropdown lists: visibility and contentType
@@ -99,6 +126,7 @@ $( document ).ready(function() {
     // REQUEST POST: make_post
     // create a new post
     $('#publishBtn').click(function(e){
+      console.log(e);
 
       title = $('#title').val();
       description = $('#description').val();
@@ -147,8 +175,6 @@ $( document ).ready(function() {
       //       console.log("success"); // sanity check
       //   },
       // });
-
-
 
 
     });

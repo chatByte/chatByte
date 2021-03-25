@@ -3,12 +3,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import JSONParser
+from django.shortcuts import render, redirect
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from .models import *
 from .serializers import *
+from .backend import *
 
 
 
@@ -39,6 +41,7 @@ from .serializers import *
 @login_required
 @require_http_methods(["GET", "POST", "PUT", "DELETE"])
 def post_obj(request, AUTHOR_ID, POST_ID):
+    print("?????")
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
@@ -52,7 +55,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
 
     if request.method == "DELETE":
         deletePost(POST_ID)
-        response = redirect("../posts/")
+        response = redirect("../my_posts/")
         return HttpResponse(status=204)
     elif request.method == "GET":
         serializer = PostSerializer(post)
@@ -128,40 +131,33 @@ REST Author, Generate response at my profile page ,
 """
 # TODO
 # @login_required
-def profile_obj(request):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
-    author = request.user.profile
-
-    obj = {
-    "type":"author",
-    # ID of the Author
-    "id": author.URL,
-    # the home host of the author
-    "host": author.HOST,
-    # the display name of the author
-    "displayName": author.DISPLAY_NAME,
-    # url to the authors profile
-    "url": author.URL,
-    # HATEOS url for Github API
-    "github": author.GITHUB
-    }
-
+@require_http_methods(["GET", "POST"])
+def profile_obj(request, AUTHOR_ID):
+    profile = Profile.objects.get(pk=AUTHOR_ID)
+    try:
+        profile = Profile.objects.get(user_id=AUTHOR_ID)
+    except profile.DoesNotExist:
+        return HttpResponse(status=404)
 
     # query to database
     if request.method == "GET":
-        return  json.dumps(obj)
+        serializer = ProfileSerializer(profile)
+        return JsonResponse(serializer.data)
     elif request.method == "POST":
-
-        post_obj = json.loads(request.body)
-        url = post_obj["url"]
-        displayName = post_obj["displayName"]
-        github = post_obj["github"]
-        # we do not allowed leave our server
-        # host = post_obj["host"]
-        updateProfile(displayName, url, github)
-        return post_obj
+        data = JSONParser().parse(request)
+        serializer = SnippetSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+        # post_obj = json.loads(request.body)
+        # url = post_obj["url"]
+        # displayName = post_obj["displayName"]
+        # github = post_obj["github"]
+        # # we do not allowed leave our server
+        # # host = post_obj["host"]
+        # updateProfile(displayName, url, github)
+        # return post_obj
 
 
 

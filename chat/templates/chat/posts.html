@@ -143,7 +143,7 @@
                         </form>
                         {% endif %}
 
-                        <div class="edit"><a href="/chat/feed/edit{{ cur_post.ID }}/" class="editBtn"/>Edit</a>&emsp;<a href="/chat/feed/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div>
+                        <div class="edit"><a href="/chat/feed/edit{{ cur_post.ID }}/" class="editBtn"/>Edit</a>&emsp;<!--<a href="/chat/feed/delete{{ cur_post.ID }}/"  class="text-red">Delete</a>--><button id="{{ cur_post.ID }}" onclick="deletePost(this.id)">Delete</button></div>
 
                       </div>
 
