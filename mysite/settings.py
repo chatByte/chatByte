@@ -135,7 +135,6 @@ DATABASES = {
     }
 }
 
-<<<<<<< HEAD
 # Django Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -152,6 +151,3 @@ REST_FRAMEWORK = {
 LOGIN_REDIRECT_URL = '/chat/home'
 
 django_on_heroku.settings(locals())
-=======
-django_on_heroku.settings(locals())
->>>>>>> Yuxin
