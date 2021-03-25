@@ -119,7 +119,7 @@ $( document ).ready(function() {
 
 
       $.ajax({
-        url : "make_post/", // the endpoint
+        url : ".", // the endpoint
         type : "POST", // http method
         dataType: 'text', // what to expect back from the server
         cache: false,
@@ -132,6 +132,25 @@ $( document ).ready(function() {
             console.log("success"); // sanity check
         },
       });
+
+      // $.ajax({
+      //   url : ".", // the endpoint
+      //   type : "DELETE", // http method
+      //   dataType: 'text', // what to expect back from the server
+      //   cache: false,
+      //   contentType: false,
+      //   processData: false,
+      //   data: form_data,
+
+      //   // handle a successful response
+      //   success : function(json) {
+      //       console.log("success"); // sanity check
+      //   },
+      // });
+
+
+
+
     });
 
 });

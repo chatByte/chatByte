@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from .form import *
-from .api import *
+from .backend import *
 import base64
 import os
 
@@ -214,7 +214,6 @@ def posts(request, AUTHOR_ID):
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
         f = request.FILES.get("file", "")
-        author = cur_author
         categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
         visibility = request_post.get("visibility", "")
 
@@ -225,7 +224,7 @@ def posts(request, AUTHOR_ID):
         else:
             content = description
 
-        createFlag = createPost(title, source, origin, description, content_type, content, author, categories, visibility)
+        createFlag = createPost(title, source, origin, description, content_type, content, request.user, categories, visibility)
         if createFlag:
             print("haha, successful create post, info: ", description)
             response = redirect("/chat/author/"+ str(AUTHOR_ID) + "/public_channel/")

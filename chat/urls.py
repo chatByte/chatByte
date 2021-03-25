@@ -8,20 +8,20 @@ urlpatterns = [
     path("friend/", views.friend_profile, name="friend_profile"),
 
     path("author/<str:AUTHOR_ID>/profile/", views.profile, name="profile"),
-    path("author/<str:AUTHOR_ID>/", views.profile_obj, name="profile_obj"),
+    path("author/<str:AUTHOR_ID>/", api.profile_obj, name="profile_obj"),
 
     # TODO: my_posts view only my own post
     path(r"author/<str:AUTHOR_ID>/my_posts/", views.posts, name="make_posts"),
-    path(r'author/<str:AUTHOR_ID>/posts/',views.posts_obj, name='make_posts_obj'),
-    path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',views.post_obj, name='make_post_obj'),
-
+    path(r'author/<str:AUTHOR_ID>/posts/',api.posts_obj, name='make_posts_obj'),
+    path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',api.post_obj, name='make_post_obj'),
+    path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments',api.comment_list_obj, name='comment_list_obj'),
 
     # show info => get request, views.public_channel originally called feed, and able to comment
     path(r"author/<str:AUTHOR_ID>/public_channel/", views.home_public_channel, name="public_channel"),
 
 
     # handle delete
-    # path("home/delete<str:ID>/", views.delete, name="delete"),
+    path("home/delete<str:ID>/", views.delete, name="delete"),
     # path("feed/delete<str:ID>/", views.delete_in_feed, name="delete_post_in_feed"),
 
     # handle edit
