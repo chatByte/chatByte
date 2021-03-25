@@ -118,6 +118,14 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
 
-        model = Comment
+        model = Post
         fields = ['TYPE','ID', 'TITLE', 'SOURCE', 'ORIGIN', 'DESCRIPTION', 'CONTENT_TYPE', 'CONTENT', 'AUTHOR', 'CATEGORIES', 'COUNT', 'SIZE', 'COMMENTS_FIRST_PAGE', 'COMMENTS', 'PUBLISHED', 'VISIBILITY', 'UNLISTED'  ]
         
+
+class ProfileSerializer(serializers.ModelSerializer):
+
+        # TODO
+      class Meta:
+
+        model = Profile
+        fields = ['TYPE','ID', 'TITLE', 'SOURCE', 'ORIGIN', 'DESCRIPTION', 'CONTENT_TYPE', 'CONTENT', 'AUTHOR', 'CATEGORIES', 'COUNT', 'SIZE', 'COMMENTS_FIRST_PAGE', 'COMMENTS', 'PUBLISHED', 'VISIBILITY', 'UNLISTED'  ]

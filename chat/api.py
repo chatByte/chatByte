@@ -84,13 +84,6 @@ def posts_obj(request, AUTHOR_ID):
 
 
 
-
-
-
-
-
-
-
 # coment views.py
 @require_http_methods(["GET", "POST"])
 def comment_list_obj(request, AUTHOR_ID, POST_ID):
@@ -129,13 +122,11 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 
 
 
-
-
-
-
 """
 REST Author, Generate response at my profile page ,
+
 """
+# TODO
 # @login_required
 def profile_obj(request):
     cur_user_name = None
