@@ -1,7 +1,7 @@
 from django.test import TestCase
-from chat.models import Author, Post, Comment, Actor, Profile
+from chat.models import Post, Comment, Profile
 from django.contrib.auth.models import User
-from chat.api import *
+from chat.backend_api import *
 # Create your tests here.
 
 # class ActorTestCase(TestCase):
@@ -167,3 +167,39 @@ class CommentTestCase(TestCase):
 
     def test_getComment(self):
         self.assertEqual(list(getComments(2).all()), list(self.post.COMMENTS.all()))
+
+
+class FriendsTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(id=1,email='testuser@123.com',username='1')
+        self.friend1 = User.objects.create_user(id=2,email='testfriend@123.com',username='2')
+        self.user2 = User.objects.create_user(id=3,email='testuser@123.com',username='3')
+        self.friend2 = User.objects.create_user(id=4,email='testfriend@123.com',username='4')
+        self.user3 = User.objects.create_user(id=5,email='testuser@123.com',username='5')
+        self.friend3 = User.objects.create_user(id=6,email='testfriend@123.com',username='6')
+        self.friend4 = User.objects.create_user(id=7,email='testfriend@123.com',username='7')
+        self.friend5 = User.objects.create_user(id=8,email='testfriend@123.com',username='8')
+
+    def test_addFriend(self):
+        list_before = list(self.user.profile.FRIENDS.all())
+        addFriend(1, 2)
+        list_after = list(self.user.profile.FRIENDS.all())
+        self.assertEqual(len(list_after) - len(list_before), 1)
+
+    def test_deleteFriend(self):
+        addFriend(3, 4)
+        list_before = list(self.user2.profile.FRIENDS.all())
+        deleteFriend(3, 4)
+        list_after = list(self.user2.profile.FRIENDS.all())
+        self.assertEqual(len(list_after) - len(list_before), -1)
+
+    def test_getFriend(self):
+        addFriend(5,6)
+        self.assertEqual(getFriend(5,6), self.friend3)
+    
+    def test_getFriends(self):
+        self.assertEqual(len(list(getFriends(7))), 0)
+        addFriend(7, 8)
+        self.assertEqual(len(list(getFriends(7))), 1)
+    
+

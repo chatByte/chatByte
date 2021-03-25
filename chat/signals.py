@@ -8,7 +8,10 @@ from .models import Profile
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):
     if created:     
-        Profile.objects.create(user=instance,)
-        Token.objects.create(user=instance)
+        try:
+            instance.profile
+        except:
+            Profile.objects.create(user=instance,)
+            Token.objects.create(user=instance)
     instance.profile.DISPLAY_NAME = instance.username
     instance.profile.save()

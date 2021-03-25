@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from .form import *
-from .api import *
+from .backend_api import *
 import base64
 import os
 
@@ -286,7 +286,7 @@ def profile(request, AUTHOR_ID):
         first_name = post_obj["first_name"]
         last_name = post_obj["last_name"]
         updateProfile(user.id, first_name, last_name, email, url, github)
-        response = redirect("/chat/author/"+ str(request.user.id))
+        response = redirect("/chat/author/"+ str(request.user.id) + "/profile/")
         return response
 
 
