@@ -6,6 +6,12 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 
+
+class PostView(ListModelMixin, GenericAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+
 """
 REST Author, Generate response at my profile page ,
 """
