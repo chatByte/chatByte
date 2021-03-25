@@ -128,4 +128,4 @@ class ProfileSerializer(serializers.ModelSerializer):
       class Meta:
 
         model = Profile
-        fields = ['TYPE','ID', 'TITLE', 'SOURCE', 'ORIGIN', 'DESCRIPTION', 'CONTENT_TYPE', 'CONTENT', 'AUTHOR', 'CATEGORIES', 'COUNT', 'SIZE', 'COMMENTS_FIRST_PAGE', 'COMMENTS', 'PUBLISHED', 'VISIBILITY', 'UNLISTED'  ]
+        fields = ['TYPE','ID', 'HOST', 'DISPLAY_NAME', 'URL', 'GITHUB']

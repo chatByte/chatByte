@@ -5,14 +5,20 @@ from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import JSONParser
 from django.shortcuts import render, redirect
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import permission_classes, authentication_classes
 
 from .models import *
 from .serializers import *
 from .backend import *
 
 
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
 
 # queryset = Post.objects.all()
 # serializer_class = PostSerializer
@@ -38,7 +44,9 @@ from .backend import *
 #         # updatePost()
 #         pass
 
-@login_required
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 @require_http_methods(["GET", "POST", "PUT", "DELETE"])
 def post_obj(request, AUTHOR_ID, POST_ID):
     print("?????")
@@ -62,14 +70,14 @@ def post_obj(request, AUTHOR_ID, POST_ID):
         return JsonResponse(serializer.data)
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = SnippetSerializer(data=data)
+        serializer = PostSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        serializer = SnippetSerializer(data=data)
+        serializer = PostSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
@@ -116,7 +124,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = SnippetSerializer(data=data)
+        serializer = CommentSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
@@ -129,8 +137,9 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 REST Author, Generate response at my profile page ,
 
 """
-# TODO
-# @login_required
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 @require_http_methods(["GET", "POST"])
 def profile_obj(request, AUTHOR_ID):
     profile = Profile.objects.get(pk=AUTHOR_ID)
@@ -145,7 +154,7 @@ def profile_obj(request, AUTHOR_ID):
         return JsonResponse(serializer.data)
     elif request.method == "POST":
         data = JSONParser().parse(request)
-        serializer = SnippetSerializer(data=data)
+        serializer = ProfileSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
