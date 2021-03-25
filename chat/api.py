@@ -64,17 +64,16 @@ def getFriend(usr_id, friend_id):
         return friend
     except BaseException as e:
         print(e)
-        return {}
+        return None
 
 def getFriends(usr_id):
     try:
         user = User.objects.get(ID=usr_id)
         friend = User.objects.get(ID=friend_id)
-        user.profile.FRIENDS.add(friend)
         return user.profile.FRIENDS.all()
     except BaseException as e:
         print(e)
-        return {}
+        return None
 
 
 
