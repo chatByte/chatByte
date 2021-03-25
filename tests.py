@@ -1,5 +1,5 @@
 from django.test import TestCase
-from chat.models import Author, Post, Comment, Actor, Profile
+from chat.models import Post, Comment, Profile
 from django.contrib.auth.models import User
 from chat.api import *
 # Create your tests here.
@@ -167,3 +167,31 @@ class CommentTestCase(TestCase):
 
     def test_getComment(self):
         self.assertEqual(list(getComments(2).all()), list(self.post.COMMENTS.all()))
+
+
+class FriendsTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(id=1,email='testuser@123.com')
+        self.friend1 = User.objects.create(id=2,email='testfriend@123.com')
+
+    def test_addFriend(self):
+        list_before = list(self.user.profile.FRIENDS.all())
+        addFriend(1, 2)
+        list_after = list(self.user.profile.FRIENDS.all())
+        self.assertEqual(len(list_after) - len(list_before), 1)
+
+    def test_deleteFriend(self):
+        addFriend(1, 2)
+        list_before = list(self.user.profile.FRIENDS.all())
+        deleteFriend(1, 2)
+        list_after = list(self.user.profile.FRIENDS.all())
+        self.assertEqual(len(list_after) - len(list_before), -1)
+
+    def test_getFriend(self):
+        addFriend(1,2)
+        self.assertEqual(getFriend(1,2), self.friend1)
+    
+    def test_getFriends(self):
+        self.assertEqual(len(list(getFriends(1))), 2)
+    
+

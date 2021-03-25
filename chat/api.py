@@ -39,8 +39,8 @@ def updateUser(username, password):
 
 def addFriend(usr_id, friend_id):
     try:
-        user = User.objects.get(ID=usr_id)
-        friend = User.objects.get(ID=friend_id)
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
         user.profile.FRIENDS.add(friend)
         return True
     except BaseException as e:
@@ -49,8 +49,8 @@ def addFriend(usr_id, friend_id):
 
 def deleteFriend(usr_id, friend_id):
     try:
-        user = User.objects.get(ID=usr_id)
-        friend = User.objects.get(ID=friend_id)
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
         user.profile.FRIENDS.remove(friend)
         return True
     except BaseException as e:
@@ -59,8 +59,8 @@ def deleteFriend(usr_id, friend_id):
 
 def getFriend(usr_id, friend_id):
     try:
-        user = User.objects.get(ID=usr_id)
-        friend = User.objects.get(ID=friend_id)
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
         return friend
     except BaseException as e:
         print(e)
@@ -68,8 +68,8 @@ def getFriend(usr_id, friend_id):
 
 def getFriends(usr_id):
     try:
-        user = User.objects.get(ID=usr_id)
-        friend = User.objects.get(ID=friend_id)
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
         return user.profile.FRIENDS.all()
     except BaseException as e:
         print(e)
@@ -77,8 +77,8 @@ def getFriends(usr_id):
 
 def addFriendRequest(usr_id, friend_id):
     try:
-        user = User.objects.get(ID=usr_id)
-        friend = User.objects.get(ID=friend_id)
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
         return user.profile.FRIEND_REQUESTS.add(friend)
     except BaseException as e:
         print(e)
@@ -86,8 +86,8 @@ def addFriendRequest(usr_id, friend_id):
 
 def deleteFriendRequest(usr_id, friend_id):
     try:
-        user = User.objects.get(ID=usr_id)
-        friend = User.objects.get(ID=friend_id)
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
         user.profile.FRIEND_REQUESTS.remove(friend)
         return True
     except BaseException as e:
@@ -96,16 +96,11 @@ def deleteFriendRequest(usr_id, friend_id):
 
 def getALLFriendRequests(usr_id):
     try:
-        user = User.objects.get(ID=usr_id)
+        user = User.objects.get(id=usr_id)
         return user.profile.FRIEND_REQUESTS.all()
     except BaseException as e:
         print(e)
         return None
-
-
-
-
-
 
 
 def updateProfile(id, username, url, github):
@@ -116,7 +111,6 @@ def updateProfile(id, username, url, github):
         profile.DISPLAY_NAME = username
         profile.URL = url
         profile.GITHUB = github
-
         # author.PASSWORD = password
         profile.save()
         return True
