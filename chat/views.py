@@ -130,12 +130,12 @@ def home_public_channel(request, AUTHOR_ID):
         cur_user_name = request.user.username
     cur_author = request.user
     # a list of post
-    mytimeline = cur_author.profile.TIMELINE.all() #getTimeline(cur_user_name)
+    mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
 
-    author_num_follwers = len(cur_author.profile.FOLLOWERS.all())
+    author_num_follwers = len(cur_author.profile.followers.all())
 
     dynamic_contain = {
-        'myName' : cur_author.profile.DISPLAY_NAME,
+        'myName' : cur_author.profile.displayName,
         'timeline': mytimeline,
         'author_num_follwers': author_num_follwers
 
@@ -187,14 +187,14 @@ def posts(request, AUTHOR_ID):
     if request.user.is_authenticated:
         cur_user_name = request.user.username
     cur_author = request.user.profile
-    mytimeline = cur_author.TIMELINE.all() #getTimeline(cur_user_name)
+    mytimeline = cur_author.timeline.all() #getTimeline(cur_user_name)
     author_num_follwers = 10
 
     dynamic_contain = {
         'fullName':'Ritsu Onodera',
         'author_num_follwers': author_num_follwers,
         'test_name': cur_user_name,
-        'myName' : cur_author.DISPLAY_NAME,
+        'myName' : cur_author.displayName,
         'timeline': mytimeline
 
     }
@@ -357,7 +357,7 @@ def edit_in_feed(request, ID):
 
 
 
-
+@login_required
 @require_http_methods(["GET"])
 def my_friends(request, AUTHOR_ID, FRIEND_ID):
     # cur_user_name = request.COOKIES.get('user')

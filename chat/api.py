@@ -57,7 +57,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
     if request.method == "DELETE":
         # remove the post
         try:
-            Post.objects.get(ID=POST_ID)
+            Post.objects.get(id=POST_ID)
         except Post.DoesNotExist:
             return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
         deletePost(POST_ID)
@@ -65,7 +65,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
     elif request.method == "GET":
         # get the public post
         try:
-            post = Post.objects.get(ID=POST_ID)
+            post = Post.objects.get(id=POST_ID)
         except Post.DoesNotExist:
             return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
         serializer = PostSerializer(post)
@@ -73,7 +73,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
     elif request.method == 'POST':
         # update the post
         try:
-            post = Post.objects.get(ID=POST_ID)
+            post = Post.objects.get(id=POST_ID)
         except Post.DoesNotExist:
             return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
         data = JSONParser().parse(request)
