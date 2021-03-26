@@ -1,7 +1,7 @@
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from rest_framework.parsers import JSONParser
 from django.shortcuts import render, redirect
 from rest_framework import status
@@ -113,7 +113,10 @@ def posts_obj(request, AUTHOR_ID):
 
 
 # coment views.py
-@require_http_methods(["GET", "POST"])
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def comment_list_obj(request, AUTHOR_ID, POST_ID):
     comments = Comment.objects.all()
     cur_user_name = None
@@ -155,15 +158,15 @@ REST Author, Generate response at my profile page ,
 
 """
 @csrf_exempt
+@api_view(['GET', 'POST'])
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-@require_http_methods(["GET", "POST"])
 def profile_obj(request, AUTHOR_ID):
     profile = Profile.objects.get(pk=AUTHOR_ID)
     try:
         profile = Profile.objects.get(user_id=AUTHOR_ID)
     except profile.DoesNotExist:
-        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+        return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
 
     # query to database
     if request.method == "GET":
@@ -188,7 +191,10 @@ def profile_obj(request, AUTHOR_ID):
 
 
 
-@require_http_methods(["GET"])
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['POST'])
 def delete_friend_obj(request, AUTHOR_ID, FRIEND_ID):
     return True
 
