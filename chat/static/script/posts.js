@@ -211,7 +211,7 @@ $( document ).ready(function() {
         success : function(json) {
             
             console.log("success"); // sanity check
-            // window.location.reload();
+            window.location.reload();
         },
       });
 
