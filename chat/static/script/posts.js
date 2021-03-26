@@ -210,7 +210,7 @@ $( document ).ready(function() {
         // handle a successful response
         success : function(json) {
             console.log("success"); // sanity check
-            window.location.reload();
+            // window.location.reload();
         },
       });
 
