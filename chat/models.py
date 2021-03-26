@@ -29,8 +29,8 @@ class Profile(models.Model):
     def __unicode__(self): # for Python 2
         return self.user.username
     
-    class Meta:
-        managed =False
+    # class Meta:
+    #     managed =False
 
 class Comment(models.Model):
     type = models.CharField(max_length=200, default="comment")
