@@ -209,7 +209,8 @@ $( document ).ready(function() {
 
         // handle a successful response
         success : function(json) {
-            console.log("success"); // sanity check
+            
+            console.log(json); // sanity check
             // window.location.reload();
         },
       });
