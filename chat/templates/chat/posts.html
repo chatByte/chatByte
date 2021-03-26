@@ -43,12 +43,12 @@
             <!-- Post Create Box
             ================================================= -->
             {% if messages %}
-							<ul>
-								{% for message in messages %}
-	                                 <li style="position: relative; right: -25px; color: red;">{{ message }}</li>
-	                            {% endfor %}
+              <ul>
+                {% for message in messages %}
+                                   <li style="position: relative; right: -25px; color: red;">{{ message }}</li>
+                              {% endfor %}
                             </ul>
-						{% endif %}
+            {% endif %}
             <div class="create-post">
               <div class="row">
                   <div class="col-md-7">
@@ -135,16 +135,24 @@
 
                         {% if 'text/' in cur_post.categories  %}
                         <p> {{cur_post.content}} </p>
+
                         <form action="." method="post" class="edit-block" style="display: none">
+
                             {% csrf_token %}
                             <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.content}}</textarea>
                             <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
 
-                        </form>
+                        </form> -->
+                        <div class="editText" style="display: none">
+                        </div>
                         {% endif %}
 
-                        <div class="edit"><a href="." class="editBtn"/>Edit</a>&emsp;<!--<a href="/chat/feed/delete{{ cur_post.id }}/"  class="text-red">Delete</a>-->
-                          <button id="{{ cur_post.ID }}" onclick="deletePost( '{{ cur_post.id }}' )">Delete</button></div>
+
+                        <div class="edit">
+                          <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button>
+                          <a href="/chat/feed/edit{{ cur_post.ID }}/" class="editBtn">Edit</a>
+                          <button id="{{ cur_post.ID }}" class="btn-primary-sm" onclick="deletePost( '{{ cur_post.id }}' )">Delete</button></div>
+
 
                       </div>
 

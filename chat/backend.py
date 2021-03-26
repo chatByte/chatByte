@@ -42,7 +42,13 @@ def addFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
         friend = User.objects.get(id=friend_id)
+        # mutual friend
         user.profile.friends.add(friend)
+        friend.profile.friends.add(user)
+        # mutual followers
+        user.profile.followers.add(friend)
+        friend.profile.followers.add(user)
+
         user.save()
         return True
     except BaseException as e:
@@ -103,6 +109,7 @@ def deleteFriendRequest(usr_id, friend_id):
 def getALLFriendRequests(usr_id):
     try:
         user = User.objects.get(id=usr_id)
+        print(user.profile.friend_requests.all())
         return user.profile.friend_requests.all()
     except BaseException as e:
         print(e)
@@ -148,7 +155,7 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
         post = Post.objects.get(id=id)
         print("old title:", post.title)
         post.title = title
-        
+
         post.source = source
         post.origin = origin
         post.description = description

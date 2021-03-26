@@ -13,8 +13,8 @@
               <div class="col-md-3">
                 <div class="profile-info">
                   <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="img-responsive profile-photo" />
-                  <h3 id="fullName">{{user.username}}</h3>
-                  <p class="text-muted"> 1000 people is following me</p>
+                  <h3 id="fullName">{{user.profile.displayName}}</h3>
+                  <p class="text-muted"> {{user.profile.followers.all.count}} people is following me</p>
                 </div>
               </div>
               <div class="col-md-9">

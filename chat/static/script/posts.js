@@ -117,9 +117,16 @@ $( document ).ready(function() {
 
       var content_holder = $(this).closest('.post-detail').find('p')
 
-
-      $(this).closest('.post-detail').find('.edit-block').attr("style", "display: block");
       content_holder.attr("style", "display: none");
+      var div_content = $('div .form-group-col').html();
+      var new_div = $(this).closest('.post-detail').find('div .editText')
+      new_div.attr("style", "display: block");
+      new_div.html(div_content);
+
+      // show submit btn, hide edit btn
+      $(this).attr("style", "display: none");
+      $(this).closest('div .edit').find('.submitBtn').attr("style", "display: block");
+
     });
 
 
