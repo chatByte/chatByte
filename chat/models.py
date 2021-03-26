@@ -23,11 +23,12 @@ class Profile(models.Model):
     friends = models.ManyToManyField(User, related_name='%(class)s_friends', blank=True)
     followers = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
-    friend_requests = models.ManyToManyField(User, related_name='%(class)s_friend_requests', blank=True)
+    friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
+    friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
 
     def __unicode__(self): # for Python 2
         return self.user.username
-    
+
     class Meta:
         managed = False
 
@@ -88,4 +89,3 @@ class Liked(models.Model):
     type = models.CharField(max_length=200, default="liked")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     items = models.ManyToManyField('Like', blank=True)
-

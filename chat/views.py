@@ -4,7 +4,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+
 
 from .form import *
 from .backend import *
@@ -174,7 +175,7 @@ def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
     # a list of post
     mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
 
-    author_num_follwers = len(cur_author.profile.follower.all())
+    author_num_follwers = len(cur_author.profile.followers.all())
 
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
@@ -421,11 +422,12 @@ def add_friend(request, AUTHOR_ID, FRIEND_ID):
         cur_user_name = None
         if request.user.is_authenticated:
             cur_user_name = request.user.username
-        addFriendRequest(AUTHOR_ID, FRIEND_ID)
+        addFriendRequest(FRIEND_ID, AUTHOR_ID)
+        return HttpResponse(status=200)
     except BaseException as e:
         print(e)
         return False
-    return ("friend request sent!")
+    return HttpResponse(status=304)
 
 
 # AJAX request comes every 5 seconds
@@ -438,11 +440,14 @@ def if_friend_request(request):
             cur_user_name = request.user.username
 
         all_friend_request = getALLFriendRequests(request.user.id)
-        newest = all_friend_request.reverse()[0]
-        print(newest.author)
         if all_friend_request:
+            newest = all_friend_request.reverse()[0]
+            data = {}
+            data['friend'] = newest.author.profile.displayName
+            data['id'] = newest.id
+
             # return the newest friend request's name
-            return all_friend_request.reverse()[0]
+            return JsonResponse(data)
 
         else:
             return HttpResponse(status=304)
