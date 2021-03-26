@@ -1,6 +1,9 @@
 
 'use strict'
-
+var url      = window.location.href;
+var new_url = url.split('/');
+var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/chat/';
+console.log(url_header)
 // helper function to get csrf token
 function getCookie(name) {
     let cookieValue = null;
@@ -32,7 +35,7 @@ $(window).on('load', function() {
 
 function ifFriendRequest(){
   $.ajax({
-    url : "if_friend_request/", // the endpoint
+    url : url_header + "ifFriendRequest/", // the endpoint
     type : "GET", // http method
     contentType: false,
     processData: false,

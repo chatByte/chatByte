@@ -4,11 +4,14 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
+from django.http import HttpResponse
 
 from .form import *
 from .backend import *
 import base64
 import os
+import json
+
 
 
 """
@@ -405,7 +408,7 @@ def delete_friend(request, AUTHOR_ID, FRIEND_ID):
         if request.user.is_authenticated:
             cur_user_name = request.user.username
         deleteFriend(AUTHOR_ID, FRIEND_ID)
-    except:
+    except BaseException as e:
         print(e)
         return False
     return redirect('/chat/author/'+str(request.user.id)+'/friends/')
@@ -419,7 +422,31 @@ def add_friend(request, AUTHOR_ID, FRIEND_ID):
         if request.user.is_authenticated:
             cur_user_name = request.user.username
         addFriendRequest(AUTHOR_ID, FRIEND_ID)
-    except:
+    except BaseException as e:
         print(e)
         return False
     return ("friend request sent!")
+
+
+# AJAX request comes every 5 seconds
+@require_http_methods(["GET"])
+@login_required
+def if_friend_request(request):
+    try:
+        cur_user_name = None
+        if request.user.is_authenticated:
+            cur_user_name = request.user.username
+
+        all_friend_request = getALLFriendRequests(request.user.id)
+        newest = all_friend_request.reverse()[0]
+        print(newest.author)
+        if all_friend_request:
+            # return the newest friend request's name
+            return all_friend_request.reverse()[0]
+
+        else:
+            return HttpResponse(status=304)
+
+    except BaseException as e:
+        print(e)
+        return HttpResponse(status=304)

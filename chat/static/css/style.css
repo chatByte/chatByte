@@ -13,9 +13,6 @@ img.profile-photo-lg{
   height: 80px;
   width: 80px;
   border-radius: 50%;
-
-  position: absolute;
-  z-index: 10
 }
 
 img.profile-photo-md{
@@ -652,8 +649,6 @@ Timeline
   display: none;
   margin-top: 10px;
 }
-
-
 
 .create-post .form-group .form-group-col .dropdown{
   position: none;

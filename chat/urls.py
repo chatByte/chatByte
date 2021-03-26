@@ -47,6 +47,9 @@ urlpatterns = [
 
     # delete friend
 
+
+    # check if new friend request
+    path("ifFriendRequest/", views.if_friend_request, name="if_friend_request"),
   #path('', views.index, name='index'),
   #path('home', views.home_view, name='home')
 ]

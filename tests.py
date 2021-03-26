@@ -5,9 +5,9 @@ from chat.backend import *
 # Create your tests here.
 
 # class ActorTestCase(TestCase):
-    
+
 #     def setUp(self):
-#         # set up 
+#         # set up
 #         Actor.objects.create(USERNAME='test', PASSWORD='123')
 #         Actor.objects.create(USERNAME='testfriend', PASSWORD='123')
 #         # User.objects.create(USERNAME='testfriend', PASSWORD='123')
@@ -83,14 +83,14 @@ class PostTestCase(TestCase):
         list_before = list(Post.objects.filter(title='test_title'))
         user = User.objects.create(email='abc@123.com')
         # timeline_before = list(author.TIMELINE.all())
-        
+
         self.assertTrue(createPost('test_title','test','test','abc','text','content', user,'',''))
         list_after = list(Post.objects.filter(title='test_title'))
         # author_after = Author.objects.filter(DISPLAY_NAME='test')[0]
         # timeline_after = list(author_after.TIMELINE.all())
         self.assertEqual(len(list_after) - len(list_before), 1)
         # self.assertEqual(len(timeline_after) - len(timeline_before), 1)
-        
+
 
     def test_updatePost(self):
         filter_before = Post.objects.filter(title='abc')
@@ -179,6 +179,12 @@ class FriendsTestCase(TestCase):
         self.friend3 = User.objects.create_user(id=6,email='testfriend@123.com',username='6')
         self.friend4 = User.objects.create_user(id=7,email='testfriend@123.com',username='7')
         self.friend5 = User.objects.create_user(id=8,email='testfriend@123.com',username='8')
+    # def setUp(self):
+    #     self.user = User.objects.create(id=1,email='testuser@123.com')
+    #     self.friend1 = User.objects.create(id=2,email='testfriend@123.com')
+    #     self.friend1 = User.objects.create(id=3,email='testfriend@123.com')
+    #     self.friend1 = User.objects.create(id=4,email='testfriend@123.com')
+
 
     def test_addFriend(self):
         list_before = list(self.user.profile.friends.all())
@@ -196,10 +202,19 @@ class FriendsTestCase(TestCase):
     def test_getFriend(self):
         addFriend(5,6)
         self.assertEqual(getFriend(5,6), self.friend3)
-    
-    def test_getFriends(self):
-        self.assertEqual(len(list(getFriends(7))), 0)
-        addFriend(7, 8)
-        self.assertEqual(len(list(getFriends(7))), 1)
-    
 
+    # def test_getFriends(self):
+    #     self.assertEqual(len(list(getFriends(7))), 0)
+    #     addFriend(7, 8)
+    #     self.assertEqual(len(list(getFriends(7))), 1)
+    #
+    # def test_addFriend(self):
+    #     list_before = list(self.user.profile.FRIENDS.all())
+    #     addFriend(1, 2)
+    #     list_after = list(self.user.profile.FRIENDS.all())
+    #     self.assertEqual(len(list_after) - len(list_before), 1)
+    #     addFriend(1,3)
+    #     addFriend(1,4)
+    #     friend_list = list(self.user.profile.FRIENDS.all())
+    #     for i in range(len(friend_list)):
+    #         print(friend_list[i].id)

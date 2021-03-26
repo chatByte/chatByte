@@ -49,7 +49,6 @@ def addFriend(usr_id, friend_id):
         user.profile.followers.add(friend)
         friend.profile.followers.add(user)
 
-
         user.save()
         return True
     except BaseException as e:
@@ -110,6 +109,7 @@ def deleteFriendRequest(usr_id, friend_id):
 def getALLFriendRequests(usr_id):
     try:
         user = User.objects.get(id=usr_id)
+        print(user.profile.friend_requests.all())
         return user.profile.friend_requests.all()
     except BaseException as e:
         print(e)
