@@ -129,3 +129,28 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         model = Profile
         fields = ['type','id', 'host', 'displayName', 'url', 'github']
+
+class InboxSerializer(serializers.ModelSerializer):
+
+        # TODO
+      class Meta:
+
+        model = Inbox
+        fields = ['type','id', 'author', 'items']
+
+class FriendReuqestSerializer(serializers.ModelSerializer):
+
+        # TODO
+      class Meta:
+
+        model = FriendRequest
+        fields = ['type','id', 'summary', 'author', 'object']
+
+
+class LikeSerializer(serializers.ModelSerializer):
+
+        # TODO
+      class Meta:
+
+        model = Like
+        fields = ['type','id', 'summary', 'author', 'object', 'context']

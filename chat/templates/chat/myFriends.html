@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% load static %}
+
 <div class="container">
   <div class="">
     <div class="timeline-cover">
@@ -11,8 +14,8 @@
           <div class="col-md-3">
             <div class="profile-info">
               <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="img-responsive profile-photo" />
-              <h3 id="fullName">{{myName}}</h3>
-              <p class="text-muted"> {{author_num_follwers}} people is following him</p>
+              <h3 id="fullName">{{ user.profile.displayName }}</h3>
+              <p class="text-muted"> {{ user.profile.followers.all.count }} people is following him</p>
             </div>
           </div>
           <div class="col-md-9">
@@ -34,7 +37,7 @@
       <!-- Friend List -->
             <div class="friend-list">
               <div class="row">
-                {% for friend in friend_list  %}
+                {% for friend in user.profile.friends.all %}
                 <div class="col-md-6">
                   <div class="friend-card">
                     <img src="http://placehold.it/1030x360" alt="profile-cover" class="img-responsive cover" />
@@ -43,7 +46,7 @@
                       <div class="friend-info">
                         <button class="btn-primary-sm unfollow pull-right">Unfollow</button>
 
-                        <h5><a href="../friend" class="profile-link">{{friend.NAME}}</a></h5>
+                        <h5><a href="../friend" class="profile-link">{{ friend.profile.displayName }}</a></h5>
                         <p class="text-green">Been friends for 10 months</p>
                       </div>
                     </div>

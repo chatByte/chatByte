@@ -359,7 +359,7 @@ def edit_in_feed(request, ID):
 
 @login_required
 @require_http_methods(["GET"])
-def my_friends(request, AUTHOR_ID, FRIEND_ID):
+def my_friends(request, AUTHOR_ID):
     # cur_user_name = request.COOKIES.get('user')
     # cur_author = getAuthor(cur_user_name)
     # friend_list = getFriend(cur_user_name)
