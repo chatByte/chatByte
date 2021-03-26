@@ -212,7 +212,17 @@ def get_friend_obj(request, AUTHOR_ID, FRIEND_ID):
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-@api_view(['GET','POST', 'PUT'])
-def like_post_obj(request, AUTHOR_ID, FRIEND_ID):
+@api_view(['POST', 'PUT'])
+def likes_post_obj(request, AUTHOR_ID):
+    #TODO
+    return True
+
+
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def liked_post_obj(request, AUTHOR_ID):
     #TODO
     return True

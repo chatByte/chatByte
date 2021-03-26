@@ -47,8 +47,36 @@ urlpatterns = [
 
     # delete friend
 
-    #Likes
-    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.like_post_obj, name="like_post")
+
+
+
+    # TODO ----------------------------------------------------------------------------------------------------
+
+
+    # # GET friends
+    # path("author/<str:AUTHOR_ID>/friends/", api.get_friends_obj, name = "get_friends")
+
+
+    # #Get likes for a Post
+    # path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post")
+
+    # # Get likes for a Comment 
+    # path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_post_comment_obj, name="likes_post_comment")
+
+
+    # # Create a Like for either a Post or a Comment
+    # # This also as a side effect, sends to Inbox
+
+    # path("author/<str:AUTHOR_ID>/likes/", api.likes_obj, name="likes")
+
+    
+
+    # # URL: ://service/author/{AUTHOR_ID}/followers 
+    # #Liked
+    # path("author/<str:AUTHOR_ID>/liked/", api.liked_post_obj, name="like_post")
+
+    # TODO ----------------------------------------------------------------------------------------------------
+
 
 
 
