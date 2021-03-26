@@ -86,8 +86,9 @@ def post_obj(request, AUTHOR_ID, POST_ID):
         # create a post with that post_id
         data = JSONParser().parse(request)
         serializer = PostSerializer(data=data)
+        profile = Profile.objects.get(pk=AUTHOR_ID)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            serializer.save(author=profile)
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
