@@ -246,7 +246,7 @@ def posts(request, AUTHOR_ID):
         else:
             content = description
 
-        createFlag = createPost(title, source, origin, description, content_type, content, request.user, categories, visibility)
+        createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
         if createFlag:
             print("haha, successful create post, info: ", description)
             response = redirect("/chat/author/"+ str(AUTHOR_ID) + "/public_channel/")
