@@ -13,5 +13,6 @@ def update_profile_signal(sender, instance, created, **kwargs):
         except:
             Profile.objects.create(user=instance,)
             Token.objects.create(user=instance)
-    instance.profile.DISPLAY_NAME = instance.username
+    instance.profile.displayName = instance.username
+    instance.profile.id = instance.id
     instance.profile.save()
