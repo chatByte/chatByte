@@ -194,12 +194,25 @@ def profile_obj(request, AUTHOR_ID):
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['POST'])
-def delete_friend_obj(request, AUTHOR_ID, FRIEND_ID):
-    return True
-
 def add_friend_obj(request, AUTHOR_ID, FRIEND_ID):
     return True
 
 
 
 
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def get_friend_obj(request, AUTHOR_ID, FRIEND_ID):
+    return True
+
+
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET','POST', 'PUT'])
+def like_post_obj(request, AUTHOR_ID, FRIEND_ID):
+    #TODO
+    return True

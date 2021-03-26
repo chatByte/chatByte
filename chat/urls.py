@@ -39,17 +39,21 @@ urlpatterns = [
     path(r"author/<str:AUTHOR_ID>/friends/add/<str:FRIEND_ID>/", views.add_friend, name="friend_add"),
     path("author/<str:AUTHOR_ID>/friends/", views.my_friends, name="my_friends"),
 
-    # show friend list
-    path("author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", api.delete_friend_obj, name="friend_delete"),
+    # # show friend list
+    # path("author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", api.delete_friend_obj, name="friend_delete"),
 
     # add friend
     path("author/<str:AUTHOR_ID>/friends/add/<str:FRIEND_ID>", api.add_friend_obj, name="friend_add"),
 
     # delete friend
 
+    #Likes
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.like_post_obj, name="like_post")
+
+
 
     # check if new friend request
-    path("ifFriendRequest/", views.if_friend_request, name="if_friend_request"),
+    # path("ifFriendRequest/", views.if_friend_request, name="if_friend_request"),
   #path('', views.index, name='index'),
   #path('home', views.home_view, name='home')
 ]
