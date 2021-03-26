@@ -105,9 +105,18 @@ from .models import *
 #         instance.save()
 #         return instance
 
+
+class ProfileSerializer(serializers.ModelSerializer):
+
+        # TODO
+      class Meta:
+
+        model = Profile
+        fields = ['type','id', 'host', 'displayName', 'url', 'github']
+
+
 class CommentSerializer(serializers.ModelSerializer):
-
-
+    author = ProfileSerializer(read_only=True)
     class Meta:
         model = Comment
         fields = ['type', 'id', 'author', 'comment', 'contentType', 'published']
@@ -121,14 +130,6 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'commentsPage', 'comments', 'published', 'visibility', 'unlisted'  ]
         
-
-class ProfileSerializer(serializers.ModelSerializer):
-
-        # TODO
-      class Meta:
-
-        model = Profile
-        fields = ['type','id', 'host', 'displayName', 'url', 'github']
 
 class InboxSerializer(serializers.ModelSerializer):
 

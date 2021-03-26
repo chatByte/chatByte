@@ -34,10 +34,15 @@ class Profile(models.Model):
 class Comment(models.Model):
     type = models.CharField(max_length=200, default="comment")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-    author = models.ForeignKey(User, on_delete=models.CASCADE,)
+    # content
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField()
     contentType = models.CharField(max_length=200)
     published = models.DateTimeField(default=django.utils.timezone.now)
+    # # the father of Comeent is POST
+    # post_id = models.ForeignKey("Post", on_delete= models.CASCADE)
+
+
 
 class Post(models.Model):
     type = models.CharField(max_length=200, default="post")
@@ -76,14 +81,20 @@ class FriendRequest(models.Model):
     author = models.ForeignKey(User, related_name='%(class)s_author', on_delete=models.CASCADE,)
     object = models.ForeignKey(User, related_name='%(class)s_object', on_delete=models.CASCADE,)
 
+# Inbox liked
 class Like(models.Model):
     type = models.CharField(max_length=200, default="like")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+    # who likes it
     author = models.ForeignKey(User, related_name='%(class)s_author', on_delete=models.CASCADE,)
+    # URL of the likes
     context = models.CharField(max_length=200, default="Like")
+    # likes items title, post title
     summary = models.CharField(max_length=200, default="Like")
+    # Likes obj, ie post
     object = models.CharField(max_length=200, default="Like")
 
+# People's liked items
 class Liked(models.Model):
     type = models.CharField(max_length=200, default="liked")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
