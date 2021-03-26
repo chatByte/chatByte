@@ -24,6 +24,7 @@ class Profile(models.Model):
     followers = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
     friend_requests = models.ManyToManyField(User, related_name='%(class)s_friend_requests', blank=True)
+    inbox = models.ManyToManyField('Inbox', blank=True)
 
     def __unicode__(self): # for Python 2
         return self.user.username
@@ -57,6 +58,7 @@ class Post(models.Model):
     published = models.DateTimeField(default=django.utils.timezone.now)
     visibility = models.CharField(max_length=50)
     unlisted = models.CharField(max_length=50, default='false', editable=False)
+    likes = models.ManyToManyField('Like', blank=True)
 
 class Inbox(models.Model):
     type = models.CharField(max_length=200, default="inbox")
