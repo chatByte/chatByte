@@ -226,3 +226,44 @@ def likes_post_obj(request, AUTHOR_ID):
 def liked_post_obj(request, AUTHOR_ID):
     #TODO
     return True
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['POST', 'GET', 'DELETE'])
+def inbox(request, AUTHOR_ID):
+    if request.method == "POST":
+        user = User.objects.get(pk=AUTHOR_ID)
+        data = JSONParser().parse(request)
+        if data['type'] == "post":
+            user.inbox.post_inbox.items.add(data)
+            user.profile.timeline.add(data)
+            return JsonResponse(data, status=200)
+        elif data['type'] == 'like':
+            post_url = data['type']['object'].split("/")
+            user_id = post_url[-3]
+            post_id = post_url[-1]
+            if user_id != AUTHOR_ID:
+                return JsonResponse({"Error": "object is wrong"}, status=404)
+            post = getPost(post_id)
+            post.likes.add(data)
+
+            user.inbox.like_inbox.add(data)
+            return JsonResponse(data, status=200)
+
+        elif data['type'] == 'follow':
+            user.inbox.friend_requests.add(data)
+            return JsonResponse(data, status=200)
+
+    elif request.method == "DELETE":
+        user = User.objects.get(pk=AUTHOR_ID)
+        user.inbox.post_inbox.item.clear()
+        user.inbox.friend_requests.clear()
+        user.inbox.like_inbox.clear()
+        return JsonResponse({}, status=204)
+
+    elif request.method == "GET":
+        user = User.objects.get(pk=AUTHOR_ID)
+        post_inbox = user.inbox.post_inbox
+        serializer = PostInboxSerializer(post_inbox)
+        return JsonResponse(serializer.data, status=200)

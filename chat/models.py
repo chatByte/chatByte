@@ -23,8 +23,7 @@ class Profile(models.Model):
     friends = models.ManyToManyField(User, related_name='%(class)s_friends', blank=True)
     followers = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
-    friend_requests = models.ManyToManyField(User, related_name='%(class)s_friend_requests', blank=True)
-    inbox = models.ManyToManyField('Inbox', blank=True)
+    #inbox = 
 
     def __unicode__(self): # for Python 2
         return self.user.username
@@ -60,11 +59,17 @@ class Post(models.Model):
     unlisted = models.CharField(max_length=50, default='false', editable=False)
     likes = models.ManyToManyField('Like', blank=True)
 
-class Inbox(models.Model):
+class PostInbox(models.Model):
     type = models.CharField(max_length=200, default="inbox")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     author = models.CharField(max_length=200)
     items = models.ManyToManyField('Post', blank=True)
+
+class Inbox(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    post_inbox = models.OneToOneField('PostInbox', on_delete=models.CASCADE)
+    like_inbox = models.ManyToManyField('Like', blank=True)
+    friend_requests = models.ManyToManyField('FriendRequest', blank=True)
 
 class Followers(models.Model):
     type = models.CharField(max_length=200, default="followers")
@@ -75,7 +80,7 @@ class FriendRequest(models.Model):
     type = models.CharField(max_length=200, default="follow")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     summary = models.CharField(max_length=200)
-    author = models.ForeignKey('Profile', related_name='%(class)s_author', on_delete=models.CASCADE,)
+    actor = models.ForeignKey('Profile', related_name='%(class)s_author', on_delete=models.CASCADE,)
     object = models.ForeignKey('Profile', related_name='%(class)s_object', on_delete=models.CASCADE,)
 
 class Like(models.Model):
