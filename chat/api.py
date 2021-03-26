@@ -22,17 +22,16 @@ from django.contrib.auth.models import User
 #         domain=settings.SESSION_COOKIE_DOMAIN,
 #         secure=settings.SESSION_COOKIE_SECURE or None,
 #     )
-
-# connec to db , validate user
-# def createActor(username, password):
-#     try:
-#         Actor.objects.create(USERNAME=username, PASSWORD=password)
-#         return True
-#     except BaseException as e:
-#         print(e)
-#         return False
+def getUser(usr_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        return user
+    except BaseException as e:
+        print(e)
+        return False
 
 def updateUser(username, password):
+    # Please authenticate before calling this method
     try:
         actor = User.objects.filter(USERNAME=username)[0]
         actor.username = username
@@ -43,62 +42,85 @@ def updateUser(username, password):
         print(e)
         return False
 
-# def getActor(username):
-#     try:
-#         actor = Actor.objects.filter(USERNAME=username)[0]
-#         return actor
-#     except BaseException as e:
-#         print(e)
-#         return None
 
-# def validActor(username, password):
-#     try:
-#         actor = Actor.objects.filter(USERNAME=username)[0]
-#         if password == actor.PASSWORD:
-#             return True
-#         else:
-#             return False
-#     except BaseException as e:
-#         print(e)
-#         return False
+def addFriend(usr_id, friend_id):
+    # mutual friend
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        user.profile.FRIENDS.add(friend)
+        friend.profile.FRIENDS.add(user)
+        return True
+    except BaseException as e:
+        print(e)
+        return False
 
-# add friend
-# def addFriend(name, friend_name):
-#     try:
-#         author = Author.objects.filter(DISPLAY_NAME=name)[0]
-#         friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
-#         author.FRIENDS.add(friend)
-#         return True
-#     except BaseException as e:
-#         print(e)
-#         return False
+def deleteFriend(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        user.profile.FRIENDS.remove(friend)
+        return True
+    except BaseException as e:
+        print(e)
+        return False
 
-# def getTimeline(username):
-#     # need to change to usp zer name
-#     try:
-#         author = Author.objects.filter(DISPLAY_NAME=username)[0]
-#         return author.TIMELINE.all()
-#     except BaseException as e:
-#         print(e)
-#         return None
 
-# def getAuthor(name):
-#     try:
-#         return Author.objects.filter(DISPLAY_NAME=name)[0]
-#     except BaseException as e:
-#         print(e)
-#         return None
+def getFriend(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        print(user.profile.FRIENDS.all())
+        if friend in user.profile.FRIENDS.all():
+            return True
+    except BaseException as e:
+        print(e)
+        return False
 
-# def createAuthor(host, display_name, url, github):
-#     try:
-#         Author.objects.create(HOST=host, DISPLAY_NAME=display_name, URL=url, GITHUB=github)
-#         return True
-#     except BaseException as e:
-#         print(e)
-#         return False
+def getFriends(usr_id):
+    print('usr_id', usr_id)
+    try:
+        user = User.objects.get(id=usr_id)
+        return user.profile.FRIENDS.all()
+    except BaseException as e:
+        print(e)
+        return None
+
+def addFriendRequest(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        return user.profile.FRIEND_REQUESTS.add(friend)
+    except BaseException as e:
+        print(e)
+        return None
+
+def deleteFriendRequest(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        user.profile.FRIEND_REQUESTS.remove(friend)
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def getALLFriendRequests(usr_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        return user.profile.FRIEND_REQUESTS.all()
+    except BaseException as e:
+        print(e)
+        return None
+
+
+
+
+
+
 
 def updateProfile(id, username, url, github):
-    #TODO
+    # Please authenticate before calling this method
     try:
         profile = Profile.objects.get(pk=id)
         # update element here
@@ -113,22 +135,12 @@ def updateProfile(id, username, url, github):
         print(e)
         return False
 
-# def deleteAuthor(username):
-#     try:
-#         Author.objects.filter(DISPLAY_NAME=username).delete()
-#         return True
-#     except BaseException as e:
-#         print(e)
-#         return False
-
-
-
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
-    #TODO keep track of COMMENTS_NO and PAGE_SIZE, COMMENTS_FIRST_PAGE
+    # Please authenticate before calling this method
     try:
-        post = Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
+        post = Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCRIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
             , AUTHOR=author, CATEGORIES=categories, COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY=visibility)
-        author.TIMELINE.add(post)
+        author.profile.TIMELINE.add(post)
         author.save()
         return True
     except BaseException as e:
@@ -136,18 +148,20 @@ def createPost(title, source, origin, description, content_type, content, author
         return False
 
 def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
-    # title, source, origin, description, content_type, content, author, categories, visibility
+    # Please authenticate before calling this method
     try:
-        post = Post.objects.filter(ID=id)[0]
-        post.title = title
-        post.source = source
-        post.origin = origin
-        post.description = description
-        post.content_type = content_type
-        post.content = content
+        post = Post.objects.get(ID=id)
+        print("old title:", post.TITLE)
+        post.TITLE = title
+
+        post.SOURCE = source
+        post.ORIGIN = origin
+        post.DESCIPTION = description
+        post.CONTENT_TYPE = content_type
+        post.CONTENT = content
         # post.author = author
-        post.categories = categories
-        post.visibility = visibility
+        post.CATEGORIES = categories
+        post.VISIBILITY = visibility
 
         post.save()
         return True
@@ -156,8 +170,9 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
         return False
 
 def editPostDescription(id, description):
+    # Please authenticate before calling this method
     try:
-        post = Post.objects.filter(ID=id)[0]
+        post = Post.objects.get(ID=id)
         post.DESCRIPTION = description
         if 'text/' in post.CATEGORIES:
             post.CONTENT = description
@@ -168,25 +183,29 @@ def editPostDescription(id, description):
         return False
 
 def deletePost(id):
+    # Please authenticate before calling this method
     try:
-        Post.objects.filter(ID=id).delete()
+        Post.objects.get(ID=id).delete()
         return True
     except BaseException as e:
         print(e)
         return False
 
 
-def createComment(author, comment, content_type):
+def createComment(author, post_id, comment, content_type):
     try:
+        post = Post.objects.get(ID=post_id)
         commentObj = Comment.objects.create(AUTHOR=author, COMMENT=comment, CONTENT_TYPE=content_type)
-        # print('comment:',commentObj)
+        post.COMMENTS.add(commentObj)
+        print('comment:',commentObj)
+        post.save()
         return True
     except BaseException as e:
         print(e)
         return False
 
 def updateComment(id):
-    #TODO
+    # Please authenticate before calling this method
     try:
         comment = Comment.objects.filter(ID=id)[0]
         # print('====comment====', comment)
@@ -198,6 +217,7 @@ def updateComment(id):
         return False
 
 def deleteComment(id):
+    # Please authenticate before calling this method
     try:
         Comment.objects.filter(ID=id).delete()
         return True
@@ -213,12 +233,12 @@ def getPost(post_id):
     except BaseException as e:
         print(e)
         return None
+
 # get post comment
 def getComments(post_id):
     try:
         post = getPost(post_id)
-        # bu zhi dao zen me xie
-        comments = post.Comment
+        comments = post.COMMENTS.all()
         return comments
     except BaseException as e:
         print(e)

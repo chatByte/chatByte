@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% load static %}
+
     <div class="container">
 
       <!-- Timeline
@@ -14,16 +16,20 @@
               <div class="col-md-3">
                 <div class="profile-info">
                   <img src="{% static 'images/snow-mount.jpg' %}" alt="" class="img-responsive profile-photo" />
-                  <h3 id="fullName">Zoe Smith</h3>
-                  <p class="text-muted"> 1,000 people is following her</p>
+                  <h3 id="fullName">{{myName}}</h3>
+                  <p class="text-muted"> {{author_num_follwers}} people is following her</p>
                 </div>
               </div>
               <div class="col-md-9">
                 <ul class="list-inline profile-menu">
                   <li><a href="" class="active">Her Timeline</a></li>
                   <li><a href="">Her Friends</a></li>
-                  <li><button class="btn-primary unfollow">Unfollow</button></li>
-                  <li><button class="btn-primary follow">Follow</button></li>
+                  {% if isFriend %}
+                    <li><a  href="../../friends/delete/{{myId}}/" ><button class="btn-primary unfollow">Unfollow</button></a></li>
+                  {% else %}
+                    <li><a  href="../../friends/add/{{myId}}/" ><button class="btn-primary follow">Follow</button></a></li>
+      						{% endif %}
+
                 </ul>
               </div>
             </div>
@@ -36,25 +42,14 @@
               <div class="activities">
                 <!--Activity SUmmary-->
                 <div id="sticky-sidebar">
-                  <h4 class="grey"><a href="" class="profile-link" id="name">Zoe</a>'s activity</h4>
+                  <h4 class="grey"><a href="" class="profile-link" id="name">{{myName}}</a>'s activity</h4>
                   <div class="feed-item">
                     <div class="live-activity">
-                      <p><a href="#" class="profile-link" id="name">Zoe</a> Posted on a Photo</p>
+                      <p><a href="#" class="profile-link" id="name">{{myName}}</a> Posted on a Photo</p>
                       <p class="text-muted"> xxxx mins ago</p>
                     </div>
                   </div>
-                  <div class="feed-item">
-                    <div class="live-activity">
-                      <p><a href="#" class="profile-link" id="name">Zoe</a> Has posted text</p>
-                      <p class="text-muted">xxxx days ago</p>
-                    </div>
-                  </div>
-                  <div class="feed-item">
-                    <div class="live-activity">
-                      <p><a href="#" class="profile-link" id="name">Zoe</a> Liked her friend's post</p>
-                      <p class="text-muted">1 month ago</p>
-                    </div>
-                  </div>
+
                 </div>
               </div>
             </div>
@@ -63,30 +58,46 @@
               <div class="posts">
 
 
+                {% for cur_post in timeline reversed %}
+
                 <!-- Post Content
                 ================================================= -->
-                <div class="post-content">
 
+                <div class="post-content">
                   <!--Post Date-->
                   <div class="post-date">
-                    <h5 id="name">Zoe</h5>
-                    <p class="text-grey">12:09, Jan 31</p>
-                  </div><!--Post Date End-->
 
-                  <img src="https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8Zm9ycmVzdHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60" alt="post-image" class="img-responsive post-image" />
+                  </div><!--Post Date End-->
+                  {% if 'image/' in cur_post.CATEGORIES  %}
+                  {% load image_filter %}
+                  <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.CONTENT | bin_2_img }}"/>
+                  {% endif %}
+                  <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
                   <div class="post-container">
-                    <img src="{% static 'images/snow-mount.jpg' %}" alt="user" class="profile-photo-md pull-left" />
+                    <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
                       <div class="user-info">
-                        <h5><a href="" class="profile-link" id="fullName">Zoe Smith</a> <span class="follow-status">following</span></h5>
-                        <p class="text-muted">Posted a photo</p>
+                        <h5><a href="" class="profile-link" id="fullName">{{cur_post.ORIGIN}}</a> </h5>
+                        <p class="text-grey post_date" >{{cur_post.PUBLISHED}} </p>
+
+                        <p class="text-muted">{{cur_post.CATEGORIES}}</p>
                       </div>
-
-
                       <hr class="solid">
                       <div class="post-text">
-                        <p> Same sothing asdkjha di iahsd o1h2e,khsdakhdsao dhashd asj dopqwu d!!!lsid oias doashd asd asoid o ashd .
-                        </p>
+                        <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">{{ cur_post.TITLE}}</p>
+
+                        {% if 'text/' in cur_post.CATEGORIES  %}
+                        <p> {{cur_post.CONTENT}} </p>
+                        {% endif %}
+
+                        <form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
+                            {% csrf_token %}
+                            <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.CONTENT}}</textarea>
+                            <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
+                        </form>
+
+                        <div class="edit"><a href="/chat/home/edit{{ cur_post.ID }}/">Edit</a>&emsp;<a href="/chat/home/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div>
+
                       </div>
 
                       <div class="reaction-img">
@@ -95,75 +106,32 @@
                       </div>
 
                       <hr class="solid">
+<!--            show nested comment  -->
+            {% for comment in cur_post.COMMENTS.all %}
                       <div class="post-comment">
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
                         <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
                       </div>
-                      <div class="post-comment">
+                      {% endfor %}
+<!--                      end -->
+
+<!--                      <div class="post-comment">
                         <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
                         <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
-                      </div>
+                      </div> -->
+
+
+
                       <div class="post-comment">
                         <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
-                        <a href="" class="profile-link">Me </a>
+                        <a href="" class="profile-link">{{myName}} </a>
                         <input type="text" class="form-control" placeholder="Post a comment">
                       </div>
                     </div>
                   </div>
                 </div>
 
-
-                <!-- Post Content
-                ================================================= -->
-                <div class="post-content">
-
-                  <!--Post Date-->
-                  <div class="post-date hidden-xs hidden-sm">
-                    <h5>Zoe</h5>
-                    <p class="text-grey">10/21/2020</p>
-                  </div><!--Post Date End-->
-
-                  <div class="post-container">
-                    <img src="{% static 'images/snow-mount.jpg' %}" alt="user" class="profile-photo-md pull-left" />
-                    <div class="post-detail">
-                      <div class="user-info">
-                        <h5><a href="" class="profile-link" id="fullName">Zoe Smith</a> <span class="follow-status">following</span></h5>
-                        <p class="text-muted">Posted text</p>
-                      </div>
-
-
-
-                      <hr class="solid">
-                      <div class="post-text">
-                        <p>asdfghjklkjhgfdfghjo;likujyfvbgho;alskdjygaiolskijdlwehiyubsadykcilwvuydfgaksdai  a sid soiydaoi yd !!asd  asodiua doyawuo
-                        </p>
-                      </div>
-
-                      <div class="reaction-text">
-                        <a class="btn text-red"><i class="icon ion-ios-heart"></i> 100000</a>
-                        <a class="btn text-green"><i class="icon ion-share"></i></a>
-                      </div>
-
-                      <hr class="solid">
-                      <div class="post-comment">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                        <p><a href="" class="profile-link">Dad </a>Sooooo goood brooooooooooo </p>
-                      </div>
-                      <div class="post-comment">
-                        <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
-                        <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
-                      </div>
-                      <div class="post-comment">
-                        <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
-                        <a href="" class="profile-link">Me </a>
-                        <input type="text" class="form-control" placeholder="Post a comment">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+                {% endfor %}
 
 
               </div>
@@ -178,7 +146,6 @@
       <div class="spinner"></div>
     </div>
 
-    {% load static %}
     <!-- Scripts
     ================================================= -->
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% load static %}
+
 <div class="container">
 
   <div class="">
@@ -19,8 +21,8 @@
           <div class="col-md-9">
             <ul class="list-inline profile-menu">
               <li><a href="../home">My Timeline</a></li>
-              <li><a href="../myFriends">My Friends</a></li>
-              <li><a href="" class="active">My Profile</a></li>
+              <li><a href="../friends" class="active">My Friends</a></li>
+              <li><a href="" class="">My Profile</a></li>
               <li><a href="../feed">Public Feed </a></li>
             </ul>
           </div>
@@ -38,14 +40,23 @@
                 {% for friend in friend_list  %}
                 <div class="col-md-6">
                   <div class="friend-card">
-                    <img src="http://placehold.it/1030x360" alt="profile-cover" class="img-responsive cover" />
+                    <!-- <img src="{% static 'images/snow-mount.jpg' %}" alt="profile-cover" class="img-responsive profile-photo-sm" /> -->
+                    <div class="timeline-cover-sm"></div>
+
                     <div class="card-info">
                       <img src="https://i1.sndcdn.com/artworks-000633504211-qcdzak-t500x500.jpg" alt="user" class="profile-photo-lg" />
                       <div class="friend-info">
-                        <button class="btn-primary-sm unfollow pull-right">Unfollow</button>
-
-                        <h5><a href="../friend" class="profile-link">{{friend.NAME}}</a></h5>
-                        <p class="text-green">Been friends for 10 months</p>
+                        <a class="btn-primary-sm unfollow pull-right" href="delete/{{friend.id}}" >Unfollow</a>
+                        <!-- <form action="delete/{{friend.id}}" method="post">
+                            {% csrf_token %}
+                            <button class="btn-primary-sm unfollow pull-right" type="submit" value="Delete" >Unfollow<button>
+                        </form> -->
+                        <div class="">
+                          <h5><a style="color: white;">11</a></h5>
+                          <!-- href:/chat/author/+friend.id -->
+                          <h5><a href="../public_channel/{{friend.id}}/" class="profile-link">{{friend.profile.DISPLAY_NAME}}</a></h5>
+                          <p class="text-green">Been friends for 10 months</p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -67,5 +78,13 @@
   <div class="spinner"></div>
 </div>
 
+<!-- Scripts
+================================================= -->
+<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
+<script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+<script src="{% static 'script/myFriends.js' %}"></script>
+<script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
 
 {% endblock content %}

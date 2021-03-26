@@ -159,11 +159,7 @@ def home_public_channel(request, AUTHOR_ID):
         'author_num_follwers': author_num_follwers
 
     }
-
-
     response = render(request, "chat/home.html", dynamic_contain)
-
-    # query to database
 
     if request.method == "GET":
 
@@ -178,13 +174,28 @@ def home_public_channel(request, AUTHOR_ID):
 Generate response at friend_profile page , Now is deafault friend Zoe, need to be handled later
 """
 @login_required
-def friend_profile(request):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
-    timeline = {}
+def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
+    cur_author = getUser(FOREIGN_ID)
+    cur_user_name = cur_author.username
 
-    response = render(request, "chat/friendProfile.html", timeline)
+    if getFriend(request.user.id, cur_author.id):
+        isFriend = True;
+    else:
+        isFriend = False;
+    # a list of post
+    mytimeline = cur_author.profile.TIMELINE.all() #getTimeline(cur_user_name)
+
+    author_num_follwers = len(cur_author.profile.FOLLOWERS.all())
+
+    dynamic_contain = {
+        'myName' : cur_author.profile.DISPLAY_NAME,
+        'timeline': mytimeline,
+        'author_num_follwers': author_num_follwers,
+        'isFriend': isFriend,
+        'myId':cur_author.id
+
+    }
+    response = render(request, "chat/friendProfile.html", dynamic_contain)
     return response
 
 
@@ -204,7 +215,7 @@ def make_posts(request, AUTHOR_ID):
         cur_user_name = request.user.username
     cur_author = request.user.profile
     mytimeline = cur_author.TIMELINE.all() #getTimeline(cur_user_name)
-    author_num_follwers = 10
+    author_num_follwers = len(cur_author.FOLLOWERS.all())
 
     dynamic_contain = {
         'fullName':'Ritsu Onodera',
@@ -309,6 +320,7 @@ def profile(request, AUTHOR_ID):
 
     # query to database
     if request.method == "GET":
+        # check if this is my profile or other's profile
         response = render(request, "chat/profile.html", context)
         return response
     elif request.method == "POST":
@@ -448,23 +460,52 @@ def comments(request, AUTHOR_ID, POST_ID):
         return request_post
 
 @require_http_methods(["GET"])
-def my_friends(request,AUTHOR_ID, FRIEND_ID):
-    # cur_user_name = request.COOKIES.get('user')
-    # cur_author = getAuthor(cur_user_name)
-    # friend_list = getFriend(cur_user_name)
-    # author_num_follwers = 10;
-    # dynamic_contain = {
-    #     'myName' : cur_author.DISPLAY_NAME,
-    #     'friend_list': friend_list,
-    #     'author_num_follwers': author_num_follwers,
-    #
-    # }
-    # return render(request, "chat/myFriends.html", dynamic_contain)
-    return render(request, "chat/myFriends.html")
+@login_required
+def my_friends(request,AUTHOR_ID):
+    cur_user_name = None
+    if request.user.is_authenticated:
+        cur_user_name = request.user.username
+    print(cur_user_name)
+    friend_list = getFriends(request.user.id)
 
-@require_http_methods(["GET"])
+    print(friend_list)
+    cur_author = request.user.profile
+    author_num_follwers = len(cur_author.FOLLOWERS.all())
+
+    dynamic_contain = {
+        'myName' : cur_author.DISPLAY_NAME,
+        'friend_list': friend_list,
+        'author_num_follwers': author_num_follwers,
+    }
+
+    return render(request, "chat/myFriends.html", dynamic_contain)
+    # return render(request, "chat/myFriends.html")
+
+# @require_http_methods(["DELETE"])
+# TODO: accept only DELETE? How to send delete request by HTML?
+# Now using GET, prone to CSRF attack?
+@login_required
 def delete_friend(request, AUTHOR_ID, FRIEND_ID):
-    return True
+    try:
+        cur_user_name = None
+        if request.user.is_authenticated:
+            cur_user_name = request.user.username
+        deleteFriend(AUTHOR_ID, FRIEND_ID)
+    except:
+        print(e)
+        return False
+    return redirect('/chat/author/'+str(request.user.id)+'/friends/')
 
+# @require_http_methods(["GET"])
+@login_required
 def add_friend(request, AUTHOR_ID, FRIEND_ID):
-    return True
+    print(AUTHOR_ID, FRIEND_ID)
+    try:
+        cur_user_name = None
+        if request.user.is_authenticated:
+            cur_user_name = request.user.username
+        addFriendRequest(AUTHOR_ID, FRIEND_ID)
+    except:
+        print(e)
+        return False
+    return ("friend request sent!")
