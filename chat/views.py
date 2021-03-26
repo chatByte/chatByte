@@ -169,12 +169,12 @@ def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
     else:
         isFriend = False;
     # a list of post
-    mytimeline = cur_author.profile.TIMELINE.all() #getTimeline(cur_user_name)
+    mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
 
-    author_num_follwers = len(cur_author.profile.FOLLOWERS.all())
+    author_num_follwers = len(cur_author.profile.follower.all())
 
     dynamic_contain = {
-        'myName' : cur_author.profile.DISPLAY_NAME,
+        'myName' : cur_author.profile.displayName,
         'timeline': mytimeline,
         'author_num_follwers': author_num_follwers,
         'isFriend': isFriend,
@@ -200,8 +200,8 @@ def posts(request, AUTHOR_ID):
     if request.user.is_authenticated:
         cur_user_name = request.user.username
     cur_author = request.user.profile
-    mytimeline = cur_author.TIMELINE.all() #getTimeline(cur_user_name)
-    author_num_follwers = len(cur_author.FOLLOWERS.all())
+    mytimeline = cur_author.timeline.all() #getTimeline(cur_user_name)
+    author_num_follwers = len(cur_author.followers.all())
 
 
     dynamic_contain = {
@@ -384,10 +384,10 @@ def my_friends(request,AUTHOR_ID):
 
     print(friend_list)
     cur_author = request.user.profile
-    author_num_follwers = len(cur_author.FOLLOWERS.all())
+    author_num_follwers = len(cur_author.followers.all())
 
     dynamic_contain = {
-        'myName' : cur_author.DISPLAY_NAME,
+        'myName' : cur_author.displayName,
         'friend_list': friend_list,
         'author_num_follwers': author_num_follwers,
     }
