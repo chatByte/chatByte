@@ -3,6 +3,7 @@ from .models import Post, Comment, Profile
 import datetime
 from django.conf import settings
 from django.contrib.auth.models import User
+import traceback
 
 # def setCookie(response, key, value, days_expire=1):
 #     # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
@@ -27,7 +28,7 @@ from django.contrib.auth.models import User
 def updateUser(username, password):
     # Please authenticate before calling this method
     try:
-        actor = User.objects.filter(USERNAME=username)[0]
+        actor = User.objects.filter(username=username)[0]
         actor.username = username
         actor.password = password
         actor.save()
@@ -37,16 +38,76 @@ def updateUser(username, password):
         return False
 
 
-# add friend
-# def addFriend(name, friend_name):
-#     try:
-#         author = Author.objects.filter(DISPLAY_NAME=name)[0]
-#         friend = Author.objects.filter(DISPLAY_NAME=friend_name)[0]
-#         author.FRIENDS.add(friend)
-#         return True
-#     except BaseException as e:
-#         print(e)
-#         return False
+def addFriend(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        user.profile.friends.add(friend)
+        user.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def deleteFriend(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        user.profile.friends.remove(friend)
+        user.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def getFriend(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        if friend in user.profile.friends.all(): return friend
+        return None
+    except BaseException as e:
+        print(e)
+        return None
+
+def getFriends(usr_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        return user.profile.friends.all()
+    except BaseException as e:
+        print(e)
+        return None
+
+def addFriendRequest(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        user.profile.friend_requests.add(friend)
+        user.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def deleteFriendRequest(usr_id, friend_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        friend = User.objects.get(id=friend_id)
+        user.profile.friend_requests.remove(friend)
+        user.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+def getALLFriendRequests(usr_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        return user.profile.friend_requests.all()
+    except BaseException as e:
+        print(e)
+        return None
+
 
 def updateProfile(id, first_name, last_name, email, url, github):
     # Please authenticate before calling this method
@@ -71,19 +132,21 @@ def createPost(title, source, origin, description, content_type, content, author
     # Please authenticate before calling this method
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
-            , author=author, categories=categories, count=0, size=0, comentsPage='', visibility=visibility)
+            , author=author, categories=categories, count=0, size=0, commentsPage='', visibility=visibility)
         author.profile.timeline.add(post)
         author.save()
         return True
     except BaseException as e:
+        print(repr(e))
+        traceback.print_exc()
         print(e)
         return False
 
 def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
     # Please authenticate before calling this method
     try:
-        post = Post.objects.get(ID=id)
-        print("old title:", post.TITLE)
+        post = Post.objects.get(id=id)
+        print("old title:", post.title)
         post.title = title
         
         post.source = source
@@ -105,7 +168,7 @@ def editPostDescription(id, description):
     try:
         post = Post.objects.get(id=id)
         post.description = description
-        if 'text/' in post.CATEGORIES:
+        if 'text/' in post.categories:
             post.content = description
         post.save()
         return True
@@ -116,7 +179,7 @@ def editPostDescription(id, description):
 def deletePost(id):
     # Please authenticate before calling this method
     try:
-        Post.objects.get(ID=id).delete()
+        Post.objects.get(id=id).delete()
         return True
     except BaseException as e:
         print(e)
@@ -132,6 +195,8 @@ def createComment(author, post_id, comment, content_type):
         post.save()
         return True
     except BaseException as e:
+        print(repr(e))
+        traceback.print_exc()
         print(e)
         return False
 
@@ -164,6 +229,7 @@ def getPost(post_id):
     except BaseException as e:
         print(e)
         return None
+
 # get post comment
 def getComments(post_id):
     try:

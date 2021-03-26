@@ -1,7 +1,7 @@
 from django.test import TestCase
-from chat.models import Author, Post, Comment, Actor, Profile
+from chat.models import Post, Comment, Profile
 from django.contrib.auth.models import User
-from chat.api import *
+from chat.backend import *
 # Create your tests here.
 
 # class ActorTestCase(TestCase):
@@ -74,18 +74,18 @@ from chat.api import *
 
 class PostTestCase(TestCase):
     def setUp(self):
-        self.post = Post.objects.create(ID=2, TITLE='abc', DESCRIPTION='test_des')
+        self.post = Post.objects.create(id=2, title='abc', description='test_des')
         # Post.objects.create(ID=1)
         # Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
 
 
     def test_createPost(self):
-        list_before = list(Post.objects.filter(TITLE='test_title'))
+        list_before = list(Post.objects.filter(title='test_title'))
         user = User.objects.create(email='abc@123.com')
         # timeline_before = list(author.TIMELINE.all())
         
-        createPost('test_title','test','test','abc','text','content', user,'','')
-        list_after = list(Post.objects.filter(TITLE='test_title'))
+        self.assertTrue(createPost('test_title','test','test','abc','text','content', user,'',''))
+        list_after = list(Post.objects.filter(title='test_title'))
         # author_after = Author.objects.filter(DISPLAY_NAME='test')[0]
         # timeline_after = list(author_after.TIMELINE.all())
         self.assertEqual(len(list_after) - len(list_before), 1)
@@ -93,42 +93,42 @@ class PostTestCase(TestCase):
         
 
     def test_updatePost(self):
-        filter_before = Post.objects.filter(TITLE='abc')
+        filter_before = Post.objects.filter(title='abc')
         list_before = list(filter_before)
         # print("old id:", filter_before[0].ID)
         # print("len:", len(list_before))
         updatePost(2, 'abcd', '', '', '', '', '', '', '')
-        filter_after = Post.objects.filter(TITLE='abc')
+        filter_after = Post.objects.filter(title='abc')
         list_after = list(filter_after)
         # print("after id:", filter_after[0].ID)
         # print("len abc:", len(filter_after))
         after = list(filter_after)
-        new_after = list(Post.objects.filter(TITLE='abcd'))
+        new_after = list(Post.objects.filter(title='abcd'))
         # print("new len:", len(new_after))
         self.assertEqual(len(after) - len(list_before), -1)
 
 
     def test_deletePost(self):
-        list_before = list(Post.objects.filter(ID=2))
+        list_before = list(Post.objects.filter(id=2))
         deletePost(2)
-        list_after = list(Post.objects.filter(ID=2))
+        list_after = list(Post.objects.filter(id=2))
         self.assertEqual(len(list_before) - len(list_after), 1)
 
     def test_getPost(self):
-        self.assertEqual(getPost(2), Post.objects.get(ID=2))
+        self.assertEqual(getPost(2), Post.objects.get(id=2))
 
     def test_editPostDescription(self):
-        filter_before = Post.objects.filter(DESCRIPTION='test_des')
+        filter_before = Post.objects.filter(description='test_des')
         list_before = list(filter_before)
         # print("old id:", filter_before[0].ID)
         # print("len:", len(list_before))
         editPostDescription(2, 'new_des')
-        filter_after = Post.objects.filter(DESCRIPTION='test_des')
+        filter_after = Post.objects.filter(description='test_des')
         list_after = list(filter_after)
         # print("after id:", filter_after[0].ID)
         # print("len abc:", len(filter_after))
         after = list(filter_after)
-        new_after = list(Post.objects.filter(DESCRIPTION='new_des'))
+        new_after = list(Post.objects.filter(description='new_des'))
         # print("new len:", len(new_after))
         self.assertEqual(len(after) - len(list_before), -1)
 
@@ -137,20 +137,20 @@ class CommentTestCase(TestCase):
     def setUp(self):
         # self.profile = Profile.objects.create(user=User, HOST='', DISPLAY_NAME='testProfile')
         # self.author = Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
-        self.comment = Comment.objects.create(ID=1, COMMENT='test')
-        self.post = Post.objects.create(ID=2, TITLE='abc')
+        self.comment = Comment.objects.create(id=1, comment='test')
+        self.post = Post.objects.create(id=2, title='abc')
 
     def test_createComment(self):
         # self.comment = createComment(self.author, 'comment test', 'text')
-        list_before = list(Comment.objects.filter(COMMENT='comment test'))
-        comments_before = list(self.post.COMMENTS.all())
+        list_before = list(Comment.objects.filter(comment='comment test'))
+        comments_before = list(self.post.comments.all())
 
         user = User.objects.create(email='abc@123.com')
-        createComment(user, 2,'comment test', 'text')
+        self.assertTrue(createComment(user, 2,'comment test', 'text'))
 
-        comments_after = list(self.post.COMMENTS.all())
+        comments_after = list(self.post.comments.all())
 
-        list_after = list(Comment.objects.filter(COMMENT='comment test'))
+        list_after = list(Comment.objects.filter(comment='comment test'))
         self.assertEqual(len(list_after) - len(list_before), 1)
         self.assertEqual(len(comments_after) - len(comments_before), 1)
 
@@ -159,11 +159,47 @@ class CommentTestCase(TestCase):
         self.assertEqual(updateComment(1), True)
 
     def test_deleteComment(self):
-        list_before = list(Comment.objects.filter(ID=1))
+        list_before = list(Comment.objects.filter(id=1))
         deleteComment(1)
         # new_comment = Comment.objects.create(AUTHOR=self.author, COMMENT='delete comment test', CONTENT_TYPE='text')
-        list_after = list(Comment.objects.filter(ID=1))
+        list_after = list(Comment.objects.filter(id=1))
         self.assertEqual(len(list_after) - len(list_before), -1)
 
     def test_getComment(self):
-        self.assertEqual(list(getComments(2).all()), list(self.post.COMMENTS.all()))
+        self.assertEqual(list(getComments(2).all()), list(self.post.comments.all()))
+
+
+class FriendsTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(id=1,email='testuser@123.com',username='1')
+        self.friend1 = User.objects.create_user(id=2,email='testfriend@123.com',username='2')
+        self.user2 = User.objects.create_user(id=3,email='testuser@123.com',username='3')
+        self.friend2 = User.objects.create_user(id=4,email='testfriend@123.com',username='4')
+        self.user3 = User.objects.create_user(id=5,email='testuser@123.com',username='5')
+        self.friend3 = User.objects.create_user(id=6,email='testfriend@123.com',username='6')
+        self.friend4 = User.objects.create_user(id=7,email='testfriend@123.com',username='7')
+        self.friend5 = User.objects.create_user(id=8,email='testfriend@123.com',username='8')
+
+    def test_addFriend(self):
+        list_before = list(self.user.profile.friends.all())
+        addFriend(1, 2)
+        list_after = list(self.user.profile.friends.all())
+        self.assertEqual(len(list_after) - len(list_before), 1)
+
+    def test_deleteFriend(self):
+        addFriend(3, 4)
+        list_before = list(self.user2.profile.friends.all())
+        deleteFriend(3, 4)
+        list_after = list(self.user2.profile.friends.all())
+        self.assertEqual(len(list_after) - len(list_before), -1)
+
+    def test_getFriend(self):
+        addFriend(5,6)
+        self.assertEqual(getFriend(5,6), self.friend3)
+    
+    def test_getFriends(self):
+        self.assertEqual(len(list(getFriends(7))), 0)
+        addFriend(7, 8)
+        self.assertEqual(len(list(getFriends(7))), 1)
+    
+
