@@ -119,10 +119,17 @@ def post_obj(request, AUTHOR_ID, POST_ID):
         return JsonResponse(serializer.errors, status=400)
     elif request.method == 'PUT':
         # create a post with that post_id
+        try:
+            post = Post.objects.get(id=POST_ID)
+            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' already exists'}, status=404)
+        except Post.DoesNotExist:
+            pass
         data = JSONParser().parse(request)
         serializer = PostSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            serializers.id = POST_ID
+            profile = Profile.objects.get(pk=AUTHOR_ID)
+            serializer.save(author=profile)
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
@@ -140,7 +147,8 @@ def posts_obj(request, AUTHOR_ID):
         data = JSONParser().parse(request)
         serializer = PostSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            profile = Profile.objects.get(pk=AUTHOR_ID)
+            serializer.save(author=profile)
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
