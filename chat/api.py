@@ -1,245 +1,206 @@
-
-from .models import Post, Comment, Profile
-import datetime
-from django.conf import settings
+from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from rest_framework.parsers import JSONParser
+from django.shortcuts import render, redirect
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
-# def setCookie(response, key, value, days_expire=1):
-#     # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
-#     if days_expire is None:
-#         max_age = 365 * 24 * 60 * 60  # one year
-#     else:
-#         max_age = days_expire * 24 * 60 * 60
-#     expires = datetime.datetime.strftime(
-#         datetime.datetime.utcnow() + datetime.timedelta(seconds=max_age),
-#         "%a, %d-%b-%Y %H:%M:%S GMT",
-#     )
-#     response.set_cookie(
-#         key,
-#         value,
-#         max_age=max_age,
-#         expires=expires,
-#         domain=settings.SESSION_COOKIE_DOMAIN,
-#         secure=settings.SESSION_COOKIE_SECURE or None,
-#     )
-def getUser(usr_id):
+from .models import *
+from .serializers import *
+from .backend import *
+
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
+
+# queryset = Post.objects.all()
+# serializer_class = PostSerializer
+
+
+# @login_required
+# @require_http_methods(["GET", "POST", "PUT", "DELETE"])
+# def post_obj(request, AUTHOR_ID, POST_ID):
+#     cur_user_name = None
+#     if request.user.is_authenticated:
+#         cur_user_name = request.user.username
+#     # post_id = request.build_absolute_uri().split("/")[-2][6:]
+
+#     if request.method == "DELETE":
+#         deletePost(POST_ID)
+#         response = redirect("../posts/")
+#         return response
+#     elif request.method == "GET":
+#         post = getPost(POST_ID)
+#         # TODO return an object or html?
+#         return post
+#     elif request.method == "POST":
+#         # updatePost()
+#         pass
+
+@csrf_exempt
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def post_obj(request, AUTHOR_ID, POST_ID):
+    # cur_user_name = None
+    # if request.user.is_authenticated:
+    #     cur_user_name = request.user.username
+    # post_id = request.build_absolute_uri().split("/")[-2][6:]
+    if request.method == "DELETE":
+        # remove the post
+        try:
+            Post.objects.get(id=POST_ID)
+        except Post.DoesNotExist:
+            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
+        deletePost(POST_ID)
+        return JsonResponse({'status':'true','message':'successful'}, status=204)
+    elif request.method == "GET":
+        # get the public post
+        try:
+            post = Post.objects.get(id=POST_ID)
+        except Post.DoesNotExist:
+            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
+        serializer = PostSerializer(post)
+        return JsonResponse(serializer.data)
+    elif request.method == 'POST':
+        # update the post
+        try:
+            post = Post.objects.get(id=POST_ID)
+        except Post.DoesNotExist:
+            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
+        data = JSONParser().parse(request)
+        serializer = PostSerializer(post, data=data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+    elif request.method == 'PUT':
+        # create a post with that post_id
+        data = JSONParser().parse(request)
+        serializer = PostSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def posts_obj(request, AUTHOR_ID):
+    if request.method == 'GET':
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = PostSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+
+
+
+# coment views.py
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def comment_list_obj(request, AUTHOR_ID, POST_ID):
+    comments = Comment.objects.all()
+    cur_user_name = None
+    if request.user.is_authenticated:
+        cur_user_name = request.user.username
+
+
+    if request.method == 'GET':
+        serializer = CommentSerializer(comments, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+    # if request.method == "GET":
+    #     comments = getComments(POST_ID)
+
+    #     # TODO return objects or html?
+    #     return comments
+    # elif request.method == "POST":
+    #     request_post = request.POST
+    #     author = request_post.get("author")
+    #     contentType = request_post.get("contentType")
+    #     comment = request_post.get("comment")
+    #     createComment(author, comment, contentType)
+    #     return request_post
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = CommentSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+
+
+
+"""
+REST Author, Generate response at my profile page ,
+
+"""
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def profile_obj(request, AUTHOR_ID):
+    profile = Profile.objects.get(pk=AUTHOR_ID)
     try:
-        user = User.objects.get(id=usr_id)
-        return user
-    except BaseException as e:
-        print(e)
-        return False
+        profile = Profile.objects.get(user_id=AUTHOR_ID)
+    except profile.DoesNotExist:
+        return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
 
-def updateUser(username, password):
-    # Please authenticate before calling this method
-    try:
-        actor = User.objects.filter(USERNAME=username)[0]
-        actor.username = username
-        actor.password = password
-        actor.save()
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-
-def addFriend(usr_id, friend_id):
-    # mutual friend
-    try:
-        user = User.objects.get(id=usr_id)
-        friend = User.objects.get(id=friend_id)
-        user.profile.FRIENDS.add(friend)
-        friend.profile.FRIENDS.add(user)
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-def deleteFriend(usr_id, friend_id):
-    try:
-        user = User.objects.get(id=usr_id)
-        friend = User.objects.get(id=friend_id)
-        user.profile.FRIENDS.remove(friend)
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-
-def getFriend(usr_id, friend_id):
-    try:
-        user = User.objects.get(id=usr_id)
-        friend = User.objects.get(id=friend_id)
-        print(user.profile.FRIENDS.all())
-        if friend in user.profile.FRIENDS.all():
-            return True
-    except BaseException as e:
-        print(e)
-        return False
-
-def getFriends(usr_id):
-    print('usr_id', usr_id)
-    try:
-        user = User.objects.get(id=usr_id)
-        return user.profile.FRIENDS.all()
-    except BaseException as e:
-        print(e)
-        return None
-
-def addFriendRequest(usr_id, friend_id):
-    try:
-        user = User.objects.get(id=usr_id)
-        friend = User.objects.get(id=friend_id)
-        return user.profile.FRIEND_REQUESTS.add(friend)
-    except BaseException as e:
-        print(e)
-        return None
-
-def deleteFriendRequest(usr_id, friend_id):
-    try:
-        user = User.objects.get(id=usr_id)
-        friend = User.objects.get(id=friend_id)
-        user.profile.FRIEND_REQUESTS.remove(friend)
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-def getALLFriendRequests(usr_id):
-    try:
-        user = User.objects.get(id=usr_id)
-        return user.profile.FRIEND_REQUESTS.all()
-    except BaseException as e:
-        print(e)
-        return None
+    # query to database
+    if request.method == "GET":
+        serializer = ProfileSerializer(profile)
+        return JsonResponse(serializer.data)
+    elif request.method == "POST":
+        data = JSONParser().parse(request)
+        serializer = ProfileSerializer(profile, data=data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED,)
+        return JsonResponse(serializer.errors, status=400)
+        # post_obj = json.loads(request.body)
+        # url = post_obj["url"]
+        # displayName = post_obj["displayName"]
+        # github = post_obj["github"]
+        # # we do not allowed leave our server
+        # # host = post_obj["host"]
+        # updateProfile(displayName, url, github)
+        # return post_obj
 
 
 
 
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['POST'])
+def delete_friend_obj(request, AUTHOR_ID, FRIEND_ID):
+    return True
+
+def add_friend_obj(request, AUTHOR_ID, FRIEND_ID):
+    return True
 
 
 
-def updateProfile(id, username, url, github):
-    # Please authenticate before calling this method
-    try:
-        profile = Profile.objects.get(pk=id)
-        # update element here
-        profile.DISPLAY_NAME = username
-        profile.URL = url
-        profile.GITHUB = github
 
-        # author.PASSWORD = password
-        profile.save()
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
-    # Please authenticate before calling this method
-    try:
-        post = Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCRIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
-            , AUTHOR=author, CATEGORIES=categories, COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY=visibility)
-        author.profile.TIMELINE.add(post)
-        author.save()
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
-    # Please authenticate before calling this method
-    try:
-        post = Post.objects.get(ID=id)
-        print("old title:", post.TITLE)
-        post.TITLE = title
-
-        post.SOURCE = source
-        post.ORIGIN = origin
-        post.DESCIPTION = description
-        post.CONTENT_TYPE = content_type
-        post.CONTENT = content
-        # post.author = author
-        post.CATEGORIES = categories
-        post.VISIBILITY = visibility
-
-        post.save()
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-def editPostDescription(id, description):
-    # Please authenticate before calling this method
-    try:
-        post = Post.objects.get(ID=id)
-        post.DESCRIPTION = description
-        if 'text/' in post.CATEGORIES:
-            post.CONTENT = description
-        post.save()
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-def deletePost(id):
-    # Please authenticate before calling this method
-    try:
-        Post.objects.get(ID=id).delete()
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-
-def createComment(author, post_id, comment, content_type):
-    try:
-        post = Post.objects.get(ID=post_id)
-        commentObj = Comment.objects.create(AUTHOR=author, COMMENT=comment, CONTENT_TYPE=content_type)
-        post.COMMENTS.add(commentObj)
-        print('comment:',commentObj)
-        post.save()
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-def updateComment(id):
-    # Please authenticate before calling this method
-    try:
-        comment = Comment.objects.filter(ID=id)[0]
-        # print('====comment====', comment)
-        # update field here
-        comment.save()
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-def deleteComment(id):
-    # Please authenticate before calling this method
-    try:
-        Comment.objects.filter(ID=id).delete()
-        return True
-    except BaseException as e:
-        print(e)
-        return False
-
-# get post funcountion
-def getPost(post_id):
-    try:
-        post = Post.objects.get(pk=post_id)
-        return post
-    except BaseException as e:
-        print(e)
-        return None
-
-# get post comment
-def getComments(post_id):
-    try:
-        post = getPost(post_id)
-        comments = post.COMMENTS.all()
-        return comments
-    except BaseException as e:
-        print(e)
-        return None

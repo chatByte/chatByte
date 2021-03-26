@@ -15,11 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from chat.views import signup
+from chat.views import signup, start_homepage
+from rest_framework.authtoken import views
 
 urlpatterns = [
+    path('', start_homepage, name='home'),
 	path('chat/', include('chat.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path("accounts/signup/", signup, name="signup"),
+    path('api-token-auth/', views.obtain_auth_token)
 ]
