@@ -12,18 +12,18 @@ from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
-    TYPE = models.CharField(max_length=200, default="author")
-    ID = models.CharField(max_length=200)
+    type = models.CharField(max_length=200, default="author")
+    id = models.CharField(max_length=200)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    HOST = models.CharField(max_length=200, null=True)
-    DISPLAY_NAME = models.CharField(max_length=200, unique=True, null=True)
-    URL = models.CharField(max_length=200, null=True)
-    GITHUB = models.CharField(max_length=200, null=True)
+    host = models.CharField(max_length=200, null=True)
+    displayName = models.CharField(max_length=200, unique=True, null=True)
+    url = models.CharField(max_length=200, null=True)
+    github = models.CharField(max_length=200, null=True)
 
-    FRIENDS = models.ManyToManyField(User, related_name='%(class)s_friends', blank=True)
-    FOLLOWERS = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
-    TIMELINE = models.ManyToManyField("Post", blank=True)
-    FRIEND_REQUESTS = models.ManyToManyField(User, related_name='%(class)s_friend_requests', blank=True)
+    friends = models.ManyToManyField(User, related_name='%(class)s_friends', blank=True)
+    followers = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
+    timeline = models.ManyToManyField("Post", blank=True)
+    friend_requests = models.ManyToManyField(User, related_name='%(class)s_friend_requests', blank=True)
 
     def __unicode__(self): # for Python 2
         return self.user.username
@@ -32,57 +32,60 @@ class Profile(models.Model):
         managed = False
 
 class Comment(models.Model):
-    TYPE = models.CharField(max_length=200, default="comment")
-    ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-    AUTHOR = models.ForeignKey(User, on_delete=models.CASCADE,)
-    COMMENT = models.TextField()
-    CONTENT_TYPE = models.CharField(max_length=200)
-    PUBLISHED = models.DateTimeField(default=django.utils.timezone.now)
+    type = models.CharField(max_length=200, default="comment")
+    id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+    author = models.ForeignKey(User, on_delete=models.CASCADE,)
+    comment = models.TextField()
+    contentType = models.CharField(max_length=200)
+    published = models.DateTimeField(default=django.utils.timezone.now)
 
 class Post(models.Model):
-    TYPE = models.CharField(max_length=200, default="post")
+    type = models.CharField(max_length=200, default="post")
+    id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+    title = models.TextField()
+    source = models.CharField(max_length=200)
+    origin = models.CharField(max_length=200)
+    description = models.TextField()
+    contentType = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE,)
+    categories = models.CharField(max_length=200)
+    count = models.IntegerField()
+    size = models.IntegerField()
+    commentsPage = models.CharField(max_length=200)
+    comments = models.ManyToManyField('Comment', blank=True)
+    published = models.DateTimeField(default=django.utils.timezone.now)
+    visibility = models.CharField(max_length=50)
+    unlisted = models.CharField(max_length=50, default='false', editable=False)
 
-    ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-    TITLE = models.TextField()
-    SOURCE = models.CharField(max_length=200)
-    ORIGIN = models.CharField(max_length=200)
-    DESCRIPTION = models.TextField()
-    CONTENT_TYPE = models.CharField(max_length=200)
-    CONTENT = models.TextField()
-    AUTHOR = models.ForeignKey(User, on_delete=models.CASCADE,)
-    CATEGORIES = models.CharField(max_length=200)
-    COUNT = models.IntegerField()
-    SIZE = models.IntegerField()
-    COMMENTS_FIRST_PAGE = models.CharField(max_length=200)
-    COMMENTS = models.ManyToManyField('Comment', blank=True)
-    PUBLISHED = models.DateTimeField(default=django.utils.timezone.now)
+class Inbox(models.Model):
+    type = models.CharField(max_length=200, default="inbox")
+    id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+    author = models.CharField(max_length=200)
+    items = models.ManyToManyField('Post', blank=True)
 
-    VISIBILITY = models.CharField(max_length=50)
-    UNLISTED = models.CharField(max_length=50, default='false', editable=False)
+class Followers(models.Model):
+    type = models.CharField(max_length=200, default="followers")
+    id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+    items = models.ManyToManyField(User, blank=True)
 
-# class Comment(models.Model):
-#     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-#     AUTHOR = models.ForeignKey('Author', on_delete=models.DO_NOTHING,)
-#     COMMENT = models.TextField()
-#     CONTENT_TYPE = models.CharField(max_length=200)
-#     PUBLISHED = models.DateTimeField(default=django.utils.timezone.now)
+class FriendRequest(models.Model):
+    type = models.CharField(max_length=200, default="follow")
+    id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+    summary = models.CharField(max_length=200)
+    author = models.ForeignKey(User, related_name='%(class)s_author', on_delete=models.CASCADE,)
+    object = models.ForeignKey(User, related_name='%(class)s_object', on_delete=models.CASCADE,)
 
-# class Post(models.Model):
-#     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-#     TITLE = models.TextField()
-#     SOURCE = models.CharField(max_length=200)
-#     ORIGIN = models.CharField(max_length=200)
-#     DESCIPTION = models.TextField()
-#     CONTENT_TYPE = models.CharField(max_length=200)
-#     CONTENT = models.TextField()
-#     AUTHOR = models.ForeignKey('Author', on_delete=models.DO_NOTHING,)
-#     CATEGORIES = models.CharField(max_length=200)
-#     COMMENTS_NO = models.IntegerField()
-#     PAGE_SIZE = models.IntegerField()
-#     COMMENTS_FIRST_PAGE = models.CharField(max_length=200)
-#     COMMENTS = models.ManyToManyField('Comment', blank=True)
-#     PUBLISHED = models.DateTimeField(default=django.utils.timezone.now)
+class Like(models.Model):
+    type = models.CharField(max_length=200, default="like")
+    id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+    author = models.ForeignKey(User, related_name='%(class)s_author', on_delete=models.CASCADE,)
+    context = models.CharField(max_length=200, default="Like")
+    summary = models.CharField(max_length=200, default="Like")
+    object = models.CharField(max_length=200, default="Like")
 
-#     VISIBILITY = models.CharField(max_length=50)
-#     UNLISTED = models.CharField(max_length=50, default='false', editable=False)
+class Liked(models.Model):
+    type = models.CharField(max_length=200, default="liked")
+    id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+    items = models.ManyToManyField('Like', blank=True)
 

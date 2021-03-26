@@ -4,11 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import JSONParser
 from django.shortcuts import render, redirect
+from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
 from .models import *
 from .serializers import *
@@ -45,53 +46,69 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
 #         pass
 
 @csrf_exempt
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-@require_http_methods(["GET", "POST", "PUT", "DELETE"])
 def post_obj(request, AUTHOR_ID, POST_ID):
-    print("?????")
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
+    # cur_user_name = None
+    # if request.user.is_authenticated:
+    #     cur_user_name = request.user.username
     # post_id = request.build_absolute_uri().split("/")[-2][6:]
-
-    try:
-        post = Post.objects.get(ID=POST_ID)
-    except Post.DoesNotExist:
-        return HttpResponse(status=404)
-
-
     if request.method == "DELETE":
+        # remove the post
+        try:
+            Post.objects.get(ID=POST_ID)
+        except Post.DoesNotExist:
+            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
         deletePost(POST_ID)
-        response = redirect("../my_posts/")
-        return HttpResponse(status=204)
+        return JsonResponse({'status':'true','message':'successful'}, status=204)
     elif request.method == "GET":
+        # get the public post
+        try:
+            post = Post.objects.get(ID=POST_ID)
+        except Post.DoesNotExist:
+            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
         serializer = PostSerializer(post)
         return JsonResponse(serializer.data)
     elif request.method == 'POST':
+        # update the post
+        try:
+            post = Post.objects.get(ID=POST_ID)
+        except Post.DoesNotExist:
+            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
         data = JSONParser().parse(request)
-        serializer = PostSerializer(data=data)
-        if serializer.is_valid():
+        serializer = PostSerializer(post, data=data)
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
     elif request.method == 'PUT':
+        # create a post with that post_id
         data = JSONParser().parse(request)
         serializer = PostSerializer(data=data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
 
-@login_required
-@require_http_methods(["GET"])
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def posts_obj(request, AUTHOR_ID):
     if request.method == 'GET':
         posts = Post.objects.all()
-        serializer = PostSerializer(posts, many = True)
+        serializer = PostSerializer(posts, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = PostSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
 
-        return JsonResponse(serializer.data, safe = False)
 
 
 
@@ -146,7 +163,7 @@ def profile_obj(request, AUTHOR_ID):
     try:
         profile = Profile.objects.get(user_id=AUTHOR_ID)
     except profile.DoesNotExist:
-        return HttpResponse(status=404)
+        return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
     # query to database
     if request.method == "GET":
@@ -154,10 +171,10 @@ def profile_obj(request, AUTHOR_ID):
         return JsonResponse(serializer.data)
     elif request.method == "POST":
         data = JSONParser().parse(request)
-        serializer = ProfileSerializer(data=data)
-        if serializer.is_valid():
+        serializer = ProfileSerializer(profile, data=data)
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED,)
         return JsonResponse(serializer.errors, status=400)
         # post_obj = json.loads(request.body)
         # url = post_obj["url"]

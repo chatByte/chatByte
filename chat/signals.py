@@ -10,6 +10,6 @@ def update_profile_signal(sender, instance, created, **kwargs):
     if created:     
         Profile.objects.create(user=instance,)
         Token.objects.create(user=instance)
-    instance.profile.DISPLAY_NAME = instance.username
-    instance.profile.ID = instance.id
+    instance.profile.displayName = instance.username
+    instance.profile.id = instance.id
     instance.profile.save()

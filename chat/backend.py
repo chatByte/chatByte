@@ -57,8 +57,8 @@ def updateProfile(id, first_name, last_name, email, url, github):
         user.first_name = first_name
         user.last_name = last_name
         user.email = email
-        profile.URL = url
-        profile.GITHUB = github
+        profile.url = url
+        profile.github = github
 
         user.save()
         profile.save()
@@ -70,9 +70,9 @@ def updateProfile(id, first_name, last_name, email, url, github):
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
     # Please authenticate before calling this method
     try:
-        post = Post.objects.create(TITLE=title, SOURCE=source, ORIGIN=origin, DESCRIPTION=description, CONTENT_TYPE=content_type, CONTENT=content \
-            , AUTHOR=author, CATEGORIES=categories, COUNT=0, SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY=visibility)
-        author.profile.TIMELINE.add(post)
+        post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
+            , author=author, categories=categories, count=0, size=0, comentsPage='', visibility=visibility)
+        author.profile.timeline.add(post)
         author.save()
         return True
     except BaseException as e:
@@ -84,17 +84,16 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
     try:
         post = Post.objects.get(ID=id)
         print("old title:", post.TITLE)
-        post.TITLE = title
+        post.title = title
         
-        post.SOURCE = source
-        post.ORIGIN = origin
-        post.DESCIPTION = description
-        post.CONTENT_TYPE = content_type
-        post.CONTENT = content
+        post.source = source
+        post.origin = origin
+        post.description = description
+        post.contentType = content_type
+        post.content = content
         # post.author = author
-        post.CATEGORIES = categories
-        post.VISIBILITY = visibility
-
+        post.categories = categories
+        post.visibility = visibility
         post.save()
         return True
     except BaseException as e:
@@ -104,10 +103,10 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
 def editPostDescription(id, description):
     # Please authenticate before calling this method
     try:
-        post = Post.objects.get(ID=id)
-        post.DESCRIPTION = description
+        post = Post.objects.get(id=id)
+        post.description = description
         if 'text/' in post.CATEGORIES:
-            post.CONTENT = description
+            post.content = description
         post.save()
         return True
     except BaseException as e:
@@ -126,9 +125,9 @@ def deletePost(id):
 
 def createComment(author, post_id, comment, content_type):
     try:
-        post = Post.objects.get(ID=post_id)
-        commentObj = Comment.objects.create(AUTHOR=author, COMMENT=comment, CONTENT_TYPE=content_type)
-        post.COMMENTS.add(commentObj)
+        post = Post.objects.get(id=post_id)
+        commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type)
+        post.comments.add(commentObj)
         print('comment:',commentObj)
         post.save()
         return True
@@ -139,7 +138,7 @@ def createComment(author, post_id, comment, content_type):
 def updateComment(id):
     # Please authenticate before calling this method
     try:
-        comment = Comment.objects.filter(ID=id)[0]
+        comment = Comment.objects.filter(id=id)[0]
         # print('====comment====', comment)
         # update field here
         comment.save()
@@ -151,7 +150,7 @@ def updateComment(id):
 def deleteComment(id):
     # Please authenticate before calling this method
     try:
-        Comment.objects.filter(ID=id).delete()
+        Comment.objects.filter(id=id).delete()
         return True
     except BaseException as e:
         print(e)
@@ -169,7 +168,7 @@ def getPost(post_id):
 def getComments(post_id):
     try:
         post = getPost(post_id)
-        comments = post.COMMENTS.all()
+        comments = post.comments.all()
         return comments
     except BaseException as e:
         print(e)

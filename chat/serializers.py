@@ -110,7 +110,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['TYPE', 'ID', 'AUTHOR', 'COMMENT', 'CONTENT_TYPE', 'PUBLISHED']
+        fields = ['type', 'id', 'author', 'comment', 'contentType', 'published']
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -119,7 +119,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = Post
-        fields = ['TYPE','ID', 'TITLE', 'SOURCE', 'ORIGIN', 'DESCRIPTION', 'CONTENT_TYPE', 'CONTENT', 'AUTHOR', 'CATEGORIES', 'COUNT', 'SIZE', 'COMMENTS_FIRST_PAGE', 'COMMENTS', 'PUBLISHED', 'VISIBILITY', 'UNLISTED'  ]
+        fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'commentsPage', 'comments', 'published', 'visibility', 'unlisted'  ]
         
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -128,4 +128,4 @@ class ProfileSerializer(serializers.ModelSerializer):
       class Meta:
 
         model = Profile
-        fields = ['TYPE','ID', 'HOST', 'DISPLAY_NAME', 'URL', 'GITHUB']
+        fields = ['type','id', 'host', 'displayName', 'url', 'github']
