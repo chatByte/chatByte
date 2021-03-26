@@ -43,12 +43,12 @@
             <!-- Post Create Box
             ================================================= -->
             {% if messages %}
-							<ul>
-								{% for message in messages %}
-	                                 <li style="position: relative; right: -25px; color: red;">{{ message }}</li>
-	                            {% endfor %}
+              <ul>
+                {% for message in messages %}
+                                   <li style="position: relative; right: -25px; color: red;">{{ message }}</li>
+                              {% endfor %}
                             </ul>
-						{% endif %}
+            {% endif %}
             <div class="create-post">
               <div class="row">
                   <div class="col-md-7">
@@ -135,15 +135,19 @@
 
                         {% if 'text/' in cur_post.categories  %}
                         <p> {{cur_post.content}} </p>
-                        <form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
+                        <!-- <form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
                             {% csrf_token %}
                             <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.content}}</textarea>
                             <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
-
-                        </form>
+                        </form> -->
+                        <div class="editText" style="display: none">
+                        </div>
                         {% endif %}
 
-                        <div class="edit"><a href="/chat/feed/edit{{ cur_post.ID }}/" class="editBtn"/>Edit</a>&emsp;<!--<a href="/chat/feed/delete{{ cur_post.id }}/"  class="text-red">Delete</a>--><button id="{{ cur_post.ID }}" onclick="deletePost( '{{ cur_post.id }}' )">Delete</button></div>
+                        <div class="edit">
+                          <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button>
+                          <a href="/chat/feed/edit{{ cur_post.ID }}/" class="editBtn">Edit</a>
+                          <button id="{{ cur_post.ID }}" class="btn-primary-sm" onclick="deletePost( '{{ cur_post.id }}' )">Delete</button></div>
 
                       </div>
 
@@ -189,7 +193,6 @@
             <!-- Post Content
             ================================================= -->
 <!--             <div class="post-content">
-
               <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" />
               <div class="post-container">
                 <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
@@ -198,21 +201,16 @@
                     <h5><a href="" class="profile-link" id="fullName">KISHIBE ROHAN</a> </h5>
                     <p class="text-muted">Posted a photo</p>
                   </div>
-
-
                   <hr class="solid">
                   <div class="post-text">
                     <p> Same sothing asdkjha di iahsd o1h2e,khsdakhdsao dhashd asj dopqwu d!!!lsid oias doashd asd asoid o ashd .
                     </p>
                     <div class="edit"><a>Edit</a>&emsp;<a href="#" class="text-red">Delete</a></div>
-
                   </div>
-
                   <div class="reaction-img">
                     <a class="btn text-red"><i class="icon ion-ios-heart"></i> 13</a>
                     <a class="btn text-green"><i class="icon ion-share"></i></a>
                   </div>
-
                   <hr class="solid">
                   <div class="post-comment">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
@@ -292,6 +290,6 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
-    <script src="{% static 'script/feed.js' %}"></script>
+    <script src="{% static 'script/posts.js' %}"></script>
     <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
   {% endblock content %}

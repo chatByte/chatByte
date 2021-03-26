@@ -123,7 +123,6 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
     if request.user.is_authenticated:
         cur_user_name = request.user.username
 
-
     if request.method == 'GET':
         serializer = CommentSerializer(comments, many=True)
         return JsonResponse(serializer.data, safe=False)
