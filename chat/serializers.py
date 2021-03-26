@@ -1,10 +1,4 @@
 from rest_framework import serializers
-
-
-import uuid
-import django
-from django.contrib.auth.models import User
-
 from .models import *
 
 
@@ -107,12 +101,12 @@ from .models import *
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-
-        # TODO
       class Meta:
-
         model = Profile
         fields = ['type','id', 'host', 'displayName', 'url', 'github']
+        extra_kwargs = {
+            'displayName': {'validators': []},
+        }
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -123,35 +117,29 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-
-
+    author = ProfileSerializer(read_only=True)
     class Meta:
-
         model = Post
         fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'commentsPage', 'comments', 'published', 'visibility', 'unlisted'  ]
         
 
+
+
 class InboxSerializer(serializers.ModelSerializer):
-
-        # TODO
-      class Meta:
-
+    author = ProfileSerializer(read_only=True)
+    class Meta:
         model = Inbox
         fields = ['type','id', 'author', 'items']
 
 class FriendReuqestSerializer(serializers.ModelSerializer):
-
-        # TODO
-      class Meta:
-
+    author = ProfileSerializer(read_only=True)
+    class Meta:
         model = FriendRequest
         fields = ['type','id', 'summary', 'author', 'object']
 
 
 class LikeSerializer(serializers.ModelSerializer):
-
-        # TODO
-      class Meta:
-
+    author = ProfileSerializer(read_only=True)
+    class Meta:
         model = Like
         fields = ['type','id', 'summary', 'author', 'object', 'context']
