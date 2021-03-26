@@ -84,7 +84,7 @@ class PostTestCase(TestCase):
         user = User.objects.create(email='abc@123.com')
         # timeline_before = list(author.TIMELINE.all())
 
-        self.assertTrue(createPost('test_title','test','test','abc','text','content', user,'',''))
+        self.assertTrue(createPost('test_title','test','test','abc','text','content', user.profile,'',''))
         list_after = list(Post.objects.filter(title='test_title'))
         # author_after = Author.objects.filter(DISPLAY_NAME='test')[0]
         # timeline_after = list(author_after.TIMELINE.all())
@@ -146,7 +146,7 @@ class CommentTestCase(TestCase):
         comments_before = list(self.post.comments.all())
 
         user = User.objects.create(email='abc@123.com')
-        self.assertTrue(createComment(user, 2,'comment test', 'text'))
+        self.assertTrue(createComment(user.profile, '2','comment test', 'text'))
 
         comments_after = list(self.post.comments.all())
 
