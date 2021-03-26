@@ -266,8 +266,8 @@ def profile(request, AUTHOR_ID):
     profile = request.user.profile
     form = ProfileForm()
     form.fields['email'].initial = user.email
-    form.fields['URL'].initial = profile.URL
-    form.fields['GITHUB'].initial = profile.GITHUB
+    form.fields['URL'].initial = profile.url
+    form.fields['GITHUB'].initial = profile.github
     form.fields['first_name'].initial = user.first_name
     form.fields['last_name'].initial = user.last_name
     context = {}
