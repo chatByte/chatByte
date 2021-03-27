@@ -4,11 +4,15 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
+from django.http import HttpResponse, JsonResponse
+
 
 from .form import *
 from .backend import *
 import base64
 import os
+import json
+
 
 
 """
@@ -133,12 +137,13 @@ def home_public_channel(request, AUTHOR_ID):
     mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
 
     author_num_follwers = len(cur_author.profile.followers.all())
+    friend_request_num = len(cur_author.profile.friend_requests.all())
 
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
         'timeline': mytimeline,
-        'author_num_follwers': author_num_follwers
-
+        'author_num_follwers': author_num_follwers,
+        'friend_request_num': friend_request_num
     }
 
     # for user in User.objects.all():
@@ -146,8 +151,6 @@ def home_public_channel(request, AUTHOR_ID):
 
 
     response = render(request, "chat/home.html", dynamic_contain)
-
-    # query to database
 
     if request.method == "GET":
 
@@ -162,13 +165,30 @@ def home_public_channel(request, AUTHOR_ID):
 Generate response at friend_profile page , Now is deafault friend Zoe, need to be handled later
 """
 @login_required
-def friend_profile(request):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
-    timeline = {}
+def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
+    cur_author = getUser(FOREIGN_ID)
+    cur_user_name = cur_author.username
 
-    response = render(request, "chat/friendProfile.html", timeline)
+    if getFriend(request.user.id, cur_author.id):
+        isFriend = True;
+    else:
+        isFriend = False;
+    # a list of post
+    mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
+
+    author_num_follwers = len(cur_author.profile.followers.all())
+    friend_request_num = len(cur_author.profile.friend_requests.all())
+
+    dynamic_contain = {
+        'myName' : cur_author.profile.displayName,
+        'timeline': mytimeline,
+        'author_num_follwers': author_num_follwers,
+        'isFriend': isFriend,
+        'myId':cur_author.id,
+        'friend_request_num': friend_request_num,
+
+    }
+    response = render(request, "chat/friendProfile.html", dynamic_contain)
     return response
 
 
@@ -188,14 +208,16 @@ def posts(request, AUTHOR_ID):
         cur_user_name = request.user.username
     cur_author = request.user.profile
     mytimeline = cur_author.timeline.all() #getTimeline(cur_user_name)
-    author_num_follwers = 10
+    author_num_follwers = len(cur_author.followers.all())
+    friend_request_num = len(cur_author.friend_requests.all())
 
     dynamic_contain = {
         'fullName':'Ritsu Onodera',
         'author_num_follwers': author_num_follwers,
         'test_name': cur_user_name,
         'myName' : cur_author.displayName,
-        'timeline': mytimeline
+        'timeline': mytimeline,
+        'friend_request_num': friend_request_num,
 
     }
 
@@ -208,14 +230,19 @@ def posts(request, AUTHOR_ID):
     elif request.method == "POST":
 
         request_post = request.POST
-        title = request_post.get("title", "")
+
         source = cur_user_name # Who share it to me
         origin = cur_user_name # who origin create
+        title = request_post.get("title", "")
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
+        visibility = request_post.get("visibility", "")
+
+        print("here")
+
         f = request.FILES.get("file", "")
         categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
-        visibility = request_post.get("visibility", "")
+
 
         if len(f) > 0:
             categories = "image/" + os.path.splitext(f.name)[-1][1:]
@@ -273,8 +300,14 @@ def profile(request, AUTHOR_ID):
     context = {}
     context['form']= form
 
+    friend_request_num = len(profile.friend_requests.all())
+
+    context['friend_request_num']=friend_request_num
+
+
     # query to database
     if request.method == "GET":
+        # check if this is my profile or other's profile
         response = render(request, "chat/profile.html", context)
         return response
     elif request.method == "POST":
@@ -359,18 +392,102 @@ def edit_in_feed(request, ID):
 
 @login_required
 @require_http_methods(["GET"])
-def my_friends(request, AUTHOR_ID):
-    # cur_user_name = request.COOKIES.get('user')
-    # cur_author = getAuthor(cur_user_name)
-    # friend_list = getFriend(cur_user_name)
-    # author_num_follwers = 10;
-    # dynamic_contain = {
-    #     'myName' : cur_author.DISPLAY_NAME,
-    #     'friend_list': friend_list,
-    #     'author_num_follwers': author_num_follwers,
-    #
-    # }
-    # return render(request, "chat/myFriends.html", dynamic_contain)
-    return render(request, "chat/myFriends.html")
+@login_required
+def my_friends(request,AUTHOR_ID):
+    cur_user_name = None
+    if request.user.is_authenticated:
+        cur_user_name = request.user.username
+    print(cur_user_name)
+    friend_list = getFriends(request.user.id)
+
+    print(friend_list)
+    cur_author = request.user.profile
+    author_num_follwers = len(cur_author.followers.all())
+    friend_request_num = len(cur_author.friend_requests.all())
+    dynamic_contain = {
+        'myName' : cur_author.displayName,
+        'friend_list': friend_list,
+        'author_num_follwers': author_num_follwers,
+        'friend_request_num': friend_request_num
+    }
+
+    return render(request, "chat/myFriends.html", dynamic_contain)
+    # return render(request, "chat/myFriends.html")
+
+# @require_http_methods(["DELETE"])
+# TODO: accept only DELETE? How to send delete request by HTML?
+# Now using GET, prone to CSRF attack?
+@login_required
+def delete_friend(request, AUTHOR_ID, FRIEND_ID):
+    try:
+        cur_user_name = None
+        if request.user.is_authenticated:
+            cur_user_name = request.user.username
+        deleteFriend(AUTHOR_ID, FRIEND_ID)
+        return HttpResponse(status=200)
+
+    except BaseException as e:
+        print(e)
+        return HttpResponse(status=401)
+    return HttpResponse(status=304)
+
+# @require_http_methods(["GET"])
+@login_required
+def add_friend(request, AUTHOR_ID, FRIEND_ID):
+    print(AUTHOR_ID, FRIEND_ID)
+    try:
+        cur_user_name = None
+        if request.user.is_authenticated:
+            cur_user_name = request.user.username
+        addFriendRequest(FRIEND_ID, AUTHOR_ID)
+        return HttpResponse(status=200)
+    except BaseException as e:
+        print(e)
+        return HttpResponse(status=401)
+    return HttpResponse(status=304)
 
 
+# AJAX request comes every 5 seconds
+@require_http_methods(["GET"])
+@login_required
+def if_friend_request(request):
+    try:
+        cur_user_name = None
+        if request.user.is_authenticated:
+            cur_user_name = request.user.username
+
+        all_friend_request = getALLFriendRequests(request.user.id)
+        if len(all_friend_request)>0:
+            newest = all_friend_request.reverse()[0]
+            data = {}
+            data['friend'] = newest.author.profile.displayName
+            data['id'] = newest.id
+            # return the newest friend request's name
+            return JsonResponse(data)
+        else:
+            return HttpResponse(status=304)
+
+    except BaseException as e:
+        print(e)
+        return HttpResponse(status=304)
+
+
+@require_http_methods(["GET"])
+@login_required
+def accept_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
+    try:
+        addFriendViaRequest(request.user.id, FRIEND_REQUEST_ID)
+        deleteFriendRequest(request.user.id, FRIEND_REQUEST_ID)
+        return HttpResponse(status=200)
+    except BaseException as e:
+        return HttpResponse(status=401)
+
+
+@require_http_methods(["GET"])
+@login_required
+def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
+    try:
+        deleteFriendRequest(request.user.id, FRIEND_REQUEST_ID)
+        return HttpResponse(status=200)
+    except BaseException as e:
+        return HttpResponse(status=401)

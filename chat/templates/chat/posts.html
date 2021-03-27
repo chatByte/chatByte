@@ -1,8 +1,74 @@
-{% extends "base.html" %}
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ChatByte</title>
 
-{% block content %}
+    <!-- Stylesheets
+    ================================================= -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
+    <link href="{% static 'css/emoji.css' %}" rel="stylesheet">
 
-{% load static %}
+    <!--Google Font-->
+    <link href="https://fonts.googleapis.com/css?family=Archivo" rel="stylesheet">
+
+    <style media="screen">
+      body{
+        font-family:'Archivo';
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Header
+    ================================================= -->
+    <header id="header">
+      <nav class="navbar menu">
+        <div class="container">
+
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <!-- left most logo -->
+          <div class="navbar-header">
+            <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right main-menu">
+
+              <li class="dropdown"><a href="../public_channel/">My Home</a></li>
+              <li class="dropdown"><a href="../friends">My Friends</a></li>
+              <li class="dropdown"><a href="../my_posts">My Posts</a></li>
+
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="../profile/">Edit Profile</a></li>
+                </ul>
+              </li>
+
+              <li class="dropdown" id="myInbox">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
+                <ul class="dropdown-menu">
+                  {% for friend_requests in user.profile.friend_requests.all %}
+                    <li><a href="" id={{friend_requests.id}}>{{friend_requests.author.profile.displayName}} has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
+                  {% endfor %}
+                </ul>
+              </li>
+
+
+
+            </ul>
+
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container -->
+      </nav>
+    </header>
 
     <div class="page-content">
       <div class="container">
@@ -135,10 +201,13 @@
 
                         {% if 'text/' in cur_post.categories  %}
                         <p> {{cur_post.content}} </p>
-                        <!-- <form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
+
+                        <form action="." method="post" class="edit-block" style="display: none">
+
                             {% csrf_token %}
                             <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.content}}</textarea>
                             <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
+
                         </form> -->
                         <div class="editText" style="display: none">
                         </div>
@@ -201,12 +270,16 @@
                     <h5><a href="" class="profile-link" id="fullName">KISHIBE ROHAN</a> </h5>
                     <p class="text-muted">Posted a photo</p>
                   </div>
+
+
                   <hr class="solid">
                   <div class="post-text">
                     <p> Same sothing asdkjha di iahsd o1h2e,khsdakhdsao dhashd asj dopqwu d!!!lsid oias doashd asd asoid o ashd .
                     </p>
                     <div class="edit"><a>Edit</a>&emsp;<a href="#" class="text-red">Delete</a></div>
+
                   </div>
+
                   <div class="reaction-img">
                     <a class="btn text-red"><i class="icon ion-ios-heart"></i> 13</a>
                     <a class="btn text-green"><i class="icon ion-share"></i></a>
@@ -231,7 +304,7 @@
 
             <!-- Post Content
             ================================================= -->
-            <div class="post-content">
+<!--             <div class="post-content">
 
               <img src="https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8Zm9ycmVzdHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60" alt="post-image" class="img-responsive post-image" />
               <div class="post-container">
@@ -272,7 +345,7 @@
               </div>
             </div>
           </div>
-
+ -->
 
 
         </div>
@@ -292,4 +365,5 @@
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
     <script src="{% static 'script/posts.js' %}"></script>
     <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
-  {% endblock content %}
+  </body>
+</html>
