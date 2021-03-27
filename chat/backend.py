@@ -120,7 +120,7 @@ def deleteFriendRequest(usr_id, friend_id):
 def getALLFriendRequests(usr_id):
     try:
         user = User.objects.get(id=usr_id)
-        print(user.profile.friend_requests.all())
+        # print(user.profile.friend_requests.all())
         return user.profile.friend_requests.all()
     except BaseException as e:
         print(e)
@@ -151,7 +151,7 @@ def createPost(title, source, origin, description, content_type, content, author
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
             , categories=categories, count=0, size=0, commentsPage='0', visibility=visibility, author=author)
-        print(post.author)
+        # print(post.author)
         author.timeline.add(post)
         author.save()
         return True
@@ -208,10 +208,8 @@ def deletePost(id):
 def createComment(author, post_id, comment, content_type, published=django.utils.timezone.now()):
     try:
         post = Post.objects.get(id=post_id)
-        print(post)
         commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type, published=published)
         post.comments.add(commentObj)
-        print('comment:',commentObj)
         post.save()
         return True
     except BaseException as e:

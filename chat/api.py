@@ -260,7 +260,7 @@ def profile_obj(request, AUTHOR_ID):
     try:
         profile = Profile.objects.get(user_id=AUTHOR_ID)
     except profile.DoesNotExist:
-        return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
+        return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
     # query to database
     if request.method == "GET":
@@ -271,7 +271,7 @@ def profile_obj(request, AUTHOR_ID):
         serializer = ProfileSerializer(profile, data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED,)
+            return JsonResponse(serializer.data, status=200)
         return JsonResponse(serializer.errors, status=400)
         # post_obj = json.loads(request.body)
         # url = post_obj["url"]

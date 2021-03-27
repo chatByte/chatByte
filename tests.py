@@ -1,7 +1,14 @@
+from chat.api import post_obj
 from django.test import TestCase
 from chat.models import Post, Comment, Profile
 from django.contrib.auth.models import User
 from chat.backend import *
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
+from rest_framework.test import force_authenticate
+import json
+
 # Create your tests here.
 
 # class ActorTestCase(TestCase):
@@ -218,3 +225,240 @@ class FriendsTestCase(TestCase):
     #     friend_list = list(self.user.profile.FRIENDS.all())
     #     for i in range(len(friend_list)):
     #         print(friend_list[i].id)
+
+# -------------------------------------------------------------------------------------------------------------------------------
+# API test cases
+# -------------------------------------------------------------------------------------------------------------------------------
+
+class AccountTests(APITestCase):
+    def setUp(self) -> None:
+        self.username = 'test'
+        self.password = 'test'
+        self.user = User.objects.create_user(username=self.username, password=self.password)
+        self.post = Post.objects.create(title='test_title',
+                                        source='test',
+                                        origin='test',
+                                        description='abc',
+                                        contentType='text',
+                                        content='content', 
+                                        author=self.user.profile,
+                                        categories='',
+                                        count=0,
+                                        size=0,
+                                        commentsPage='0',
+                                        visibility='public')
+        self.post_id = self.post.id
+        return super().setUp()
+    
+    def test_get_profile(self):
+        """
+        Ensure we can get an author's profile.
+        """
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/'
+        response = self.client.get(url)
+        user_json = {"type": "author", "id": "1", "host": None, "displayName": "test", "url": None, "github": None}
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            user_json
+        )
+
+    def test_update_profile(self):
+        """
+        Ensure we can update an author's profile.
+        """
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/'
+        user_json = {
+            "type": "author",
+            "id": "2",
+            "host": "https://chatbyte.herokuapp.com/chat/author/2/",
+            "displayName": "test",
+            "url": "https://chatbyte.herokuapp.com/chat/author/2/profile/",
+            "github": "https://github.com/Jeremy0818"
+        }
+        response = self.client.post(url, user_json, format='json')
+        print(response.content)
+        self.assertEqual(response.status_code, 201)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            user_json
+        )
+
+    def test_update_profile(self):
+        """
+        Ensure we can update an author's profile.
+        """
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/'
+        user_json = {
+            "type": "author",
+            "id": "2",
+            "host": "https://chatbyte.herokuapp.com/chat/author/2/",
+            "displayName": "test",
+            "url": "https://chatbyte.herokuapp.com/chat/author/2/profile/",
+            "github": "https://github.com/Jeremy0818"
+        }
+        response = self.client.post(url, user_json, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            user_json
+        )
+    
+    def test_get_posts(self):
+        """
+        Ensure we can update an author's posts.
+        """
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/posts/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_post_posts(self):
+        """
+        Ensure we can create a post for an author.
+        """
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/posts/'
+        post_json = {
+            "type": "post",
+            "id": "456456",
+            "title": "fffffffffff",
+            "source": "https://chatbyte.herokuapp.com/",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "asdf",
+            "contentType": "text",
+            "content": "asdf",
+            "author": {
+                "type": "author",
+                "id": "1",
+                "host": None,
+                "displayName": "test",
+                "url": None,
+                "github": None
+            },
+            "categories": "text/plain",
+            "count": 1,
+            "size": 1,
+            "commentsPage": "1",
+            "comments": [],
+            "published": "2021-03-26T19:04:53Z",
+            "visibility": "public",
+            "unlisted": "false"
+        }
+        response = self.client.post(url, post_json, format='json')
+        # print(response.content)
+        self.assertEqual(response.status_code, 201)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            post_json
+        )
+    
+    def test_get_post(self):
+        """
+        Ensure we can update an author's post.
+        """
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/posts/' + str(self.post_id) + '/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    
+    def test_post_post(self):
+        """
+        Ensure we can update an author's post.
+        """
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/posts/' + str(self.post_id) + '/'
+        post_json = {
+            "type": "post",
+            "id": self.post_id,
+            "title": "ffffffffffffffffffffffffffffff",
+            "source": "https://chatbyte.herokuapp.com/",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "asdf",
+            "contentType": "text",
+            "content": "asdf",
+            "author": {
+                "type": "author",
+                "id": "1",
+                "host": None,
+                "displayName": "test",
+                "url": None,
+                "github": None
+            },
+            "categories": "text/plain",
+            "count": 1,
+            "size": 1,
+            "commentsPage": "1",
+            "comments": [],
+            "published": "2021-03-26T19:04:53Z",
+            "visibility": "public",
+            "unlisted": "false"
+        }
+        response = self.client.post(url, post_json, format='json')
+        # print(response.content)
+        self.assertEqual(response.status_code, 201)
+
+    def test_delete_post(self):
+        """
+        Ensure we can delete an author's post.
+        """
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/posts/' + str(self.post_id) + '/'
+        response = self.client.delete(url)
+        # print(response.content)
+        self.assertEqual(response.status_code, 204)
+    
+    def test_put_post(self):
+        """
+        Ensure we can delete an author's post.
+        """
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/posts/asdf/'
+        post_json = {
+            "type": "post",
+            "id": "asdf",
+            "title": "ffffffffffffffffffffffffffffff",
+            "source": "https://chatbyte.herokuapp.com/",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "asdf",
+            "contentType": "text",
+            "content": "asdf",
+            "author": {
+                "type": "author",
+                "id": "1",
+                "host": None,
+                "displayName": "test",
+                "url": None,
+                "github": None
+            },
+            "categories": "text/plain",
+            "count": 1,
+            "size": 1,
+            "commentsPage": "1",
+            "comments": [],
+            "published": "2021-03-26T19:04:53Z",
+            "visibility": "public",
+            "unlisted": "false"
+        }
+        response = self.client.put(url, post_json, format='json')
+        # print(response.content)
+        self.assertEqual(response.status_code, 201)
+    
+    def test_get_comments(self):
+        # TODO
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/posts/asdf/'
+
+    def test_post_comments(self):
+        # TODO
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/posts/asdf/'
+
+    def test_delete_comments(self):
+        # TODO
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/posts/asdf/'
