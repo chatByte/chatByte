@@ -122,7 +122,7 @@ def addFriendViaRequest(usr_id, friend_request_id):
     try:
         user = User.objects.get(id=usr_id)
         friend_request = user.profile.friend_requests.get(id=friend_request_id)
-        print(friend_request)
+        # print(friend_request)
         friend = friend_request.author
         addFriend(usr_id, friend.id)
         return True
@@ -178,7 +178,7 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
     # Please authenticate before calling this method
     try:
         post = Post.objects.get(id=id)
-        print("old title:", post.title)
+        # print("old title:", post.title)
         post.title = title
 
         post.source = source

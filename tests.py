@@ -11,18 +11,6 @@ import json
 
 # Create your tests here.
 
-# class ActorTestCase(TestCase):
-
-#     def setUp(self):
-#         # set up
-#         Actor.objects.create(USERNAME='test', PASSWORD='123')
-#         Actor.objects.create(USERNAME='testfriend', PASSWORD='123')
-#         # User.objects.create(USERNAME='testfriend', PASSWORD='123')
-
-#     def test_validActor(self):
-#         self.assertEqual(validActor('test123', '123'), False)
-#         self.assertEqual(validActor('test', '123'), True)
-
 # class AuthorTestCase(TestCase):
 #     def setUp(self):
 #         author1 = Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
@@ -59,25 +47,6 @@ import json
 #         deleteAuthor('test')
 #         list_after = list(Author.objects.filter(DISPLAY_NAME='test'))
 #         self.assertEqual(len(list_before) - len(list_after), 1)
-
-#     def test_addFriend(self):
-#         list_before = list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all())
-#         # print(list_before)
-#         addFriend('test', 'testfriend')
-#         list_after = list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all())
-#         # print("list_after",list_after)
-#         self.assertEqual(len(list_after) - len(list_before), 1)
-
-#     def test_getFriends(self):
-#         self.assertEqual(list(getFriends('test')), list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all()))
-
-#     def test_deleteFriend(self):
-#         addFriend('test', 'testfriend')
-#         list_before = list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all())
-#         deleteFriend('test', 'testfriend')
-#         list_after = list(Author.objects.filter(DISPLAY_NAME='test')[0].FRIENDS.all())
-#         self.assertEqual(len(list_before) - len(list_after), 1)
-
 
 class PostTestCase(TestCase):
     def setUp(self):
@@ -279,7 +248,7 @@ class AccountTests(APITestCase):
             "github": "https://github.com/Jeremy0818"
         }
         response = self.client.post(url, user_json, format='json')
-        print(response.content)
+        # print(response.content)
         self.assertEqual(response.status_code, 201)
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
