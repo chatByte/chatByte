@@ -45,6 +45,41 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
 #         # updatePost()
 #         pass
 
+
+
+
+'''
+Testing method
+
+{
+    "type": "post",
+    "id": "3",
+    "title": "fffffffffff",
+    "source": "https://chatbyte.herokuapp.com/",
+    "origin": "https://chatbyte.herokuapp.com/",
+    "description": "asdf",
+    "contentType": "text",
+    "content": "asdf",
+    "author": {
+        "type": "author",
+        "id": "2",
+        "host": null,
+        "displayName": "test",
+        "url": "https://chatbyte.herokuapp.com/chat/author/2/profile/",
+        "github": "https://github.com/Jeremy0818"
+    },
+    "categories": "text/plain",
+    "count": 1,
+    "size": 1,
+    "commentsPage": "1",
+    "comments": [],
+    "published": "2021-03-26T19:04:53Z",
+    "visibility": "public",
+    "unlisted": "false"
+}
+
+'''
+
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
@@ -84,10 +119,17 @@ def post_obj(request, AUTHOR_ID, POST_ID):
         return JsonResponse(serializer.errors, status=400)
     elif request.method == 'PUT':
         # create a post with that post_id
+        try:
+            post = Post.objects.get(id=POST_ID)
+            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' already exists'}, status=404)
+        except Post.DoesNotExist:
+            pass
         data = JSONParser().parse(request)
         serializer = PostSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            serializers.id = POST_ID
+            profile = Profile.objects.get(pk=AUTHOR_ID)
+            serializer.save(author=profile)
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
@@ -105,51 +147,104 @@ def posts_obj(request, AUTHOR_ID):
         data = JSONParser().parse(request)
         serializer = PostSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            profile = Profile.objects.get(pk=AUTHOR_ID)
+            serializer.save(author=profile)
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
 
 
-
-# coment views.py
+'''
+Get conmments  for a Post
+Response Object Structure: [list of Like objects] using json
+'''
 @csrf_exempt
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'DELETE'])
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def comment_list_obj(request, AUTHOR_ID, POST_ID):
-    comments = Comment.objects.all()
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
 
+
+    # checking, comments' father exist or not
+    try:
+        post = Post.objects.get(id=POST_ID)
+    except Post.DoesNotExist:
+        return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
     if request.method == 'GET':
+
+        # list obj contain a list of comment    
+        comments = post.comments 
         serializer = CommentSerializer(comments, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-
-    # if request.method == "GET":
-    #     comments = getComments(POST_ID)
-
-    #     # TODO return objects or html?
-    #     return comments
-    # elif request.method == "POST":
-    #     request_post = request.POST
-    #     author = request_post.get("author")
-    #     contentType = request_post.get("contentType")
-    #     comment = request_post.get("comment")
-    #     createComment(author, comment, contentType)
-    #     return request_post
-
     elif request.method == 'POST':
         data = JSONParser().parse(request)
+
         serializer = CommentSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            # serializer.save()
+
+                # save comments to post obj, uodate
+                # post.comments.add
+                # post_serializer = PostSerializer(post, data=data)
+                # if post_serializer.is_valid(raise_exception=True):
+                #     post_serializer.save()
+            # createComment=> de serialization
+            # --------------post_serializer.errors?
+
+            profile_obj = Profile.objects.get(id=AUTHOR_ID)
+
+            print("---------")
+            print("type: ", type(profile_obj))
 
 
+            if (createComment(profile_obj, POST_ID, data["comment"], data["contentType"], data["published"])):
+
+                return JsonResponse(serializer.data, status=201)
+            else:
+                return JsonResponse(serializer.data, status=403)
+
+    elif request.method == "DELETE":
+        # TODO
+        pass
+        
+    return JsonResponse(serializer.errors, status=400)
+
+'''
+Testing method
+http://127.0.0.1:8000/chat/author/1/posts/3d93a8ea-3175-4e75-b1ae-03655c663b75/comments/
+
+{
+    "type":"comment",
+      "author":{
+        "type":"author",
+        "id":1,
+        "url":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+          "host":"http://127.0.0.1:5454/",
+          "displayName":"Greg Johnson",
+          "github": "http://github.com/gjohnson"
+    },
+    "comment":"Sick Olde English",
+    "contentType":"text/markdown",
+    "published":"2015-03-09T13:07:04+00:00",
+    "id":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments/f6255bb01c648fe967714d52a89e8e9c"
+}
+    
+    
+
+'''
+
+    #   "author":{
+    #     "type":"author",
+    #     "id":1,
+    #     "url":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+    #     "host":"http://127.0.0.1:5454/",
+    #     "displayName":"Greg Johnson",
+    #     "github": "http://github.com/gjohnson"
+    # },
 
 
 """
@@ -194,12 +289,63 @@ def profile_obj(request, AUTHOR_ID):
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['POST'])
-def delete_friend_obj(request, AUTHOR_ID, FRIEND_ID):
-    return True
-
 def add_friend_obj(request, AUTHOR_ID, FRIEND_ID):
     return True
 
 
 
 
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def get_friend_obj(request, AUTHOR_ID, FRIEND_ID):
+    return True
+
+
+
+
+
+
+
+'''
+Get likes for a Post
+Response Object Structure: [list of Like objects]
+'''
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['POST', 'PUT'])
+def likes_post_obj(request, AUTHOR_ID, POST_ID):
+    #TODO
+    # comments = Comment.objects.all()
+    # cur_user_name = None
+    # if request.user.is_authenticated:
+    #     cur_user_name = request.user.username
+
+    # if request.method == 'GET':
+    #     serializer = CommentSerializer(comments, many=True)
+    #     return JsonResponse(serializer.data, safe=False)
+
+    # elif request.method == 'POST':
+    #     data = JSONParser().parse(request)
+    #     serializer = CommentSerializer(data=data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return JsonResponse(serializer.data, status=201)
+    #     return JsonResponse(serializer.errors, status=400)
+
+
+
+
+    return True
+
+
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def liked_post_obj(request, AUTHOR_ID):
+    #TODO
+    return True

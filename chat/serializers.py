@@ -99,6 +99,7 @@ from .models import *
 #         instance.save()
 #         return instance
 
+
 class ProfileSerializer(serializers.ModelSerializer):
       class Meta:
         model = Profile
@@ -106,6 +107,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'displayName': {'validators': []},
         }
+
 
 class CommentSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(read_only=True)

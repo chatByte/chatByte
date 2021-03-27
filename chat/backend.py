@@ -1,7 +1,8 @@
 
-from .models import Post, Comment, Profile
+from .models import Post, Comment, Profile, Followers, FriendRequest, Like, Liked
 import datetime
 from django.conf import settings
+import django
 from django.contrib.auth.models import User
 import traceback
 
@@ -23,7 +24,8 @@ import traceback
 #         domain=settings.SESSION_COOKIE_DOMAIN,
 #         secure=settings.SESSION_COOKIE_SECURE or None,
 #     )
-
+def getUser(usr_id):
+    return User.objects.get(id=usr_id)
 
 def updateUser(username, password):
     # Please authenticate before calling this method
@@ -42,7 +44,13 @@ def addFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
         friend = User.objects.get(id=friend_id)
+        # mutual friend
         user.profile.friends.add(friend)
+        friend.profile.friends.add(user)
+        # mutual followers
+        user.profile.followers.add(friend)
+        friend.profile.followers.add(user)
+
         user.save()
         return True
     except BaseException as e:
@@ -78,16 +86,25 @@ def getFriends(usr_id):
         print(e)
         return None
 
+def createFriendRequest(usr_id, friend_id):
+    object = User.objects.get(id=usr_id)
+    author = User.objects.get(id=friend_id)
+    friendRequestObj = FriendRequest.objects.create(summary=author.profile.displayName + 'wants to add ' + object.profile.displayName + ' as friend', author=author, object=object)
+    return friendRequestObj
+
 def addFriendRequest(usr_id, friend_id):
     try:
-        user = User.objects.get(id=usr_id)
-        friend = User.objects.get(id=friend_id)
-        user.profile.friend_requests.add(friend)
-        user.save()
+        object = User.objects.get(id=usr_id)
+        author = User.objects.get(id=friend_id)
+        friendRequestObj = FriendRequest.objects.create(summary="", author=author, object=object)
+        object.profile.friend_requests.add(friendRequestObj)
+        author.profile.friend_requests_sent.add(friendRequestObj)
+        object.save()
         return True
     except BaseException as e:
         print(e)
         return False
+
 
 def deleteFriendRequest(usr_id, friend_id):
     try:
@@ -103,6 +120,7 @@ def deleteFriendRequest(usr_id, friend_id):
 def getALLFriendRequests(usr_id):
     try:
         user = User.objects.get(id=usr_id)
+        print(user.profile.friend_requests.all())
         return user.profile.friend_requests.all()
     except BaseException as e:
         print(e)
@@ -132,8 +150,7 @@ def createPost(title, source, origin, description, content_type, content, author
     # Please authenticate before calling this method
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
-            , categories=categories, count=0, size=0, commentsPage='0', visibility=visibility)
-        post.author = author
+            , categories=categories, count=0, size=0, commentsPage='0', visibility=visibility, author=author)
         print(post.author)
         author.timeline.add(post)
         author.save()
@@ -150,7 +167,7 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
         post = Post.objects.get(id=id)
         print("old title:", post.title)
         post.title = title
-        
+
         post.source = source
         post.origin = origin
         post.description = description
@@ -188,10 +205,11 @@ def deletePost(id):
         return False
 
 
-def createComment(author, post_id, comment, content_type):
+def createComment(author, post_id, comment, content_type, published=django.utils.timezone.now()):
     try:
         post = Post.objects.get(id=post_id)
-        commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type)
+        print(post)
+        commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type, published=published)
         post.comments.add(commentObj)
         print('comment:',commentObj)
         post.save()
@@ -201,6 +219,24 @@ def createComment(author, post_id, comment, content_type):
         traceback.print_exc()
         print(e)
         return False
+
+
+# # designed for api.py send json obj
+# def createComment_obj(author, post_id, comment, content_type, published):
+#     try:
+#         post = Post.objects.get(id=post_id)
+#         commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type)
+#         post.comments.add(commentObj)
+#         print('comment:',commentObj)
+#         post.save()
+#         return True
+#     except BaseException as e:
+#         print(repr(e))
+#         traceback.print_exc()
+#         print(e)
+#         return False
+
+
 
 def updateComment(id):
     # Please authenticate before calling this method

@@ -23,22 +23,28 @@ class Profile(models.Model):
     friends = models.ManyToManyField(User, related_name='%(class)s_friends', blank=True)
     followers = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
-    friend_requests = models.ManyToManyField(User, related_name='%(class)s_friend_requests', blank=True)
-    inbox = models.ManyToManyField('Inbox', blank=True)
+    friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
+    friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
 
     def __unicode__(self): # for Python 2
         return self.user.username
-    
+
     class Meta:
         managed = False
 
 class Comment(models.Model):
     type = models.CharField(max_length=200, default="comment")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+
     author = models.OneToOneField('Profile', on_delete=models.CASCADE,)
+
     comment = models.TextField()
     contentType = models.CharField(max_length=200)
     published = models.DateTimeField(default=django.utils.timezone.now)
+    # # the father of Comeent is POST
+    # post_id = models.ForeignKey("Post", on_delete= models.CASCADE)
+
+
 
 class Post(models.Model):
     type = models.CharField(max_length=200, default="post")
@@ -49,7 +55,7 @@ class Post(models.Model):
     description = models.TextField()
     contentType = models.CharField(max_length=200)
     content = models.TextField()
-    author = models.ForeignKey('Profile', on_delete=models.CASCADE,)
+    author = models.ForeignKey('Profile', on_delete=models.CASCADE)
     categories = models.CharField(max_length=200)
     count = models.IntegerField()
     size = models.IntegerField()
@@ -78,16 +84,23 @@ class FriendRequest(models.Model):
     author = models.ForeignKey('Profile', related_name='%(class)s_author', on_delete=models.CASCADE,)
     object = models.ForeignKey('Profile', related_name='%(class)s_object', on_delete=models.CASCADE,)
 
+# Inbox liked
 class Like(models.Model):
     type = models.CharField(max_length=200, default="like")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+
+    # who likes it
     author = models.ForeignKey('Profile', related_name='%(class)s_author', on_delete=models.CASCADE,)
+    # URL of the likes
+
     context = models.CharField(max_length=200, default="Like")
+    # likes items title, post title
     summary = models.CharField(max_length=200, default="Like")
+    # Likes obj, ie post
     object = models.CharField(max_length=200, default="Like")
 
+# People's liked items
 class Liked(models.Model):
     type = models.CharField(max_length=200, default="liked")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     items = models.ManyToManyField('Like', blank=True)
-

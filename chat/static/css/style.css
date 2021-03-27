@@ -122,10 +122,7 @@ a.disabled {
   pointer-events: none;
 }
 
-badge {
-  position: relative;
-  padding-left: 5px;
-}
+
 /*==================================================
   Header
   ==================================================*/
@@ -369,6 +366,15 @@ Timeline
   background-position: center;
   background-size: cover;
   min-height: 360px;
+  border-radius: 0 0 4px 4px;
+  position: relative;
+}
+
+.timeline-cover-sm{
+  background: url("https://images.unsplash.com/photo-1512273222628-4daea6e55abb?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80") no-repeat;
+  background-position: center;
+  background-size: cover;
+  min-height: 100px;
   border-radius: 0 0 4px 4px;
   position: relative;
 }
@@ -644,8 +650,6 @@ Timeline
   margin-top: 10px;
 }
 
-
-
 .create-post .form-group .form-group-col .dropdown{
   position: none;
   display: inline-table;
@@ -750,6 +754,11 @@ Timeline
 .friend-list .friend-card .card-info img.profile-photo-lg{
   margin-top: -60px;
   border: 7px solid #fff;
+}
+
+.friend-list .friend-card .friend-info {
+  position: relative;
+  margin-top: 10px;
 }
 
 /*=======================================
