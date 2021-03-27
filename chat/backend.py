@@ -275,3 +275,11 @@ def getComments(post_id):
     except BaseException as e:
         print(e)
         return None
+
+def getUser(usr_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        return user
+    except BaseException as e:
+        print(e)
+        return None

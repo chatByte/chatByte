@@ -125,7 +125,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 
-class InboxSerializer(serializers.ModelSerializer):
+class PostInboxSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(read_only=True)
     class Meta:
         model = Inbox
