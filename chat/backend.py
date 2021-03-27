@@ -163,9 +163,8 @@ def createPost(title, source, origin, description, content_type, content, author
     # Please authenticate before calling this method
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
-            , categories=categories, count=0, size=0, commentsPage='0', visibility=visibility)
-        post.author = author
-        print(post.author)
+            , categories=categories, count=0, size=0, commentsPage='0', visibility=visibility, author=author)
+        # print(post.author)
         author.timeline.add(post)
         author.save()
         return True
@@ -219,12 +218,11 @@ def deletePost(id):
         return False
 
 
-def createComment(author, post_id, comment, content_type, published = django.utils.timezone.now ):
+def createComment(author, post_id, comment, content_type, published=django.utils.timezone.now()):
     try:
         post = Post.objects.get(id=post_id)
-        commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type, published= published)
+        commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type, published=published)
         post.comments.add(commentObj)
-        print('comment:',commentObj)
         post.save()
         return True
     except BaseException as e:
@@ -287,6 +285,14 @@ def getComments(post_id):
         post = getPost(post_id)
         comments = post.comments.all()
         return comments
+    except BaseException as e:
+        print(e)
+        return None
+
+def getUser(usr_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        return user
     except BaseException as e:
         print(e)
         return None
