@@ -75,7 +75,7 @@ class PostInbox(models.Model):
 
 class Inbox(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    post_inbox = models.OneToOneField('PostInbox', on_delete=models.CASCADE)
+    post_inbox = models.OneToOneField('PostInbox', on_delete=models.CASCADE, null=True, blank=True)
     like_inbox = models.ManyToManyField('Like', blank=True)
     friend_requests = models.ManyToManyField('FriendRequest', blank=True)
 
