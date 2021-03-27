@@ -30,7 +30,7 @@ To run the test cases, make sure you are in the outer mysite directory:
     make test
 
 ## Herokuapp login method:
-https://project-chatbyte.herokuapp.com/chat/login/
+https://app-chatbyte.herokuapp.com/
 
 ## Local host:
 inside chatByte/mysite
