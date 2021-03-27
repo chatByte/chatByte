@@ -137,12 +137,13 @@ def home_public_channel(request, AUTHOR_ID):
     mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
 
     author_num_follwers = len(cur_author.profile.followers.all())
+    friend_request_num = len(cur_author.profile.friend_requests.all())
 
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
         'timeline': mytimeline,
-        'author_num_follwers': author_num_follwers
-
+        'author_num_follwers': author_num_follwers,
+        'friend_request_num': friend_request_num
     }
 
     # for user in User.objects.all():
@@ -176,13 +177,15 @@ def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
     mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
 
     author_num_follwers = len(cur_author.profile.followers.all())
+    friend_request_num = len(cur_author.profile.friend_requests.all())
 
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
         'timeline': mytimeline,
         'author_num_follwers': author_num_follwers,
         'isFriend': isFriend,
-        'myId':cur_author.id
+        'myId':cur_author.id,
+        'friend_request_num': friend_request_num,
 
     }
     response = render(request, "chat/friendProfile.html", dynamic_contain)
@@ -206,14 +209,15 @@ def posts(request, AUTHOR_ID):
     cur_author = request.user.profile
     mytimeline = cur_author.timeline.all() #getTimeline(cur_user_name)
     author_num_follwers = len(cur_author.followers.all())
-
+    friend_request_num = len(cur_author.friend_requests.all())
 
     dynamic_contain = {
         'fullName':'Ritsu Onodera',
         'author_num_follwers': author_num_follwers,
         'test_name': cur_user_name,
         'myName' : cur_author.displayName,
-        'timeline': mytimeline
+        'timeline': mytimeline,
+        'friend_request_num': friend_request_num,
 
     }
 
@@ -290,6 +294,11 @@ def profile(request, AUTHOR_ID):
     form.fields['last_name'].initial = user.last_name
     context = {}
     context['form']= form
+
+    friend_request_num = len(profile.friend_requests.all())
+
+    context['friend_request_num']=friend_request_num
+
 
     # query to database
     if request.method == "GET":
@@ -389,11 +398,12 @@ def my_friends(request,AUTHOR_ID):
     print(friend_list)
     cur_author = request.user.profile
     author_num_follwers = len(cur_author.followers.all())
-
+    friend_request_num = len(cur_author.friend_requests.all())
     dynamic_contain = {
         'myName' : cur_author.displayName,
         'friend_list': friend_list,
         'author_num_follwers': author_num_follwers,
+        'friend_request_num': friend_request_num
     }
 
     return render(request, "chat/myFriends.html", dynamic_contain)
@@ -440,18 +450,37 @@ def if_friend_request(request):
             cur_user_name = request.user.username
 
         all_friend_request = getALLFriendRequests(request.user.id)
-        if all_friend_request:
+        if len(all_friend_request)>0:
             newest = all_friend_request.reverse()[0]
             data = {}
             data['friend'] = newest.author.profile.displayName
             data['id'] = newest.id
-
             # return the newest friend request's name
             return JsonResponse(data)
-
         else:
             return HttpResponse(status=304)
 
     except BaseException as e:
         print(e)
         return HttpResponse(status=304)
+
+
+@require_http_methods(["GET"])
+@login_required
+def accept_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
+    try:
+        addFriendViaRequest(request.user.id, FRIEND_REQUEST_ID)
+        deleteFriendRequest(request.user.id, FRIEND_REQUEST_ID)
+        return HttpResponse(status=200)
+    except BaseException as e:
+        return HttpResponse(status=401)
+
+
+@require_http_methods(["GET"])
+@login_required
+def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
+    try:
+        deleteFriendRequest(request.user.id, FRIEND_REQUEST_ID)
+        return HttpResponse(status=200)
+    except BaseException as e:
+        return HttpResponse(status=401)
