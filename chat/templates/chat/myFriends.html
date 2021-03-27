@@ -1,93 +1,161 @@
-{% extends "base.html" %}
 
-{% block content %}
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ChatByte</title>
+
+    <!-- Stylesheets
+    ================================================= -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
+    <link href="{% static 'css/emoji.css' %}" rel="stylesheet">
+
+    <!--Google Font-->
+    <link href="https://fonts.googleapis.com/css?family=Archivo" rel="stylesheet">
+
+    <style media="screen">
+      body{
+        font-family:'Archivo';
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Header
+    ================================================= -->
+    <header id="header">
+      <nav class="navbar menu">
+        <div class="container">
+
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <!-- left most logo -->
+          <div class="navbar-header">
+            <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right main-menu">
+
+              <li class="dropdown"><a href="../public_channel/">My Home</a></li>
+              <li class="dropdown"><a href="../friends">My Friends</a></li>
+              <li class="dropdown"><a href="../posts">My Posts</a></li>
 
 
-{% load static %}
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="author/">Edit Profile</a></li>
+                </ul>
+              </li>
 
-<div class="container">
-  <div class="">
-    <div class="timeline-cover">
+              <li class="dropdown" id="myInbox">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
+                <ul class="dropdown-menu">
+                  {% for friend_requests in user.profile.friend_requests.all %}
+                    <li><a href="" id={{friend_requests.id}}>{{friend_requests.author.profile.displayName}} has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
+                  {% endfor %}
+                </ul>
+              </li>
 
-      <!--Timeline Menu -->
-      <div class="timeline-nav-bar">
-        <div class="row">
-          <div class="col-md-3">
-            <div class="profile-info">
-              <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="img-responsive profile-photo" />
-              <h3 id="fullName">{{ user.profile.displayName }}</h3>
-              <p class="text-muted"> {{ user.profile.followers.all.count }} people is following him</p>
+
+
+            </ul>
+
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container -->
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="">
+        <div class="timeline-cover">
+
+          <!--Timeline Menu -->
+          <div class="timeline-nav-bar">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="profile-info">
+                  <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="img-responsive profile-photo" />
+                  <h3 id="fullName">{{ user.profile.displayName }}</h3>
+                  <p class="text-muted"> {{ user.profile.followers.all.count }} people is following him</p>
+                </div>
+              </div>
+              <div class="col-md-9">
+                <ul class="list-inline profile-menu">
+                  <li><a href="../public_channel/">Home Public Channel</a></li>
+                  <li><a href="../friends/" class="active">My Friends</a></li>
+                  <li><a href="../profile/" class="">My Profile</a></li>
+                  <li><a href="../my_posts/">My Posts</a></li>
+                </ul>
+              </div>
             </div>
           </div>
-          <div class="col-md-9">
-            <ul class="list-inline profile-menu">
-              <li><a href="../public_channel/">Home Public Channel</a></li>
-              <li><a href="../friends/" class="active">My Friends</a></li>
-              <li><a href="../profile/" class="">My Profile</a></li>
-              <li><a href="../my_posts/">My Posts</a></li>
-            </ul>
-          </div>
+          <!--Timeline Menu Ends-->
         </div>
-      </div>
-      <!--Timeline Menu Ends-->
-    </div>
-      <div id="page-contents">
-        <div class="row">
-          <div class="col-md-3"></div>
-          <div class="col-md-7">
-      <!-- Friend List -->
-            <div class="friend-list">
-              <div class="row">
-                {% for friend in user.profile.friends.all %}
-                <div class="col-md-6">
-                  <div class="friend-card">
-                    <!-- <img src="{% static 'images/snow-mount.jpg' %}" alt="profile-cover" class="img-responsive profile-photo-sm" /> -->
-                    <div class="timeline-cover-sm"></div>
+          <div id="page-contents">
+            <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-7">
+          <!-- Friend List -->
+                <div class="friend-list">
+                  <div class="row">
+                    {% for friend in user.profile.friends.all %}
+                    <div class="col-md-6">
+                      <div class="friend-card">
+                        <!-- <img src="{% static 'images/snow-mount.jpg' %}" alt="profile-cover" class="img-responsive profile-photo-sm" /> -->
+                        <div class="timeline-cover-sm"></div>
 
-                    <div class="card-info">
-                      <img src="https://i1.sndcdn.com/artworks-000633504211-qcdzak-t500x500.jpg" alt="user" class="profile-photo-lg" />
-                      <div class="friend-info">
-                        <a class="btn-primary-sm unfollow pull-right" href="delete/{{friend.id}}" >Unfollow</a>
-                        <!-- <form action="delete/{{friend.id}}" method="post">
-                            {% csrf_token %}
-                            <button class="btn-primary-sm unfollow pull-right" type="submit" value="Delete" >Unfollow<button>
-                        </form> -->
-                        <div class="">
-                          <h5><a style="color: white;">11</a></h5>
-                          <!-- href:/chat/author/+friend.id -->
-                          <h5><a href="../public_channel/{{friend.id}}/" class="profile-link">{{friend.profile.DISPLAY_NAME}}</a></h5>
-                          <p class="text-green">Been friends for 10 months</p>
+                        <div class="card-info">
+                          <img src="https://i1.sndcdn.com/artworks-000633504211-qcdzak-t500x500.jpg" alt="user" class="profile-photo-lg" />
+                          <div class="friend-info">
+                            <a class="btn-primary-sm unfollow pull-right" href="delete/{{friend.id}}" >Unfollow</a>
+                            <!-- <form action="delete/{{friend.id}}" method="post">
+                                {% csrf_token %}
+                                <button class="btn-primary-sm unfollow pull-right" type="submit" value="Delete" >Unfollow<button>
+                            </form> -->
+                            <div class="">
+                              <h5><a style="color: white;">11</a></h5>
+                              <!-- href:/chat/author/+friend.id -->
+                              <h5><a href="../public_channel/{{friend.id}}/" class="profile-link">{{friend.profile.displayName}}</a></h5>
+                              <p class="text-green">Been friends for 10 months</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                    {% endfor %}
+
+
                 </div>
-                {% endfor %}
-
-
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        <!-- Friend List End -->
+
+
     </div>
-    <!-- Friend List End -->
+    <!--preloader-->
+    <div id="spinner-wrapper">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Scripts
+    ================================================= -->
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
+    <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+
+    <!-- <script src="{% static 'script/myFriend.js' %}"></script> -->
+    <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
 
 
-</div>
-<!--preloader-->
-<div id="spinner-wrapper">
-  <div class="spinner"></div>
-</div>
-
-<!-- Scripts
-================================================= -->
-<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-<script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
-<script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
-<script src="{% static 'js/script.js' %}"></script>
-
-<!-- <script src="{% static 'script/myFriend.js' %}"></script> -->
-<script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
-
-{% endblock content %}
+  </body>
+</html>

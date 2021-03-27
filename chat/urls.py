@@ -39,7 +39,11 @@ urlpatterns = [
 
     # add friend
     path(r"author/<str:AUTHOR_ID>/friends/add/<str:FRIEND_ID>/", views.add_friend, name="friend_add"),
-    path("author/<str:AUTHOR_ID>/friends/", views.my_friends, name="my_friends"),
+    path(r"author/<str:AUTHOR_ID>/friends/", views.my_friends, name="my_friends"),
+
+    path(r"author/<str:AUTHOR_ID>/friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
+    path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
+
 
     # # show friend list
     # path("author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", api.delete_friend_obj, name="friend_delete"),

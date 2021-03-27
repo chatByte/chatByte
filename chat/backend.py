@@ -1,5 +1,5 @@
 
-from .models import Post, Comment, Profile
+from .models import Post, Comment, Profile, Followers, FriendRequest, Like, Liked
 import datetime
 from django.conf import settings
 import django
@@ -24,7 +24,8 @@ import traceback
 #         domain=settings.SESSION_COOKIE_DOMAIN,
 #         secure=settings.SESSION_COOKIE_SECURE or None,
 #     )
-
+def getUser(usr_id):
+    return User.objects.get(id=usr_id)
 
 def updateUser(username, password):
     # Please authenticate before calling this method
@@ -85,23 +86,45 @@ def getFriends(usr_id):
         print(e)
         return None
 
+def createFriendRequest(usr_id, friend_id):
+    object = User.objects.get(id=usr_id)
+    author = User.objects.get(id=friend_id)
+    friendRequestObj = FriendRequest.objects.create(summary=author.profile.displayName + 'wants to add ' + object.profile.displayName + ' as friend', author=author, object=object)
+    return friendRequestObj
+
 def addFriendRequest(usr_id, friend_id):
     try:
+        object = User.objects.get(id=usr_id)
+        author = User.objects.get(id=friend_id)
+        friendRequestObj = FriendRequest.objects.create(summary="", author=author, object=object)
+        object.profile.friend_requests.add(friendRequestObj)
+        author.profile.friend_requests_sent.add(friendRequestObj)
+        object.save()
+        return True
+    except BaseException as e:
+        print(e)
+        return False
+
+
+def deleteFriendRequest(usr_id, friend_request_id):
+    try:
         user = User.objects.get(id=usr_id)
-        friend = User.objects.get(id=friend_id)
-        user.profile.friend_requests.add(friend)
+        # friend = User.objects.get(id=friend_id)
+        friend_request = user.profile.friend_requests.get(id=friend_request_id)
+        user.profile.friend_requests.remove(friend_request)
         user.save()
         return True
     except BaseException as e:
         print(e)
         return False
 
-def deleteFriendRequest(usr_id, friend_id):
+def addFriendViaRequest(usr_id, friend_request_id):
     try:
         user = User.objects.get(id=usr_id)
-        friend = User.objects.get(id=friend_id)
-        user.profile.friend_requests.remove(friend)
-        user.save()
+        friend_request = user.profile.friend_requests.get(id=friend_request_id)
+        print(friend_request)
+        friend = friend_request.author
+        addFriend(usr_id, friend.id)
         return True
     except BaseException as e:
         print(e)
@@ -110,7 +133,7 @@ def deleteFriendRequest(usr_id, friend_id):
 def getALLFriendRequests(usr_id):
     try:
         user = User.objects.get(id=usr_id)
-        print(user.profile.friend_requests.all())
+        # print(user.profile.friend_requests.all())
         return user.profile.friend_requests.all()
     except BaseException as e:
         print(e)

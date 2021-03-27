@@ -146,6 +146,29 @@ def posts_obj(request, AUTHOR_ID):
 
 
 
+
+'''
+Tetsing format: 
+http://127.0.0.1:8000/chat/author/1/posts/3d93a8ea-3175-4e75-b1ae-03655c663b75/comments/
+
+{
+    "type":"comment",
+      "author":{
+        "type":"author",
+        "id":1,
+        "url":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+          "host":"http://127.0.0.1:5454/",
+          "displayName":"Greg Johnson",
+          "github": "http://github.com/gjohnson"
+    },
+    "comment":"Sick Olde English",
+    "contentType":"text/markdown",
+    "published":"2015-03-09T13:07:04+00:00",
+    "id":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments/f6255bb01c648fe967714d52a89e8e9c"
+}
+    
+    
+'''
 '''
 Get conmments  for a Post
 Response Object Structure: [list of Like objects] using json
@@ -177,21 +200,16 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 
         serializer = CommentSerializer(data=data)
         if serializer.is_valid():
-            # serializer.save()
 
-                # save comments to post obj, uodate
-                # post.comments.add
-                # post_serializer = PostSerializer(post, data=data)
-                # if post_serializer.is_valid(raise_exception=True):
-                #     post_serializer.save()
-            # createComment=> de serialization
-            # --------------post_serializer.errors?
 
+            # save comments to post obj, update
+            # post.comments.add
+            # post_serializer = PostSerializer(post, data=data)
+            # if post_serializer.is_valid(raise_exception=True):
+            #     post_serializer.save()
+            # may be we should user seralzier to test profile obj, and post obj
+            # ex: post_serializer.errors?
             profile_obj = Profile.objects.get(id=AUTHOR_ID)
-
-            print("---------")
-            print("type: ", type(profile_obj))
-
 
             if (createComment(profile_obj, POST_ID, data["comment"], data["contentType"], data["published"])):
 
@@ -206,42 +224,19 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
     return JsonResponse(serializer.errors, status=400)
 
 '''
-Testing method
-http://127.0.0.1:8000/chat/author/1/posts/3d93a8ea-3175-4e75-b1ae-03655c663b75/comments/
-
-{
-    "type":"comment",
-      "author":{
-        "type":"author",
-        "id":1,
-        "url":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
-          "host":"http://127.0.0.1:5454/",
-          "displayName":"Greg Johnson",
-          "github": "http://github.com/gjohnson"
-    },
-    "comment":"Sick Olde English",
-    "contentType":"text/markdown",
-    "published":"2015-03-09T13:07:04+00:00",
-    "id":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments/f6255bb01c648fe967714d52a89e8e9c"
+Tetsing format: 
+  "author":{
+    "type":"author",
+    "id":1,
+    "url":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+    "host":"http://127.0.0.1:5454/",
+    "displayName":"Greg Johnson",
+    "github": "http://github.com/gjohnson"
 }
-    
-    
-
 '''
-
-    #   "author":{
-    #     "type":"author",
-    #     "id":1,
-    #     "url":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
-    #     "host":"http://127.0.0.1:5454/",
-    #     "displayName":"Greg Johnson",
-    #     "github": "http://github.com/gjohnson"
-    # },
-
 
 """
 REST Author, Generate response at my profile page ,
-
 """
 @csrf_exempt
 @api_view(['GET', 'POST'])
