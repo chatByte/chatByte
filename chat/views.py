@@ -419,10 +419,12 @@ def delete_friend(request, AUTHOR_ID, FRIEND_ID):
         if request.user.is_authenticated:
             cur_user_name = request.user.username
         deleteFriend(AUTHOR_ID, FRIEND_ID)
+        return HttpResponse(status=200)
+
     except BaseException as e:
         print(e)
-        return False
-    return redirect('/chat/author/'+str(request.user.id)+'/friends/')
+        return HttpResponse(status=401)
+    return HttpResponse(status=304)
 
 # @require_http_methods(["GET"])
 @login_required
@@ -436,7 +438,7 @@ def add_friend(request, AUTHOR_ID, FRIEND_ID):
         return HttpResponse(status=200)
     except BaseException as e:
         print(e)
-        return False
+        return HttpResponse(status=401)
     return HttpResponse(status=304)
 
 
