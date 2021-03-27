@@ -98,10 +98,6 @@ $( document ).ready(function() {
        } else {
          $("#contentType").find('i').attr("class", icon);
          contentType = id;
-<<<<<<< HEAD
-=======
-
->>>>>>> yao
          // handle upload button
          if (id == "image"){
            $("#imageFile").attr("style", "display: block");
