@@ -49,7 +49,23 @@ function ifFriendRequest(){
 jQuery(document).ready(function($) {
   const csrftoken = getCookie('csrftoken');
 
+  $('body').on('click', '.follow',function(){
 
+    $(this).text("Friend Request Sent");
+
+    console.log($(this).val())
+    $.ajax({
+      // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
+      url:$(this).val(),
+      type : "GET", // http method
+      contentType: false,
+      processData: false,
+      // handle a successful response
+      success : function(data) {
+          console.log(data); // sanity check
+      },
+    });
+  })
   setInterval(ifFriendRequest, 5000);
 
 });
