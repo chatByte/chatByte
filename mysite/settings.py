@@ -126,7 +126,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'chat/static')
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'mongoDB_bobo',
+        'NAME': 'mongoDB_suiyiyao',
     }
 }
 

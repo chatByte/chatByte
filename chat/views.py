@@ -230,14 +230,19 @@ def posts(request, AUTHOR_ID):
     elif request.method == "POST":
 
         request_post = request.POST
-        title = request_post.get("title", "")
+
         source = cur_user_name # Who share it to me
         origin = cur_user_name # who origin create
+        title = request_post.get("title", "")
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
+        visibility = request_post.get("visibility", "")
+
+        print("here")
+
         f = request.FILES.get("file", "")
         categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
-        visibility = request_post.get("visibility", "")
+
 
         if len(f) > 0:
             categories = "image/" + os.path.splitext(f.name)[-1][1:]
@@ -246,7 +251,7 @@ def posts(request, AUTHOR_ID):
         else:
             content = description
 
-        createFlag = createPost(title, source, origin, description, content_type, content, request.user, categories, visibility)
+        createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
         if createFlag:
             print("haha, successful create post, info: ", description)
             response = redirect("/chat/author/"+ str(AUTHOR_ID) + "/public_channel/")

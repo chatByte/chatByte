@@ -109,12 +109,12 @@
             <!-- Post Create Box
             ================================================= -->
             {% if messages %}
-							<ul>
-								{% for message in messages %}
-	                                 <li style="position: relative; right: -25px; color: red;">{{ message }}</li>
-	                            {% endfor %}
+              <ul>
+                {% for message in messages %}
+                                   <li style="position: relative; right: -25px; color: red;">{{ message }}</li>
+                              {% endfor %}
                             </ul>
-						{% endif %}
+            {% endif %}
             <div class="create-post">
               <div class="row">
                   <div class="col-md-7">
@@ -201,7 +201,9 @@
 
                         {% if 'text/' in cur_post.categories  %}
                         <p> {{cur_post.content}} </p>
-                        <!-- <form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
+
+                        <form action="." method="post" class="edit-block" style="display: none">
+
                             {% csrf_token %}
                             <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.content}}</textarea>
                             <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
@@ -211,10 +213,12 @@
                         </div>
                         {% endif %}
 
+
                         <div class="edit">
                           <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button>
                           <a href="/chat/feed/edit{{ cur_post.ID }}/" class="editBtn">Edit</a>
                           <button id="{{ cur_post.ID }}" class="btn-primary-sm" onclick="deletePost( '{{ cur_post.id }}' )">Delete</button></div>
+
 
                       </div>
 
@@ -304,7 +308,7 @@
 
             <!-- Post Content
             ================================================= -->
-            <div class="post-content">
+<!--             <div class="post-content">
 
               <img src="https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8Zm9ycmVzdHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60" alt="post-image" class="img-responsive post-image" />
               <div class="post-container">
@@ -345,7 +349,7 @@
               </div>
             </div>
           </div>
-
+ -->
 
 
         </div>
@@ -363,7 +367,7 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
-    <script src="{% static 'script/feed.js' %}"></script>
+    <script src="{% static 'script/posts.js' %}"></script>
     <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
   </body>
 </html>

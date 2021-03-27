@@ -45,6 +45,41 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
 #         # updatePost()
 #         pass
 
+
+
+
+'''
+Testing method
+
+{
+    "type": "post",
+    "id": "3",
+    "title": "fffffffffff",
+    "source": "https://chatbyte.herokuapp.com/",
+    "origin": "https://chatbyte.herokuapp.com/",
+    "description": "asdf",
+    "contentType": "text",
+    "content": "asdf",
+    "author": {
+        "type": "author",
+        "id": "2",
+        "host": null,
+        "displayName": "test",
+        "url": "https://chatbyte.herokuapp.com/chat/author/2/profile/",
+        "github": "https://github.com/Jeremy0818"
+    },
+    "categories": "text/plain",
+    "count": 1,
+    "size": 1,
+    "commentsPage": "1",
+    "comments": [],
+    "published": "2021-03-26T19:04:53Z",
+    "visibility": "public",
+    "unlisted": "false"
+}
+
+'''
+
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
@@ -84,10 +119,17 @@ def post_obj(request, AUTHOR_ID, POST_ID):
         return JsonResponse(serializer.errors, status=400)
     elif request.method == 'PUT':
         # create a post with that post_id
+        try:
+            post = Post.objects.get(id=POST_ID)
+            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' already exists'}, status=404)
+        except Post.DoesNotExist:
+            pass
         data = JSONParser().parse(request)
         serializer = PostSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            serializers.id = POST_ID
+            profile = Profile.objects.get(pk=AUTHOR_ID)
+            serializer.save(author=profile)
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
@@ -105,52 +147,104 @@ def posts_obj(request, AUTHOR_ID):
         data = JSONParser().parse(request)
         serializer = PostSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            profile = Profile.objects.get(pk=AUTHOR_ID)
+            serializer.save(author=profile)
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
 
 
-
-# coment views.py
+'''
+Get conmments  for a Post
+Response Object Structure: [list of Like objects] using json
+'''
 @csrf_exempt
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'DELETE'])
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def comment_list_obj(request, AUTHOR_ID, POST_ID):
-    comments = Comment.objects.all()
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
 
 
+    # checking, comments' father exist or not
+    try:
+        post = Post.objects.get(id=POST_ID)
+    except Post.DoesNotExist:
+        return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
     if request.method == 'GET':
+
+        # list obj contain a list of comment    
+        comments = post.comments 
         serializer = CommentSerializer(comments, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-
-    # if request.method == "GET":
-    #     comments = getComments(POST_ID)
-
-    #     # TODO return objects or html?
-    #     return comments
-    # elif request.method == "POST":
-    #     request_post = request.POST
-    #     author = request_post.get("author")
-    #     contentType = request_post.get("contentType")
-    #     comment = request_post.get("comment")
-    #     createComment(author, comment, contentType)
-    #     return request_post
-
     elif request.method == 'POST':
         data = JSONParser().parse(request)
+
         serializer = CommentSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            # serializer.save()
+
+                # save comments to post obj, uodate
+                # post.comments.add
+                # post_serializer = PostSerializer(post, data=data)
+                # if post_serializer.is_valid(raise_exception=True):
+                #     post_serializer.save()
+            # createComment=> de serialization
+            # --------------post_serializer.errors?
+
+            profile_obj = Profile.objects.get(id=AUTHOR_ID)
+
+            print("---------")
+            print("type: ", type(profile_obj))
 
 
+            if (createComment(profile_obj, POST_ID, data["comment"], data["contentType"], data["published"])):
+
+                return JsonResponse(serializer.data, status=201)
+            else:
+                return JsonResponse(serializer.data, status=403)
+
+    elif request.method == "DELETE":
+        # TODO
+        pass
+        
+    return JsonResponse(serializer.errors, status=400)
+
+'''
+Testing method
+http://127.0.0.1:8000/chat/author/1/posts/3d93a8ea-3175-4e75-b1ae-03655c663b75/comments/
+
+{
+    "type":"comment",
+      "author":{
+        "type":"author",
+        "id":1,
+        "url":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+          "host":"http://127.0.0.1:5454/",
+          "displayName":"Greg Johnson",
+          "github": "http://github.com/gjohnson"
+    },
+    "comment":"Sick Olde English",
+    "contentType":"text/markdown",
+    "published":"2015-03-09T13:07:04+00:00",
+    "id":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments/f6255bb01c648fe967714d52a89e8e9c"
+}
+    
+    
+
+'''
+
+    #   "author":{
+    #     "type":"author",
+    #     "id":1,
+    #     "url":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+    #     "host":"http://127.0.0.1:5454/",
+    #     "displayName":"Greg Johnson",
+    #     "github": "http://github.com/gjohnson"
+    # },
 
 
 """
@@ -166,7 +260,7 @@ def profile_obj(request, AUTHOR_ID):
     try:
         profile = Profile.objects.get(user_id=AUTHOR_ID)
     except profile.DoesNotExist:
-        return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
+        return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
     # query to database
     if request.method == "GET":
@@ -177,7 +271,7 @@ def profile_obj(request, AUTHOR_ID):
         serializer = ProfileSerializer(profile, data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED,)
+            return JsonResponse(serializer.data, status=200)
         return JsonResponse(serializer.errors, status=400)
         # post_obj = json.loads(request.body)
         # url = post_obj["url"]
@@ -195,12 +289,144 @@ def profile_obj(request, AUTHOR_ID):
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['POST'])
-def delete_friend_obj(request, AUTHOR_ID, FRIEND_ID):
-    return True
-
 def add_friend_obj(request, AUTHOR_ID, FRIEND_ID):
     return True
 
 
 
 
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def get_friend_obj(request, AUTHOR_ID, FRIEND_ID):
+    return True
+
+
+
+
+
+
+
+'''
+Get likes for a Post
+Response Object Structure: [list of Like objects]
+'''
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['POST', 'PUT'])
+def likes_post_obj(request, AUTHOR_ID, POST_ID):
+    #TODO
+    # comments = Comment.objects.all()
+    # cur_user_name = None
+    # if request.user.is_authenticated:
+    #     cur_user_name = request.user.username
+
+    # if request.method == 'GET':
+    #     serializer = CommentSerializer(comments, many=True)
+    #     return JsonResponse(serializer.data, safe=False)
+
+    # elif request.method == 'POST':
+    #     data = JSONParser().parse(request)
+    #     serializer = CommentSerializer(data=data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return JsonResponse(serializer.data, status=201)
+    #     return JsonResponse(serializer.errors, status=400)
+
+
+
+
+    return True
+
+
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def liked_post_obj(request, AUTHOR_ID):
+    #TODO
+    return True
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['POST', 'GET', 'DELETE'])
+def inbox(request, AUTHOR_ID):
+    if request.method == "POST":
+        user = User.objects.get(pk=AUTHOR_ID)
+        data = JSONParser().parse(request)
+        print("User: ", user)
+        print("Data: ", data)
+        if data['type'] == "post":
+            print("Recieved a post inbox!")
+            serializer = PostSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                post_id = data['id']
+                try:
+                    post = Post.objects.get(id=post_id)
+                except:
+                    serializer.save()
+                    post = Post.objects.get(id=post_id)
+                user.inbox.post_inbox.items.add(post)
+                user.inbox.post_inbox.save()
+                user.profile.timeline.add(post)
+                user.profile.save()
+                return JsonResponse(data, status=200)
+            return JsonResponse(serializer.errors, status=400) 
+        elif data['type'] == 'like':
+            print("Recieved a like inbox!")
+            post_url = data['object'].split("/")
+            print("Post url: ", post_url)
+            user_id = post_url[-3]
+            print("User id: ", user_id)
+            post_id = post_url[-1]
+            print("Post id: ", post_id)
+            if user_id != AUTHOR_ID:
+                return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
+            serializer = LikeSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                try:
+                    post = Post.objects.get(id=post_id)
+                except:
+                    return JsonResponse({"Error": "Post does not exist"}, status=404) 
+                like = serializer.save()
+                post.likes.add(like)
+                post.save()
+                user.inbox.like_inbox.add(like)
+                user.save()
+                return JsonResponse(data, status=200)
+            return JsonResponse(serializer.errors, status=400) 
+
+        elif data['type'] == 'follow':
+            print("Recieved a friend request!")
+            serializer = FriendReuqestSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                friend_req = serializer.save()
+                user.inbox.friend_requests.add(friend_req)
+                user.inbox.save()
+                return JsonResponse(data, status=200)
+            return JsonResponse(serializer.errors, status=400) 
+
+        else:
+            return JsonResponse({"Error": "Invalid inbox type"}, status=400) 
+
+    elif request.method == "DELETE":
+        user = User.objects.get(pk=AUTHOR_ID)
+        user.inbox.post_inbox.items.clear()
+        user.inbox.post_inbox.save()
+        user.inbox.friend_requests.clear()
+        user.inbox.like_inbox.clear()
+        user.inbox.save()
+        return JsonResponse({}, status=204)
+
+    elif request.method == "GET":
+        print("Get request processing...")
+        user = User.objects.get(pk=AUTHOR_ID)
+        print("User: ", user)
+        post_inbox = user.inbox.post_inbox
+        print("Post inbox: ", post_inbox)
+        serializer = PostInboxSerializer(post_inbox)
+        return JsonResponse(serializer.data, status=200)
