@@ -126,13 +126,14 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class PostInboxSerializer(serializers.ModelSerializer):
-    author = ProfileSerializer(read_only=True)
+    items = PostSerializer(many=True)
     class Meta:
-        model = Inbox
-        fields = ['type','id', 'author', 'items']
+        model = PostInbox
+        fields = ['type','author', 'items']
 
 class FriendReuqestSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(read_only=True)
+    object = ProfileSerializer(read_only=True)
     class Meta:
         model = FriendRequest
         fields = ['type','id', 'summary', 'author', 'object']

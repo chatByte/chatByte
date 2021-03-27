@@ -358,35 +358,75 @@ def inbox(request, AUTHOR_ID):
     if request.method == "POST":
         user = User.objects.get(pk=AUTHOR_ID)
         data = JSONParser().parse(request)
+        print("User: ", user)
+        print("Data: ", data)
         if data['type'] == "post":
-            user.inbox.post_inbox.items.add(data)
-            user.profile.timeline.add(data)
-            return JsonResponse(data, status=200)
+            print("Recieved a post inbox!")
+            serializer = PostSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                post_id = data['id']
+                try:
+                    post = Post.objects.get(id=post_id)
+                except:
+                    serializer.save()
+                    post = Post.objects.get(id=post_id)
+                user.inbox.post_inbox.items.add(post)
+                user.inbox.post_inbox.save()
+                user.profile.timeline.add(post)
+                user.profile.save()
+                return JsonResponse(data, status=200)
+            return JsonResponse(serializer.errors, status=400) 
         elif data['type'] == 'like':
-            post_url = data['type']['object'].split("/")
+            print("Recieved a like inbox!")
+            post_url = data['object'].split("/")
+            print("Post url: ", post_url)
             user_id = post_url[-3]
+            print("User id: ", user_id)
             post_id = post_url[-1]
+            print("Post id: ", post_id)
             if user_id != AUTHOR_ID:
-                return JsonResponse({"Error": "object is wrong"}, status=404)
-            post = getPost(post_id)
-            post.likes.add(data)
-
-            user.inbox.like_inbox.add(data)
-            return JsonResponse(data, status=200)
+                return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
+            serializer = LikeSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                try:
+                    post = Post.objects.get(id=post_id)
+                except:
+                    return JsonResponse({"Error": "Post does not exist"}, status=404) 
+                like = serializer.save()
+                post.likes.add(like)
+                post.save()
+                user.inbox.like_inbox.add(like)
+                user.save()
+                return JsonResponse(data, status=200)
+            return JsonResponse(serializer.errors, status=400) 
 
         elif data['type'] == 'follow':
-            user.inbox.friend_requests.add(data)
-            return JsonResponse(data, status=200)
+            print("Recieved a friend request!")
+            serializer = FriendReuqestSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                friend_req = serializer.save()
+                user.inbox.friend_requests.add(friend_req)
+                user.inbox.save()
+                return JsonResponse(data, status=200)
+            return JsonResponse(serializer.errors, status=400) 
+
+        else:
+            return JsonResponse({"Error": "Invalid inbox type"}, status=400) 
 
     elif request.method == "DELETE":
         user = User.objects.get(pk=AUTHOR_ID)
-        user.inbox.post_inbox.item.clear()
+        user.inbox.post_inbox.items.clear()
+        user.inbox.post_inbox.save()
         user.inbox.friend_requests.clear()
         user.inbox.like_inbox.clear()
+        user.inbox.save()
         return JsonResponse({}, status=204)
 
     elif request.method == "GET":
+        print("Get request processing...")
         user = User.objects.get(pk=AUTHOR_ID)
+        print("User: ", user)
         post_inbox = user.inbox.post_inbox
+        print("Post inbox: ", post_inbox)
         serializer = PostInboxSerializer(post_inbox)
         return JsonResponse(serializer.data, status=200)

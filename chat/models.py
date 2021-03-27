@@ -67,9 +67,9 @@ class Post(models.Model):
     likes = models.ManyToManyField('Like', blank=True)
 
 class PostInbox(models.Model):
-    type = models.CharField(max_length=200, default="inbox")
+    type = models.CharField(max_length=200, default="inbox", blank=True)
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-    author = models.CharField(max_length=200)
+    author = models.CharField(max_length=200, blank=True, null=True)
     items = models.ManyToManyField('Post', blank=True)
 
 class Inbox(models.Model):

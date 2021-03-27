@@ -1,6 +1,6 @@
 from chat.api import post_obj
 from django.test import TestCase
-from chat.models import Post, Comment, Profile
+from chat.models import Inbox, Post, Comment, PostInbox, Profile
 from django.contrib.auth.models import User
 from chat.backend import *
 from django.urls import reverse
