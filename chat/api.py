@@ -161,7 +161,7 @@ def posts_obj(request, AUTHOR_ID):
         return postsRequest(request.method,req_origin, AUTHOR_ID)
     else:
         if request.method == 'GET':
-            profile = Profile.objects.get(pk=AUTHOR_ID)
+            profile = Profile.objects.get(id=AUTHOR_ID)
             posts = profile.timeline
             serializer = PostSerializer(posts, many=True)
             return JsonResponse(serializer.data, safe=False)
@@ -169,7 +169,7 @@ def posts_obj(request, AUTHOR_ID):
             data = JSONParser().parse(request)
             serializer = PostSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
-                profile = Profile.objects.get(pk=AUTHOR_ID)
+                profile = Profile.objects.get(id=AUTHOR_ID)
                 serializer.save(author=profile)
                 return JsonResponse(serializer.data, status=201)
             return JsonResponse(serializer.errors, status=400)
