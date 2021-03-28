@@ -25,7 +25,7 @@ class Profile(models.Model):
     timeline = models.ManyToManyField("Post", blank=True)
     friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
     friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
-    liked = models.ManyToManyField('Liked', blank=True) 
+    liked = models.OneToOneField('Liked', blank=True) 
 
     def __unicode__(self): # for Python 2
         return self.user.username
@@ -42,6 +42,7 @@ class Comment(models.Model):
     comment = models.TextField()
     contentType = models.CharField(max_length=200)
     published = models.DateTimeField(default=django.utils.timezone.now)
+    likes = models.ManyToManyField('Like', blank=True)
     # # the father of Comeent is POST
     # post_id = models.ForeignKey("Post", on_delete= models.CASCADE)
 

@@ -143,8 +143,14 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields = ['type','id', 'summary', 'author', 'object', 'context']
 
-class FollwerSerializer(serializers.ModelSerializer):
+class FollowerSerializer(serializers.ModelSerializer):
     items = ProfileSerializer(many=True)
     class Meta:
         model = Followers
+        fields = ['type', 'items']
+
+class LikedSerializer(serializers.ModelSerializer):
+    items = LikeSerializer(many=True)
+    class Meta:
+        model = Liked
         fields = ['type', 'items']

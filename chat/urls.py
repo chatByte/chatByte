@@ -59,7 +59,7 @@ urlpatterns = [
 
 
     #Get likes for a Post
-    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.get_post_likes, name="likes_post"),
     path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="likes_post"),
 
 
@@ -77,13 +77,13 @@ urlpatterns = [
 
 
     # # Get likes for a Comment 
-    # path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_post_comment_obj, name="likes_post_comment")
+    path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
 
 
     # # Create a Like for either a Post or a Comment
     # # This also as a side effect, sends to Inbox
 
-    # path("author/<str:AUTHOR_ID>/likes/", api.likes_obj, name="likes")
+    ##### path("author/<str:AUTHOR_ID>/likes/", api.likes_obj, name="likes")
 
 
 
