@@ -39,7 +39,11 @@ urlpatterns = [
 
     # add friend
     path(r"author/<str:AUTHOR_ID>/friends/add/<str:FRIEND_ID>/", views.add_friend, name="friend_add"),
-    path("author/<str:AUTHOR_ID>/friends/", views.my_friends, name="my_friends"),
+    path(r"author/<str:AUTHOR_ID>/friends/", views.my_friends, name="my_friends"),
+
+    path(r"author/<str:AUTHOR_ID>/friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
+    path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
+
 
     # # show friend list
     # path("author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", api.delete_friend_obj, name="friend_delete"),
@@ -52,7 +56,7 @@ urlpatterns = [
 
     #  Doing----------------------------------------------------------------------------------------------------
     #Get likes for a Post
-    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post")
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
 
 
 
@@ -61,6 +65,9 @@ urlpatterns = [
     #(get all friends of author)
     # path("author/<str:AUTHOR_ID>/friends/", api.get_friends_obj, name = "get_friends")
 
+    #Get likes for a Post
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
+    path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="likes_post"),
 
     # # Get likes for a Comment 
     # path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_post_comment_obj, name="likes_post_comment")
