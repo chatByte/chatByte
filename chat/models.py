@@ -82,6 +82,7 @@ class Inbox(models.Model):
 class Followers(models.Model):
     type = models.CharField(max_length=200, default="followers")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+    # Here items are Authors , which is Profiles
     items = models.ManyToManyField('Profile', related_name='%(class)s_followers_items', blank=True)
 
 class FriendRequest(models.Model):
@@ -110,4 +111,4 @@ class Like(models.Model):
 class Liked(models.Model):
     type = models.CharField(max_length=200, default="liked")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-    items = models.ManyToManyField('Like', blank=True)
+    items = models.ManyToManyField('Like', blank=True) 

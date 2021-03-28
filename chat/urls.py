@@ -16,7 +16,6 @@ urlpatterns = [
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',api.post_obj, name='make_post_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/',api.comment_list_obj, name='comment_list_obj'),
 
-        path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/',api.comment_list_obj, name='comment_list_obj'),
 
     # show info => get request, views.public_channel originally called feed, and able to comment
     path(r"author/<str:AUTHOR_ID>/public_channel/", views.home_public_channel, name="public_channel"),
@@ -43,6 +42,22 @@ urlpatterns = [
 
     path(r"author/<str:AUTHOR_ID>/friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
     path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
+
+
+
+
+    #followers:
+    # URL: ://service/author/{AUTHOR_ID}/followers/
+    path(r"author/<str:AUTHOR_ID>/followers/", api.follower_obj, name="follower_obj"),
+
+
+
+    # URL:URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
+    path(r"author/<str:AUTHOR_ID>/followers/<str:FOREIGN_AUTHOR_ID>", api.followers_obj, name="followers_obj"),
+
+
+
+
 
 
     # # show friend list

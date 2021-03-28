@@ -14,6 +14,17 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from .models import *
 from .serializers import *
 from .backend import *
+import os
+from .remoteProxy import *
+
+
+
+host_server = os.environ.get('HOSTNAME')
+
+
+
+
+
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -85,72 +96,83 @@ Testing method
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def post_obj(request, AUTHOR_ID, POST_ID):
-    # cur_user_name = None
-    # if request.user.is_authenticated:
-    #     cur_user_name = request.user.username
-    # post_id = request.build_absolute_uri().split("/")[-2][6:]
-    if request.method == "DELETE":
-        # remove the post
-        try:
-            Post.objects.get(id=POST_ID)
-        except Post.DoesNotExist:
-            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
-        deletePost(POST_ID)
-        return JsonResponse({'status':'true','message':'successful'}, status=204)
-    elif request.method == "GET":
-        # get the public post
-        try:
-            post = Post.objects.get(id=POST_ID)
-        except Post.DoesNotExist:
-            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
-        serializer = PostSerializer(post)
-        return JsonResponse(serializer.data)
-    elif request.method == 'POST':
-        # update the post
-        try:
-            post = Post.objects.get(id=POST_ID)
-        except Post.DoesNotExist:
-            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
-        data = JSONParser().parse(request)
-        serializer = PostSerializer(post, data=data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
-    elif request.method == 'PUT':
-        # create a post with that post_id
-        try:
-            post = Post.objects.get(id=POST_ID)
-            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' already exists'}, status=404)
-        except Post.DoesNotExist:
-            pass
-        data = JSONParser().parse(request)
-        serializer = PostSerializer(data=data)
-        if serializer.is_valid(raise_exception=True):
-            serializers.id = POST_ID
-            profile = Profile.objects.get(pk=AUTHOR_ID)
-            serializer.save(author=profile)
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+    # ex. equest.headers[origin] == ("https:\\chatbyte"):
+    req_origin = request.headers[origin] 
+    if req_origin != host_server :
+        return postRequest(request.method,req_origin, AUTHOR_ID, POST_ID)
+    else:
+        if request.method == "DELETE":
+            # remove the post
+            try:
+                Post.objects.get(id=POST_ID)
+            except Post.DoesNotExist:
+                return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
+            deletePost(POST_ID)
+            return JsonResponse({'status':'true','message':'successful'}, status=204)
+        elif request.method == "GET":
+            # get the public post
+            try:
+                post = Post.objects.get(id=POST_ID)
+            except Post.DoesNotExist:
+                return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
+            serializer = PostSerializer(post)
+            return JsonResponse(serializer.data)
+        elif request.method == 'POST':
+            # update the post
+            try:
+                post = Post.objects.get(id=POST_ID)
+            except Post.DoesNotExist:
+                return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
+            data = JSONParser().parse(request)
+            serializer = PostSerializer(post, data=data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return JsonResponse(serializer.data, status=201)
+            return JsonResponse(serializer.errors, status=400)
+        elif request.method == 'PUT':
+            # create a post with that post_id
+            try:
+                post = Post.objects.get(id=POST_ID)
+                return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' already exists'}, status=409)
+            except Post.DoesNotExist:
+                pass
+            data = JSONParser().parse(request)
+            serializer = PostSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                serializers.id = POST_ID
+                profile = Profile.objects.get(pk=AUTHOR_ID)
+                serializer.save(author=profile)
+                return JsonResponse(serializer.data, status=201)
+            return JsonResponse(serializer.errors, status=400)
 
 
+
+
+#author/<str:AUTHOR_ID>/posts/'
 @csrf_exempt
 @api_view(['GET', 'POST'])
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def posts_obj(request, AUTHOR_ID):
-    if request.method == 'GET':
-        posts = Post.objects.all()
-        serializer = PostSerializer(posts, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = PostSerializer(data=data)
-        if serializer.is_valid(raise_exception=True):
+    # ex. equest.headers[origin] == ("https:\\chatbyte"):
+    req_origin = request.headers[origin] 
+
+    if req_origin != host_server :
+        return postsRequest(request.method,req_origin, AUTHOR_ID)
+    else:
+        if request.method == 'GET':
             profile = Profile.objects.get(pk=AUTHOR_ID)
-            serializer.save(author=profile)
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            posts = profile.timeline
+            serializer = PostSerializer(posts, many=True)
+            return JsonResponse(serializer.data, safe=False)
+        elif request.method == 'POST':
+            data = JSONParser().parse(request)
+            serializer = PostSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                profile = Profile.objects.get(pk=AUTHOR_ID)
+                serializer.save(author=profile)
+                return JsonResponse(serializer.data, status=201)
+            return JsonResponse(serializer.errors, status=400)
 
 
 
@@ -186,50 +208,50 @@ Response Object Structure: [list of Like objects] using json
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def comment_list_obj(request, AUTHOR_ID, POST_ID):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
+    # ex. equest.headers[origin] == ("https:\\chatbyte"):
+    req_origin = request.headers[origin] 
 
+    if req_origin != host_server :
+        return commentRequest(request.method,req_origin, AUTHOR_ID, POST_ID)
+    else:
+        # checking, comments' father exist or not
+        try:
+            post = Post.objects.get(id=POST_ID)
+        except Post.DoesNotExist:
+            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
+        if request.method == 'GET':
+            # list obj contain a list of comment    
+            comments = post.comments
+            serializer = CommentSerializer(comments, many=True)
+            return JsonResponse(serializer.data, safe=False)
 
-    # checking, comments' father exist or not
-    try:
-        post = Post.objects.get(id=POST_ID)
-    except Post.DoesNotExist:
-        return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
-    if request.method == 'GET':
+        elif request.method == 'POST':
+            # cretate comment
+            data = JSONParser().parse(request)
 
-        # list obj contain a list of comment    
-        comments = post.comments 
-        serializer = CommentSerializer(comments, many=True)
-        return JsonResponse(serializer.data, safe=False)
+            serializer = CommentSerializer(data=data)
+            if serializer.is_valid():
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
+                # save comments to post obj, update
+                # post.comments.add
+                # post_serializer = PostSerializer(post, data=data)
+                # if post_serializer.is_valid(raise_exception=True):
+                #     post_serializer.save()
+                # may be we should user seralzier to test profile obj, and post obj
+                # ex: post_serializer.errors?
+                profile_obj = Profile.objects.get(id=AUTHOR_ID)
 
-        serializer = CommentSerializer(data=data)
-        if serializer.is_valid():
+                if (createComment(profile_obj, POST_ID, data["comment"], data["contentType"], data["published"])):
 
+                    return JsonResponse(serializer.data, status=201)
+                else:
+                    return JsonResponse(serializer.data, status=403)
 
-            # save comments to post obj, update
-            # post.comments.add
-            # post_serializer = PostSerializer(post, data=data)
-            # if post_serializer.is_valid(raise_exception=True):
-            #     post_serializer.save()
-            # may be we should user seralzier to test profile obj, and post obj
-            # ex: post_serializer.errors?
-            profile_obj = Profile.objects.get(id=AUTHOR_ID)
-
-            if (createComment(profile_obj, POST_ID, data["comment"], data["contentType"], data["published"])):
-
-                return JsonResponse(serializer.data, status=201)
-            else:
-                return JsonResponse(serializer.data, status=403)
-
-    elif request.method == "DELETE":
-        # TODO
-        pass
-        
-    return JsonResponse(serializer.errors, status=400)
+        # elif request.method == "DELETE":
+        #     # TODO
+        #     pass
+            
+        return JsonResponse(serializer.errors, status=400)
 
 '''
 Tetsing format: 
@@ -251,31 +273,132 @@ REST Author, Generate response at my profile page ,
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def profile_obj(request, AUTHOR_ID):
-    profile = Profile.objects.get(pk=AUTHOR_ID)
-    try:
-        profile = Profile.objects.get(user_id=AUTHOR_ID)
-    except profile.DoesNotExist:
-        return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
-    # query to database
-    if request.method == "GET":
-        serializer = ProfileSerializer(profile)
-        return JsonResponse(serializer.data)
-    elif request.method == "POST":
-        data = JSONParser().parse(request)
-        serializer = ProfileSerializer(profile, data=data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return JsonResponse(serializer.data, status=200)
+    # ex. equest.headers[origin] == ("https:\\chatbyte"):
+    req_origin = request.headers[origin] 
+
+    if req_origin != host_server :
+        return profileRequest(request.method,req_origin, AUTHOR_ID)
+    else:
+        try:
+            profile = Profile.objects.get(id=AUTHOR_ID)
+        except profile.DoesNotExist:
+            return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
+
+        # query to database
+        if request.method == "GET":
+            serializer = ProfileSerializer(profile)
+            return JsonResponse(serializer.data)
+        elif request.method == "POST":
+            data = JSONParser().parse(request)
+            serializer = ProfileSerializer(profile, data=data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return JsonResponse(serializer.data, status=200)
+            return JsonResponse(serializer.errors, status=400)
+            # post_obj = json.loads(request.body)
+            # url = post_obj["url"]
+            # displayName = post_obj["displayName"]
+            # github = post_obj["github"]
+            # # we do not allowed leave our server
+            # # host = post_obj["host"]
+            # updateProfile(displayName, url, github)
+            # return post_obj
+
+
+
+
+
+'''
+
+URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
+'''
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['PUT', 'GET', 'DELETE'])
+def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
+    # ex. equest.headers[origin] == ("https:\\chatbyte"):
+    req_origin = request.headers[origin] 
+
+    if req_origin != host_server :
+        return followerRequest(request.method,req_origin, AUTHOR_ID, FOREIGN_AUTHOR_ID)
+    else:
+        # can be optimized
+        try:
+            profile = Profile.objects.get(user_id=AUTHOR_ID)
+        except profile.DoesNotExist:
+            return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
+
+
+        if (request.method == "GET"):
+            #reponse a follower
+            try:
+                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)                
+            except Post.DoesNotExist:
+                return JsonResponse({'status':'false','message':'FOREIGN_AUTHOR_ID: ' + FOREIGN_AUTHOR_ID + ' does not exists'}, status=404)
+
+            serializer = ProfileSerializer(follower)
+
+            if serializer.is_valid(raise_exception=True):
+                return JsonResponse(serializer.data, status=201)
+            return JsonResponse(serializer.errors, status=400)
+
+
+        elif (request.method == "PUT"):
+            #add a follower , with FOREIGN_AUTHOR_ID
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return JsonResponse(serializer.data, status=200)
+
+            try:
+                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)  
+                return JsonResponse({'status':'false','message':'FOREIGN_AUTHOR_ID : ' + FOREIGN_AUTHOR_ID + ' already exists'}, status=409)
+
+
+            except Profile.DoesNotExist:
+               profile.followers.add(follower)
+
+               profile.save()
+
+               return JsonResponse({}, status=201)
+
+
+        elif request.method == "DELETE":
+            profile.followers.remove(follower)
+            return JsonResponse({}, status=200)
+
         return JsonResponse(serializer.errors, status=400)
-        # post_obj = json.loads(request.body)
-        # url = post_obj["url"]
-        # displayName = post_obj["displayName"]
-        # github = post_obj["github"]
-        # # we do not allowed leave our server
-        # # host = post_obj["host"]
-        # updateProfile(displayName, url, github)
-        # return post_obj
+
+
+
+'''
+# URL: ://service/author/{AUTHOR_ID}/followers/
+'''
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def followers_obj(request, AUTHOR_ID):
+    # ex. equest.headers[origin] == ("https:\\chatbyte"):
+    req_origin = request.headers[origin] 
+
+    if req_origin != host_server :
+        return followersRequest(request.method,req_origin, AUTHOR_ID)
+    else:
+        try:
+            profile = Profile.objects.get(user_id=AUTHOR_ID)
+        except profile.DoesNotExist:
+            return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
+
+        followers = profile.followers
+        serializer = FollowerSerializer(followers, many=True)
+        if request.method == "GET":
+            if serializer.is_valid(raise_exception=True):
+                return JsonResponse(serializer.data, status=200)
+
+        return JsonResponse(serializer.errors, status=400)
+
 
 
 
