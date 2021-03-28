@@ -87,8 +87,8 @@ urlpatterns = [
     # TODO ----------------------------------------------------------------------------------------------------
 
 
-
-
+    path("author/<str:AUTHOR_ID>/followers/<str:FOREIGN_AUTHOR_ID>/", api.follower_obj, "follower"),
+    path("author/<str:AUTHOR_ID>/followers/", api.followers_obj, "followers"),
     # check if new friend request
     # path("ifFriendRequest/", views.if_friend_request, name="if_friend_request"),
   #path('', views.index, name='index'),
