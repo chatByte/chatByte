@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 #     # for authorization only
 #     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
 #     USERNAME = models.CharField(max_length=50, unique=True)
-#     PASSWORD = models.CharField(max_length=50)
 
 
 class Profile(models.Model):
@@ -37,13 +36,13 @@ class Comment(models.Model):
     type = models.CharField(max_length=200, default="comment")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
 
-    author = models.OneToOneField('Profile', on_delete=models.CASCADE,)
+    author = models.ForeignKey('Profile', on_delete=models.CASCADE,)
 
     comment = models.TextField()
     contentType = models.CharField(max_length=200)
     published = models.DateTimeField(default=django.utils.timezone.now)
     # # the father of Comeent is POST
-    # post_id = models.ForeignKey("Post", on_delete= models.CASCADE)
+    parent_post = models.ForeignKey("Post", on_delete= models.CASCADE)
 
 
 
@@ -75,7 +74,7 @@ class PostInbox(models.Model):
 
 class Inbox(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    post_inbox = models.OneToOneField('PostInbox', on_delete=models.CASCADE)
+    post_inbox = models.OneToOneField('PostInbox', on_delete=models.CASCADE, null=True, blank=True)
     like_inbox = models.ManyToManyField('Like', blank=True)
     friend_requests = models.ManyToManyField('FriendRequest', blank=True)
 

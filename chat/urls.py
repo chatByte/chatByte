@@ -6,7 +6,6 @@ from . import api
 urlpatterns = [
     path("", views.start_homepage, name=""),
 
-
     path("author/<str:AUTHOR_ID>/profile/", views.profile, name="profile"),
     path("author/<str:AUTHOR_ID>/", api.profile_obj, name="profile_obj"),
 

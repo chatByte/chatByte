@@ -1,0 +1,55 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <!-- bootstrap -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+   <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
+   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   <!--JQuery-->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   {% block head %}
+   {% endblock %}
+   <!-- css -->
+   {% load static %}
+   <link rel="stylesheet" href="{% static 'accounts/style.css' %}" type="text/css">
+  <title>{% block title %}Distributed Social Networking{% endblock %}</title>
+  <!-- Open Source JS Library -->
+  <!-- Reference: https://github.com/showdownjs/showdown -->
+  <script type="text/javascript" src="https://rawgit.com/showdownjs/showdown/develop/dist/showdown.min.js"></script>
+</head>
+<body>
+  <!-- Static navbar -->
+      <nav id="nav" class="navbar navbar-default" style="background:#000; border: 0px solid; border-radius: 0; margin: 0; opacity: 0.9">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" style="color:white; font-size:17pt; margin-left: 10pt;" href="/">Home</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- <li><a href="/author/{{ userprofile.author_id }}/render/posts/" style=" font-size:17pt; color:white;">My Posts</a></li>
+                <li><a href="/accounts/profile/?profile_url={{ userprofile.url }}/" style="font-size:17pt; color:white;">Profile</a></li>
+                <li><a href="/accounts/friends/" style=" font-size:17pt; color:white;">Friends</a></li>
+                <li><a href="/accounts/getFriendrequest/" style=" font-size:17pt; color:white;">Friend Requests</a></li>
+               -->
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+  <main>
+    {% block content %}
+
+    {% endblock %}
+  </main>
+
+</body>
+</html>
