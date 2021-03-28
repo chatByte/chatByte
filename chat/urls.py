@@ -9,8 +9,8 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/profile/", views.profile, name="profile"),
     path("author/<str:AUTHOR_ID>/", api.profile_obj, name="profile_obj"),
 
-    # TODO: my_posts view only my own post
     path(r"author/<str:AUTHOR_ID>/my_posts/", views.posts, name="make_posts"),
+    # 
     path(r'author/<str:AUTHOR_ID>/posts/',api.posts_obj, name='make_posts_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',api.post_obj, name='make_post_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/',api.comment_list_obj, name='comment_list_obj'),
@@ -43,8 +43,6 @@ urlpatterns = [
     path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
 
 
-
-
     #followers:
     # URL: ://service/author/{AUTHOR_ID}/followers/
     path(r"author/<str:AUTHOR_ID>/followers/", api.follower_obj, name="follower_obj"),
@@ -52,18 +50,8 @@ urlpatterns = [
     path(r"author/<str:AUTHOR_ID>/followers/<str:FOREIGN_AUTHOR_ID>", api.followers_obj, name="followers_obj"),
 
 
-
     #Liked
     path("author/<str:AUTHOR_ID>/liked/", api.liked_post_obj, name="like_post"),
-
-
-    #Get likes for a Post
-    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
-    path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="likes_post"),
-    path("author/<str:AUTHOR_ID>/befriend/", api.new_friend, name="new_friend"),
-
-
-
 
 
     # # show friend list
@@ -72,6 +60,8 @@ urlpatterns = [
     #  Doing----------------------------------------------------------------------------------------------------
 
     #TODO ---------------------------------- ----------------------------------------------------------------
+    path("author/<str:AUTHOR_ID>/befriend/", api.befriend, name="befriend"),
+
     # friends: GET 
     #(get all friends of author)
     path("author/<str:AUTHOR_ID>/friends/", api.get_friends_obj, name = "get_friends"),
@@ -82,6 +72,7 @@ urlpatterns = [
 
     # # Get likes for a Comment 
     path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
+
 
 
     # # Create a Like for either a Post or a Comment
