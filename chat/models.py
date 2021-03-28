@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 #     # for authorization only
 #     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
 #     USERNAME = models.CharField(max_length=50, unique=True)
-#     PASSWORD = models.CharField(max_length=50)
 
 
 class Profile(models.Model):
@@ -43,7 +42,7 @@ class Comment(models.Model):
     contentType = models.CharField(max_length=200)
     published = models.DateTimeField(default=django.utils.timezone.now)
     # # the father of Comeent is POST
-    # post_id = models.ForeignKey("Post", on_delete= models.CASCADE)
+    post_id = models.ForeignKey("Post", on_delete= models.CASCADE)
 
 
 

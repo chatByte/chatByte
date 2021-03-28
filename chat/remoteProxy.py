@@ -11,7 +11,7 @@ def profileRequest(method, origin, user_id, profile=None):
     The body of the request is empty if it is a GET request, otherwise, the body is
     the author's profile in json format.
     '''
-    url = str(origin) + "author/" + str(user_id) + "/"
+    url = str(origin) + "/author/" + str(user_id) + "/"
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
@@ -32,7 +32,7 @@ def postsRequest(method, origin, user_id, post=None):
     The body of the request is empty if it is a GET request, otherwise, the body is
     the post to be created in json format.
     '''
-    url = str(origin) + "author/" + str(user_id) + "/posts/"
+    url = str(origin) + "/author/" + str(user_id) + "/posts/"
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
@@ -53,7 +53,7 @@ def postRequest(method, origin, user_id, post_id, post=None):
     The body of the request is empty if it is a GET/DELETE request, otherwise, the body is
     the post in json format.
     '''
-    url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/"
+    url = str(origin) + "/author/" + str(user_id) + "/posts/" + str(post_id) + "/"
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
@@ -84,7 +84,7 @@ def commentRequest(method, origin, user_id, post_id, comment=None):
     The body of the request is empty if it is a GET request, otherwise, the body is
     the comment in json format.
     '''
-    url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/comments/"
+    url = str(origin) + "/author/" + str(user_id) + "/posts/" + str(post_id) + "/comments/"
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
@@ -107,7 +107,7 @@ def inboxRequest(method, origin, user_id, data=None):
     The body of the request is empty if it is a GET/DELETE request, otherwise, the body is
     the inbox in json format.
     '''
-    url = str(origin) + "author/" + str(user_id) + "/inbox/"
+    url = str(origin) + "/author/" + str(user_id) + "/inbox/"
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
@@ -147,7 +147,7 @@ def followersRequest(method, origin, user_id, data=None):
     with the corresponding method. Headers are included to ensure secure connections.
     The body of the request is empty.
     '''
-    url = str(origin) + "author/" + str(user_id) + "/followers/"
+    url = str(origin) + "/author/" + str(user_id) + "/followers/"
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
@@ -161,7 +161,7 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
     with the corresponding method. Headers are included to ensure secure connections.
     The body of the request is empty.
     '''
-    url = str(origin) + "author/" + str(user_id) + "/" + str(foreign_author_id) + "/"
+    url = str(origin) + "/author/" + str(user_id) + "/" + str(foreign_author_id) + "/"
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
