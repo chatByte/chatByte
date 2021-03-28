@@ -230,7 +230,7 @@ class AccountTests(APITestCase):
         """
         self.client.login(username=self.username, password=self.password)
         url = '/author/1/'
-        response = self.client.get(url)
+        response = self.client.get(url,  **{'Origin': host})
         # print(response.content)
         user_json = {"type": "author", "id": host + "author/1", "host": None, "displayName": "test", "url": None, "github": None}
         self.assertEqual(response.status_code, 200)
@@ -253,7 +253,7 @@ class AccountTests(APITestCase):
             "url": "https://chatbyte.herokuapp.com/chat/author/2/profile/",
             "github": "https://github.com/Jeremy0818"
         }
-        response = self.client.post(url, user_json, format='json')
+        response = self.client.post(url, user_json, format='json',  **{'Origin': host})
         # print(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
@@ -267,7 +267,7 @@ class AccountTests(APITestCase):
         """
         self.client.login(username=self.username, password=self.password)
         url = '/author/1/posts/'
-        response = self.client.get(url)
+        response = self.client.get(url,  **{'Origin': host})
         self.assertEqual(response.status_code, 200)
     
     def test_post_posts(self):
@@ -302,7 +302,7 @@ class AccountTests(APITestCase):
             "visibility": "public",
             "unlisted": "false"
         }
-        response = self.client.post(url, post_json, format='json')
+        response = self.client.post(url, post_json, format='json',  **{'Origin': host})
         # print(response.content)
         self.assertEqual(response.status_code, 201)
 #         # self.assertJSONEqual(
