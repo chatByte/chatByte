@@ -18,7 +18,7 @@ import os
 from .remoteProxy import *
 
 
-
+# This is a world of JSON
 host_server = os.environ.get('HOSTNAME')
 
 
@@ -91,13 +91,17 @@ Testing method
 }
 
 '''
+
+
+# No CSRF token
 @csrf_exempt
+# methdo
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
+# which AUTH using right now
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+# permission, -> auth
 @permission_classes([IsAuthenticated])
 def post_obj(request, AUTHOR_ID, POST_ID):
-
-
     # ex. equest.headers[origin] == ("https:\\chatbyte"):
     req_origin = request.headers[origin] 
     if req_origin != host_server :
@@ -268,7 +272,6 @@ Tetsing format:
     "github": "http://github.com/gjohnson"
 }
 '''
-
 @csrf_exempt
 @api_view(['GET', 'POST'])
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
@@ -443,7 +446,8 @@ def get_friend_objs(request, AUTHOR_ID):
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['POST'])
-def new_friend(request, AUTHOR_ID):
+# out box friend request, ie. accept a friend requst for box
+def befriend(request, AUTHOR_ID):
     data = JSONParser().parse(request)
 
     serializer = ProfileSerializer(data=data)
@@ -530,7 +534,7 @@ def liked_post_obj(request, AUTHOR_ID):
 
         return JsonResponse(serializer.errors, status=400)
 
-@csrf_exempt
+@csrf_exempt 
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET', 'DELETE'])
