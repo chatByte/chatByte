@@ -121,8 +121,6 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'commentsPage', 'comments', 'published', 'visibility', 'unlisted'  ]
         
 
-
-
 class PostInboxSerializer(serializers.ModelSerializer):
     items = PostSerializer(many=True)
     class Meta:
@@ -147,4 +145,10 @@ class FollowerSerializer(serializers.ModelSerializer):
     items = ProfileSerializer(many=True)
     class Meta:
         model = Followers
+        fields = ['type', 'items']
+
+class LikedSerializer(serializers.ModelSerializer):
+    items = LikeSerializer(many=True)
+    class Meta:
+        model = Liked
         fields = ['type', 'items']
