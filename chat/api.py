@@ -357,7 +357,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
             try:
                 follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)  
-                return JsonResponse({'status':'false','message':'FOREIGN_AUTHOR_ID : ' + FOREIGN_AUTHOR_ID + ' already exists'}, status=409)
+                return JsonResponse({'detail': 'true'}, status=409)
 
 
             except Profile.DoesNotExist:
@@ -406,13 +406,12 @@ def followers_obj(request, AUTHOR_ID):
 
 
 
-
-@csrf_exempt
-@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
-@api_view(['POST'])
-def add_friend_obj(request, AUTHOR_ID, FRIEND_ID):
-    return True
+# @csrf_exempt
+# @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+# @permission_classes([IsAuthenticated])
+# @api_view(['POST'])
+# def add_friend_obj(request, AUTHOR_ID, FRIEND_ID):
+#     return None
 
 
 
@@ -421,10 +420,45 @@ def add_friend_obj(request, AUTHOR_ID, FRIEND_ID):
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['GET'])
-def get_friend_obj(request, AUTHOR_ID, FRIEND_ID):
-    return True
+def get_friend_objs(request, AUTHOR_ID):
+    req_origin = request.headers[origin] 
 
+    if req_origin != host_server :
+        return friendsRequest(request.method,req_origin, AUTHOR_ID)
+    else:
+        try:
+            profile = Profile.objects.get(user_id=AUTHOR_ID)
+        except profile.DoesNotExist:
+            return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
+        friends = profile.friends
+        serializer = ProfileSerializer(friends, many=True)
+        if request.method == "GET":
+            if serializer.is_valid(raise_exception=True):
+                return JsonResponse(serializer.data, status=200)
+
+        return JsonResponse(serializer.errors, status=400)
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['POST'])
+def new_friend(request, AUTHOR_ID):
+    data = JSONParser().parse(request)
+
+    serializer = ProfileSerializer(data=data)
+    if serializer.is_valid(raise_exception=True):
+        friend_id = data['id']
+        try:
+            friend = Profile.objects.get(id=friend_id)
+        except:
+            serializer.save()
+            friend = Profile.objects.get(id=friend_id)
+        profile = Profile.objects.get(pk=AUTHOR_ID)
+        profile.friends.add(friend)
+        profile.friends.save()
+        return JsonResponse(data, status=200)
+    return JsonResponse(serializer.errors, status=400) 
 
 
 
@@ -437,30 +471,40 @@ Response Object Structure: [list of Like objects]
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-@api_view(['POST', 'PUT'])
-def likes_post_obj(request, AUTHOR_ID, POST_ID):
-    #TODO
-    # comments = Comment.objects.all()
-    # cur_user_name = None
-    # if request.user.is_authenticated:
-    #     cur_user_name = request.user.username
+@api_view(['GET'])
+def get_post_likes(request, AUTHOR_ID, POST_ID):
+    if req_origin != host_server :
+        return likesRequest(request.method, req_origin, AUTHOR_ID, POST_ID)
+    else:
+        try:
+            post = Post.objects.get(pk=POST_ID)
+        except Post.DoesNotExist:
+            return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
+        likes = post.likes
+        serializer = LikeSerializer(likes, many=True)
+        if serializer.is_valid(raise_exception=True):
+            return JsonResponse(serializer.data, status=200)
 
-    # if request.method == 'GET':
-    #     serializer = CommentSerializer(comments, many=True)
-    #     return JsonResponse(serializer.data, safe=False)
+        return JsonResponse(serializer.errors, status=400)
 
-    # elif request.method == 'POST':
-    #     data = JSONParser().parse(request)
-    #     serializer = CommentSerializer(data=data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return JsonResponse(serializer.data, status=201)
-    #     return JsonResponse(serializer.errors, status=400)
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
+    if req_origin != host_server :
+        return likesRequest(request.method, req_origin, AUTHOR_ID, POST_ID, COMMENT_ID)
+    else:
+        try:
+            comment = Comment.objects.get(pk=COMMENT_ID)
+        except Comment.DoesNotExist:
+            return JsonResponse({'status':'false','message':'comment id: ' + COMMENT_ID + ' does not exists'}, status=404)
+        likes = comment.likes
+        serializer = LikeSerializer(likes, many=True)
+        if serializer.is_valid(raise_exception=True):
+            return JsonResponse(serializer.data, status=200)
 
-
-
-
-    return True
+        return JsonResponse(serializer.errors, status=400)
 
 
 
@@ -469,7 +513,7 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
 @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def liked_post_obj(request, AUTHOR_ID):
-    #req_origin = request.headers[origin] 
+    req_origin = request.headers[origin] 
 
     if req_origin != host_server :
         return likedRequest(request.method,req_origin, AUTHOR_ID)
@@ -479,10 +523,12 @@ def liked_post_obj(request, AUTHOR_ID):
             profile = Profile.objects.get(user_id=AUTHOR_ID)
         except profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
-        
+        liked = profile.liked
+        serializer = LikedSerializer(liked)
+        if serializer.is_valid(raise_exception=True):
+            return JsonResponse(serializer.data, status=200)
 
-
-    return True
+        return JsonResponse(serializer.errors, status=400)
 
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
@@ -518,26 +564,46 @@ def inbox(request, AUTHOR_ID):
             elif data['type'] == 'like':
                 print("Recieved a like inbox!")
                 post_url = data['object'].split("/")
-                print("Post url: ", post_url)
-                user_id = post_url[-3]
-                print("User id: ", user_id)
-                post_id = post_url[-1]
-                print("Post id: ", post_id)
-                if user_id != AUTHOR_ID:
-                    return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
-                serializer = LikeSerializer(data=data)
-                if serializer.is_valid(raise_exception=True):
-                    try:
-                        post = Post.objects.get(id=post_id)
-                    except:
-                        return JsonResponse({"Error": "Post does not exist"}, status=404) 
-                    like = serializer.save()
-                    post.likes.add(like)
-                    post.save()
-                    user.inbox.like_inbox.add(like)
-                    user.save()
-                    return JsonResponse(data, status=200)
-                return JsonResponse(serializer.errors, status=400) 
+                # like post
+                if len(port_url) == 7:
+                    print("Post url: ", post_url)
+                    user_id = post_url[-3]
+                    print("User id: ", user_id)
+                    post_id = post_url[-1]
+                    print("Post id: ", post_id)
+                    if user_id != AUTHOR_ID:
+                        return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
+                    serializer = LikeSerializer(data=data)
+                    if serializer.is_valid(raise_exception=True):
+                        try:
+                            post = Post.objects.get(id=post_id)
+                        except:
+                            return JsonResponse({"Error": "Post does not exist"}, status=404) 
+                        like = serializer.save()
+                        post.likes.add(like)
+                        post.save()
+                        user.inbox.like_inbox.add(like)
+                        user.save()
+                        return JsonResponse(data, status=200)
+                    return JsonResponse(serializer.errors, status=400)
+                #like comment
+                elif len(post_url) == 9:
+                    user_id = post_url[4]
+                    post_id = post_url[6]
+                    comment_id = post_url[8]
+                    if user_id != AUTHOR_ID:
+                        return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
+                    serializer = LikeSerializer(data=data)
+                    if serializer.is_valid(raise_exception=True):
+                        try:
+                            comment = Comment.objects.get(id=comment_id)
+                        except:
+                            return JsonResponse({"Error": "comment does not exist"}, status=404) 
+                        like = serializer.save()
+                        comment.likes.add(like)
+                        comment.save()
+                        return JsonResponse(data, status=200)
+                    return JsonResponse(serializer.errors, status=400)
 
             elif data['type'] == 'follow':
                 print("Recieved a friend request!")
@@ -569,3 +635,4 @@ def inbox(request, AUTHOR_ID):
             print("Post inbox: ", post_inbox)
             serializer = PostInboxSerializer(post_inbox)
             return JsonResponse(serializer.data, status=200)
+

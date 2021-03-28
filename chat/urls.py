@@ -61,6 +61,8 @@ urlpatterns = [
     #Get likes for a Post
     path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.get_post_likes, name="likes_post"),
     path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="likes_post"),
+    path("author/<str:AUTHOR_ID>/befriend/", api.new_friend, name="new_friend"),
+
 
 
 
@@ -73,7 +75,7 @@ urlpatterns = [
     #TODO ---------------------------------- ----------------------------------------------------------------
     # friends: GET 
     #(get all friends of author)
-    # path("author/<str:AUTHOR_ID>/friends/", api.get_friends_obj, name = "get_friends")
+    path("author/<str:AUTHOR_ID>/friends/", api.get_friends_obj, name = "get_friends")
 
 
     # # Get likes for a Comment 
