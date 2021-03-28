@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save, post_init
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
@@ -30,7 +30,7 @@ def update_profile_signal(sender, instance, created, **kwargs):
     instance.inbox.save()
 
 @receiver(post_save, sender=Post)
-def update_post_signal(sender, instance, created, **kwargs):
+def create_post_signal(sender, instance, created, **kwargs):
     # instance is a Post object
     if created:
         # when create a Post object
@@ -43,12 +43,12 @@ def update_post_signal(sender, instance, created, **kwargs):
             # change to new id and save the instance as a new object
             instance.id = str(instance.author.id) + "/posts/" + str(instance.id)
             instance.save()
-            # remove the old instance
+            # # remove the old instance
             old_instance = Post.objects.get(pk=id_temp)
             old_instance.delete()
 
 @receiver(post_save, sender=Comment)
-def update_post_signal(sender, instance, created, **kwargs):
+def create_comment_signal(sender, instance, created, **kwargs):
     # instance is a Comment object
     if created:
         # when create a Comment object
