@@ -98,7 +98,6 @@ $( document ).ready(function() {
        } else {
          $("#contentType").find('i').attr("class", icon);
          contentType = id;
-
          // handle upload button
          if (id == "image"){
            $("#imageFile").attr("style", "display: block");
@@ -131,11 +130,16 @@ $( document ).ready(function() {
 
 
 
+<<<<<<< HEAD
+    $('.submitBtn').click(function(e){
+      console.log(e);
+=======
 
 
     // deal with submit edit button
     // submit form data
     $('#submitEdit').click(function(e){
+>>>>>>> yao
 
       title = $('#title').val();
       description = $('#description').val();
@@ -155,7 +159,10 @@ $( document ).ready(function() {
       form_data.append("csrfmiddlewaretoken", csrftoken);
 
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> yao
       $.ajax({
         url : ".", // the endpoint
         type : "POST", // http method
@@ -172,6 +179,8 @@ $( document ).ready(function() {
         },
       });
 
+<<<<<<< HEAD
+=======
       // $.ajax({
       //   url : ".", // the endpoint
       //   type : "DELETE", // http method
@@ -187,6 +196,7 @@ $( document ).ready(function() {
       //   },
       // });
 
+>>>>>>> yao
 
     });
 
@@ -196,8 +206,11 @@ $( document ).ready(function() {
 
 
 
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> yao
     // REQUEST POST: make_post
     // create a new post
     $('#publishBtn').click(function(e){
@@ -220,7 +233,11 @@ $( document ).ready(function() {
       form_data.append("description", description);
       form_data.append("csrfmiddlewaretoken", csrftoken);
 
+<<<<<<< HEAD
+
+=======
       console.log("description");
+>>>>>>> yao
       $.ajax({
         url : ".", // the endpoint
         type : "POST", // http method
@@ -232,6 +249,10 @@ $( document ).ready(function() {
 
         // handle a successful response
         success : function(json) {
+<<<<<<< HEAD
+            
+=======
+>>>>>>> yao
             console.log("success"); // sanity check
             window.location.reload();
         },
@@ -255,4 +276,8 @@ $( document ).ready(function() {
 
     });
 
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> yao

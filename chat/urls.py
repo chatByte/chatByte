@@ -6,12 +6,11 @@ from . import api
 urlpatterns = [
     path("", views.start_homepage, name=""),
 
-
     path("author/<str:AUTHOR_ID>/profile/", views.profile, name="profile"),
     path("author/<str:AUTHOR_ID>/", api.profile_obj, name="profile_obj"),
 
-    # TODO: my_posts view only my own post
     path(r"author/<str:AUTHOR_ID>/my_posts/", views.posts, name="make_posts"),
+    # 
     path(r'author/<str:AUTHOR_ID>/posts/',api.posts_obj, name='make_posts_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',api.post_obj, name='make_post_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/',api.comment_list_obj, name='comment_list_obj'),
@@ -34,15 +33,14 @@ urlpatterns = [
     path(r"author/<str:AUTHOR_ID>/my_friends/", views.my_friends, name="my_friends"),
 
     # show friend list
-    path(r"author/<str:AUTHOR_ID>/my_friends/delete/<str:FRIEND_ID>/", views.delete_friend, name="friend_delete"),
+    path(r"author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", views.delete_friend, name="friend_delete"),
 
     # add friend
-    path(r"author/<str:AUTHOR_ID>/my_friends/add/<str:FRIEND_ID>/", views.add_friend, name="friend_add"),
+    path(r"author/<str:AUTHOR_ID>/friends/add/<str:FRIEND_ID>/", views.add_friend, name="friend_add"),
+    path(r"author/<str:AUTHOR_ID>/friends/", views.my_friends, name="my_friends"),
 
-    path(r"author/<str:AUTHOR_ID>/my_friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
-    path(r"author/<str:AUTHOR_ID>/my_friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
-
-
+    path(r"author/<str:AUTHOR_ID>/friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
+    path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
 
 
     #followers:
@@ -52,18 +50,8 @@ urlpatterns = [
     path(r"author/<str:AUTHOR_ID>/followers/<str:FOREIGN_AUTHOR_ID>", api.followers_obj, name="followers_obj"),
 
 
-
     #Liked
     path("author/<str:AUTHOR_ID>/liked/", api.liked_post_obj, name="like_post"),
-
-
-    #Get likes for a Post
-    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.get_post_likes, name="likes_post"),
-    path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="likes_post"),
-    path("author/<str:AUTHOR_ID>/befriend/", api.new_friend, name="new_friend"),
-
-
-
 
 
     # # show friend list
@@ -72,13 +60,19 @@ urlpatterns = [
     #  Doing----------------------------------------------------------------------------------------------------
 
     #TODO ---------------------------------- ----------------------------------------------------------------
-    # friends: GET
+    path("author/<str:AUTHOR_ID>/befriend/", api.befriend, name="befriend"),
+
+    # friends: GET 
     #(get all friends of author)
     path("author/<str:AUTHOR_ID>/friends/", api.get_friends_obj, name = "get_friends"),
 
+    #Get likes for a Post
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
+    path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="likes_post"),
 
-    # # Get likes for a Comment
+    # # Get likes for a Comment 
     path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
+
 
 
     # # Create a Like for either a Post or a Comment

@@ -99,7 +99,6 @@ from .models import *
 #         instance.save()
 #         return instance
 
-
 class ProfileSerializer(serializers.ModelSerializer):
       class Meta:
         model = Profile
@@ -107,7 +106,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'displayName': {'validators': []},
         }
-
 
 class CommentSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(read_only=True)
@@ -122,8 +120,6 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'commentsPage', 'comments', 'published', 'visibility', 'unlisted'  ]
         
-
-
 
 class PostInboxSerializer(serializers.ModelSerializer):
     items = PostSerializer(many=True)
@@ -144,3 +140,15 @@ class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = ['type','id', 'summary', 'author', 'object', 'context']
+
+class FollowerSerializer(serializers.ModelSerializer):
+    items = ProfileSerializer(many=True)
+    class Meta:
+        model = Followers
+        fields = ['type', 'items']
+
+class LikedSerializer(serializers.ModelSerializer):
+    items = LikeSerializer(many=True)
+    class Meta:
+        model = Liked
+        fields = ['type', 'items']
