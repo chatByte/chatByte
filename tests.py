@@ -222,6 +222,12 @@ class AccountTests(APITestCase):
                                         commentsPage='0',
                                         visibility='public')
         self.post_id = 3
+        self.comment = Comment.objects.create(id="5", 
+                                              author=self.user, 
+                                              comment="test comment",
+                                              contentType='text',
+                                              parent_post=self.post
+                                              )
         return super().setUp()
     
     def test_get_profile(self):
@@ -404,17 +410,45 @@ class AccountTests(APITestCase):
 #         # print(response.content)
 #         self.assertEqual(response.status_code, 201)
     
-#     def test_get_comments(self):
-#         # TODO
-#         self.client.login(username=self.username, password=self.password)
-#         url = '/chat/author/1/posts/asdf/'
+    def test_get_comments(self):
+        self.client.login(username=self.username, password=self.password)
+        url = '/author/1/posts/3/comments/'
+        response = self.client.get(url, **{'Origin': host})
+        print(response.content)
+        self.assertEqual(response.status_code, 200)
 
-#     def test_post_comments(self):
-#         # TODO
-#         self.client.login(username=self.username, password=self.password)
-#         url = '/chat/author/1/posts/asdf/'
+    def test_post_comments(self):
+        self.client.login(username=self.username, password=self.password)
+        url = '/author/'+ str(self.user.id) +'/posts/3/comments/'
+        print("*****post_id:", self.post.id)
+        
+        comment_json = {
+            "type": "comment",
+            "id": host + url + '4',
+            "author": {
+                "type": "author",
+                "id": str(self.user.id),
+                "host": None,
+                "displayName": "test",
+                "url": None,
+                "github": None
+            },
+            "comment": "test comment",
+            "contentType": "text",
+            "published": "2021-03-26T19:04:53Z"
+        }
+        response = self.client.post(url, comment_json, format='json',  **{'Origin': host})
+        print(response.content)
+        self.assertEqual(response.status_code, 201)
 
-#     def test_delete_comments(self):
-#         # TODO
-#         self.client.login(username=self.username, password=self.password)
-#         url = '/chat/author/1/posts/asdf/'
+    # def test_delete_comments(self):
+    #     # TODO
+    #     self.client.login(username=self.username, password=self.password)
+    #     url = '/author/1/posts/3/comments/5'
+    #     response = self.clients.delete(url, **{'Origin': host})
+        
+
+# TODO: friends
+# TODO: inbox test
+
+
