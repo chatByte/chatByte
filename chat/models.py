@@ -25,7 +25,7 @@ class Profile(models.Model):
     timeline = models.ManyToManyField("Post", blank=True)
     friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
     friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
-
+    liked = models.OneToOneField('Liked', blank=True)
 
     def __unicode__(self): # for Python 2
         return self.user.username
@@ -42,6 +42,7 @@ class Comment(models.Model):
     comment = models.TextField()
     contentType = models.CharField(max_length=200)
     published = models.DateTimeField(default=django.utils.timezone.now)
+    likes = models.ManyToManyField('Like', blank=True)
     # # the father of Comeent is POST
     # post_id = models.ForeignKey("Post", on_delete= models.CASCADE)
 
@@ -82,6 +83,7 @@ class Inbox(models.Model):
 class Followers(models.Model):
     type = models.CharField(max_length=200, default="followers")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+    # Here items are Authors , which is Profiles
     items = models.ManyToManyField('Profile', related_name='%(class)s_followers_items', blank=True)
 
 class FriendRequest(models.Model):
@@ -95,11 +97,9 @@ class FriendRequest(models.Model):
 class Like(models.Model):
     type = models.CharField(max_length=200, default="like")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-
     # who likes it
     author = models.ForeignKey('Profile', related_name='%(class)s_author', on_delete=models.CASCADE,)
     # URL of the likes
-
     context = models.CharField(max_length=200, default="Like")
     # likes items title, post title
     summary = models.CharField(max_length=200, default="Like")

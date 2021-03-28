@@ -35,7 +35,7 @@ $(window).on('load', function() {
     hidePreloader();
 });
 
-
+// check if new friend request
 function ifFriendRequest(){
   $.ajax({
     url : url_header + "ifFriendRequest/", // the endpoint
@@ -71,6 +71,7 @@ function ifFriendRequest(){
 jQuery(document).ready(function($) {
   const csrftoken = getCookie('csrftoken');
 
+  // handle follow a person (send friend request)
   $('body').on('click', '.follow',function(){
 
     $(this).text("Friend Request Sent");
@@ -90,6 +91,7 @@ jQuery(document).ready(function($) {
     });
   });
 
+  // handle unfollow a friend
   $('body').on('click', '.unfollow',function(){
 
     $(this).text("Follow");
@@ -110,7 +112,7 @@ jQuery(document).ready(function($) {
   });
 
 
-
+  // handle accept of friend request
   $('body').on('click', '.accept', function(){
     var request_id = $(this).parent('li').find('a').attr('id');
     console.log(request_id);
@@ -125,7 +127,6 @@ jQuery(document).ready(function($) {
 
     $.ajax({
       // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
-      header: {'origin': window.location.origin},
       url:url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/',
       type: "GET", // http method
       contentType: false,
@@ -138,6 +139,7 @@ jQuery(document).ready(function($) {
     });
   });
 
+  // handle reject of friend request
   $('body').on('click', '.reject', function(){
     var request_id = $(this).parent('li').find('a').attr('id');
     console.log(request_id);
@@ -163,6 +165,28 @@ jQuery(document).ready(function($) {
       },
     });
   });
+
+  $('body').on('click', '.like', function(){
+    var like_num = $(this).parent('a').text();
+    if(!like_num) {
+      $(this).parent('a').text(1);
+    } else {
+      $(this).parent('a').text(parseInt(like_num) + 1);
+    }
+
+    $.ajax({
+      // author/<str:AUTHOR_ID>/inbox/
+      url:window.location.origin+'author/'+ new_url[5].toString() +'/inbox/',
+      type: "POST", // http method
+      contentType: 'application/json; charset=utf-8',
+      dataType: "json",
+      // handle a successful response
+      success : function(data) {
+          console.log(data); // sanity check
+      },
+    });
+
+  })
 
   setInterval(ifFriendRequest, 5000);
 
