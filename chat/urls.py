@@ -49,40 +49,32 @@ urlpatterns = [
     #followers:
     # URL: ://service/author/{AUTHOR_ID}/followers/
     path(r"author/<str:AUTHOR_ID>/followers/", api.follower_obj, name="follower_obj"),
-
-
-
     # URL:URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
     path(r"author/<str:AUTHOR_ID>/followers/<str:FOREIGN_AUTHOR_ID>", api.followers_obj, name="followers_obj"),
 
 
+
+    #Liked
+    path("author/<str:AUTHOR_ID>/liked/", api.liked_post_obj, name="like_post")
+
+
+    #Get likes for a Post
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
+    path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="likes_post"),
 
 
 
 
     # # show friend list
     # path("author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", api.delete_friend_obj, name="friend_delete"),
-
-
     # delete friend
-
-
-
-
     #  Doing----------------------------------------------------------------------------------------------------
-    #Get likes for a Post
-    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
-
-
 
     #TODO ---------------------------------- ----------------------------------------------------------------
     # friends: GET 
     #(get all friends of author)
     # path("author/<str:AUTHOR_ID>/friends/", api.get_friends_obj, name = "get_friends")
 
-    #Get likes for a Post
-    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
-    path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="likes_post"),
 
     # # Get likes for a Comment 
     # path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_post_comment_obj, name="likes_post_comment")
@@ -93,11 +85,7 @@ urlpatterns = [
 
     # path("author/<str:AUTHOR_ID>/likes/", api.likes_obj, name="likes")
 
-    
 
-    # # URL: ://service/author/{AUTHOR_ID}/followers 
-    # #Liked
-    # path("author/<str:AUTHOR_ID>/liked/", api.liked_post_obj, name="like_post")
 
     # TODO ----------------------------------------------------------------------------------------------------
 

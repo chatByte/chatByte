@@ -174,3 +174,19 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
             response =  JsonResponse(serializer.errors, status=400)
         return response
     return response
+
+
+def likedRequest(method, origin, user_id, data =None):
+    '''
+    This function send a request to the remote server at:
+        "author/<str:AUTHOR_ID>/liked/"
+    with the corresponding method. Headers are included to ensure secure connections.
+    The body of the request is empty.
+    '''
+
+    url = str(origin) + "author/" + str(user_id) + "/liked/"
+    headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    response = JsonResponse({"Error": "Bad request"}, status=400) 
+    if method == "GET":
+        response = requests.get(url, headers=headers)
+    return response
