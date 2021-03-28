@@ -79,7 +79,7 @@ class Inbox(models.Model):
     like_inbox = models.ManyToManyField('Like', blank=True)
     friend_requests = models.ManyToManyField('FriendRequest', blank=True)
 
-class Followers(models.Model):
+class Follower(models.Model):
     type = models.CharField(max_length=200, default="followers")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     # Here items are Authors , which is Profiles
