@@ -144,7 +144,7 @@ class LikeSerializer(serializers.ModelSerializer):
 class FollowerSerializer(serializers.ModelSerializer):
     items = ProfileSerializer(many=True)
     class Meta:
-        model = Followers
+        model = Follower
         fields = ['type', 'items']
 
 class LikedSerializer(serializers.ModelSerializer):

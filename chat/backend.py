@@ -1,5 +1,5 @@
 
-from .models import Post, Comment, Profile, Followers, FriendRequest, Like, Liked
+from .models import Post, Comment, Profile, Follower, FriendRequest, Like, Liked
 import datetime
 from django.conf import settings
 import django
