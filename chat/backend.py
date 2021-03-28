@@ -221,7 +221,7 @@ def deletePost(id):
 def createComment(author, post_id, comment, content_type, published=django.utils.timezone.now()):
     try:
         post = Post.objects.get(id=post_id)
-        commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type, published=published, post_id=post.id)
+        commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type, published=published, parent_post=post)
         post.comments.add(commentObj)
         post.save()
         return True

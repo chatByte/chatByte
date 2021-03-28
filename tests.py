@@ -111,11 +111,11 @@ class CommentTestCase(TestCase):
     def setUp(self):
         # self.profile = Profile.objects.create(user=User, HOST='', DISPLAY_NAME='testProfile')
         # self.author = Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
-        self.comment = Comment.objects.create(id=1, comment='test')
+        # self.user = User.objects.create_user(id=34,email='testuser@123.com',username='1')
         self.post = Post.objects.create(id=2, title='abc')
+        print("post id: ", self.post.id)
 
     def test_createComment(self):
-        # self.comment = createComment(self.author, 'comment test', 'text')
         list_before = list(Comment.objects.filter(comment='comment test'))
         comments_before = list(self.post.comments.all())
 
@@ -130,11 +130,16 @@ class CommentTestCase(TestCase):
 
     def test_updateComment(self):
         # new_comment = Comment.objects.create(AUTHOR=self.author, COMMENT='update comment test', CONTENT_TYPE='text')
-        self.assertEqual(updateComment(1), True)
+        user = User.objects.create(email='abc@123.com')
+        comment  = Comment.objects.create(author=user.profile, comment="comment", contentType="content_type", parent_post=self.post)
+        print(comment.id)
+        self.assertEqual(updateComment(comment.id), True)
 
     def test_deleteComment(self):
-        list_before = list(Comment.objects.filter(id=1))
-        deleteComment(1)
+        user = User.objects.create(email='abc@123.com')
+        comment = Comment.objects.create(author=user.profile, comment="comment", contentType="content_type", parent_post=self.post)
+        list_before = list(Comment.objects.filter(id=comment.id))
+        deleteComment(comment.id)
         # new_comment = Comment.objects.create(AUTHOR=self.author, COMMENT='delete comment test', CONTENT_TYPE='text')
         list_after = list(Comment.objects.filter(id=1))
         self.assertEqual(len(list_after) - len(list_before), -1)
@@ -374,7 +379,7 @@ class AccountTests(APITestCase):
         Ensure we can delete an author's post.
         """
         self.client.login(username=self.username, password=self.password)
-        url = '/chat/author/1/posts/' + str(self.post_id) + '/'
+        url = str(self.post_id)
         response = self.client.delete(url)
         # print(response.content)
         self.assertEqual(response.status_code, 204)

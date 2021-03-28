@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_init
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 from .models import Comment, Post, Profile, Inbox, PostInbox
 
-host = "https://chatbyte.herokuapp.com"
+host = "http://localhost:8000/"
 
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):
@@ -21,8 +21,9 @@ def update_profile_signal(sender, instance, created, **kwargs):
             inbox = Inbox.objects.create(user=instance,)
             inbox.post_inbox = PostInbox.objects.create()
         Token.objects.create(user=instance)
+        
     instance.profile.displayName = instance.username
-    instance.profile.id = host + "/author/" + str(instance.id)
+    instance.profile.id = host + "author/" + str(instance.id)
     instance.profile.save()
     instance.inbox.post_inbox.author = instance.id
     instance.inbox.post_inbox.save()
@@ -35,23 +36,32 @@ def update_post_signal(sender, instance, created, **kwargs):
         # when create a Post object
         # instance.author is a Profile object
         # instance.author.id = host/author/<author id>
-        instance.id = instance.author.id + "/posts/" + str(instance.id)
-    instance.save()
+
+        # check if the instance id is a url that includes '/comments/'
+        if "/posts/" not in str(instance.id):
+            id_temp = instance.id
+            # change to new id and save the instance as a new object
+            instance.id = str(instance.author.id) + "/posts/" + str(instance.id)
+            instance.save()
+            # remove the old instance
+            old_instance = Post.objects.get(pk=id_temp)
+            old_instance.delete()
 
 @receiver(post_save, sender=Comment)
 def update_post_signal(sender, instance, created, **kwargs):
     # instance is a Comment object
     if created:
-        # when create a Post object
+        # when create a Comment object
         # instance.post_id = host/author/<author id>/posts/<posts id>
-        instance.id = instance.post_id + "/comments/" + str(instance.id)
-    instance.save()
+        # new_instance = instance
 
-@receiver(post_save, sender=Comment)
-def update_post_signal(sender, instance, created, **kwargs):
-    # instance is a Comment object
-    if created:
-        # when create a Post object
-        # instance.post_id = host/author/<author id>/posts/<posts id>
-        instance.id = instance.post_id + "/comments/" + str(instance.id)
-    instance.save()
+        # check if the instance id is a url that includes '/comments/'
+        if "/comments/" not in str(instance.id):
+            id_temp = instance.id
+            # change to new id and save the instance as a new object
+            instance.id = str(instance.parent_post.id) + "/comments/" + str(instance.id)
+            instance.save()
+            # remove the old instance
+            old_instance = Comment.objects.get(pk=id_temp)
+            old_instance.delete()
+    

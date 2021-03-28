@@ -29,20 +29,20 @@ class Profile(models.Model):
     def __unicode__(self): # for Python 2
         return self.user.username
 
-    # class Meta:
-    #     managed = False
+    class Meta:
+        managed = False
 
 class Comment(models.Model):
     type = models.CharField(max_length=200, default="comment")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
 
-    author = models.OneToOneField('Profile', on_delete=models.CASCADE,)
+    author = models.ForeignKey('Profile', on_delete=models.CASCADE,)
 
     comment = models.TextField()
     contentType = models.CharField(max_length=200)
     published = models.DateTimeField(default=django.utils.timezone.now)
     # # the father of Comeent is POST
-    post_id = models.ForeignKey("Post", on_delete= models.CASCADE)
+    parent_post = models.ForeignKey("Post", on_delete= models.CASCADE)
 
 
 
