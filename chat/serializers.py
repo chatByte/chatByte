@@ -99,6 +99,7 @@ from .models import *
 #         instance.save()
 #         return instance
 
+
 class ProfileSerializer(serializers.ModelSerializer):
       class Meta:
         model = Profile
@@ -106,6 +107,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'displayName': {'validators': []},
         }
+
 
 class CommentSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(read_only=True)
@@ -121,16 +123,15 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'commentsPage', 'comments', 'published', 'visibility', 'unlisted'  ]
         
 
-
-
 class PostInboxSerializer(serializers.ModelSerializer):
-    author = ProfileSerializer(read_only=True)
+    items = PostSerializer(many=True)
     class Meta:
-        model = Inbox
-        fields = ['type','id', 'author', 'items']
+        model = PostInbox
+        fields = ['type','author', 'items']
 
 class FriendReuqestSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(read_only=True)
+    object = ProfileSerializer(read_only=True)
     class Meta:
         model = FriendRequest
         fields = ['type','id', 'summary', 'author', 'object']
@@ -141,3 +142,15 @@ class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = ['type','id', 'summary', 'author', 'object', 'context']
+
+class FollowerSerializer(serializers.ModelSerializer):
+    items = ProfileSerializer(many=True)
+    class Meta:
+        model = Followers
+        fields = ['type', 'items']
+
+class LikedSerializer(serializers.ModelSerializer):
+    items = LikeSerializer(many=True)
+    class Meta:
+        model = Liked
+        fields = ['type', 'items']

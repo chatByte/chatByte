@@ -20,7 +20,7 @@ from rest_framework.authtoken import views
 
 urlpatterns = [
     path('', start_homepage, name='home'),
-	path('chat/', include('chat.urls')),
+	path('', include('chat.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path("accounts/signup/", signup, name="signup"),

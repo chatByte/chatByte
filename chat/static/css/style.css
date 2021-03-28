@@ -15,6 +15,7 @@ img.profile-photo-lg{
   border-radius: 50%;
 }
 
+
 img.profile-photo-md{
 	height: 50px;
 	width: 50px;
@@ -754,7 +755,11 @@ Timeline
 .friend-list .friend-card .card-info img.profile-photo-lg{
   margin-top: -60px;
   border: 7px solid #fff;
+  position: absolute;
+  z-index: 10;
 }
+
+
 
 .friend-list .friend-card .friend-info {
   position: relative;
