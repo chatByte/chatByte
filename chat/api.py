@@ -474,8 +474,8 @@ def liked_post_obj(request, AUTHOR_ID):
     if req_origin != host_server :
         return likedRequest(request.method,req_origin, AUTHOR_ID)
     else:
-
-
+        
+        
     return True
 
 @csrf_exempt

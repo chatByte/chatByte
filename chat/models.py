@@ -25,7 +25,7 @@ class Profile(models.Model):
     timeline = models.ManyToManyField("Post", blank=True)
     friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
     friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
-
+    liked = models.ManyToManyField('Liked', blank=True) 
 
     def __unicode__(self): # for Python 2
         return self.user.username
