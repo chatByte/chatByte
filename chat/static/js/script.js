@@ -125,6 +125,7 @@ jQuery(document).ready(function($) {
 
     $.ajax({
       // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
+      header: {'origin': window.location.origin},
       url:url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/',
       type: "GET", // http method
       contentType: false,
