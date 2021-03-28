@@ -474,8 +474,14 @@ def liked_post_obj(request, AUTHOR_ID):
     if req_origin != host_server :
         return likedRequest(request.method,req_origin, AUTHOR_ID)
     else:
+        # can be optimized
+        try:
+            profile = Profile.objects.get(user_id=AUTHOR_ID)
+        except profile.DoesNotExist:
+            return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
         
-        
+
+
     return True
 
 @csrf_exempt
