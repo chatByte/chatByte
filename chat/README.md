@@ -7,7 +7,7 @@ reqServer.py: design for handling the request from other nodess
 Delete DB
 	mongo
 	show dbs
-	use dbName
+	use <dbName_currenlty using>
 	db.dropDatabase()
 
 

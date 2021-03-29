@@ -20,75 +20,7 @@ views.py receive request and create repose to client,
 Create your views here.
 """
 
-# #class based view
-# class SignUpView(generic.CreateView):
-#     form_class = UserCreationForm
-#     success_url = reverse_lazy('login')
-#     template_name = 'registration/signup.html'
 
-
-"""
-Generate response at login page
-"""
-# def login(request):
-#     context = {}
-#     context['form']= UserForm()
-#     if request.method == "GET":
-#         return render(request, "chat/login.html", context)
-#     elif request.method == "POST":
-#         username = None
-#         if request.user.is_authenticated:
-#             username = request.user.username
-#             cur_user_name = username
-#             response = redirect("/chat/home")
-#             return response
-#         else:
-#             messages.error(request, "Invalid user name or password!")
-#             response = render(request, 'chat/login.html', context)
-#             return response
-
-# """
-# Generate response at signup page
-
-# """
-
-# def signup(request):
-#     context = {}
-#     context['UserForm'] = UserForm()
-#     context['ProfileForm'] = ProfileForm()
-#     response = render(request, "chat/signup.html", context)
-#     if request.method == "GET":
-#         return response
-#     elif request.method == "POST":
-#         url = request.POST.get("URL")
-
-#         first_name = request.POST.get("first_name")
-#         last_name = request.POST.get("last_name")
-#         github = request.POST.get("GITHUB")
-
-#         # password = request.POST.get("Password")
-#         # retype_password = request.POST.get("Retype_password")
-#         host = request.POST.get("HOST")
-#         # first method to handle user name exist, can be optimize later
-#         if validActor(username, password):
-#             messages.error(request, 'User name exists!')
-#             return response
-#         else:
-#             if retype_password != password:
-#                 messages.error(request, 'Password does not match!')
-#                 return response
-#             createAuthor(host, username, url, github)
-#             createActor(username, password)
-#             cur_user_name = username
-#             response = redirect("/chat/home/")
-#             return response
-
-#         # second method to handle user name exist, can be optimize later
-#         if createAuthor("this", username, url, github):
-#           return redirect("/chat/profile/")
-#         else:
-#           messages.error(request, 'User name exists!')
-#           return render(request, "chat/signup.html", context)
 
 @login_required
 def start_homepage(request):
@@ -130,38 +62,41 @@ path(r"author/<str:AUTHOR_ID>/public_channel/",
 # post: comment/like => send post request to host server(edit post function),
 @require_http_methods(["GET", "POST"])
 @login_required
-def home_public_channel(request, AUTHOR_ID):
+def stream(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
-    
+
     cur_author = request.user
-    # a list of post
-    mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
+    # a list of post, django.db.models.query.QuerySet
+    mytimeline = cur_author.profile.timeline.all()
+    # a group of author, that i am currently following, django.db.models.query.QuerySet
+    followings = cur_author.profile.followings.all()
+
+    # merging quesryset
+    public_channel_posts = mytimeline 
+
+    for following_profile in followings:
+
+        public_posts = following_profile.timeline.filter(Post_visibility='public')
+        public_channel_posts = public_channel_posts | public_posts
+
 
     author_num_follwers = len(cur_author.profile.followers.all())
     friend_request_num = len(cur_author.profile.friend_requests.all())
 
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
-        'timeline': mytimeline,
+        # 'timeline': mytimeline,
+
+        'public_channel_posts': public_channel_posts,
         'author_num_follwers': author_num_follwers,
         'friend_request_num': friend_request_num
     }
 
-    # for user in User.objects.all():
-    #     Token.objects.get_or_create(user=user)
 
-
-    response = render(request, "chat/home.html", dynamic_contain)
-
-    if request.method == "GET":
-
-        return response
-    elif request.method == "POST":
-
-        # change later
-        return response
+    response = render(request, "chat/stream.html", dynamic_contain)
+    return response
 
 
 """
@@ -210,7 +145,13 @@ def posts(request, AUTHOR_ID):
     if request.user.is_authenticated:
         cur_user_name = request.user.username
     cur_author = request.user.profile
-    mytimeline = cur_author.timeline.all() #getTimeline(cur_user_name)
+    alltimeline = cur_author.timeline.all() #getTimeline(cur_user_name)
+    mytimeline = alltimeline.filter(Post_visibility='public')
+
+
+
+
+
     author_num_follwers = len(cur_author.followers.all())
     friend_request_num = len(cur_author.friend_requests.all())
 
@@ -267,23 +208,6 @@ def posts(request, AUTHOR_ID):
         return response
 
 
-"""
-Generate response ,when delete user at feed page ,
-"""
-# only allowed DELETE or POST to delete feed's post
-# @login_required
-# @require_http_methods(["DELETE", "POST"])
-# def delete_in_feed(request, ID):
-#     cur_user_name = None
-#     if request.user.is_authenticated:
-#         cur_user_name = request.user.username
-#     # post_id = request.build_absolute_uri().split("/")[-2][6:]
-
-#     deletePost(ID)
-#     response = redirect("/chat/feed/")
-
-#     return response
-
 
 """
 Generate response at my profile page ,
@@ -325,30 +249,6 @@ def profile(request, AUTHOR_ID):
         response = redirect("/author/"+ str(request.user.id) + "/profile/")
         return response
 
-
-
-
-
-# @login_required
-# @transaction.atomic
-# def update_profile(request):
-#     if request.method == 'POST':
-#         user_form = UserForm(request.POST, instance=request.user)
-#         profile_form = ProfileForm(request.POST, instance=request.user.profile)
-#         if user_form.is_valid() and profile_form.is_valid():
-#             user_form.save()
-#             profile_form.save()
-#             messages.success(request, _('Your profile was successfully updated!'))
-#             return redirect('settings:profile')
-#         else:
-#             messages.error(request, _('Please correct the error below.'))
-#     else:
-#         user_form = UserForm(instance=request.user)
-#         profile_form = ProfileForm(instance=request.user.profile)
-#     return render(request, 'profiles/profile.html', {
-#         'user_form': user_form,
-#         'profile_form': profile_form
-#     })
 
 """
 Generate response ,when delete user at home page ,
