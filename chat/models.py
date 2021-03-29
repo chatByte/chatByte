@@ -31,7 +31,7 @@ class Profile(models.Model):
     # the friend request i snet
     friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
     # the iteams, that i currenly liked
-    liked = models.OneToOneField('Liked', on_delete=models.CASCADE, blank=True) 
+    liked = models.OneToOneField('Liked', on_delete=models.CASCADE, blank=True)
 
     def __unicode__(self): # for Python 2
         return self.user.username
@@ -118,4 +118,4 @@ class Like(models.Model):
 class Liked(models.Model):
     type = models.CharField(max_length=200, default="liked")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-    items = models.ManyToManyField('Like', blank=True) 
+    items = models.ManyToManyField('Like', blank=True)

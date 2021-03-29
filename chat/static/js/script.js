@@ -72,7 +72,7 @@ jQuery(document).ready(function($) {
   const csrftoken = getCookie('csrftoken');
 
   // handle follow a person (send friend request)
-  $('body').on('click', '.follow',function(){
+  $('body').on('click', '.befriend',function(){
 
     $(this).text("Friend Request Sent");
 
@@ -92,10 +92,8 @@ jQuery(document).ready(function($) {
   });
 
   // handle unfollow a friend
-  $('body').on('click', '.unfollow',function(){
-
-    $(this).text("Follow");
-
+  $('body').on('click', '.unfriend',function(){
+    $(this).text("Befriend");
     console.log($(this).val())
     $.ajax({
       // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
@@ -244,6 +242,6 @@ jQuery(document).ready(function($) {
 
   });
 
-  setInterval(ifFriendRequest, 5000);
+  // setInterval(ifFriendRequest, 5000);
 
 });
