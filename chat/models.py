@@ -20,7 +20,7 @@ class Profile(models.Model):
     github = models.URLField(max_length=200, null=True)
 
     friends = models.ManyToManyField(User, related_name='%(class)s_friends', blank=True)
-    followers = models.OneToOneField("Profile", on_delete=models.CASCADE)
+    followers = models.OneToOneField("Profile", on_delete=models.CASCADE, blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
     friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
     friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
