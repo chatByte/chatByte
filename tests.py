@@ -223,7 +223,7 @@ class AccountTests(APITestCase):
                                         visibility='public')
         self.post_id = 3
         self.comment = Comment.objects.create(id="5", 
-                                              author=self.user, 
+                                              author=self.user.profile, 
                                               comment="test comment",
                                               contentType='text',
                                               parent_post=self.post
@@ -236,7 +236,7 @@ class AccountTests(APITestCase):
         """
         self.client.login(username=self.username, password=self.password)
         url = '/author/1/'
-        response = self.client.get(url,  **{'Origin': host})
+        response = self.client.get(url,  **{'HTTP_X_SERVER': host})
         # print(response.content)
         user_json = {"type": "author", "id": host + "author/1", "host": None, "displayName": "test", "url": None, "github": None}
         self.assertEqual(response.status_code, 200)
@@ -259,7 +259,7 @@ class AccountTests(APITestCase):
             "url": "https://chatbyte.herokuapp.com/chat/author/2/profile/",
             "github": "https://github.com/Jeremy0818"
         }
-        response = self.client.post(url, user_json, format='json',  **{'Origin': host})
+        response = self.client.post(url, user_json, format='json',  **{'HTTP_X_SERVER': host})
         # print(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
@@ -273,7 +273,7 @@ class AccountTests(APITestCase):
         """
         self.client.login(username=self.username, password=self.password)
         url = '/author/1/posts/'
-        response = self.client.get(url,  **{'Origin': host})
+        response = self.client.get(url,  **{'HTTP_X_SERVER': host})
         self.assertEqual(response.status_code, 200)
     
     def test_post_posts(self):
@@ -308,7 +308,7 @@ class AccountTests(APITestCase):
             "visibility": "public",
             "unlisted": "false"
         }
-        response = self.client.post(url, post_json, format='json',  **{'Origin': host})
+        response = self.client.post(url, post_json, format='json',  **{'HTTP_X_SERVER': host})
         # print(response.content)
         self.assertEqual(response.status_code, 201)
 #         # self.assertJSONEqual(
@@ -413,7 +413,7 @@ class AccountTests(APITestCase):
     def test_get_comments(self):
         self.client.login(username=self.username, password=self.password)
         url = '/author/1/posts/3/comments/'
-        response = self.client.get(url, **{'Origin': host})
+        response = self.client.get(url, **{'HTTP_X_SERVER': host})
         print(response.content)
         self.assertEqual(response.status_code, 200)
 
@@ -437,7 +437,7 @@ class AccountTests(APITestCase):
             "contentType": "text",
             "published": "2021-03-26T19:04:53Z"
         }
-        response = self.client.post(url, comment_json, format='json',  **{'Origin': host})
+        response = self.client.post(url, comment_json, format='json',  **{'HTTP_X_SERVER': host})
         print(response.content)
         self.assertEqual(response.status_code, 201)
 
