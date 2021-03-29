@@ -154,20 +154,20 @@ class LikedSerializer(serializers.ModelSerializer):
         model = Liked
         fields = ['type', 'items']
 
-class CommentCustomPagination(pagination.PageNumberPagination):
-    def get_paginated_response(self, data):
-        return JsonResponse({
-            'next': self.get_next_link(),
-            'previous': self.get_previous_link(),
-            'count': self.page.paginator.count,
-            'comments': data
-        }, safe=False)
+# class CommentCustomPagination(pagination.PageNumberPagination):
+#     def get_paginated_response(self, data):
+#         return JsonResponse({
+#             'next': self.get_next_link(),
+#             'previous': self.get_previous_link(),
+#             'count': self.page.paginator.count,
+#             'comments': data
+#         }, safe=False)
 
-class PostCustomPagination(pagination.PageNumberPagination):
-    def get_paginated_response(self, data):
-        return JsonResponse({
-            'next': self.get_next_link(),
-            'previous': self.get_previous_link(),
-            'count': self.page.paginator.count,
-            'posts': data
-        }, safe=False)
+# class PostCustomPagination(pagination.PageNumberPagination):
+#     def get_paginated_response(self, data):
+#         return JsonResponse({
+#             'next': self.get_next_link(),
+#             'previous': self.get_previous_link(),
+#             'count': self.page.paginator.count,
+#             'posts': data
+#         }, safe=False)

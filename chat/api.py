@@ -5,12 +5,12 @@ from django.http import JsonResponse
 from rest_framework.parsers import JSONParser
 from django.shortcuts import render, redirect
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-
 from .models import *
 from .serializers import *
 from .backend import *
@@ -173,11 +173,20 @@ def posts_obj(request, AUTHOR_ID):
         if request.method == 'GET':
             profile = Profile.objects.get(id=AUTHOR_ID)
             posts = profile.timeline
-            serializer = PostSerializer(posts, many=True)
+            # serializer = PostSerializer(posts, many=True)
             # pagination
-            customPagination = PostCustomPagination()
-            # return JsonResponse(serializer.data, safe=False)
-            return customPagination.get_paginated_response(serializer.data)
+            pagination = PageNumberPagination()
+            paginated_results = pagination.paginate_queryset(posts.all(), request)
+        
+            serializer = PostSerializer(paginated_results, many=True)
+        
+            data = {
+                'count': pagination.page.paginator.count,
+                'next': pagination.get_next_link(),
+                'previous': pagination.get_previous_link(),
+                'results': serializer.data,
+            }
+            return JsonResponse(data, safe=False)
         elif request.method == 'POST':
             data = JSONParser().parse(request)
             serializer = PostSerializer(data=data)
@@ -245,9 +254,19 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             serializer = CommentSerializer(comments, many=True)
 
             # pagination
-            customPagination = CommentCustomPagination()
-            # return JsonResponse(serializer.data, safe=False)
-            return customPagination.get_paginated_response(serializer.data)
+            # pagination
+            pagination = PageNumberPagination()
+            paginated_results = pagination.paginate_queryset(comments.all(), request)
+        
+            serializer = CommentSerializer(paginated_results, many=True)
+        
+            data = {
+                'count': pagination.page.paginator.count,
+                'next': pagination.get_next_link(),
+                'previous': pagination.get_previous_link(),
+                'results': serializer.data,
+            }
+            return JsonResponse(data, safe=False)
 
         elif request.method == 'POST':
             # cretate comment
@@ -353,6 +372,11 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     print("author id: ", AUTHOR_ID)
     FOREIGN_AUTHOR_ID = host_server + "/posts/" + FOREIGN_AUTHOR_ID
     print("post id: ", FOREIGN_AUTHOR_ID)
+
+    try:
+        foreign_id = request.META["HTTP_X_REQUEST_USER"]
+    except:
+        pass
 
     if server_origin != host_server :
         return followerRequest(request.method,server_origin, AUTHOR_ID, FOREIGN_AUTHOR_ID)
