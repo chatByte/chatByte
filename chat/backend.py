@@ -1,10 +1,15 @@
-
-from .models import Post, Comment, Profile, Followers, FriendRequest, Like, Liked
+from rest_framework.serializers import Serializer
+from .models import Post, Comment, Profile, Follower, FriendRequest, Like, Liked
 import datetime
 from django.conf import settings
 import django
 from django.contrib.auth.models import User
 import traceback
+from .signals import host
+from .serializers import PostSerializer
+from requests.auth import HTTPBasicAuth
+from .remoteProxy import inboxRequest
+import requests
 
 # def setCookie(response, key, value, days_expire=1):
 #     # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
@@ -45,13 +50,11 @@ def addFriend(usr_id, friend_id):
         user = User.objects.get(id=usr_id)
         friend = User.objects.get(id=friend_id)
         # mutual friend
-        user.profile.friends.add(friend)
-        friend.profile.friends.add(user)
-        # mutual followers
-        user.profile.followers.add(friend)
-        friend.profile.followers.add(user)
+        user.profile.friends.add(friend.profile)
+        friend.profile.friends.add(user.profile)
 
         user.save()
+        friend.save()
         return True
     except BaseException as e:
         print(e)
@@ -61,7 +64,7 @@ def deleteFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
         friend = User.objects.get(id=friend_id)
-        user.profile.friends.remove(friend)
+        user.profile.friends.remove(friend.profile)
         user.save()
         return True
     except BaseException as e:
@@ -72,7 +75,7 @@ def getFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
         friend = User.objects.get(id=friend_id)
-        if friend in user.profile.friends.all(): return friend
+        if friend.profile in user.profile.friends.all(): return friend
         return None
     except BaseException as e:
         print(e)
@@ -86,6 +89,18 @@ def getFriends(usr_id):
         print(e)
         return None
 
+def addFollow(usr_id, friend_id):
+    user = User.objects.get(id=usr_id)
+    friend = User.objects.get(id=friend_id)
+
+    user.profile.followings.add(friend.profile)
+    friend.profile.followers.add(user.profile)
+
+    user.save()
+    friend.save()
+    return True
+
+
 def createFriendRequest(usr_id, friend_id):
     object = User.objects.get(id=usr_id)
     author = User.objects.get(id=friend_id)
@@ -96,10 +111,11 @@ def addFriendRequest(usr_id, friend_id):
     try:
         object = User.objects.get(id=usr_id)
         author = User.objects.get(id=friend_id)
-        friendRequestObj = FriendRequest.objects.create(summary="", author=author, object=object)
+        friendRequestObj = FriendRequest.objects.create(summary="", actor=author.profile, object=object.profile)
         object.profile.friend_requests.add(friendRequestObj)
         author.profile.friend_requests_sent.add(friendRequestObj)
         object.save()
+        author.save()
         return True
     except BaseException as e:
         print(e)
@@ -123,8 +139,9 @@ def addFriendViaRequest(usr_id, friend_request_id):
         user = User.objects.get(id=usr_id)
         friend_request = user.profile.friend_requests.get(id=friend_request_id)
         # print(friend_request)
-        friend = friend_request.author
-        addFriend(usr_id, friend.id)
+        # friend_profile = friend_request.actor
+        # user_profile = friend_request.object
+        addFriend(friend_request.object.id, friend_request.actor.id)
         return True
     except BaseException as e:
         print(e)
@@ -163,10 +180,27 @@ def createPost(title, source, origin, description, content_type, content, author
     # Please authenticate before calling this method
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
-            , categories=categories, count=0, size=0, commentsPage='0', visibility=visibility, author=author)
+            , categories=categories, count=0, size=0, comments_url=0, visibility=visibility, author=author)
         # print(post.author)
         author.timeline.add(post)
         author.save()
+
+        print("Broadcasting post to friends...")
+        # Broadcast to friends
+        for friend_profile in author.friends.all():
+            print(friend_profile.id)
+            author_id = friend_profile.id.split('author/')[1]
+            serializer = PostSerializer(post)
+            if origin == host:
+                print("doing locally")
+                # send post to inbox
+                friend_profile.user.inbox.post_inbox.items.add(post)
+                # add post into timeline
+                friend_profile.timeline.add(post)
+            else:
+                # send post to remote inbox
+                inboxRequest("POST", origin, author_id, serializer.data)
+        print("done")
         return True
     except BaseException as e:
         print(repr(e))
@@ -177,8 +211,9 @@ def createPost(title, source, origin, description, content_type, content, author
 def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
     # Please authenticate before calling this method
     try:
+        print("here")
         post = Post.objects.get(id=id)
-        # print("old title:", post.title)
+        print("old id:", id)
         post.title = title
 
         post.source = source
@@ -221,8 +256,10 @@ def deletePost(id):
 def createComment(author, post_id, comment, content_type, published=django.utils.timezone.now()):
     try:
         post = Post.objects.get(id=post_id)
-        commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type, published=published)
+        commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type, published=published, parent_post=post)
         post.comments.add(commentObj)
+        print("post_count:", post.count)
+        post.count += 1
         post.save()
         return True
     except BaseException as e:

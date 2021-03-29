@@ -5,13 +5,16 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
-
+from .signals import host as host_server
+from rest_framework.parsers import JSONParser
 
 from .form import *
 from .backend import *
+from .signals import host
 import base64
 import os
 import json
+from .remoteProxy import *
 
 
 
@@ -20,80 +23,12 @@ views.py receive request and create repose to client,
 Create your views here.
 """
 
-# #class based view
-# class SignUpView(generic.CreateView):
-#     form_class = UserCreationForm
-#     success_url = reverse_lazy('login')
-#     template_name = 'registration/signup.html'
-
-
-"""
-Generate response at login page
-"""
-# def login(request):
-#     context = {}
-#     context['form']= UserForm()
-#     if request.method == "GET":
-#         return render(request, "chat/login.html", context)
-#     elif request.method == "POST":
-#         username = None
-#         if request.user.is_authenticated:
-#             username = request.user.username
-#             cur_user_name = username
-#             response = redirect("/chat/home")
-#             return response
-#         else:
-#             messages.error(request, "Invalid user name or password!")
-#             response = render(request, 'chat/login.html', context)
-#             return response
-
-# """
-# Generate response at signup page
-
-# """
-
-# def signup(request):
-#     context = {}
-#     context['UserForm'] = UserForm()
-#     context['ProfileForm'] = ProfileForm()
-#     response = render(request, "chat/signup.html", context)
-#     if request.method == "GET":
-#         return response
-#     elif request.method == "POST":
-#         url = request.POST.get("URL")
-
-#         first_name = request.POST.get("first_name")
-#         last_name = request.POST.get("last_name")
-#         github = request.POST.get("GITHUB")
-
-#         # password = request.POST.get("Password")
-#         # retype_password = request.POST.get("Retype_password")
-#         host = request.POST.get("HOST")
-#         # first method to handle user name exist, can be optimize later
-#         if validActor(username, password):
-#             messages.error(request, 'User name exists!')
-#             return response
-#         else:
-#             if retype_password != password:
-#                 messages.error(request, 'Password does not match!')
-#                 return response
-#             createAuthor(host, username, url, github)
-#             createActor(username, password)
-#             cur_user_name = username
-#             response = redirect("/chat/home/")
-#             return response
-
-#         # second method to handle user name exist, can be optimize later
-#         if createAuthor("this", username, url, github):
-#           return redirect("/chat/profile/")
-#         else:
-#           messages.error(request, 'User name exists!')
-#           return render(request, "chat/signup.html", context)
 
 @login_required
 def start_homepage(request):
     if request.user.is_authenticated:
-        return redirect("/chat/author/" + str(request.user.id) + "/profile/")
+        return redirect("/author/" + str(request.user.id) + "/profile/")
+    else: return redirect("/accounts/login/")
 
 
 
@@ -116,49 +51,57 @@ def signup(request):
         print("logging in...")
         login(request, user)
 
-        return redirect('/chat/author/' + str(user.id))
+        return redirect('/author/' + str(user.id) + "/profile/")
     return render(request, 'registration/signup.html', {'form': form})
 
 
 
 """
 Generate response at home page  => eveyones' post here
+path(r"author/<str:AUTHOR_ID>/public_channel/",
 """
 # get feed and
 # post: comment/like => send post request to host server(edit post function),
 @require_http_methods(["GET", "POST"])
 @login_required
-def home_public_channel(request, AUTHOR_ID):
+def my_stream(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
-    cur_author = request.user
-    # a list of post
-    mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
 
-    author_num_follwers = len(cur_author.profile.followers.all())
+    cur_author = request.user
+    # a list of post, django.db.models.query.QuerySet
+    mytimeline = cur_author.profile.timeline.all()
+    # a group of author, that i am currently following, django.db.models.query.QuerySet
+    followings = cur_author.profile.followings.all()
+
+    # merging quesryset
+    public_channel_posts = mytimeline
+
+    for following_profile in followings:
+
+
+        public_posts = following_profile.timeline.filter(visibility='public')
+        public_channel_posts = public_channel_posts | public_posts
+
+
+    author_num_follwers = len(cur_author.profile.followers.items.all())
     friend_request_num = len(cur_author.profile.friend_requests.all())
+    # order by date
+    public_channel_posts = public_channel_posts.order_by('published')
 
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
-        'timeline': mytimeline,
+        # 'timeline': mytimeline,
+
+        'public_channel_posts': public_channel_posts,
         'author_num_follwers': author_num_follwers,
         'friend_request_num': friend_request_num
     }
 
-    # for user in User.objects.all():
-    #     Token.objects.get_or_create(user=user)
 
-
-    response = render(request, "chat/home.html", dynamic_contain)
-
-    if request.method == "GET":
-
-        return response
-    elif request.method == "POST":
-
-        # change later
-        return response
+    response = render(request, "chat/stream.html", dynamic_contain)
+    return response
 
 
 """
@@ -176,7 +119,7 @@ def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
     # a list of post
     mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
 
-    author_num_follwers = len(cur_author.profile.followers.all())
+    author_num_follwers = len(cur_author.profile.followers.items.all())
     friend_request_num = len(cur_author.profile.friend_requests.all())
 
     dynamic_contain = {
@@ -207,8 +150,11 @@ def posts(request, AUTHOR_ID):
     if request.user.is_authenticated:
         cur_user_name = request.user.username
     cur_author = request.user.profile
-    mytimeline = cur_author.timeline.all() #getTimeline(cur_user_name)
-    author_num_follwers = len(cur_author.followers.all())
+    alltimeline = cur_author.timeline.all()
+    #getTimeline(cur_user_name), by SQL query
+    mytimeline = alltimeline.filter(author=cur_author).order_by('published')
+
+    author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(cur_author.friend_requests.all())
 
     dynamic_contain = {
@@ -231,14 +177,12 @@ def posts(request, AUTHOR_ID):
 
         request_post = request.POST
 
-        source = cur_user_name # Who share it to me
-        origin = cur_user_name # who origin create
+        source = request.user.profile.id # Who share it to me
+        origin = host_server # who origin create
         title = request_post.get("title", "")
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
         visibility = request_post.get("visibility", "")
-
-        print("here")
 
         f = request.FILES.get("file", "")
         categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
@@ -254,7 +198,9 @@ def posts(request, AUTHOR_ID):
         createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
         if createFlag:
             print("haha, successful create post, info: ", description)
-            response = redirect("/chat/author/"+ str(AUTHOR_ID) + "/public_channel/")
+
+            # response = redirect("/author/"+ str(AUTHOR_ID) + "/public_channel/")
+            response = HttpResponse(status=200)
             return response
         else:
             print("server feels sad ", description)
@@ -262,23 +208,6 @@ def posts(request, AUTHOR_ID):
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
-
-"""
-Generate response ,when delete user at feed page ,
-"""
-# only allowed DELETE or POST to delete feed's post
-# @login_required
-# @require_http_methods(["DELETE", "POST"])
-# def delete_in_feed(request, ID):
-#     cur_user_name = None
-#     if request.user.is_authenticated:
-#         cur_user_name = request.user.username
-#     # post_id = request.build_absolute_uri().split("/")[-2][6:]
-
-#     deletePost(ID)
-#     response = redirect("/chat/feed/")
-
-#     return response
 
 
 """
@@ -318,33 +247,9 @@ def profile(request, AUTHOR_ID):
         first_name = post_obj["first_name"]
         last_name = post_obj["last_name"]
         updateProfile(user.id, first_name, last_name, email, url, github)
-        response = redirect("/chat/author/"+ str(request.user.id) + "/profile/")
+        response = redirect("/author/"+ str(request.user.id) + "/profile/")
         return response
 
-
-
-
-
-# @login_required
-# @transaction.atomic
-# def update_profile(request):
-#     if request.method == 'POST':
-#         user_form = UserForm(request.POST, instance=request.user)
-#         profile_form = ProfileForm(request.POST, instance=request.user.profile)
-#         if user_form.is_valid() and profile_form.is_valid():
-#             user_form.save()
-#             profile_form.save()
-#             messages.success(request, _('Your profile was successfully updated!'))
-#             return redirect('settings:profile')
-#         else:
-#             messages.error(request, _('Please correct the error below.'))
-#     else:
-#         user_form = UserForm(instance=request.user)
-#         profile_form = ProfileForm(instance=request.user.profile)
-#     return render(request, 'profiles/profile.html', {
-#         'user_form': user_form,
-#         'profile_form': profile_form
-#     })
 
 """
 Generate response ,when delete user at home page ,
@@ -361,7 +266,7 @@ def delete(request, ID):
     deletePost(ID)
 
     # TODO: may not redirect
-    response = redirect("/chat/author/"+ str(request.user.id) + "/public_channel/")
+    response = redirect("/author/"+ str(request.user.id) + "/public_channel/")
     return response
 
 
@@ -402,7 +307,7 @@ def my_friends(request,AUTHOR_ID):
 
     print(friend_list)
     cur_author = request.user.profile
-    author_num_follwers = len(cur_author.followers.all())
+    author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(cur_author.friend_requests.all())
     dynamic_contain = {
         'myName' : cur_author.displayName,
@@ -460,7 +365,7 @@ def if_friend_request(request):
         if len(all_friend_request)>0:
             newest = all_friend_request.reverse()[0]
             data = {}
-            data['friend'] = newest.author.profile.displayName
+            data['friend'] = newest.actor.displayName
             data['id'] = newest.id
             # return the newest friend request's name
             return JsonResponse(data)
@@ -491,3 +396,96 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
         return HttpResponse(status=200)
     except BaseException as e:
         return HttpResponse(status=401)
+
+
+@login_required
+@require_http_methods(["POST"])
+def update_post(request, AUTHOR_ID, POST_ID):
+    print('edited arguemnt POST_ID', str(POST_ID))
+    id = host_server + 'author/' + str(AUTHOR_ID) + '/posts/' + str(POST_ID)
+    print("edited post id:", id)
+    user = None
+    username=""
+    if request.user.is_authenticated:
+        user = request.user
+        username = request.user.profile.displayName
+
+    request_post = request.POST
+    source = username # Who share it to me
+    origin = username # who origin create
+    title = request_post.get("title", "")
+    description = request_post.get("description", "")
+    content_type = request_post.get("contentType", "")
+    visibility = request_post.get("visibility", "")
+    f = request.FILES.get("file", "")
+    categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
+    if len(f) > 0:
+        categories = "image/" + os.path.splitext(f.name)[-1][1:]
+        with f.open("rb") as image_file:
+            content = base64.b64encode(image_file.read())
+    else:
+        content = description
+
+    updateFlag = updatePost(id, title, source, origin, description, content_type, content, categories, visibility)
+    if updateFlag:
+        print("Successful edited post, info: ", description)
+        response = HttpResponse(status=200)
+        return response
+    else:
+        print("failed to edit the post!!", description)
+    
+    response = redirect("/author/" + str(user.id) + "/my_posts/")
+    return response
+@require_http_methods(["POST"])
+@login_required
+def search(request, AUTHOR_ID):
+    server_origin = request.META["HTTP_X_SERVER"]
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+
+    print("...........................???.....")
+
+    data = JSONParser().parse(request)
+
+    try:
+        target_id = data["url"]
+        print(target_id)
+    except:
+        return JsonResponse({}, status=409)
+    try:
+        target = Profile.objects.get(id=target_id)
+        serializer = ProfileSerializer(target)
+        
+        numberID_target = target_id.split("/")[-1]
+
+        # 127.0.0.1:8000/author/1/my_stream/2
+        # ID
+        #http://127.0.0.1:8000/author/2
+        response = redirect("../my_stream/" + numberID_target + "/")
+
+        # return response
+        redirect_url = "../my_stream/" + numberID_target + "/"
+
+
+        json_dict = {"url": redirect_url}  
+
+        return JsonResponse(json_dict, status=201)
+    except Profile.DoesNotExist:
+        return profileRequest("GET", server_origin, target_id)
+
+
+@require_http_methods(["POST"])
+@login_required
+def search_user(request, AUTHOR_ID, FOREGIN_ID):
+    server_origin = request.META["HTTP_X_SERVER"]
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # data = JSONParser().parse(request)
+    # try:
+    #     target_id = data["url"]
+    # except:
+    #     return JsonResponse({}, status=409)
+    try:
+        target = Profile.objects.get(id=FOREGIN_ID)
+        serializer = ProfileSerializer(target)
+        return JsonResponse(serializer.data, status=201)
+    except Profile.DoesNotExist:
+        return profileRequest("GET", server_origin, FOREGIN_ID)

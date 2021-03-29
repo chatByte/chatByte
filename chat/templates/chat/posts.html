@@ -36,14 +36,29 @@
             <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
           </div>
 
+          <!-- # search bar -->
+          <!-- Load icon library -->
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+          
+          <!-- The form -->
+<!--           <form class="search_user" action=""> -->
+            <input type="text" placeholder="Search.." name="search" id = "search_user_input">
+            <button  id="search_user_button" onclick="search()"><i class="fa fa-search"></i></button>
+<!--           </form>  -->
+
+
+
+
+
+
+
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right main-menu">
 
-              <li class="dropdown"><a href="../public_channel/">My Home</a></li>
-              <li class="dropdown"><a href="../friends">My Friends</a></li>
+              <li class="dropdown"><a href="../my_stream/">My Stream</a></li>
+              <li class="dropdown"><a href="../my_friends">My Friends</a></li>
               <li class="dropdown"><a href="../my_posts">My Posts</a></li>
-
 
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
@@ -56,7 +71,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
                   {% for friend_requests in user.profile.friend_requests.all %}
-                    <li><a href="" id={{friend_requests.id}}>{{friend_requests.author.profile.displayName}} has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
+                    <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
                   {% endfor %}
                 </ul>
               </li>
@@ -174,7 +189,7 @@
                 <!-- Post Content
                 ================================================= -->
 
-                <div class="post-content">
+                <div class="post-content" id={{cur_post.id}}>
                   <!--Post Date-->
                   <div class="post-date">
 
@@ -182,7 +197,7 @@
                   </div><!--Post Date End-->
                   {% if 'image/' in cur_post.categories  %}
                   {% load image_filter %}
-                  <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.CONTENT | bin_2_img }}"/>
+                  <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
                   <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
                   <div class="post-container">
@@ -213,26 +228,29 @@
                         </div>
                         {% endif %}
 
-
                         <div class="edit">
-                          <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button>
-                          <a href="/chat/feed/edit{{ cur_post.ID }}/" class="editBtn">Edit</a>
-                          <button id="{{ cur_post.ID }}" class="btn-primary-sm" onclick="deletePost( '{{ cur_post.id }}' )">Delete</button></div>
-
+                          <!-- <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button> -->
+                          <button id="submitBtn" class="submitBtn btn-primary-sm" style="display: none" onclick="editPost( '{{ cur_post.id }}' )">Submit</button>
+                          <a href="/chat/feed/edit{{ cur_post.id }}/" class="editBtn">Edit</a>
+                          <button id="{{ cur_post.id }}" class="btn-primary-sm" onclick="deletePost( '{{ cur_post.id }}' )">Delete</button></div>
 
                       </div>
 
                       <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart"></i> 13</a>
-                        <a class="btn text-green"><i class="icon ion-share"></i></a>
+                        <a class="btn text-red "><i class="icon ion-ios-heart like">{{ cur_post.likes | length }}</i></a>
+                        <a class="btn text-green"><i class="icon ion-share repost"></i></a>
                       </div>
 
                       <hr class="solid">
 <!--            show nested comment  -->
             {% for comment in cur_post.comments.all %}
-                      <div class="post-comment">
+                      <div class="post-comment" id={{comment.id}}>
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
                         <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
+                      </div>
+
+                      <div class="reaction-img">
+                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like">{{ comment.likes | length }}</i></a>
                       </div>
                       {% endfor %}
 <!--                      end -->
@@ -264,7 +282,6 @@
             <!-- Post Content
             ================================================= -->
 <!--             <div class="post-content">
-
               <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" />
               <div class="post-container">
                 <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
@@ -287,7 +304,6 @@
                     <a class="btn text-red"><i class="icon ion-ios-heart"></i> 13</a>
                     <a class="btn text-green"><i class="icon ion-share"></i></a>
                   </div>
-
                   <hr class="solid">
                   <div class="post-comment">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
@@ -367,6 +383,8 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+
     <script src="{% static 'script/posts.js' %}"></script>
     <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
   </body>
