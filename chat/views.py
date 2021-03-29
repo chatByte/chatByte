@@ -62,7 +62,7 @@ path(r"author/<str:AUTHOR_ID>/public_channel/",
 # post: comment/like => send post request to host server(edit post function),
 @require_http_methods(["GET", "POST"])
 @login_required
-def stream(request, AUTHOR_ID):
+def my_stream(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
@@ -412,3 +412,20 @@ def search(request, AUTHOR_ID):
         return JsonResponse(serializer.data, status=201)
     except Profile.DoesNotExist:
         return profileRequest("GET", server_origin, target_id) 
+
+@require_http_methods(["POST"])
+@login_required
+def search_user(request, AUTHOR_ID, FOREGIN_ID):
+    server_origin = request.META["HTTP_X_SERVER"]
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # data = JSONParser().parse(request)
+    # try:
+    #     target_id = data["url"]
+    # except:
+    #     return JsonResponse({}, status=409)
+    try:
+        target = Profile.objects.get(id=FOREGIN_ID)
+        serializer = ProfileSerializer(target)
+        return JsonResponse(serializer.data, status=201)
+    except Profile.DoesNotExist:
+        return profileRequest("GET", server_origin, FOREGIN_ID) 

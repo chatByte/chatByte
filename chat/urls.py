@@ -17,16 +17,15 @@ urlpatterns = [
 
 
     # show info => get request, views.public_channel originally called feed, and able to comment
-    path(r"author/<str:AUTHOR_ID>/stream/", views.stream, name="stream"),
+    path(r"author/<str:AUTHOR_ID>/my_stream/", views.my_stream, name="my_stream"),
     path(r"author/<str:AUTHOR_ID>/public_channel/<str:FOREIGN_ID>/", views.friend_public_channel, name="public_channel"),
 
 
         # get search bar
     path(r"author/<str:AUTHOR_ID>/search/", views.search, name="search"),
 
+    path(r"author/<str:AUTHOR_ID>/my_posts/?search<str:FOREGIN_ID>", views.search_user, name="search"),
 
-
-    
     # handle delete
     path("home/delete<str:ID>/", views.delete, name="delete"),
     # path("feed/delete<str:ID>/", views.delete_in_feed, name="delete_post_in_feed"),

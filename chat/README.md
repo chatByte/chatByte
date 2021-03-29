@@ -16,3 +16,6 @@ Useful method:
 	python manage.py migrate
 	python manage.py createsuperuser
 
+
+Test method
+http://127.0.0.1:8000/author/2/profile/
