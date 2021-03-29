@@ -402,6 +402,9 @@ def search(request, AUTHOR_ID):
     server_origin = request.META["HTTP_X_SERVER"]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     data = JSONParser().parse(request)
+    print("...........................???")
+
+
     try:
         target_id = data["url"]
     except:

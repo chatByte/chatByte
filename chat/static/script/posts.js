@@ -8,21 +8,36 @@ var edit_form_data = new FormData();
 
 
 
-//design for search_user_button
-$('#search_user_button').click(
-  function(e){
-    
-    var search_user_input = document.getElementById("search_user_input");
 
 
+function search(){
+  var input = document.getElementById("search_user_input");
+  var id = input.value;
+  console.log(id);
 
-    console.log(".content");
-    console.log(search_user_input.content);
 
+  $.ajax({
+        url : "../search/", // the endpoint
+        type : "POST", // http method
+        dataType: 'text', // what to expect back from the server
+        cache: false,
+        headers: {"X-Server": x_server},
+        contentType: false,
+        processData: false,
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+          xhr.setRequestHeader("X-Request-User", id);
+        },
 
-  }
-);
+        data: {"url": id},
 
+        // handle a successful response
+        success : function(json) {
+            console.log("success"); // sanity check
+            location.reload();
+        },
+      });
+} 
       // title = $('#title').val();
       // description = $('#description').val();
       // console.log("title = ", title);
