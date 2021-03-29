@@ -164,6 +164,11 @@ $( document ).ready(function() {
       $.ajax({
         url : ".", // the endpoint
         type : "POST", // http method
+        // header
+        headers: {"X-Server": x_server},
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+        },
         dataType: 'text', // what to expect back from the server
         cache: false,
         contentType: false,
@@ -228,6 +233,11 @@ $( document ).ready(function() {
       console.log("description");
       $.ajax({
         url : ".", // the endpoint
+        // header
+        headers: {"X-Server": x_server},
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+        },
         type : "POST", // http method
         dataType: 'text', // what to expect back from the server
         cache: false,

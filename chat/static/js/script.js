@@ -39,6 +39,11 @@ $(window).on('load', function() {
 function ifFriendRequest(){
   $.ajax({
     url : url_header + "ifFriendRequest/", // the endpoint
+    // header
+    headers: {"X-Server": x_server},
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    },
     type : "GET", // http method
     contentType: false,
     processData: false,
@@ -81,6 +86,11 @@ jQuery(document).ready(function($) {
       // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
       url:$(this).val(),
       type : "GET", // http method
+      // header
+      headers: {"X-Server": x_server},
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      },
       contentType: false,
       processData: false,
       dataType: "json",
@@ -153,6 +163,11 @@ jQuery(document).ready(function($) {
     $.ajax({
       // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
       url:url_header + 'author/' + new_url[5].toString() + "/friends/reject/" + request_id + '/',
+      // header
+      headers: {"X-Server": x_server},
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      },
       type: "GET", // http method
       contentType: false,
       processData: false,
@@ -188,6 +203,11 @@ jQuery(document).ready(function($) {
       // author/<str:AUTHOR_ID>/inbox/
       type: "POST", // http method
       url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
+      // header
+      headers: {"X-Server": x_server},
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      },
       contentType: 'application/json; charset=utf-8',
       dataType: "json",
       headers:{
