@@ -200,6 +200,7 @@ def createPost(title, source, origin, description, content_type, content, author
 def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
     # Please authenticate before calling this method
     try:
+        print("here")
         post = Post.objects.get(id=id)
         print("old id:", id)
         post.title = title

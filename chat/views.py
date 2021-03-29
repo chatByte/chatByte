@@ -412,7 +412,6 @@ def update_post(request, AUTHOR_ID, POST_ID):
         user = request.user
         username = request.user.profile.displayName
 
-    post = getPost(POST_ID)
     request_post = request.POST
     source = username # Who share it to me
     origin = username # who origin create
