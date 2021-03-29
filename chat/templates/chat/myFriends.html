@@ -57,7 +57,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
                   {% for friend_requests in user.profile.friend_requests.all %}
-                    <li><a href="" id={{friend_requests.id}}>{{friend_requests.author.profile.displayName}} has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
+                    <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
                   {% endfor %}
                 </ul>
               </li>
@@ -113,7 +113,7 @@
                         <div class="card-info">
                           <img src="https://i1.sndcdn.com/artworks-000633504211-qcdzak-t500x500.jpg" alt="user" class="profile-photo-lg" />
                           <div class="friend-info">
-                            <a class="btn-primary-sm unfollow pull-right" href="delete/{{friend.id}}" >Unfollow</a>
+                            <a class="btn-primary-sm unfriend pull-right" href="delete/{{friend.id}}" >Unfriend</a>
                             <!-- <form action="delete/{{friend.id}}" method="post">
                                 {% csrf_token %}
                                 <button class="btn-primary-sm unfollow pull-right" type="submit" value="Delete" >Unfollow<button>
@@ -121,8 +121,8 @@
                             <div class="">
                               <h5><a style="color: white;">11</a></h5>
                               <!-- href:/chat/author/+friend.id -->
-                              <h5><a href="../public_channel/{{friend.id}}/" class="profile-link">{{friend.profile.displayName}}</a></h5>
-                              <p class="text-green">Been friends for 10 months</p>
+                              <h5><a href="../public_channel/{{friend.id}}/" class="profile-link">{{friend.displayName}}</a></h5>
+                              <!-- <p class="text-green">Been friends for 10 months</p> -->
                             </div>
                           </div>
                         </div>

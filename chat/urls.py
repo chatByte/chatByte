@@ -38,17 +38,15 @@ urlpatterns = [
 
     # add friend
     path(r"author/<str:AUTHOR_ID>/friends/add/<str:FRIEND_ID>/", views.add_friend, name="friend_add"),
-    path(r"author/<str:AUTHOR_ID>/friends/", views.my_friends, name="my_friends"),
 
     path(r"author/<str:AUTHOR_ID>/friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
     path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
 
-
     #followers:
     # URL: ://service/author/{AUTHOR_ID}/followers/
-    path(r"author/<str:AUTHOR_ID>/followers/", api.follower_obj, name="follower_obj"),
+    path(r"author/<str:AUTHOR_ID>/followers/", api.followers_obj, name="followers_obj"),
     # URL:URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
-    path(r"author/<str:AUTHOR_ID>/followers/<str:FOREIGN_AUTHOR_ID>", api.followers_obj, name="followers_obj"),
+    path(r"author/<str:AUTHOR_ID>/followers/<str:FOREIGN_AUTHOR_ID>", api.follower_obj, name="follower_obj"),
 
 
     #Liked

@@ -365,7 +365,7 @@ def if_friend_request(request):
         if len(all_friend_request)>0:
             newest = all_friend_request.reverse()[0]
             data = {}
-            data['friend'] = newest.author.profile.displayName
+            data['friend'] = newest.actor.displayName
             data['id'] = newest.id
             # return the newest friend request's name
             return JsonResponse(data)
@@ -393,6 +393,16 @@ def accept_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
 def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
     try:
         deleteFriendRequest(request.user.id, FRIEND_REQUEST_ID)
+        return HttpResponse(status=200)
+    except BaseException as e:
+        return HttpResponse(status=401)
+
+
+@require_http_methods(["GET"])
+@login_required
+def reject_friend_request(request, AUTHOR_ID, FOREIGN_ID):
+    try:
+        addFollow(request.user.id, FOREIGN_ID)
         return HttpResponse(status=200)
     except BaseException as e:
         return HttpResponse(status=401)

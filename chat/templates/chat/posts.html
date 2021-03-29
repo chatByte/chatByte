@@ -44,7 +44,6 @@
               <li class="dropdown"><a href="../my_friends">My Friends</a></li>
               <li class="dropdown"><a href="../my_posts">My Posts</a></li>
 
-
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
@@ -56,7 +55,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
                   {% for friend_requests in user.profile.friend_requests.all %}
-                    <li><a href="" id={{friend_requests.id}}>{{friend_requests.author.profile.displayName}} has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
+                    <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
                   {% endfor %}
                 </ul>
               </li>

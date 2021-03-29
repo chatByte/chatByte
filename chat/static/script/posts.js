@@ -5,7 +5,7 @@ var description = "";
 var title = "";
 var form_data = new FormData();
 var edit_form_data = new FormData();
-
+var x_server = window.location.origin;
 
 
 //Preloader
@@ -52,11 +52,11 @@ function deletePost(id){
         dataType: 'text', // what to expect back from the server
         cache: false,
         headers: {"X-Server": x_server},
-        contentType: false,
-        processData: false,
         beforeSend: function(xhr) {
           xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
         },
+        contentType: false,
+        processData: false,
 
         data: {},
 

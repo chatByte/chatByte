@@ -56,7 +56,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
                   {% for friend_requests in user.profile.friend_requests.all %}
-                    <li><a href="" id={{friend_requests.id}}>{{friend_requests.author.profile.displayName}} has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
+                    <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
                   {% endfor %}
                 </ul>
               </li>
@@ -85,7 +85,8 @@
                   <img src="{% static 'images/snow-mount.jpg' %}" alt="" class="img-responsive profile-photo" />
                   <h3 id="fullName">{{myName}}</h3>
                   <p class="text-muted"> {{author_num_follwers}} people is following her</p>
-                  <a href=""><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" /></a>
+                  <h4 style="display: none" id="following">Following</h4>
+                  <a href="#" style="display: block" id='followBtn'><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" /></a>
                 </div>
               </div>
               <div class="col-md-9">

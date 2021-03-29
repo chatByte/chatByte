@@ -94,7 +94,7 @@ Testing method
 @permission_classes([IsAuthenticated])
 def post_obj(request, AUTHOR_ID, POST_ID):
     # ex. equest.META[Origin] == ("https:\\chatbyte"):
-    # req_origin = request.META["Origin"] 
+    # req_origin = request.META["Origin"]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
@@ -127,7 +127,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
             # update the post
             try:
                 post = Post.objects.get(id=POST_ID)
-                
+
             except Post.DoesNotExist:
                 return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
             data = JSONParser().parse(request)
@@ -177,9 +177,9 @@ def posts_obj(request, AUTHOR_ID):
             # pagination
             pagination = PageNumberPagination()
             paginated_results = pagination.paginate_queryset(posts.all(), request)
-        
+
             serializer = PostSerializer(paginated_results, many=True)
-        
+
             data = {
                 'count': pagination.page.paginator.count,
                 'next': pagination.get_next_link(),
@@ -257,9 +257,9 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             # pagination
             pagination = PageNumberPagination()
             paginated_results = pagination.paginate_queryset(comments.all(), request)
-        
+
             serializer = CommentSerializer(paginated_results, many=True)
-        
+
             data = {
                 'count': pagination.page.paginator.count,
                 'next': pagination.get_next_link(),
@@ -367,7 +367,9 @@ URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     # ex. request.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
+    print(request.META)
     server_origin = request.META["HTTP_X_SERVER"]
+    print(server_origin)
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     FOREIGN_AUTHOR_ID = host_server + "/posts/" + FOREIGN_AUTHOR_ID
@@ -412,15 +414,11 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
                 follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
                 return JsonResponse({'detail': 'true'}, status=409)
 
-
             except Profile.DoesNotExist:
                profile.followers.add(follower)
-
                profile.save()
-
                return JsonResponse({}, status=201)
-
-
+               
         elif request.method == "DELETE":
             profile.followers.remove(follower)
             return JsonResponse({}, status=200)

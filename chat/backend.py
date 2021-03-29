@@ -46,9 +46,6 @@ def addFriend(usr_id, friend_id):
         # mutual friend
         user.profile.friends.add(friend.profile)
         friend.profile.friends.add(user.profile)
-        # mutual followers
-        user.profile.followers.add(friend.profile)
-        friend.profile.followers.add(user.profile)
 
         user.save()
         friend.save()
@@ -56,6 +53,7 @@ def addFriend(usr_id, friend_id):
     except BaseException as e:
         print(e)
         return False
+
 
 def deleteFriend(usr_id, friend_id):
     try:
@@ -86,6 +84,18 @@ def getFriends(usr_id):
         print(e)
         return None
 
+def addFollow(usr_id, friend_id):
+    user = User.objects.get(id=usr_id)
+    friend = User.objects.get(id=friend_id)
+
+    user.profile.followings.add(friend.profile)
+    friend.profile.followers.add(user.profile)
+
+    user.save()
+    friend.save()
+    return True
+
+
 def createFriendRequest(usr_id, friend_id):
     object = User.objects.get(id=usr_id)
     author = User.objects.get(id=friend_id)
@@ -96,10 +106,11 @@ def addFriendRequest(usr_id, friend_id):
     try:
         object = User.objects.get(id=usr_id)
         author = User.objects.get(id=friend_id)
-        friendRequestObj = FriendRequest.objects.create(summary="", author=author, object=object)
+        friendRequestObj = FriendRequest.objects.create(summary="", actor=author.profile, object=object.profile)
         object.profile.friend_requests.add(friendRequestObj)
         author.profile.friend_requests_sent.add(friendRequestObj)
         object.save()
+        author.save()
         return True
     except BaseException as e:
         print(e)
@@ -123,8 +134,9 @@ def addFriendViaRequest(usr_id, friend_request_id):
         user = User.objects.get(id=usr_id)
         friend_request = user.profile.friend_requests.get(id=friend_request_id)
         # print(friend_request)
-        friend = friend_request.author
-        addFriend(usr_id, friend.id)
+        # friend_profile = friend_request.actor
+        # user_profile = friend_request.object
+        addFriend(friend_request.object.id, friend_request.actor.id)
         return True
     except BaseException as e:
         print(e)

@@ -6,6 +6,7 @@ from rest_framework.authtoken.models import Token
 from .models import Comment, Post, Profile, Inbox, PostInbox, Liked, Follower
 
 host = "https://chatbyte.herokuapp.com/"
+# host = "https://localhost:8000/"
 
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):
@@ -23,7 +24,7 @@ def update_profile_signal(sender, instance, created, **kwargs):
             inbox = Inbox.objects.create(user=instance,)
             inbox.post_inbox = PostInbox.objects.create()
         Token.objects.create(user=instance)
-        
+
         instance.profile.displayName = instance.username
         instance.profile.id = host + "author/" + str(instance.id)
         instance.profile.save()
@@ -67,4 +68,3 @@ def create_comment_signal(sender, instance, created, **kwargs):
             # remove the old instance
             old_instance = Comment.objects.get(pk=id_temp)
             old_instance.delete()
-    
