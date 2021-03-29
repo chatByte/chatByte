@@ -19,11 +19,18 @@ class Profile(models.Model):
     url = models.URLField(max_length=200, null=True)
     github = models.URLField(max_length=200, null=True)
 
+    # a group of author, that i accepted to be my friend
     friends = models.ManyToManyField(User, related_name='%(class)s_friends', blank=True)
+    # a group of author, that  followed me
     followers = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
+    # a group of author, that i am currently following
+    followings = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
+    # the friend request i received
     friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
+    # the friend request i snet
     friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
+    # the iteams, that i currenly liked
     liked = models.OneToOneField('Liked', on_delete=models.CASCADE, blank=True) 
 
     def __unicode__(self): # for Python 2
