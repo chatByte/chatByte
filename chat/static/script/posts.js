@@ -47,12 +47,12 @@ function deletePost(id){
         url :url, // the endpoint
         type : "DELETE", // http method
         dataType: 'text', // what to expect back from the server
+        headers: { "X-Server": id },
         cache: false,
         contentType: false,
         processData: false,
         beforeSend: function(xhr) {
           xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-          xhr.setRequestHeader("X-Server", id);
         },
 
         data: {},
