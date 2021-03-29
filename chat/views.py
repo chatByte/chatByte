@@ -78,7 +78,7 @@ def stream(request, AUTHOR_ID):
 
     for following_profile in followings:
 
-        public_posts = following_profile.timeline.filter(Post_visibility='public')
+        public_posts = following_profile.timeline.filter(visibility='public')
         public_channel_posts = public_channel_posts | public_posts
 
 
