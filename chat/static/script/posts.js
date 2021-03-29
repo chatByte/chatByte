@@ -84,6 +84,59 @@ function readImg(input) {
     }
 }
 
+
+
+    // deal with submit edit button
+    // submit form data
+function editPost(POST_ID) {
+      var id = POST_ID.split('/posts/')[1];
+      console.log('' + POST_ID)
+      title = $('#title').val();
+      description = $('#description').val();
+      console.log("title = ", title);
+      var x_server = window.location.origin
+      var csrftoken = getCookie('csrftoken');
+
+      // handle file upload
+      // file is stored as form data
+      if (contentType == "image"){
+        var file_data = $('#imageFile').prop('files')[0];
+        form_data.append('file', file_data);
+      }
+
+      form_data.append("contentType", contentType);
+      form_data.append("visibility", visibility);
+      form_data.append("title", title);
+      form_data.append("description", description);
+      form_data.append("csrfmiddlewaretoken", csrftoken);
+
+      $.ajax({
+        // url : ".", // the endpoint
+        url:"./" + id + "/edit/",
+        // header
+        headers: {"X-Server": x_server},
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+        },
+        type : "POST", // http method
+        dataType: 'text', // what to expect back from the server
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: form_data,
+
+        // handle a successful response
+        success : function(json) {
+            console.log("success"); // sanity check
+            // window.location.reload();
+        },
+      });
+    }
+
+
+
+// ===========================
+
 $( document ).ready(function() {
 
     // get csrftoken, used in AJAX Request
@@ -138,67 +191,52 @@ $( document ).ready(function() {
 
 
 
-    // deal with submit edit button
-    // submit form data
-    $('#submitEdit').click(function(e){
+    // // deal with submit edit button
+    // // submit form data
+    // $('#submitBtn').click(function(e){
 
-      title = $('#title').val();
-      description = $('#description').val();
-      console.log("title = ", title);
+    //   title = $('#title').val();
+    //   description = $('#description').val();
+    //   console.log("title = ", title);
+    //   var x_server = window.location.origin
 
-      // handle file upload
-      // file is stored as form data
-      if (contentType == "image"){
-        var file_data = $('#imageFile').prop('files')[0];
-        form_data.append('file', file_data);
-      }
+    //   // handle file upload
+    //   // file is stored as form data
+    //   if (contentType == "image"){
+    //     var file_data = $('#imageFile').prop('files')[0];
+    //     form_data.append('file', file_data);
+    //   }
 
-      form_data.append("contentType", contentType);
-      form_data.append("visibility", visibility);
-      form_data.append("title", title);
-      form_data.append("description", description);
-      form_data.append("csrfmiddlewaretoken", csrftoken);
-      var x_server = window.location.origin
-
-
-      $.ajax({
-        url : ".", // the endpoint
-        type : "POST", // http method
-        // header
-        headers: {"X-Server": x_server},
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-        },
-        dataType: 'text', // what to expect back from the server
-        cache: false,
-        contentType: false,
-        processData: false,
-        data: form_data,
-
-        // handle a successful response
-        success : function(json) {
-            console.log("success"); // sanity check
-            window.location.reload();
-        },
-      });
-
-      // $.ajax({
-      //   url : ".", // the endpoint
-      //   type : "DELETE", // http method
-      //   dataType: 'text', // what to expect back from the server
-      //   cache: false,
-      //   contentType: false,
-      //   processData: false,
-      //   data: form_data,
-
-      //   // handle a successful response
-      //   success : function(json) {
-      //       console.log("success"); // sanity check
-      //   },
-      // });
+    //   form_data.append("contentType", contentType);
+    //   form_data.append("visibility", visibility);
+    //   form_data.append("title", title);
+    //   form_data.append("description", description);
+    //   form_data.append("csrfmiddlewaretoken", csrftoken);
+    //   // var x_server = window.location.origin
 
 
-    });
+    //   $.ajax({
+    //     // url : ".", // the endpoint
+    //     url:"./" +  + "/edit/",
+    //     // header
+    //     headers: {"X-Server": x_server},
+    //     beforeSend: function(xhr) {
+    //       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    //     },
+    //     type : "POST", // http method
+    //     dataType: 'text', // what to expect back from the server
+    //     cache: false,
+    //     contentType: false,
+    //     processData: false,
+    //     data: form_data,
+
+    //     // handle a successful response
+    //     success : function(json) {
+    //         console.log("success"); // sanity check
+    //         window.location.reload();
+    //     },
+    //   });
+    // });
 
 
 
@@ -272,3 +310,4 @@ $( document ).ready(function() {
     });
 
 });
+
