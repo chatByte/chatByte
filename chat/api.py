@@ -1,3 +1,4 @@
+from django.http.request import QueryDict
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -287,9 +288,9 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
                 #     post_serializer.save()
                 # may be we should user seralzier to test profile obj, and post obj
                 # ex: post_serializer.errors?
-                profile_obj = Profile.objects.get(id=AUTHOR_ID)
+                profile = Profile.objects.get(id=AUTHOR_ID)
 
-                if (createComment(profile_obj, POST_ID, data["comment"], data["contentType"], data["published"])):
+                if (createComment(profile, POST_ID, data["comment"], data["contentType"], data["published"])):
 
                     return JsonResponse(serializer.data, status=201)
                 else:
@@ -326,6 +327,7 @@ def profile_obj(request, AUTHOR_ID):
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
     print("Origin: ", host_server)
+    print("Request origin: ", server_origin)
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
@@ -748,3 +750,43 @@ def inbox(request, AUTHOR_ID):
             print("Post inbox: ", post_inbox)
             serializer = PostInboxSerializer(post_inbox)
             return JsonResponse(serializer.data, status=200)
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def stream_obj(request, AUTHOR_ID):
+
+    # req_origin = request.META["Origin"]
+    server_origin = request.META.get("HTTP_X_SERVER")
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    print("author id: ", AUTHOR_ID)
+
+    if server_origin != host_server :
+        return likedRequest(request.method,server_origin, AUTHOR_ID)
+    else:
+        if request.method == 'GET':
+            try:
+                profile = Profile.objects.get(id=AUTHOR_ID)
+                all_author_posts = Post.objects.filter(author=profile)
+                all_following = Follower.objects.filter(items_id=profile.id)
+                posts_result = all_author_posts
+                for following in all_following:
+                    posts_result = posts_result | following.timeline.filter(visibility='public')
+            except:
+                posts_result = QueryDict()
+            # Get posts that's visible to the author
+            print("Post result:", posts_result)
+
+            pagination = PageNumberPagination()
+            paginated_results = pagination.paginate_queryset(posts_result, request)
+        
+            serializer = PostSerializer(paginated_results, many=True)
+        
+            data = {
+                'count': pagination.page.paginator.count,
+                'next': pagination.get_next_link(),
+                'previous': pagination.get_previous_link(),
+                'results': serializer.data,
+            }
+            return JsonResponse(data, safe=False)

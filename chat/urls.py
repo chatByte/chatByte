@@ -17,8 +17,10 @@ urlpatterns = [
 
 
     # show info => get request, views.public_channel originally called feed, and able to comment
-    path(r"author/<str:AUTHOR_ID>/stream/", views.stream, name="stream"),
+    path(r"author/<str:AUTHOR_ID>/my_stream/", views.stream, name="my_stream"),
     path(r"author/<str:AUTHOR_ID>/public_channel/<str:FOREIGN_ID>/", views.friend_public_channel, name="public_channel"),
+
+    path(r"author/<str:AUTHOR_ID>/stream/", api.stream_obj, name="stream"),
 
 
     # handle delete
