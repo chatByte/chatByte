@@ -214,9 +214,10 @@
                         {% endif %}
 
                         <div class="edit">
-                          <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button>
-                          <a href="/chat/feed/edit{{ cur_post.ID }}/" class="editBtn">Edit</a>
-                          <button id="{{ cur_post.ID }}" class="btn-primary-sm" onclick="deletePost( '{{ cur_post.id }}' )">Delete</button></div>
+                          <!-- <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button> -->
+                          <button id="submitBtn" class="submitBtn btn-primary-sm" style="display: none" onclick="editPost( '{{ cur_post.id }}' )">Submit</button>
+                          <a href="/chat/feed/edit{{ cur_post.id }}/" class="editBtn">Edit</a>
+                          <button id="{{ cur_post.id }}" class="btn-primary-sm" onclick="deletePost( '{{ cur_post.id }}' )">Delete</button></div>
 
                       </div>
 

@@ -178,7 +178,7 @@ def updatePost(id, title, source, origin, description, content_type, content, ca
     # Please authenticate before calling this method
     try:
         post = Post.objects.get(id=id)
-        # print("old title:", post.title)
+        print("old id:", id)
         post.title = title
 
         post.source = source

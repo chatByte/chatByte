@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
+from .signals import host
 
 
 from .form import *
@@ -176,7 +177,6 @@ def posts(request, AUTHOR_ID):
     elif request.method == "POST":
 
         request_post = request.POST
-
         source = cur_user_name # Who share it to me
         origin = cur_user_name # who origin create
         title = request_post.get("title", "")
@@ -396,3 +396,44 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
         return HttpResponse(status=200)
     except BaseException as e:
         return HttpResponse(status=401)
+
+
+@login_required
+@require_http_methods(["POST"])
+def update_post(request, AUTHOR_ID, POST_ID):
+    print('edited arguemnt POST_ID', str(POST_ID))
+    id = host + 'author/' + str(AUTHOR_ID) + '/posts/' + str(POST_ID)
+    print("edited post id:", id)
+    user = None
+    username=""
+    if request.user.is_authenticated:
+        user = request.user
+        username = request.user.profile.displayName
+
+    post = getPost(POST_ID)
+    request_post = request.POST
+    source = username # Who share it to me
+    origin = username # who origin create
+    title = request_post.get("title", "")
+    description = request_post.get("description", "")
+    content_type = request_post.get("contentType", "")
+    visibility = request_post.get("visibility", "")
+    f = request.FILES.get("file", "")
+    categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
+    if len(f) > 0:
+        categories = "image/" + os.path.splitext(f.name)[-1][1:]
+        with f.open("rb") as image_file:
+            content = base64.b64encode(image_file.read())
+    else:
+        content = description
+
+    updateFlag = updatePost(id, title, source, origin, description, content_type, content, categories, visibility)
+    if updateFlag:
+        print("Successful edited post, info: ", description)
+        response = HttpResponse(status=200)
+        return response
+    else:
+        print("failed to edit the post!!", description)
+    
+    response = redirect("/author/" + str(user.id) + "/my_posts/")
+    return response

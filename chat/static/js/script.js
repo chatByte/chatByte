@@ -37,6 +37,7 @@ $(window).on('load', function() {
 
 // check if new friend request
 function ifFriendRequest(){
+  var x_server = window.location.origin
   $.ajax({
     url : url_header + "ifFriendRequest/", // the endpoint
     // header
