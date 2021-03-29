@@ -38,12 +38,13 @@ function getCookie(name) {
 
 function deletePost(id){
   console.log(id);
-  var url = "../posts/"+id+"/";
+  var post_id = id.split('posts/')[1] 
+  var url = "../posts/"+post_id+"/";
   console.log(url);
   var csrftoken = getCookie('csrftoken');
   console.log(csrftoken);
   $.ajax({
-        url : "../posts/"+id+"/", // the endpoint
+        url :url, // the endpoint
         type : "DELETE", // http method
         dataType: 'text', // what to expect back from the server
         cache: false,
