@@ -15,8 +15,8 @@ def update_profile_signal(sender, instance, created, **kwargs):
             instance.profile
         except:
             liked = Liked.objects.create()
-            follower = Follower.objects.create()
-            Profile.objects.create(user=instance,liked=liked, follower=follower)
+            followers = Follower.objects.create()
+            Profile.objects.create(user=instance,liked=liked, followers=followers)
         try:
             instance.inbox
         except:

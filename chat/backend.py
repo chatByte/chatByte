@@ -44,13 +44,14 @@ def addFriend(usr_id, friend_id):
         user = User.objects.get(id=usr_id)
         friend = User.objects.get(id=friend_id)
         # mutual friend
-        user.profile.friends.add(friend)
-        friend.profile.friends.add(user)
+        user.profile.friends.add(friend.profile)
+        friend.profile.friends.add(user.profile)
         # mutual followers
-        user.profile.followers.add(friend)
-        friend.profile.followers.add(user)
+        user.profile.followers.add(friend.profile)
+        friend.profile.followers.add(user.profile)
 
         user.save()
+        friend.save()
         return True
     except BaseException as e:
         print(e)
@@ -60,7 +61,7 @@ def deleteFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
         friend = User.objects.get(id=friend_id)
-        user.profile.friends.remove(friend)
+        user.profile.friends.remove(friend.profile)
         user.save()
         return True
     except BaseException as e:
@@ -71,7 +72,7 @@ def getFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
         friend = User.objects.get(id=friend_id)
-        if friend in user.profile.friends.all(): return friend
+        if friend.profile in user.profile.friends.all(): return friend
         return None
     except BaseException as e:
         print(e)
