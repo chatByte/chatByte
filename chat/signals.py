@@ -43,7 +43,7 @@ def create_post_signal(sender, instance, created, **kwargs):
             id_temp = instance.id
             # change to new id and save the instance as a new object
             instance.id = str(instance.author.id) + "/posts/" + str(instance.id)
-            instance.comment_url = instance.id + "/comments/"
+            instance.comments_url = instance.id + '/comments/'
             instance.save()
             # # remove the old instance
             old_instance = Post.objects.get(pk=id_temp)

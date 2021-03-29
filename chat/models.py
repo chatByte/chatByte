@@ -60,7 +60,7 @@ class Post(models.Model):
     categories = models.CharField(max_length=200)
     count = models.IntegerField()
     size = models.IntegerField()
-    comment_url = models.CharField(max_length=200)
+    comments_url = models.CharField(max_length=200)
     comments = models.ManyToManyField('Comment', blank=True)
     published = models.DateTimeField(default=django.utils.timezone.now)
     visibility = models.CharField(max_length=50)
