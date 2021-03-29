@@ -253,10 +253,7 @@ def posts(request, AUTHOR_ID):
         createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
         if createFlag:
             print("haha, successful create post, info: ", description)
-
-            # response = redirect("/author/"+ str(AUTHOR_ID) + "/public_channel/")
             response = HttpResponse(status=200)
-
             return response
         else:
             print("server feels sad ", description)
