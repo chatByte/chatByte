@@ -425,7 +425,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
             profile.followers.remove(follower)
             return JsonResponse({}, status=200)
 
-        return JsonResponse(serializer.errors, status=400)
+        return JsonResponse({}, status=400)
 
 
 

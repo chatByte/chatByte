@@ -37,15 +37,15 @@ $.ajax({
         }),
 
 
-        // handle a successful response
-        success : function(json) {
+        success: function(json) {
             console.log("success"); // sanity check
-
+            console.log("haha");
             console.log(json);
+            var url = json["url"];
 
 
-            location.reload();
-        },
+            window.location.replace(url);
+        }, 
       }); 
 
 } 
