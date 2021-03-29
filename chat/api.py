@@ -102,7 +102,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
     print(request.META)
-    user_origin = request.META["HTTP_X-SERVER"]
+    user_origin = request.META["HTTP_X_SERVER"]
     print(user_origin)
 
     if user_origin != host_server :

@@ -51,7 +51,7 @@ function deletePost(id){
         type : "DELETE", // http method
         dataType: 'text', // what to expect back from the server
         cache: false,
-        headers: {"X-Server": x_server},
+        headers: {"X-Server": "123"},
         contentType: false,
         processData: false,
         beforeSend: function(xhr) {
