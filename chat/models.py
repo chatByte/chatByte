@@ -58,7 +58,7 @@ class Post(models.Model):
     content = models.TextField()
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
     categories = models.CharField(max_length=200)
-    count = models.IntegerField()
+    count = models.IntegerField(default=0)
     size = models.IntegerField()
     comments_url = models.CharField(max_length=200)
     comments = models.ManyToManyField('Comment', blank=True)
