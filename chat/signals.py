@@ -3,9 +3,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
-from .models import Comment, Post, Profile, Inbox, PostInbox, Liked
+from .models import Comment, Post, Profile, Inbox, PostInbox, Liked, Follower
 
-host = "https://chatbyte.herokuapp.com/"
+host = "http://127.0.0.1:8000/"
 
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):
@@ -15,7 +15,8 @@ def update_profile_signal(sender, instance, created, **kwargs):
             instance.profile
         except:
             liked = Liked.objects.create()
-            Profile.objects.create(user=instance,liked=liked)
+            followers = Follower.objects.create()
+            Profile.objects.create(user=instance,liked=liked, followers=followers)
         try:
             instance.inbox
         except:
@@ -43,6 +44,7 @@ def create_post_signal(sender, instance, created, **kwargs):
             id_temp = instance.id
             # change to new id and save the instance as a new object
             instance.id = str(instance.author.id) + "/posts/" + str(instance.id)
+            instance.comments_url = instance.id + '/comments/'
             instance.save()
             # # remove the old instance
             old_instance = Post.objects.get(pk=id_temp)

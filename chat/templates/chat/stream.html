@@ -145,9 +145,9 @@
                   <div class="post-date">
 
                   </div><!--Post Date End-->
-                  {% if 'image/' in cur_post.CATEGORIES  %}
+                  {% if 'image/' in cur_post.categories  %}
                   {% load image_filter %}
-                  <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.CONTENT | bin_2_img }}"/>
+                  <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
                   <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
                   <div class="post-container">

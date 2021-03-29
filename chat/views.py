@@ -74,7 +74,7 @@ def stream(request, AUTHOR_ID):
     followings = cur_author.profile.followings.all()
 
     # merging quesryset
-    public_channel_posts = mytimeline 
+    public_channel_posts = mytimeline
 
     for following_profile in followings:
 
@@ -148,8 +148,8 @@ def posts(request, AUTHOR_ID):
     if request.user.is_authenticated:
         cur_user_name = request.user.username
     cur_author = request.user.profile
-    alltimeline = cur_author.timeline.all() 
-    #getTimeline(cur_user_name), by SQL query 
+    alltimeline = cur_author.timeline.all()
+    #getTimeline(cur_user_name), by SQL query
     mytimeline = alltimeline.filter(author=cur_author).order_by('published')
 
 
@@ -201,7 +201,6 @@ def posts(request, AUTHOR_ID):
 
             # response = redirect("/author/"+ str(AUTHOR_ID) + "/public_channel/")
             response = HttpResponse(status=200)
-
             return response
         else:
             print("server feels sad ", description)

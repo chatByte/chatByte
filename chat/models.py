@@ -22,7 +22,7 @@ class Profile(models.Model):
     # a group of author, that i accepted to be my friend
     friends = models.ManyToManyField("Profile", related_name='%(class)s_friends', blank=True)
     # a group of author, that  followed me
-    followers = models.ManyToManyField("Profile", related_name='%(class)s_followers', blank=True)
+    followers = models.OneToOneField("Follower", on_delete=models.CASCADE, blank=True)
     # a group of author, that i am currently following
     followings = models.ManyToManyField("Profile", related_name='%(class)s_followings', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
@@ -31,7 +31,7 @@ class Profile(models.Model):
     # the friend request i snet
     friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
     # the iteams, that i currenly liked
-    liked = models.OneToOneField('Liked', on_delete=models.CASCADE, blank=True) 
+    liked = models.OneToOneField('Liked', on_delete=models.CASCADE, blank=True)
 
     def __unicode__(self): # for Python 2
         return self.user.username
@@ -68,9 +68,9 @@ class Post(models.Model):
     # the author has an ID where by authors can be disambiguated
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
     categories = models.CharField(max_length=200)
-    count = models.IntegerField()
-    size = models.IntegerField()
-    commentsPage = models.CharField(max_length=200)
+    count = models.IntegerField(default=0)
+    size = models.IntegerField(default=0)
+    comments_url = models.CharField(max_length=200)
     comments = models.ManyToManyField('Comment', blank=True)
     # published date
     published = models.DateTimeField(default=django.utils.timezone.now)
@@ -123,4 +123,4 @@ class Like(models.Model):
 class Liked(models.Model):
     type = models.CharField(max_length=200, default="liked")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-    items = models.ManyToManyField('Like', blank=True) 
+    items = models.ManyToManyField('Like', blank=True)

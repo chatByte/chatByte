@@ -1,4 +1,3 @@
-
 from .models import Post, Comment, Profile, Follower, FriendRequest, Like, Liked
 import datetime
 from django.conf import settings
@@ -45,13 +44,14 @@ def addFriend(usr_id, friend_id):
         user = User.objects.get(id=usr_id)
         friend = User.objects.get(id=friend_id)
         # mutual friend
-        user.profile.friends.add(friend)
-        friend.profile.friends.add(user)
+        user.profile.friends.add(friend.profile)
+        friend.profile.friends.add(user.profile)
         # mutual followers
-        user.profile.followers.add(friend)
-        friend.profile.followers.add(user)
+        user.profile.followers.add(friend.profile)
+        friend.profile.followers.add(user.profile)
 
         user.save()
+        friend.save()
         return True
     except BaseException as e:
         print(e)
@@ -61,7 +61,7 @@ def deleteFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
         friend = User.objects.get(id=friend_id)
-        user.profile.friends.remove(friend)
+        user.profile.friends.remove(friend.profile)
         user.save()
         return True
     except BaseException as e:
@@ -72,7 +72,7 @@ def getFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
         friend = User.objects.get(id=friend_id)
-        if friend in user.profile.friends.all(): return friend
+        if friend.profile in user.profile.friends.all(): return friend
         return None
     except BaseException as e:
         print(e)
@@ -163,7 +163,7 @@ def createPost(title, source, origin, description, content_type, content, author
     # Please authenticate before calling this method
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
-            , categories=categories, count=0, size=0, commentsPage='0', visibility=visibility, author=author)
+            , categories=categories, count=0, size=0, comments_url=0, visibility=visibility, author=author)
         # print(post.author)
         author.timeline.add(post)
         author.save()
@@ -223,6 +223,8 @@ def createComment(author, post_id, comment, content_type, published=django.utils
         post = Post.objects.get(id=post_id)
         commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type, published=published, parent_post=post)
         post.comments.add(commentObj)
+        print("post_count:", post.count)
+        post.count += 1
         post.save()
         return True
     except BaseException as e:
