@@ -72,7 +72,7 @@ def stream(request, AUTHOR_ID):
     mytimeline = cur_author.profile.timeline.all()
     # a group of author, that i am currently following, django.db.models.query.QuerySet
     followings = cur_author.profile.followings.all()
-
+    
     # merging quesryset
     public_channel_posts = mytimeline
 
@@ -151,8 +151,6 @@ def posts(request, AUTHOR_ID):
     alltimeline = cur_author.timeline.all()
     #getTimeline(cur_user_name), by SQL query
     mytimeline = alltimeline.filter(author=cur_author).order_by('published')
-
-
 
     author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(cur_author.friend_requests.all())
