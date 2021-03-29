@@ -124,6 +124,7 @@ def signup(request):
 
 """
 Generate response at home page  => eveyones' post here
+path(r"author/<str:AUTHOR_ID>/public_channel/",
 """
 # get feed and
 # post: comment/like => send post request to host server(edit post function),
@@ -133,6 +134,7 @@ def home_public_channel(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
+    
     cur_author = request.user
     # a list of post
     mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)

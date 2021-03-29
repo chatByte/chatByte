@@ -24,7 +24,7 @@ class Profile(models.Model):
     # a group of author, that  followed me
     followers = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
     # a group of author, that i am currently following
-    followings = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
+    followings = models.ManyToManyField(User, related_name='%(class)s_followings', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
     # the friend request i received
     friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
