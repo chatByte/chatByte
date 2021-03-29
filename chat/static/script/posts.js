@@ -98,6 +98,7 @@ $( document ).ready(function() {
        } else {
          $("#contentType").find('i').attr("class", icon);
          contentType = id;
+
          // handle upload button
          if (id == "image"){
            $("#imageFile").attr("style", "display: block");
@@ -130,8 +131,11 @@ $( document ).ready(function() {
 
 
 
-    $('.submitBtn').click(function(e){
-      console.log(e);
+
+
+    // deal with submit edit button
+    // submit form data
+    $('#submitEdit').click(function(e){
 
       title = $('#title').val();
       description = $('#description').val();
@@ -151,6 +155,7 @@ $( document ).ready(function() {
       form_data.append("csrfmiddlewaretoken", csrftoken);
 
 
+
       $.ajax({
         url : ".", // the endpoint
         type : "POST", // http method
@@ -167,8 +172,25 @@ $( document ).ready(function() {
         },
       });
 
+      // $.ajax({
+      //   url : ".", // the endpoint
+      //   type : "DELETE", // http method
+      //   dataType: 'text', // what to expect back from the server
+      //   cache: false,
+      //   contentType: false,
+      //   processData: false,
+      //   data: form_data,
+
+      //   // handle a successful response
+      //   success : function(json) {
+      //       console.log("success"); // sanity check
+      //   },
+      // });
+
 
     });
+
+
 
 
 

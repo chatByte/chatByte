@@ -96,14 +96,15 @@ def post_obj(request, AUTHOR_ID, POST_ID):
 
 
     # ex. equest.META[Origin] == ("https:\\chatbyte"):
-    req_origin = request.META["Origin"] 
+    # req_origin = request.META["Origin"] 
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
+    user_origin = request.META["X-request-User"]
 
-    if req_origin != host_server :
-        return postRequest(request.method,req_origin, AUTHOR_ID, POST_ID)
+    if user_origin != host_server :
+        return postRequest(request.method,user_origin, AUTHOR_ID, POST_ID)
     else:
         if request.method == "DELETE":
             # remove the post
@@ -159,7 +160,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
 @permission_classes([IsAuthenticated])
 def posts_obj(request, AUTHOR_ID):
     # ex. equest.META[origin] == ("https:\\chatbyte"):
-    req_origin = request.META["Origin"] 
+    req_origin = request.META["Origin"]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
@@ -184,7 +185,7 @@ def posts_obj(request, AUTHOR_ID):
 
 
 '''
-Tetsing format: 
+Tetsing format:
 http://127.0.0.1:8000/chat/author/1/posts/3d93a8ea-3175-4e75-b1ae-03655c663b75/comments/
 
 {
@@ -202,7 +203,7 @@ http://127.0.0.1:8000/chat/author/1/posts/3d93a8ea-3175-4e75-b1ae-03655c663b75/c
     "published":"2015-03-09T13:07:04+00:00",
     "id":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments/f6255bb01c648fe967714d52a89e8e9c"
 }
-     
+
 '''
 
 @csrf_exempt
@@ -217,7 +218,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 
 
     # ex. equest.META[origin] == ("https:\\chatbyte"):
-    req_origin = request.META["Origin"] 
+    req_origin = request.META["Origin"]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
@@ -232,7 +233,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
         except Post.DoesNotExist:
             return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
         if request.method == 'GET':
-            # list obj contain a list of comment    
+            # list obj contain a list of comment
             comments = post.comments
             serializer = CommentSerializer(comments, many=True)
             return JsonResponse(serializer.data, safe=False)
@@ -262,11 +263,11 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
         # elif request.method == "DELETE":
         #     # TODO
         #     pass
-            
+
         return JsonResponse(serializer.errors, status=400)
 
 '''
-Tetsing format: 
+Tetsing format:
   "author":{
     "type":"author",
     "id":1,
@@ -286,7 +287,7 @@ def profile_obj(request, AUTHOR_ID):
     """
 
     # ex. equest.META[origin] == ("https:\\chatbyte"):
-    req_origin = request.META["Origin"] 
+    req_origin = request.META["Origin"]
     print("Origin: ", host_server)
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
@@ -334,7 +335,7 @@ URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 @api_view(['PUT', 'GET', 'DELETE'])
 def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     # ex. request.META[origin] == ("https:\\chatbyte"):
-    req_origin = request.META["Origin"] 
+    req_origin = request.META["Origin"]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     FOREIGN_AUTHOR_ID = host_server + "/posts/" + FOREIGN_AUTHOR_ID
@@ -353,7 +354,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
         if (request.method == "GET"):
             #reponse a follower
             try:
-                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)                
+                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
             except Post.DoesNotExist:
                 return JsonResponse({'status':'false','message':'FOREIGN_AUTHOR_ID: ' + FOREIGN_AUTHOR_ID + ' does not exists'}, status=404)
 
@@ -371,7 +372,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
                 return JsonResponse(serializer.data, status=200)
 
             try:
-                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)  
+                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
                 return JsonResponse({'detail': 'true'}, status=409)
 
 
@@ -478,7 +479,7 @@ def befriend(request, AUTHOR_ID):
         profile.friends.add(friend)
         profile.friends.save()
         return JsonResponse(data, status=200)
-    return JsonResponse(serializer.errors, status=400) 
+    return JsonResponse(serializer.errors, status=400)
 
 
 
@@ -547,7 +548,8 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
 @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def liked_post_obj(request, AUTHOR_ID):
-    req_origin = request.META["Origin"] 
+
+    req_origin = request.META["Origin"]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
@@ -566,7 +568,7 @@ def liked_post_obj(request, AUTHOR_ID):
 
         return JsonResponse(serializer.errors, status=400)
 
-@csrf_exempt 
+@csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET', 'DELETE'])
@@ -574,7 +576,13 @@ def inbox(request, AUTHOR_ID):
     # Inbox has a one-to-one relationship with User, and the User id is an integer, AUTHOR_ID
     # to avoid Reference problem , make a copy of AUTHOR_ID by creating a new string
     USER_ID = (AUTHOR_ID + '.')[:-1]
-    req_origin = request.META["Origin"] 
+
+    # add for test purpose
+    if not request.META.get("Origin"):
+        req_origin = host_server
+    #
+    else:
+        req_origin = request.META["Origin"]
     # Profile/AUTHOR ID is the full url
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
@@ -585,7 +593,9 @@ def inbox(request, AUTHOR_ID):
     else:
         if request.method == "POST":
             user = User.objects.get(pk=USER_ID)
-            data = JSONParser().parse(request)
+            # print(request.data)
+            # data = JSONParser().parse(request)
+            data = request.data
             print("User: ", user)
             print("Data: ", data)
             if data['type'] == "post":
@@ -603,25 +613,27 @@ def inbox(request, AUTHOR_ID):
                     user.profile.timeline.add(post)
                     user.profile.save()
                     return JsonResponse(data, status=200)
-                return JsonResponse(serializer.errors, status=400) 
+                return JsonResponse(serializer.errors, status=400)
             elif data['type'] == 'like':
                 print("Recieved a like inbox!")
                 post_url = data['object'].split("/")
                 # like post
-                if len(port_url) == 7:
+                if len(post_url) == 7:
                     print("Post url: ", post_url)
                     user_id = post_url[-3]
                     print("User id: ", user_id)
-                    post_id = post_url[-1]
+                    # post_id = post_url[-1]
+                    post_id = host_server + 'author/' + USER_ID + '/posts/' + post_url[-1]
                     print("Post id: ", post_id)
-                    if user_id != AUTHOR_ID:
+                    if user_id != USER_ID:
+                    # if user_id != AUTHOR_ID: # Now AUTHOR_ID is http://our-host-name/USER_ID
                         return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
                     serializer = LikeSerializer(data=data)
                     if serializer.is_valid(raise_exception=True):
                         try:
                             post = Post.objects.get(id=post_id)
                         except:
-                            return JsonResponse({"Error": "Post does not exist"}, status=404) 
+                            return JsonResponse({"Error": "Post does not exist"}, status=404)
                         like = serializer.save()
                         post.likes.add(like)
                         post.save()
@@ -632,16 +644,21 @@ def inbox(request, AUTHOR_ID):
                 #like comment
                 elif len(post_url) == 9:
                     user_id = post_url[4]
-                    post_id = post_url[6]
-                    comment_id = post_url[8]
-                    if user_id != AUTHOR_ID:
+                    # post_id = post_url[6]
+                    post_id = host_server + 'author/' + user_id + '/posts/' + post_url[6]
+
+                    # comment_id = post_url[8]
+                    comment_id = host_server + 'author/' + user_id + '/posts/' + post_url[6] + '/comments/' + post_url[8]
+
+                    # if user_id != AUTHOR_ID:
+                    if user_id != USER_ID:
                         return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
                     serializer = LikeSerializer(data=data)
                     if serializer.is_valid(raise_exception=True):
                         try:
                             comment = Comment.objects.get(id=comment_id)
                         except:
-                            return JsonResponse({"Error": "comment does not exist"}, status=404) 
+                            return JsonResponse({"Error": "comment does not exist"}, status=404)
                         like = serializer.save()
                         comment.likes.add(like)
                         comment.save()
@@ -656,10 +673,10 @@ def inbox(request, AUTHOR_ID):
                     user.inbox.friend_requests.add(friend_req)
                     user.inbox.save()
                     return JsonResponse(data, status=200)
-                return JsonResponse(serializer.errors, status=400) 
+                return JsonResponse(serializer.errors, status=400)
 
             else:
-                return JsonResponse({"Error": "Invalid inbox type"}, status=400) 
+                return JsonResponse({"Error": "Invalid inbox type"}, status=400)
 
         elif request.method == "DELETE":
             user = User.objects.get(pk=USER_ID)
@@ -678,4 +695,3 @@ def inbox(request, AUTHOR_ID):
             print("Post inbox: ", post_inbox)
             serializer = PostInboxSerializer(post_inbox)
             return JsonResponse(serializer.data, status=200)
-

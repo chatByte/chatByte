@@ -3,9 +3,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
-from .models import Comment, Post, Profile, Inbox, PostInbox
+from .models import Comment, Post, Profile, Inbox, PostInbox, Liked
 
-host = "http://localhost:8000/"
+host = "https://chatbyte.herokuapp.com/"
 
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):
@@ -14,7 +14,8 @@ def update_profile_signal(sender, instance, created, **kwargs):
         try:
             instance.profile
         except:
-            Profile.objects.create(user=instance,)
+            liked = Liked.objects.create()
+            Profile.objects.create(user=instance,liked=liked)
         try:
             instance.inbox
         except:
@@ -22,12 +23,12 @@ def update_profile_signal(sender, instance, created, **kwargs):
             inbox.post_inbox = PostInbox.objects.create()
         Token.objects.create(user=instance)
         
-    instance.profile.displayName = instance.username
-    instance.profile.id = host + "author/" + str(instance.id)
-    instance.profile.save()
-    instance.inbox.post_inbox.author = instance.id
-    instance.inbox.post_inbox.save()
-    instance.inbox.save()
+        instance.profile.displayName = instance.username
+        instance.profile.id = host + "author/" + str(instance.id)
+        instance.profile.save()
+        instance.inbox.post_inbox.author = instance.id
+        instance.inbox.post_inbox.save()
+        instance.inbox.save()
 
 @receiver(post_save, sender=Post)
 def create_post_signal(sender, instance, created, **kwargs):

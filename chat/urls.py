@@ -10,7 +10,7 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/", api.profile_obj, name="profile_obj"),
 
     path(r"author/<str:AUTHOR_ID>/my_posts/", views.posts, name="make_posts"),
-    # 
+    #
     path(r'author/<str:AUTHOR_ID>/posts/',api.posts_obj, name='make_posts_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',api.post_obj, name='make_post_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/',api.comment_list_obj, name='comment_list_obj'),
@@ -31,7 +31,8 @@ urlpatterns = [
     # path(r"feed/edit/", views.edit_in_feed, name="edit_in_feed"),
 
     path(r"author/<str:AUTHOR_ID>/my_friends/", views.my_friends, name="my_friends"),
-
+    # check if new friend request
+    path("ifFriendRequest/", views.if_friend_request, name="if_friend_request"),
     # show friend list
     path(r"author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", views.delete_friend, name="friend_delete"),
 
@@ -62,7 +63,7 @@ urlpatterns = [
     #TODO ---------------------------------- ----------------------------------------------------------------
     path("author/<str:AUTHOR_ID>/befriend/", api.befriend, name="befriend"),
 
-    # friends: GET 
+    # friends: GET
     #(get all friends of author)
     path("author/<str:AUTHOR_ID>/friends/", api.get_friends_obj, name = "get_friends"),
 
@@ -70,7 +71,7 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
     path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="likes_post"),
 
-    # # Get likes for a Comment 
+    # # Get likes for a Comment
     path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
 
 
