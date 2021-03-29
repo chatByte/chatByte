@@ -219,7 +219,7 @@ class AccountTests(APITestCase):
                                         categories='',
                                         count=0,
                                         size=0,
-                                        commentsPage='0',
+                                        comments_url='0',
                                         visibility='public')
         self.post_id = 3
         self.comment = Comment.objects.create(id="5", 
@@ -302,7 +302,7 @@ class AccountTests(APITestCase):
             "categories": "text/plain",
             "count": 1,
             "size": 1,
-            "commentsPage": "1",
+            "comments_url": "1",
             "comments": [],
             "published": "2021-03-26T19:04:53Z",
             "visibility": "public",
