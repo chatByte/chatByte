@@ -20,11 +20,11 @@ class Profile(models.Model):
     github = models.URLField(max_length=200, null=True)
 
     # a group of author, that i accepted to be my friend
-    friends = models.ManyToManyField(User, related_name='%(class)s_friends', blank=True)
+    friends = models.ManyToManyField("Profile", related_name='%(class)s_friends', blank=True)
     # a group of author, that  followed me
-    followers = models.ManyToManyField(User, related_name='%(class)s_followers', blank=True)
+    followers = models.OneToOneField("Follower", on_delete=models.CASCADE, blank=True)
     # a group of author, that i am currently following
-    followings = models.ManyToManyField(User, related_name='%(class)s_followings', blank=True)
+    followings = models.ManyToManyField("Profile", related_name='%(class)s_followings', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
     # the friend request i received
     friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
@@ -58,17 +58,21 @@ class Post(models.Model):
     type = models.CharField(max_length=200, default="post")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     title = models.TextField()
+    # where did you get this post from?
     source = models.URLField(max_length=200)
+    # where is it actually from
     origin = models.URLField(max_length=200)
     description = models.TextField()
     contentType = models.CharField(max_length=200)
     content = models.TextField()
+    # the author has an ID where by authors can be disambiguated
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
     categories = models.CharField(max_length=200)
-    count = models.IntegerField()
-    size = models.IntegerField()
-    commentsPage = models.CharField(max_length=200)
+    count = models.IntegerField(default=0)
+    size = models.IntegerField(default=0)
+    comments_url = models.CharField(max_length=200)
     comments = models.ManyToManyField('Comment', blank=True)
+    # published date
     published = models.DateTimeField(default=django.utils.timezone.now)
     visibility = models.CharField(max_length=50)
     unlisted = models.CharField(max_length=50, default='false', editable=False)
@@ -87,6 +91,7 @@ class Inbox(models.Model):
     friend_requests = models.ManyToManyField('FriendRequest', blank=True)
 
 class Follower(models.Model):
+    # get a list of authors who are their followers
     type = models.CharField(max_length=200, default="followers")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     # Here items are Authors , which is Profiles

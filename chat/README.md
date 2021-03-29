@@ -9,7 +9,7 @@ Very useful commands in case encounter running problem:
 Delete DB
 	mongo
 	show dbs
-	use dbName
+	use <dbName_currenlty using>
 	db.dropDatabase()
 
 
