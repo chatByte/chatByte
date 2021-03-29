@@ -83,7 +83,7 @@ def stream(request, AUTHOR_ID):
         public_channel_posts = public_channel_posts | public_posts
 
 
-    author_num_follwers = len(cur_author.profile.followers.all())
+    author_num_follwers = len(cur_author.profile.followers.items.all())
     friend_request_num = len(cur_author.profile.friend_requests.all())
     # order by date
     public_channel_posts = public_channel_posts.order_by('published')
@@ -117,7 +117,7 @@ def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
     # a list of post
     mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
 
-    author_num_follwers = len(cur_author.profile.followers.all())
+    author_num_follwers = len(cur_author.profile.followers.items.all())
     friend_request_num = len(cur_author.profile.friend_requests.all())
 
     dynamic_contain = {
@@ -154,7 +154,7 @@ def posts(request, AUTHOR_ID):
 
 
 
-    author_num_follwers = len(cur_author.followers.all())
+    author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(cur_author.friend_requests.all())
 
     dynamic_contain = {
@@ -308,7 +308,7 @@ def my_friends(request,AUTHOR_ID):
 
     print(friend_list)
     cur_author = request.user.profile
-    author_num_follwers = len(cur_author.followers.all())
+    author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(cur_author.friend_requests.all())
     dynamic_contain = {
         'myName' : cur_author.displayName,
