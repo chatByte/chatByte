@@ -21,6 +21,12 @@ urlpatterns = [
     path(r"author/<str:AUTHOR_ID>/public_channel/<str:FOREIGN_ID>/", views.friend_public_channel, name="public_channel"),
 
 
+        # get search bar
+    path(r"author/<str:AUTHOR_ID>/search/", views.search, name="search"),
+
+
+
+    
     # handle delete
     path("home/delete<str:ID>/", views.delete, name="delete"),
     # path("feed/delete<str:ID>/", views.delete_in_feed, name="delete_post_in_feed"),
@@ -73,6 +79,7 @@ urlpatterns = [
 
     # # Get likes for a Comment
     path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
+
 
 
 

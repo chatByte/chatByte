@@ -394,3 +394,21 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
         return HttpResponse(status=200)
     except BaseException as e:
         return HttpResponse(status=401)
+
+
+@require_http_methods(["POST"])
+@login_required
+def search(request, AUTHOR_ID):
+    server_origin = request.META["HTTP_X_SERVER"]
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    data = JSONParser().parse(request)
+    try:
+        target_id = data["url"]
+    except:
+        return JsonResponse({}, status=409)
+    try:
+        target = Profile.objects.get(id=target_id)
+        serializer = ProfileSerializer(target)
+        return JsonResponse(serializer.data, status=201)
+    except Profile.DoesNotExist:
+        return profileRequest("GET", server_origin, target_id) 

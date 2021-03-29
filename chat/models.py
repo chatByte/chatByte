@@ -33,6 +33,7 @@ class Profile(models.Model):
     # the iteams, that i currenly liked
     liked = models.OneToOneField('Liked', on_delete=models.CASCADE, blank=True)
 
+
     def __unicode__(self): # for Python 2
         return self.user.username
 
