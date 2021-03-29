@@ -95,8 +95,10 @@ Testing method
 def post_obj(request, AUTHOR_ID, POST_ID):
     # ex. equest.META[Origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"] 
+    USER_ID = (AUTHOR_ID + '.')[:-1]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
+    USER_POST_ID = POST_ID
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
 
     print("post id: ", POST_ID)
@@ -105,7 +107,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
     print(server_origin)
 
     if server_origin != host_server :
-        return postRequest(request.method,server_origin, AUTHOR_ID, POST_ID)
+        return postRequest(request.method,server_origin, USER_ID, USER_POST_ID)
     else:
         if request.method == "DELETE":
             # remove the post
@@ -163,12 +165,13 @@ def post_obj(request, AUTHOR_ID, POST_ID):
 def posts_obj(request, AUTHOR_ID):
     # ex. equest.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
+    USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META["HTTP_X_SERVER"]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
     if server_origin != host_server :
-        return postsRequest(request.method,server_origin, AUTHOR_ID)
+        return postsRequest(request.method,server_origin, USER_ID)
     else:
         if request.method == 'GET':
             profile = Profile.objects.get(id=AUTHOR_ID)
@@ -234,14 +237,16 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 
     # ex. equest.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
+    USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META["HTTP_X_SERVER"]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
+    USER_POST_ID = POST_ID
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
 
     if server_origin != host_server :
-        return commentRequest(request.method,server_origin, AUTHOR_ID, POST_ID)
+        return commentRequest(request.method,server_origin, USER_ID, USER_POST_ID)
     else:
         # checking, comments' father exist or not
         try:
@@ -318,6 +323,7 @@ def profile_obj(request, AUTHOR_ID):
 
     # ex. equest.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
+    USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META["HTTP_X_SERVER"]
     print("Origin: ", host_server)
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -325,7 +331,7 @@ def profile_obj(request, AUTHOR_ID):
 
     if server_origin != host_server :
         print("origin is different, going to remote...")
-        return profileRequest(request.method,server_origin, AUTHOR_ID)
+        return profileRequest(request.method,server_origin, USER_ID)
     else:
         try:
             profile = Profile.objects.get(id=AUTHOR_ID)
@@ -367,9 +373,11 @@ URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     # ex. request.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
+    USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META["HTTP_X_SERVER"]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
+    FOREIGN_USER_ID = FOREIGN_AUTHOR_ID
     FOREIGN_AUTHOR_ID = host_server + "/posts/" + FOREIGN_AUTHOR_ID
     print("post id: ", FOREIGN_AUTHOR_ID)
 
@@ -379,7 +387,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
         pass
 
     if server_origin != host_server :
-        return followerRequest(request.method,server_origin, AUTHOR_ID, FOREIGN_AUTHOR_ID)
+        return followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID)
     else:
         # can be optimized
         try:
