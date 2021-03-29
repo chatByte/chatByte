@@ -158,7 +158,7 @@ $( document ).ready(function() {
       form_data.append("title", title);
       form_data.append("description", description);
       form_data.append("csrfmiddlewaretoken", csrftoken);
-
+      var x_server = window.location.origin
 
 
       $.ajax({
@@ -229,6 +229,7 @@ $( document ).ready(function() {
       form_data.append("title", title);
       form_data.append("description", description);
       form_data.append("csrfmiddlewaretoken", csrftoken);
+      var x_server = window.location.origin
 
       console.log("description");
       $.ajax({
