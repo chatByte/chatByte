@@ -367,7 +367,14 @@ URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     # ex. request.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
-    server_origin = request.META["HTTP_X_SERVER"]
+
+    # headers: {"X-Server": window.location.origin},
+
+    # server_origin = request.META["HTTP_X_SERVER"]
+    server_origin = request.META["X-Server"]
+
+
+
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     try:

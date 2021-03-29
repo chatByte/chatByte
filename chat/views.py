@@ -5,13 +5,15 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
-
+from .signals import host as host_server
+from rest_framework.parsers import JSONParser
 
 from .form import *
 from .backend import *
 import base64
 import os
 import json
+from .remoteProxy import *
 
 
 
@@ -401,12 +403,14 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
 def search(request, AUTHOR_ID):
     server_origin = request.META["HTTP_X_SERVER"]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    data = JSONParser().parse(request)
-    print("...........................???")
 
+    print("...........................???.....")
+   
+    data = JSONParser().parse(request)
 
     try:
         target_id = data["url"]
+        print(target_id)
     except:
         return JsonResponse({}, status=409)
     try:

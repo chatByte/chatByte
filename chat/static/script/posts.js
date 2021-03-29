@@ -16,27 +16,34 @@ function search(){
   console.log(id);
 
 
-  $.ajax({
+$.ajax({
         url : "../search/", // the endpoint
         type : "POST", // http method
         dataType: 'text', // what to expect back from the server
         cache: false,
-        headers: {"X-Server": x_server},
-        contentType: false,
+        headers: {"X-Server": window.location.origin},
+        contentType: "application/json",
         processData: false,
         beforeSend: function(xhr) {
+          console.log("why");
           xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
           xhr.setRequestHeader("X-Request-User", id);
         },
 
-        data: {"url": id},
+
+
+        data: JSON.stringify({
+            url: id,
+        }),
+
 
         // handle a successful response
         success : function(json) {
             console.log("success"); // sanity check
             location.reload();
         },
-      });
+      }); 
+
 } 
       // title = $('#title').val();
       // description = $('#description').val();
