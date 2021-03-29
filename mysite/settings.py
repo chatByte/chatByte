@@ -144,5 +144,5 @@ REST_FRAMEWORK = {
 }
 
 # # LOGIN_REDIRECT_URL = '/chat/home'
-# LOGIN_REDIRECT_URL = '/chat/'
+LOGIN_REDIRECT_URL = '/'
 django_on_heroku.settings(locals())
