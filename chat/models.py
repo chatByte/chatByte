@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 #     # for authorization only
 #     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
 #     USERNAME = models.CharField(max_length=50, unique=True)
-#     PASSWORD = models.CharField(max_length=50)
 
 
 class Profile(models.Model):
@@ -25,7 +24,7 @@ class Profile(models.Model):
     timeline = models.ManyToManyField("Post", blank=True)
     friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
     friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
-
+    liked = models.OneToOneField('Liked', on_delete=models.CASCADE, blank=True) 
 
     def __unicode__(self): # for Python 2
         return self.user.username
@@ -37,13 +36,14 @@ class Comment(models.Model):
     type = models.CharField(max_length=200, default="comment")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
 
-    author = models.OneToOneField('Profile', on_delete=models.CASCADE,)
+    author = models.ForeignKey('Profile', on_delete=models.CASCADE,)
 
     comment = models.TextField()
     contentType = models.CharField(max_length=200)
     published = models.DateTimeField(default=django.utils.timezone.now)
+    likes = models.ManyToManyField('Like', blank=True)
     # # the father of Comeent is POST
-    # post_id = models.ForeignKey("Post", on_delete= models.CASCADE)
+    parent_post = models.ForeignKey("Post", on_delete= models.CASCADE)
 
 
 
@@ -75,13 +75,14 @@ class PostInbox(models.Model):
 
 class Inbox(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    post_inbox = models.OneToOneField('PostInbox', on_delete=models.CASCADE)
+    post_inbox = models.OneToOneField('PostInbox', on_delete=models.CASCADE, null=True, blank=True)
     like_inbox = models.ManyToManyField('Like', blank=True)
     friend_requests = models.ManyToManyField('FriendRequest', blank=True)
 
-class Followers(models.Model):
+class Follower(models.Model):
     type = models.CharField(max_length=200, default="followers")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
+    # Here items are Authors , which is Profiles
     items = models.ManyToManyField('Profile', related_name='%(class)s_followers_items', blank=True)
 
 class FriendRequest(models.Model):
@@ -110,4 +111,4 @@ class Like(models.Model):
 class Liked(models.Model):
     type = models.CharField(max_length=200, default="liked")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-    items = models.ManyToManyField('Like', blank=True)
+    items = models.ManyToManyField('Like', blank=True) 

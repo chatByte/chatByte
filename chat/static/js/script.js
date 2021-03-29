@@ -2,7 +2,7 @@
 'use strict'
 var url      = window.location.href;
 var new_url = url.split('/');
-var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/chat/';
+var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
 console.log(url_header)
 
 var request_id_list = [];
@@ -35,7 +35,7 @@ $(window).on('load', function() {
     hidePreloader();
 });
 
-
+// check if new friend request
 function ifFriendRequest(){
   $.ajax({
     url : url_header + "ifFriendRequest/", // the endpoint
@@ -71,6 +71,7 @@ function ifFriendRequest(){
 jQuery(document).ready(function($) {
   const csrftoken = getCookie('csrftoken');
 
+  // handle follow a person (send friend request)
   $('body').on('click', '.follow',function(){
 
     $(this).text("Friend Request Sent");
@@ -90,6 +91,7 @@ jQuery(document).ready(function($) {
     });
   });
 
+  // handle unfollow a friend
   $('body').on('click', '.unfollow',function(){
 
     $(this).text("Follow");
@@ -110,7 +112,7 @@ jQuery(document).ready(function($) {
   });
 
 
-
+  // handle accept of friend request
   $('body').on('click', '.accept', function(){
     var request_id = $(this).parent('li').find('a').attr('id');
     console.log(request_id);
@@ -137,6 +139,7 @@ jQuery(document).ready(function($) {
     });
   });
 
+  // handle reject of friend request
   $('body').on('click', '.reject', function(){
     var request_id = $(this).parent('li').find('a').attr('id');
     console.log(request_id);
@@ -161,6 +164,84 @@ jQuery(document).ready(function($) {
           console.log(data); // sanity check
       },
     });
+  });
+
+
+  // like a post
+  $('body').on('click', '.like', function(){
+    // alert("liked")
+    var like_num = $(this).parent('a').text();
+    if(!like_num) {
+      $(this).text(1);
+    } else {
+      $(this).text(parseInt(like_num) + 1);
+    }
+
+    var post_id = $(this).closest('.post-content').attr('id');
+
+    var data = {type: "like",
+                object: post_id,
+                csrfmiddlewaretoken: csrftoken
+                // summary:"someone liked someone's post"
+                // context:
+                }
+    // console.log(window.location.origin+'/author/'+ new_url[5].toString() +'/inbox/')
+    $.ajax({
+      // author/<str:AUTHOR_ID>/inbox/
+      type: "POST", // http method
+      url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
+      contentType: 'application/json; charset=utf-8',
+      dataType: "json",
+      headers:{
+                    "X-CSRFToken": csrftoken,
+                    "Origin": window.location.origin
+                },
+      data: JSON.stringify(data),
+      // handle a successful response
+      success : function(data) {
+          console.log(data); // sanity check
+      },
+    });
+
+  });
+
+
+  //like a comment
+  $('body').on('click', '.comment-like', function(){
+    var like_num = $(this).parent('a').text();
+    if(!like_num) {
+      $(this).text(1);
+    } else {
+      $(this).text(parseInt(like_num) + 1);
+    }
+
+    var comment_id = $(this).closest('.post-comment').attr('id');
+
+    var data = {type: "like",
+                object: comment_id,
+                csrfmiddlewaretoken: csrftoken,
+                // summary:"someone liked someone's post"
+                // context:
+                }
+
+    $.ajax({
+      // author/<str:AUTHOR_ID>/inbox/
+      url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
+      type: "POST", // http method
+      contentType: 'application/json; charset=utf-8',
+      dataType: "json",
+      data: {type: "Like",
+                  object: comment_id,
+                  csrfmiddlewaretoken: csrftoken,
+                  // summary:"someone liked someone's post"
+                  // context:
+                },
+      // handle a successful response
+      success : function(data) {
+          console.log(data); // sanity check
+      },
+    });
+
   });
 
   setInterval(ifFriendRequest, 5000);
