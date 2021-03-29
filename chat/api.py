@@ -173,7 +173,10 @@ def posts_obj(request, AUTHOR_ID):
             profile = Profile.objects.get(id=AUTHOR_ID)
             posts = profile.timeline
             serializer = PostSerializer(posts, many=True)
-            return JsonResponse(serializer.data, safe=False)
+            # pagination
+            customPagination = PostCustomPagination()
+            # return JsonResponse(serializer.data, safe=False)
+            return customPagination.get_paginated_response(serializer.data)
         elif request.method == 'POST':
             data = JSONParser().parse(request)
             serializer = PostSerializer(data=data)
@@ -238,7 +241,11 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             # list obj contain a list of comment
             comments = post.comments
             serializer = CommentSerializer(comments, many=True)
-            return JsonResponse(serializer.data, safe=False)
+
+            # pagination
+            customPagination = CommentCustomPagination()
+            # return JsonResponse(serializer.data, safe=False)
+            return customPagination.get_paginated_response(serializer.data)
 
         elif request.method == 'POST':
             # cretate comment
@@ -300,7 +307,7 @@ def profile_obj(request, AUTHOR_ID):
     else:
         try:
             profile = Profile.objects.get(id=AUTHOR_ID)
-        except profile.DoesNotExist:
+        except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
         # query to database
@@ -349,7 +356,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
         # can be optimized
         try:
             profile = Profile.objects.get(user_id=AUTHOR_ID)
-        except profile.DoesNotExist:
+        except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
 

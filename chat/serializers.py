@@ -1,4 +1,5 @@
-from rest_framework import serializers
+from rest_framework import serializers, pagination
+from django.http import JsonResponse
 from .models import *
 
 
@@ -152,3 +153,21 @@ class LikedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Liked
         fields = ['type', 'items']
+
+class CommentCustomPagination(pagination.PageNumberPagination):
+    def get_paginated_response(self, data):
+        return JsonResponse({
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'count': self.page.paginator.count,
+            'comments': data
+        }, safe=False)
+
+class PostCustomPagination(pagination.PageNumberPagination):
+    def get_paginated_response(self, data):
+        return JsonResponse({
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'count': self.page.paginator.count,
+            'posts': data
+        }, safe=False)
