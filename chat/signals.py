@@ -29,7 +29,6 @@ def update_profile_signal(sender, instance, created, **kwargs):
         instance.inbox.post_inbox.author = instance.id
         instance.inbox.post_inbox.save()
         instance.inbox.save()
-    instance.save()
 
 @receiver(post_save, sender=Post)
 def create_post_signal(sender, instance, created, **kwargs):
