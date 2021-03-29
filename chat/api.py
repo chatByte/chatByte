@@ -416,7 +416,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
                     follower = serializer.data
                     profile.followers.items.add(follower)
                     profile.save()
-                    return JsonResponse({}, status=201)
+                    return JsonResponse(serializer.data, status=201)
             return JsonResponse(serializer.errors, status=400)
 
 
