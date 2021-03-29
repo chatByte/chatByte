@@ -5,8 +5,8 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
-from .signals import host
-
+from .signals import host as host_server
+from rest_framework.parsers import JSONParser
 
 from .form import *
 from .backend import *
@@ -14,6 +14,7 @@ from .signals import host
 import base64
 import os
 import json
+from .remoteProxy import *
 
 
 
@@ -64,7 +65,7 @@ path(r"author/<str:AUTHOR_ID>/public_channel/",
 # post: comment/like => send post request to host server(edit post function),
 @require_http_methods(["GET", "POST"])
 @login_required
-def stream(request, AUTHOR_ID):
+def my_stream(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
@@ -154,8 +155,6 @@ def posts(request, AUTHOR_ID):
     #getTimeline(cur_user_name), by SQL query
     mytimeline = alltimeline.filter(author=cur_author).order_by('published')
 
-
-
     author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(cur_author.friend_requests.all())
 
@@ -180,7 +179,7 @@ def posts(request, AUTHOR_ID):
         request_post = request.POST
 
         source = request.user.profile.id # Who share it to me
-        origin = host # who origin create
+        origin = host_server # who origin create
         title = request_post.get("title", "")
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
@@ -367,7 +366,7 @@ def if_friend_request(request):
         if len(all_friend_request)>0:
             newest = all_friend_request.reverse()[0]
             data = {}
-            data['friend'] = newest.author.profile.displayName
+            data['friend'] = newest.actor.displayName
             data['id'] = newest.id
             # return the newest friend request's name
             return JsonResponse(data)
@@ -404,7 +403,7 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
 @require_http_methods(["POST"])
 def update_post(request, AUTHOR_ID, POST_ID):
     print('edited arguemnt POST_ID', str(POST_ID))
-    id = host + 'author/' + str(AUTHOR_ID) + '/posts/' + str(POST_ID)
+    id = host_server + 'author/' + str(AUTHOR_ID) + '/posts/' + str(POST_ID)
     print("edited post id:", id)
     user = None
     username=""
@@ -438,3 +437,56 @@ def update_post(request, AUTHOR_ID, POST_ID):
     
     response = redirect("/author/" + str(user.id) + "/my_posts/")
     return response
+@require_http_methods(["POST"])
+@login_required
+def search(request, AUTHOR_ID):
+    server_origin = request.META["HTTP_X_SERVER"]
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+
+    print("...........................???.....")
+
+    data = JSONParser().parse(request)
+
+    try:
+        target_id = data["url"]
+        print(target_id)
+    except:
+        return JsonResponse({}, status=409)
+    try:
+        target = Profile.objects.get(id=target_id)
+        serializer = ProfileSerializer(target)
+        
+        numberID_target = target_id.split("/")[-1]
+
+        # 127.0.0.1:8000/author/1/my_stream/2
+        # ID
+        #http://127.0.0.1:8000/author/2
+        response = redirect("../my_stream/" + numberID_target + "/")
+
+        # return response
+        redirect_url = "../my_stream/" + numberID_target + "/"
+
+
+        json_dict = {"url": redirect_url}  
+
+        return JsonResponse(json_dict, status=201)
+    except Profile.DoesNotExist:
+        return profileRequest("GET", server_origin, target_id)
+
+
+@require_http_methods(["POST"])
+@login_required
+def search_user(request, AUTHOR_ID, FOREGIN_ID):
+    server_origin = request.META["HTTP_X_SERVER"]
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # data = JSONParser().parse(request)
+    # try:
+    #     target_id = data["url"]
+    # except:
+    #     return JsonResponse({}, status=409)
+    try:
+        target = Profile.objects.get(id=FOREGIN_ID)
+        serializer = ProfileSerializer(target)
+        return JsonResponse(serializer.data, status=201)
+    except Profile.DoesNotExist:
+        return profileRequest("GET", server_origin, FOREGIN_ID)

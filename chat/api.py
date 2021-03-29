@@ -130,7 +130,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
             # update the post
             try:
                 post = Post.objects.get(id=POST_ID)
-                
+
             except Post.DoesNotExist:
                 return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
             data = JSONParser().parse(request)
@@ -181,9 +181,9 @@ def posts_obj(request, AUTHOR_ID):
             # pagination
             pagination = PageNumberPagination()
             paginated_results = pagination.paginate_queryset(posts.all(), request)
-        
+
             serializer = PostSerializer(paginated_results, many=True)
-        
+
             data = {
                 'count': pagination.page.paginator.count,
                 'next': pagination.get_next_link(),
@@ -263,9 +263,9 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             # pagination
             pagination = PageNumberPagination()
             paginated_results = pagination.paginate_queryset(comments.all(), request)
-        
+
             serializer = CommentSerializer(paginated_results, many=True)
-        
+
             data = {
                 'count': pagination.page.paginator.count,
                 'next': pagination.get_next_link(),
@@ -432,12 +432,12 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
                     return JsonResponse(serializer.data, status=201)
             return JsonResponse(serializer.errors, status=400)
 
-
         elif request.method == "DELETE":
+            follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
             profile.followers.remove(follower)
             return JsonResponse({}, status=200)
 
-        return JsonResponse(serializer.errors, status=400)
+        return JsonResponse({"Error": "Bad request"}, status=400) 
 
 
 

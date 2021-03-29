@@ -1,9 +1,11 @@
 
 'use strict'
 var url      = window.location.href;
+
 var new_url = url.split('/');
 var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
 console.log(url_header)
+var x_server = window.location.origin + '/author/'+new_url[4].toString();
 
 var request_id_list = [];
 var inbox_num;
@@ -110,6 +112,10 @@ jQuery(document).ready(function($) {
       // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
       url:$(this).val(),
       type : "GET", // http method
+      headers: {"X-Server": x_server},
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      },
       contentType: false,
       processData: false,
       dataType: "json",
@@ -138,6 +144,10 @@ jQuery(document).ready(function($) {
       // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
       url:url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/',
       type: "GET", // http method
+      headers: {"X-Server": x_server},
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      },
       contentType: false,
       processData: false,
       dataType: "json",
@@ -247,6 +257,11 @@ jQuery(document).ready(function($) {
       // author/<str:AUTHOR_ID>/inbox/
       url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
       type: "POST", // http method
+      // header
+      headers: {"X-SERVER": x_server},
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      },
       contentType: 'application/json; charset=utf-8',
       dataType: "json",
       data: {type: "Like",
@@ -263,6 +278,30 @@ jQuery(document).ready(function($) {
 
   });
 
-  setInterval(ifFriendRequest, 5000);
+  $('body').on('click', '#followBtn', function(){
+
+    $('#following').attr("style", "display: block");
+    $(this).attr("style", "display: none");
+    // console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
+    $.ajax({
+      // author/<str:AUTHOR_ID>/inbox/
+      url:window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString(),
+      type: "PUT", // http method
+      // header
+      headers: {"X-SERVER": x_server},
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      },
+      contentType: 'application/json; charset=utf-8',
+      dataType: "json",
+      data: {},
+      // handle a successful response
+      success : function(data) {
+          console.log(data); // sanity check
+      },
+    });
+  });
+
+  // setInterval(ifFriendRequest, 5000);
 
 });
