@@ -126,7 +126,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'chat/static')
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'mongoDB_yao',
+        'NAME': 'mongoDB_uv',
     }
 }
 
@@ -144,5 +144,5 @@ REST_FRAMEWORK = {
 }
 
 # # LOGIN_REDIRECT_URL = '/chat/home'
-# LOGIN_REDIRECT_URL = '/chat/'
+LOGIN_REDIRECT_URL = '/'
 django_on_heroku.settings(locals())

@@ -96,14 +96,19 @@ def post_obj(request, AUTHOR_ID, POST_ID):
 
 
     # ex. equest.META[Origin] == ("https:\\chatbyte"):
-    req_origin = request.META["Origin"]
+# <<<<<<< HEAD
+#     req_origin = request.META["Origin"]
+# =======
+    # req_origin = request.META["Origin"] 
+# >>>>>>> yao
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
+    user_origin = request.META["X-request-User"]
 
-    if req_origin != host_server :
-        return postRequest(request.method,req_origin, AUTHOR_ID, POST_ID)
+    if user_origin != host_server :
+        return postRequest(request.method,user_origin, AUTHOR_ID, POST_ID)
     else:
         if request.method == "DELETE":
             # remove the post
