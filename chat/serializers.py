@@ -119,7 +119,7 @@ class PostSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(read_only=True)
     class Meta:
         model = Post
-        fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'commentsPage', 'comments', 'published', 'visibility', 'unlisted'  ]
+        fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'comments_url', 'comments', 'published', 'visibility', 'unlisted'  ]
         
 
 class PostInboxSerializer(serializers.ModelSerializer):
@@ -154,20 +154,20 @@ class LikedSerializer(serializers.ModelSerializer):
         model = Liked
         fields = ['type', 'items']
 
-class CommentCustomPagination(pagination.PageNumberPagination):
-    def get_paginated_response(self, data):
-        return JsonResponse({
-            'next': self.get_next_link(),
-            'previous': self.get_previous_link(),
-            'count': self.page.paginator.count,
-            'comments': data
-        }, safe=False)
+# class CommentCustomPagination(pagination.PageNumberPagination):
+#     def get_paginated_response(self, data):
+#         return JsonResponse({
+#             'next': self.get_next_link(),
+#             'previous': self.get_previous_link(),
+#             'count': self.page.paginator.count,
+#             'comments': data
+#         }, safe=False)
 
-class PostCustomPagination(pagination.PageNumberPagination):
-    def get_paginated_response(self, data):
-        return JsonResponse({
-            'next': self.get_next_link(),
-            'previous': self.get_previous_link(),
-            'count': self.page.paginator.count,
-            'posts': data
-        }, safe=False)
+# class PostCustomPagination(pagination.PageNumberPagination):
+#     def get_paginated_response(self, data):
+#         return JsonResponse({
+#             'next': self.get_next_link(),
+#             'previous': self.get_previous_link(),
+#             'count': self.page.paginator.count,
+#             'posts': data
+#         }, safe=False)
