@@ -51,7 +51,7 @@ function deletePost(id){
         processData: false,
         beforeSend: function(xhr) {
           xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-          xhr.setRequestHeader("X-Request-User", id);
+          xhr.setRequestHeader("X-Server", id);
         },
 
         data: {},
