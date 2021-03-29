@@ -38,16 +38,14 @@ function getCookie(name) {
 
 function deletePost(id){
   console.log(id);
-  var post_id = id.split('posts/')[1] 
-  var url = "../posts/"+post_id+"/";
+  var url = "../posts/"+id+"/";
   console.log(url);
   var csrftoken = getCookie('csrftoken');
   console.log(csrftoken);
   $.ajax({
-        url :url, // the endpoint
+        url : "../posts/"+id+"/", // the endpoint
         type : "DELETE", // http method
         dataType: 'text', // what to expect back from the server
-        headers: { "X-Server": id },
         cache: false,
         contentType: false,
         processData: false,
@@ -100,6 +98,7 @@ $( document ).ready(function() {
        } else {
          $("#contentType").find('i').attr("class", icon);
          contentType = id;
+
          // handle upload button
          if (id == "image"){
            $("#imageFile").attr("style", "display: block");
@@ -132,8 +131,11 @@ $( document ).ready(function() {
 
 
 
-    $('.submitBtn').click(function(e){
-      console.log(e);
+
+
+    // deal with submit edit button
+    // submit form data
+    $('#submitEdit').click(function(e){
 
       title = $('#title').val();
       description = $('#description').val();
@@ -153,6 +155,7 @@ $( document ).ready(function() {
       form_data.append("csrfmiddlewaretoken", csrftoken);
 
 
+
       $.ajax({
         url : ".", // the endpoint
         type : "POST", // http method
@@ -169,8 +172,25 @@ $( document ).ready(function() {
         },
       });
 
+      // $.ajax({
+      //   url : ".", // the endpoint
+      //   type : "DELETE", // http method
+      //   dataType: 'text', // what to expect back from the server
+      //   cache: false,
+      //   contentType: false,
+      //   processData: false,
+      //   data: form_data,
+
+      //   // handle a successful response
+      //   success : function(json) {
+      //       console.log("success"); // sanity check
+      //   },
+      // });
+
 
     });
+
+
 
 
 
