@@ -14,7 +14,8 @@ def update_profile_signal(sender, instance, created, **kwargs):
         try:
             instance.profile
         except:
-            Profile.objects.create(user=instance,)
+            liked = Liked.objects.create()
+            Profile.objects.create(user=instance,liked=liked)
         try:
             instance.inbox
         except:
@@ -24,11 +25,11 @@ def update_profile_signal(sender, instance, created, **kwargs):
         
         instance.profile.displayName = instance.username
         instance.profile.id = host + "author/" + str(instance.id)
-        instance.profile.liked = Liked.objects.create()
         instance.profile.save()
         instance.inbox.post_inbox.author = instance.id
         instance.inbox.post_inbox.save()
         instance.inbox.save()
+        instance.save()
 
 @receiver(post_save, sender=Post)
 def create_post_signal(sender, instance, created, **kwargs):
