@@ -2,7 +2,7 @@
 'use strict'
 var url      = window.location.href;
 var new_url = url.split('/');
-var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/chat/';
+var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
 console.log(url_header)
 
 var request_id_list = [];
@@ -244,6 +244,6 @@ jQuery(document).ready(function($) {
 
   });
 
-  // setInterval(ifFriendRequest, 5000);
+  setInterval(ifFriendRequest, 5000);
 
 });
