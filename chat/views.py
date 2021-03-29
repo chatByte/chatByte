@@ -254,8 +254,8 @@ def posts(request, AUTHOR_ID):
         if createFlag:
             print("haha, successful create post, info: ", description)
 
-            response = redirect("/author/"+ str(AUTHOR_ID) + "/public_channel/")
-            # response = HttpResponse(status=200)
+            # response = redirect("/author/"+ str(AUTHOR_ID) + "/public_channel/")
+            response = HttpResponse(status=200)
 
             return response
         else:
