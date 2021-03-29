@@ -96,11 +96,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
 
 
     # ex. equest.META[Origin] == ("https:\\chatbyte"):
-# <<<<<<< HEAD
-#     req_origin = request.META["Origin"]
-# =======
     # req_origin = request.META["Origin"] 
-# >>>>>>> yao
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
