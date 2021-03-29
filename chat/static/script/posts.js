@@ -37,20 +37,21 @@ function getCookie(name) {
 }
 
 function deletePost(id){
-  console.log(id);
-  // var url = "../posts/"+id+"/";
-  console.log("Delete : ", id);
+  var origin = id.split('author')[0]
+  console.log(origin);
+  var url = "../posts/"+id+"/";
+  console.log(url);
   var csrftoken = getCookie('csrftoken');
   console.log(csrftoken);
   $.ajax({
-        url : id, // the endpoint
+        url : "../posts/"+id+"/", // the endpoint
         type : "DELETE", // http method
         dataType: 'text', // what to expect back from the server
         cache: false,
         contentType: false,
         processData: false,
         beforeSend: function(xhr) {
-          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+          xhr.setRequestHeader("Origin", origin);
         },
 
         data: {},
