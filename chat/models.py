@@ -72,6 +72,7 @@ class Post(models.Model):
     size = models.IntegerField()
     commentsPage = models.CharField(max_length=200)
     comments = models.ManyToManyField('Comment', blank=True)
+    # published date
     published = models.DateTimeField(default=django.utils.timezone.now)
     visibility = models.CharField(max_length=50)
     unlisted = models.CharField(max_length=50, default='false', editable=False)

@@ -84,6 +84,8 @@ def stream(request, AUTHOR_ID):
 
     author_num_follwers = len(cur_author.profile.followers.all())
     friend_request_num = len(cur_author.profile.friend_requests.all())
+    # order by date
+    public_channel_posts = public_channel_posts.order_by('published')
 
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
@@ -147,7 +149,7 @@ def posts(request, AUTHOR_ID):
     cur_author = request.user.profile
     alltimeline = cur_author.timeline.all() 
     #getTimeline(cur_user_name), by SQL query 
-    mytimeline = alltimeline.filter(author=cur_author)
+    mytimeline = alltimeline.filter(author=cur_author).order_by('published')
 
 
 
