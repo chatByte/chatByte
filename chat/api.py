@@ -767,14 +767,20 @@ def stream_obj(request, AUTHOR_ID):
     else:
         if request.method == 'GET':
             try:
+                print("here")
                 profile = Profile.objects.get(id=AUTHOR_ID)
+                print(profile)
                 all_author_posts = Post.objects.filter(author=profile)
-                all_following = Follower.objects.filter(items_id=profile.id)
+                print(all_author_posts)
+                all_following = Follower.objects.filter(items__id=profile)
+                print(all_following)
                 posts_result = all_author_posts
+                print("Result: ", posts_result)
                 for following in all_following:
                     posts_result = posts_result | following.timeline.filter(visibility='public')
-            except:
-                posts_result = QueryDict()
+            except BaseException as e:
+                print(e)
+                posts_result = []
             # Get posts that's visible to the author
             print("Post result:", posts_result)
 
