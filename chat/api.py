@@ -372,13 +372,11 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     print(server_origin)
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
-    FOREIGN_AUTHOR_ID = host_server + "/posts/" + FOREIGN_AUTHOR_ID
-    print("post id: ", FOREIGN_AUTHOR_ID)
-
     try:
-        foreign_id = request.META["HTTP_X_REQUEST_USER"]
+        FOREIGN_AUTHOR_ID = request.META["HTTP_X_REQUEST_USER"]
     except:
-        pass
+        FOREIGN_AUTHOR_ID = host_server + "/posts/" + FOREIGN_AUTHOR_ID
+    print("post id: ", FOREIGN_AUTHOR_ID)
 
     if server_origin != host_server :
         return followerRequest(request.method,server_origin, AUTHOR_ID, FOREIGN_AUTHOR_ID)
@@ -406,19 +404,23 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
         elif (request.method == "PUT"):
             #add a follower , with FOREIGN_AUTHOR_ID
+            data = JSONParser().parse(request)
+
+            serializer = ProfileSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return JsonResponse(serializer.data, status=200)
+                try:
+                    follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
+                    return JsonResponse({'detail': 'true'}, status=409)
 
-            try:
-                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
-                return JsonResponse({'detail': 'true'}, status=409)
+                except Profile.DoesNotExist:
+                    serializer.save()
+                    profile = Profile.objects.get(id=AUTHOR_ID)
+                    follower = serializer.data
+                    profile.followers.items.add(follower)
+                    profile.save()
+                    return JsonResponse(serializer.data, status=201)
+            return JsonResponse(serializer.errors, status=400)
 
-            except Profile.DoesNotExist:
-               profile.followers.add(follower)
-               profile.save()
-               return JsonResponse({}, status=201)
-               
         elif request.method == "DELETE":
             profile.followers.remove(follower)
             return JsonResponse({}, status=200)

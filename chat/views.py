@@ -5,13 +5,15 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
-
+from .signals import host as host_server
+from rest_framework.parsers import JSONParser
 
 from .form import *
 from .backend import *
 import base64
 import os
 import json
+from .remoteProxy import *
 
 
 
@@ -62,7 +64,7 @@ path(r"author/<str:AUTHOR_ID>/public_channel/",
 # post: comment/like => send post request to host server(edit post function),
 @require_http_methods(["GET", "POST"])
 @login_required
-def stream(request, AUTHOR_ID):
+def my_stream(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
@@ -151,8 +153,6 @@ def posts(request, AUTHOR_ID):
     alltimeline = cur_author.timeline.all()
     #getTimeline(cur_user_name), by SQL query
     mytimeline = alltimeline.filter(author=cur_author).order_by('published')
-
-
 
     author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(cur_author.friend_requests.all())
@@ -398,11 +398,41 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
         return HttpResponse(status=401)
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["POST"])
 @login_required
-def reject_friend_request(request, AUTHOR_ID, FOREIGN_ID):
+def search(request, AUTHOR_ID):
+    server_origin = request.META["HTTP_X_SERVER"]
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+
+    print("...........................???.....")
+
+    data = JSONParser().parse(request)
+
     try:
-        addFollow(request.user.id, FOREIGN_ID)
-        return HttpResponse(status=200)
-    except BaseException as e:
-        return HttpResponse(status=401)
+        target_id = data["url"]
+        print(target_id)
+    except:
+        return JsonResponse({}, status=409)
+    try:
+        target = Profile.objects.get(id=target_id)
+        serializer = ProfileSerializer(target)
+        return JsonResponse(serializer.data, status=201)
+    except Profile.DoesNotExist:
+        return profileRequest("GET", server_origin, target_id)
+
+@require_http_methods(["POST"])
+@login_required
+def search_user(request, AUTHOR_ID, FOREGIN_ID):
+    server_origin = request.META["HTTP_X_SERVER"]
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # data = JSONParser().parse(request)
+    # try:
+    #     target_id = data["url"]
+    # except:
+    #     return JsonResponse({}, status=409)
+    try:
+        target = Profile.objects.get(id=FOREGIN_ID)
+        serializer = ProfileSerializer(target)
+        return JsonResponse(serializer.data, status=201)
+    except Profile.DoesNotExist:
+        return profileRequest("GET", server_origin, FOREGIN_ID)
