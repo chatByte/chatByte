@@ -92,7 +92,9 @@ Generate response at login page
 
 @login_required
 def start_homepage(request):
+    print(request.user)
     if request.user.is_authenticated:
+        print(request.user.id)
         return redirect("/author/" + str(request.user.id) + "/profile/")
 
 
