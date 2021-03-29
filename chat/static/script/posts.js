@@ -37,8 +37,7 @@ function getCookie(name) {
 }
 
 function deletePost(id){
-  var origin = id.split('author')[0]
-  console.log(origin);
+  console.log(id);
   var url = "../posts/"+id+"/";
   console.log(url);
   var csrftoken = getCookie('csrftoken');
@@ -51,7 +50,8 @@ function deletePost(id){
         contentType: false,
         processData: false,
         beforeSend: function(xhr) {
-          xhr.setRequestHeader("Origin", origin);
+          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+          xhr.setRequestHeader("X-Request-User", id);
         },
 
         data: {},
