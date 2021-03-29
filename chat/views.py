@@ -416,9 +416,24 @@ def search(request, AUTHOR_ID):
     try:
         target = Profile.objects.get(id=target_id)
         serializer = ProfileSerializer(target)
-        return JsonResponse(serializer.data, status=201)
+        
+        numberID_target = target_id.split("/")[-1]
+
+        # 127.0.0.1:8000/author/1/my_stream/2
+        # ID
+        #http://127.0.0.1:8000/author/2
+        response = redirect("../my_stream/" + numberID_target + "/")
+
+        # return response
+        redirect_url = "../my_stream/" + numberID_target + "/"
+
+
+        json_dict = {"url": redirect_url}  
+
+        return JsonResponse(json_dict, status=201)
     except Profile.DoesNotExist:
         return profileRequest("GET", server_origin, target_id)
+
 
 @require_http_methods(["POST"])
 @login_required
