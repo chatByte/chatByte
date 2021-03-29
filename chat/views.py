@@ -77,6 +77,8 @@ def stream(request, AUTHOR_ID):
     public_channel_posts = mytimeline 
 
     for following_profile in followings:
+        print("..............................................")
+        print(following_profile.displayName)
 
         public_posts = following_profile.timeline.filter(visibility='public')
         public_channel_posts = public_channel_posts | public_posts

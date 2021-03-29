@@ -91,6 +91,7 @@ class Inbox(models.Model):
     friend_requests = models.ManyToManyField('FriendRequest', blank=True)
 
 class Follower(models.Model):
+    # get a list of authors who are their followers
     type = models.CharField(max_length=200, default="followers")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     # Here items are Authors , which is Profiles
