@@ -380,21 +380,22 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
         elif (request.method == "PUT"):
             #add a follower , with FOREIGN_AUTHOR_ID
+            data = JSONParser().parse(request)
+
+            serializer = ProfileSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return JsonResponse(serializer.data, status=200)
+                try:
+                    follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
+                    return JsonResponse({'detail': 'true'}, status=409)
 
-            try:
-                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
-                return JsonResponse({'detail': 'true'}, status=409)
-
-
-            except Profile.DoesNotExist:
-               profile.followers.add(follower)
-
-               profile.save()
-
-               return JsonResponse({}, status=201)
+                except Profile.DoesNotExist:
+                    serializer.save()
+                    profile = Profile.objects.get(id=AUTHOR_ID)
+                    follower = serializer.data
+                    profile.followers.add(follower)
+                    profile.save()
+                    return JsonResponse({}, status=201)
+            return JsonResponse(serializer.errors, status=400)
 
 
         elif request.method == "DELETE":
