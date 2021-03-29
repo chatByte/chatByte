@@ -65,6 +65,7 @@ class Post(models.Model):
     description = models.TextField()
     contentType = models.CharField(max_length=200)
     content = models.TextField()
+    # the author has an ID where by authors can be disambiguated
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
     categories = models.CharField(max_length=200)
     count = models.IntegerField()

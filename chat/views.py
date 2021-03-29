@@ -145,10 +145,9 @@ def posts(request, AUTHOR_ID):
     if request.user.is_authenticated:
         cur_user_name = request.user.username
     cur_author = request.user.profile
-    alltimeline = cur_author.timeline.all() #getTimeline(cur_user_name)
-    mytimeline = alltimeline.filter(Post_visibility='public')
-
-
+    alltimeline = cur_author.timeline.all() 
+    #getTimeline(cur_user_name), by SQL query 
+    mytimeline = alltimeline.filter(author=cur_author)
 
 
 
