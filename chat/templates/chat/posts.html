@@ -174,7 +174,7 @@
                 <!-- Post Content
                 ================================================= -->
 
-                <div class="post-content">
+                <div class="post-content" id={{cur_post.id}}>
                   <!--Post Date-->
                   <div class="post-date">
 
@@ -221,21 +221,20 @@
                       </div>
 
                       <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{% len(cur_post.likes.all()) %}</a>
+                        <a class="btn text-red "><i class="icon ion-ios-heart like">{{ cur_post.likes | length }}</i></a>
                         <a class="btn text-green"><i class="icon ion-share repost"></i></a>
                       </div>
 
                       <hr class="solid">
 <!--            show nested comment  -->
-            {% for comment in cur_post.comments.all() %}
-                      <div class="post-comment">
+            {% for comment in cur_post.comments.all %}
+                      <div class="post-comment" id={{comment.id}}>
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
                         <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
                       </div>
 
                       <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart like"></i>{% len(comment.likes.all()) %}</a>
-                        <a class="btn text-green"><i class="icon ion-share repost"></i></a>
+                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like">{{ comment.likes | length }}</i></a>
                       </div>
                       {% endfor %}
 <!--                      end -->
@@ -368,6 +367,8 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+
     <script src="{% static 'script/posts.js' %}"></script>
     <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
   </body>

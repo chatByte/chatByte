@@ -168,7 +168,7 @@
                       </div>
 
                       <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart"></i>{% len(cur_post.likes.all()) %}</a>
+                        <a class="btn text-red"><i class="icon ion-ios-heart"></i>{{ cur_post.likes | length }}</a>
                         <a class="btn text-green"><i class="icon ion-share"></i></a>
                       </div>
 
@@ -179,19 +179,15 @@
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
                         <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
                       </div>
+
+                      <div class="reaction-img">
+                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
+                      </div>
                       {% endfor %}
-<!--                      end -->
-
-<!--                      <div class="post-comment">
-                        <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
-                        <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
-                      </div> -->
-
-
 
                       <div class="post-comment">
                         <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
-                        <a href="" class="profile-link">{{myName}} </a>
+                        <a href="" class="profile-link">{{user.profile.displayName}} </a>
                         <input type="text" class="form-control" placeholder="Post a comment">
                       </div>
                     </div>

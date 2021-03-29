@@ -166,28 +166,84 @@ jQuery(document).ready(function($) {
     });
   });
 
+
+  // like a post
   $('body').on('click', '.like', function(){
+    // alert("liked")
     var like_num = $(this).parent('a').text();
     if(!like_num) {
-      $(this).parent('a').text(1);
+      $(this).text(1);
     } else {
-      $(this).parent('a').text(parseInt(like_num) + 1);
+      $(this).text(parseInt(like_num) + 1);
     }
 
+    var post_id = $(this).closest('.post-content').attr('id');
+
+    var data = {type: "like",
+                object: post_id,
+                csrfmiddlewaretoken: csrftoken
+                // summary:"someone liked someone's post"
+                // context:
+                }
+    // console.log(window.location.origin+'/author/'+ new_url[5].toString() +'/inbox/')
     $.ajax({
       // author/<str:AUTHOR_ID>/inbox/
-      url:window.location.origin+'author/'+ new_url[5].toString() +'/inbox/',
       type: "POST", // http method
+      url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
       contentType: 'application/json; charset=utf-8',
       dataType: "json",
+      headers:{
+                    "X-CSRFToken": csrftoken,
+                    "Origin": window.location.origin
+                },
+      data: JSON.stringify(data),
       // handle a successful response
       success : function(data) {
           console.log(data); // sanity check
       },
     });
 
-  })
+  });
 
-  setInterval(ifFriendRequest, 5000);
+
+  //like a comment
+  $('body').on('click', '.comment-like', function(){
+    var like_num = $(this).parent('a').text();
+    if(!like_num) {
+      $(this).text(1);
+    } else {
+      $(this).text(parseInt(like_num) + 1);
+    }
+
+    var comment_id = $(this).closest('.post-comment').attr('id');
+
+    var data = {type: "like",
+                object: comment_id,
+                csrfmiddlewaretoken: csrftoken,
+                // summary:"someone liked someone's post"
+                // context:
+                }
+
+    $.ajax({
+      // author/<str:AUTHOR_ID>/inbox/
+      url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
+      type: "POST", // http method
+      contentType: 'application/json; charset=utf-8',
+      dataType: "json",
+      data: {type: "Like",
+                  object: comment_id,
+                  csrfmiddlewaretoken: csrftoken,
+                  // summary:"someone liked someone's post"
+                  // context:
+                },
+      // handle a successful response
+      success : function(data) {
+          console.log(data); // sanity check
+      },
+    });
+
+  });
+
+  // setInterval(ifFriendRequest, 5000);
 
 });
