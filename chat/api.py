@@ -98,6 +98,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
+
     print("post id: ", POST_ID)
     print(request.META)
     server_origin = request.META["HTTP_X_SERVER"]
@@ -126,6 +127,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
             # update the post
             try:
                 post = Post.objects.get(id=POST_ID)
+                
             except Post.DoesNotExist:
                 return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
             data = JSONParser().parse(request)
