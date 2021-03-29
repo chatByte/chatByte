@@ -9,6 +9,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .form import *
 from .backend import *
+from .signals import host
 import base64
 import os
 import json
@@ -177,8 +178,8 @@ def posts(request, AUTHOR_ID):
 
         request_post = request.POST
 
-        source = cur_user_name # Who share it to me
-        origin = cur_user_name # who origin create
+        source = request.user.profile.id # Who share it to me
+        origin = host # who origin create
         title = request_post.get("title", "")
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
