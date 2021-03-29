@@ -116,7 +116,7 @@ def signup(request):
         print("logging in...")
         login(request, user)
 
-        return redirect('/chat/author/' + str(user.id))
+        return redirect('/author/' + str(user.id) + "/profile/")
     return render(request, 'registration/signup.html', {'form': form})
 
 
@@ -252,7 +252,7 @@ def posts(request, AUTHOR_ID):
         createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
         if createFlag:
             print("haha, successful create post, info: ", description)
-            response = redirect("/chat/author/"+ str(AUTHOR_ID) + "/public_channel/")
+            response = redirect("/author/"+ str(AUTHOR_ID) + "/public_channel/")
             return response
         else:
             print("server feels sad ", description)
@@ -316,7 +316,7 @@ def profile(request, AUTHOR_ID):
         first_name = post_obj["first_name"]
         last_name = post_obj["last_name"]
         updateProfile(user.id, first_name, last_name, email, url, github)
-        response = redirect("/chat/author/"+ str(request.user.id) + "/profile/")
+        response = redirect("/author/"+ str(request.user.id) + "/profile/")
         return response
 
 
@@ -359,7 +359,7 @@ def delete(request, ID):
     deletePost(ID)
 
     # TODO: may not redirect
-    response = redirect("/chat/author/"+ str(request.user.id) + "/public_channel/")
+    response = redirect("/author/"+ str(request.user.id) + "/public_channel/")
     return response
 
 
