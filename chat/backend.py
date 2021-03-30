@@ -201,7 +201,7 @@ def createPost(title, source, origin, description, content_type, content, author
                 friend_profile.timeline.add(post)
             else:
                 # send post to remote inbox
-                inboxRequest("POST", origin, author_id, serializer.data)
+                inboxRequest("POST", server_origin, author_id, serializer.data)
         print("done")
         return True
     except BaseException as e:
