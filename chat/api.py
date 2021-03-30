@@ -367,23 +367,29 @@ URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     # ex. request.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
-    print(request.META)
+    # print(request.META)
     server_origin = request.META["HTTP_X_SERVER"]
     print(server_origin)
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
+
+
     try:
         FOREIGN_AUTHOR_ID = request.META["HTTP_X_REQUEST_USER"]
     except:
-        FOREIGN_AUTHOR_ID = host_server + "/posts/" + FOREIGN_AUTHOR_ID
+        FOREIGN_AUTHOR_ID = host_server + "posts/" + FOREIGN_AUTHOR_ID
     print("post id: ", FOREIGN_AUTHOR_ID)
+    print("server_origin", server_origin)
+    print("host_server", host_server)
+
 
     if server_origin != host_server :
         return followerRequest(request.method,server_origin, AUTHOR_ID, FOREIGN_AUTHOR_ID)
     else:
         # can be optimized
         try:
-            profile = Profile.objects.get(user_id=AUTHOR_ID)
+            print(".....................................Haha..................................................")
+            profile = Profile.objects.get(id=AUTHOR_ID)
         except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
@@ -403,6 +409,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
 
         elif (request.method == "PUT"):
+            print(".....................................Haha1..................................................")
             #add a follower , with FOREIGN_AUTHOR_ID
             data = JSONParser().parse(request)
 
@@ -412,10 +419,14 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
                     follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
                     return JsonResponse({'detail': 'true'}, status=409)
 
-                except Profile.DoesNotExist:
-                    serializer.save()
+                # Profile.DoesNotExist
+                except :
+                    follower = serializer.save()
+                    print(follower)
+                    print(".....................................Haha2..................................................")
                     profile = Profile.objects.get(id=AUTHOR_ID)
-                    follower = serializer.data
+                    print(".....................................Haha2..................................................")
+                    # follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
                     profile.followers.items.add(follower)
                     profile.save()
                     return JsonResponse(serializer.data, status=201)
