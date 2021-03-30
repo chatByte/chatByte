@@ -192,7 +192,8 @@ def createPost(title, source, origin, description, content_type, content, author
             print(friend_profile.id)
             author_id = friend_profile.id.split('author/')[1]
             serializer = PostSerializer(post)
-            if origin == host:
+            server_origin = friend_profile.id.split("author/")[0]
+            if server_origin == host:
                 print("doing locally")
                 # send post to inbox
                 friend_profile.user.inbox.post_inbox.items.add(post)
