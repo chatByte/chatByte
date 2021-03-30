@@ -10,6 +10,7 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/", api.profile_obj, name="profile_obj"),
 
     path(r"author/<str:AUTHOR_ID>/my_posts/", views.posts, name="make_posts"),
+    path(r"author/<str:AUTHOR_ID>/my_posts/<str:POST_ID>/edit/", views.update_post, name="update_posts"),
     #
     path(r'author/<str:AUTHOR_ID>/posts/',api.posts_obj, name='make_posts_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',api.post_obj, name='make_post_obj'),
@@ -19,6 +20,8 @@ urlpatterns = [
     # show info => get request, views.public_channel originally called feed, and able to comment
     path(r"author/<str:AUTHOR_ID>/my_stream/", views.my_stream, name="my_stream"),
     path(r"author/<str:AUTHOR_ID>/my_stream/<str:FOREIGN_ID>/", views.friend_public_channel, name="public_channel"),
+
+    path(r"author/<str:AUTHOR_ID>/stream/", api.stream_obj, name="stream"),
 
 
         # get search bar
