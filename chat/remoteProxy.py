@@ -100,7 +100,8 @@ def inboxRequest(method, origin, user_id, data=None):
     the inbox in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/inbox/"
-    print(url)
+    print("remote URL: ", url)
+    print("remote origin: ", origin)
     user = User.objects.get(last_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
