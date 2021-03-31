@@ -10,6 +10,7 @@ from .serializers import PostSerializer, ProfileSerializer
 from requests.auth import HTTPBasicAuth
 from .remoteProxy import inboxRequest
 import requests
+import json
 
 # def setCookie(response, key, value, days_expire=1):
 #     # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
@@ -203,9 +204,9 @@ def createPost(title, source, origin, description, content_type, content, author
                 post_serialize = serializer.data
                 author_serialize = ProfileSerializer(post.author)
                 post_serialize['author'] = author_serialize.data
-                print(post_serialize)
+                print(json.dumps(post_serialize))
                 # send post to remote inbox
-                inboxRequest("POST", server_origin, author_id, post_serialize)
+                inboxRequest("POST", server_origin, author_id, json.dumps(post_serialize))
         print("done")
         return True
     except BaseException as e:
