@@ -474,20 +474,20 @@ def search(request, AUTHOR_ID):
 
         return JsonResponse(json_dict, status=200)
     except Profile.DoesNotExist:
-        #response = profileRequest("GET", author_origin, target_id)
+        response = profileRequest("GET", author_origin, target_id)
         #print(author_origin)
-        # if response.status_code == 200:
-        #foreign_author = response.json()
-        foreign_author = {'type': 'author', 
-                        'id': 'http://127.0.0.1:5000/author/10', 
-                        'host': 'http://127.0.0.1:5000/author/10', 
-                        'displayName': 'Jonathan', 
-                        'url': 'http://127.0.0.1:5000/author/10', 
-                        'github': 'http://127.0.0.1:5000/author/10'}
-        serializer = ProfileSerializer(data=foreign_author)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return JsonResponse({"url": "../mystream/2/"}, status=200)
+        if response.status_code == 200:
+            foreign_author = response.json()
+            # foreign_author = {'type': 'author', 
+            #                 'id': 'http://127.0.0.1:5000/author/10', 
+            #                 'host': 'http://127.0.0.1:5000/author/10', 
+            #                 'displayName': 'Jonathan', 
+            #                 'url': 'http://127.0.0.1:5000/author/10', 
+            #                 'github': 'http://127.0.0.1:5000/author/10'}
+            serializer = ProfileSerializer(data=foreign_author)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return JsonResponse({"url": "../mystream/2/"}, status=200)
 
 
 
