@@ -140,6 +140,7 @@ function deletePost(id){
         type : "DELETE", // http method
         dataType: 'text', // what to expect back from the server
         cache: false,
+        contentType: "application/json",
         headers: {"X-Server": x_server},
         beforeSend: function(xhr) {
           xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
