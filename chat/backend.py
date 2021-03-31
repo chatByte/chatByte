@@ -6,7 +6,7 @@ import django
 from django.contrib.auth.models import User
 import traceback
 from .signals import host
-from .serializers import PostSerializer
+from .serializers import PostSerializer, ProfileSerializer
 from requests.auth import HTTPBasicAuth
 from .remoteProxy import inboxRequest
 import requests
@@ -190,7 +190,7 @@ def createPost(title, source, origin, description, content_type, content, author
         for friend_profile in author.friends.all():
             print(friend_profile.id)
             author_id = friend_profile.id.split('author/')[1]
-            serializer = PostSerializer(post)
+            
             server_origin = friend_profile.id.split("author/")[0]
             if server_origin == host:
                 print("doing locally")
@@ -199,9 +199,15 @@ def createPost(title, source, origin, description, content_type, content, author
                 # add post into timeline
                 friend_profile.timeline.add(post)
             else:
+                serializer = PostSerializer(post)
+                post_serialize = serializer.data
+                author_serialize = ProfileSerializer(post.author)
+                print(author_serialize.data)
+                post_serialize['author'] = author_serialize.data
+                print(post_serialize)
                 # send post to remote inbox
                 print(serializer.data)
-                inboxRequest("POST", server_origin, author_id, serializer.data)
+                inboxRequest("POST", server_origin, author_id, post_serialize)
         print("done")
         return True
     except BaseException as e:
