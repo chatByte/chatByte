@@ -24,7 +24,6 @@ Create your views here.
 """
 
 
-
 @login_required
 def start_homepage(request):
     if request.user.is_authenticated:
@@ -365,6 +364,30 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
         return HttpResponse(status=401)
 
 
+
+@require_http_methods(["GET"])
+@login_required
+def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
+    try:
+        addFollow(request.user.id, FOREIGN_AUTHOR_ID)
+        return HttpResponse(status=200)
+    except BaseException as e:
+        return HttpResponse(status=401)
+
+        
+@require_http_methods(["GET"])
+@login_required
+def get_user_info(request):
+    try:
+        user = getUser(request.user.id)
+        type = user.profile.type
+        id = user.profile.id
+        host = user.profile.host
+        displayName = user.profile.displayName
+        return JsonResponse({'type':type, 'id':id, 'host':host, 'displayName':displayName}, status=200)
+    except BaseException as e:
+        return HttpResponse(status=401)
+
 @login_required
 @require_http_methods(["POST"])
 def update_post(request, AUTHOR_ID, POST_ID):
@@ -400,18 +423,10 @@ def update_post(request, AUTHOR_ID, POST_ID):
         return response
     else:
         print("failed to edit the post!!", description)
-    
+
     response = redirect("/author/" + str(user.id) + "/my_posts/")
     return response
 
-@require_http_methods(["GET"])
-@login_required
-def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
-    try:
-        addFollow(request.user.id, FOREIGN_AUTHOR_ID)
-        return HttpResponse(status=200)
-    except BaseException as e:
-        return HttpResponse(status=401)
 
 
 
@@ -433,7 +448,7 @@ def search(request, AUTHOR_ID):
     try:
         target = Profile.objects.get(id=target_id)
         serializer = ProfileSerializer(target)
-        
+
         numberID_target = target_id.split("/")[-1]
 
         # 127.0.0.1:8000/author/1/my_stream/2
@@ -445,7 +460,7 @@ def search(request, AUTHOR_ID):
         redirect_url = "../my_stream/" + numberID_target + "/"
 
 
-        json_dict = {"url": redirect_url}  
+        json_dict = {"url": redirect_url}
 
         return JsonResponse(json_dict, status=201)
     except Profile.DoesNotExist:
@@ -473,7 +488,7 @@ def search_user(request, AUTHOR_ID, FOREGIN_ID):
 Below is the dead code, or previous version, keep it , incase need that in the future
 
 
-HEAD=================================>
+TOP=================================>
 
 
 """
@@ -518,6 +533,6 @@ def edit_in_feed(request, ID):
 
     return response
 
-taile<==================================================================
+BOT<==================================================================
 
 '''

@@ -51,7 +51,6 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
 
 
 
-
 '''
 Testing method
 
@@ -107,7 +106,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
     server_origin = request.META.get("HTTP_X_SERVER")
     print(server_origin)
 
-    if server_origin != host_server :
+    if server_origin is not None and server_origin != host_server:
         return postRequest(request.method,server_origin, USER_ID, USER_POST_ID)
     else:
         if request.method == "DELETE":
@@ -171,7 +170,7 @@ def posts_obj(request, AUTHOR_ID):
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
-    if server_origin != host_server :
+    if server_origin is not None and server_origin != host_server:
         return postsRequest(request.method,server_origin, USER_ID)
     else:
         if request.method == 'GET':
@@ -196,7 +195,10 @@ def posts_obj(request, AUTHOR_ID):
             serializer = PostSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
                 profile = Profile.objects.get(id=AUTHOR_ID)
-                serializer.save(author=profile)
+                post = serializer.save(author=profile)
+                print(post)
+                profile.timeline.add(post)
+                profile.save()
                 return JsonResponse(serializer.data, status=201)
             return JsonResponse(serializer.errors, status=400)
 
@@ -246,7 +248,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
 
-    if server_origin != host_server :
+    if server_origin is not None and server_origin != host_server:
         return commentRequest(request.method,server_origin, USER_ID, USER_POST_ID)
     else:
         # checking, comments' father exist or not
@@ -331,7 +333,7 @@ def profile_obj(request, AUTHOR_ID):
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
-    if server_origin != host_server :
+    if server_origin is not None and server_origin != host_server:
         print("origin is different, going to remote...")
         return profileRequest(request.method,server_origin, USER_ID)
     else:
@@ -388,71 +390,68 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     FOREIGN_USER_ID = FOREIGN_AUTHOR_ID
-    FOREIGN_AUTHOR_ID = host_server + "/posts/" + FOREIGN_AUTHOR_ID
-    print("post id: ", FOREIGN_AUTHOR_ID)
+    print("follower's id: ", FOREIGN_AUTHOR_ID)
 
 
     try:
-        FOREIGN_AUTHOR_ID = request.META["HTTP_X_REQUEST_USER"]
+        FOREIGN_AUTHOR_ID = server_origin + "author/" + FOREIGN_AUTHOR_ID
     except:
-        FOREIGN_AUTHOR_ID = host_server + "posts/" + FOREIGN_AUTHOR_ID
+        FOREIGN_AUTHOR_ID = host_server + "author/" + FOREIGN_AUTHOR_ID
     print("post id: ", FOREIGN_AUTHOR_ID)
     print("server_origin", server_origin)
     print("host_server", host_server)
 
 
-    if server_origin != host_server :
+
+    if server_origin is not None and server_origin != host_server:
 
         return followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID)
     else:
         # can be optimized
         try:
-            print(".....................................Haha..................................................")
 
-            profile = Profile.objects.get(id=AUTHOR_ID)
+            profile = Profile.objects.get(user_id=USER_ID)
+
         except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
 
         if (request.method == "GET"):
-            #reponse a follower
+            # reponse a status
+            # check if follower
             try:
-                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
+                print("Searching foreign author id: ", FOREIGN_AUTHOR_ID)
+                try:
+                    follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
+                except:
+                    return JsonResponse({'status':'false','message':'FOREIGN_AUTHOR_ID: ' + FOREIGN_AUTHOR_ID + ' does not exists'}, status=404)
+                if follower in profile.followers.items.all():
+                    serializer = ProfileSerializer(follower)
+                    return JsonResponse({'detail':'true'}, status=200)
+                else:
+                    return JsonResponse({'detail':'false'}, status=200)
             except Post.DoesNotExist:
                 return JsonResponse({'status':'false','message':'FOREIGN_AUTHOR_ID: ' + FOREIGN_AUTHOR_ID + ' does not exists'}, status=404)
-
-            serializer = ProfileSerializer(follower)
-
-            if serializer.is_valid(raise_exception=True):
-                return JsonResponse(serializer.data, status=201)
-            return JsonResponse(serializer.errors, status=400)
-
 
         elif (request.method == "PUT"):
             print(".....................................Haha1..................................................")
             #add a follower , with FOREIGN_AUTHOR_ID
-            print("here!")
-            # data = JSONParser().parse(request)
-            data = request.data
-
+            data = JSONParser().parse(request)
             serializer = ProfileSerializer(data=data)
-            if serializer.is_valid(raise_exception=True):
-                try:
-                    follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
-                    return JsonResponse({'detail': 'true'}, status=409)
+            try:
+                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
+                profile.followers.items.add(follower)
+                return JsonResponse({'detail': 'true'}, status=201)
 
-                # Profile.DoesNotExist
-                except :
-                    follower = serializer.save()
-                    print(follower)
-                    print(".....................................Haha2..................................................")
+            except Profile.DoesNotExist:
+                if serializer.is_valid(raise_exception=True):
+                    follower_profile = serializer.save()
                     profile = Profile.objects.get(id=AUTHOR_ID)
-                    print(".....................................Haha2..................................................")
-                    # follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
-                    profile.followers.items.add(follower)
+                    # follower = serializer.data
+                    profile.followers.items.add(follower_profile)
                     profile.save()
-                    return JsonResponse(serializer.data, status=201)
-            return JsonResponse(serializer.errors, status=400)
+                return JsonResponse(serializer.data, status=201)
+            # return JsonResponse(serializer.errors, status=400)
 
         elif request.method == "DELETE":
             follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
@@ -478,19 +477,18 @@ def followers_obj(request, AUTHOR_ID):
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
-    if server_origin != host_server :
+    if server_origin is not None and server_origin != host_server:
         return followersRequest(request.method,server_origin, AUTHOR_ID)
     else:
         try:
-            profile = Profile.objects.get(user_id=AUTHOR_ID)
+            profile = Profile.objects.get(id=AUTHOR_ID)
         except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
-        followers = profile.followers
-        serializer = FollowerSerializer(followers, many=True)
+        followers = profile.followers.items.all()
+        serializer = ProfileSerializer(followers, many=True)
         if request.method == "GET":
-            if serializer.is_valid(raise_exception=True):
-                return JsonResponse(serializer.data, status=200)
+            return JsonResponse(serializer.data, status=200, safe=False)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -517,7 +515,7 @@ def get_friends_obj(request, AUTHOR_ID):
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
-    if server_origin != host_server :
+    if server_origin is not None and server_origin != host_server:
         return friendsRequest(request.method,server_origin, AUTHOR_ID)
     else:
         try:
@@ -528,8 +526,7 @@ def get_friends_obj(request, AUTHOR_ID):
         friends = profile.friends
         serializer = ProfileSerializer(friends, many=True)
         if request.method == "GET":
-            if serializer.is_valid(raise_exception=True):
-                return JsonResponse(serializer.data, status=200)
+            return JsonResponse(serializer.data, status=200)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -575,7 +572,7 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
 
-    if server_origin != host_server :
+    if server_origin is not None and server_origin != host_server:
         return likesRequest(request.method, server_origin, AUTHOR_ID, POST_ID)
     else:
         try:
@@ -603,7 +600,7 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     COMMENT_ID = AUTHOR_ID + "/posts/" + POST_ID + "/comments/" + COMMENT_ID
     print("post id: ", COMMENT_ID)
 
-    if server_origin != host_server :
+    if server_origin is not None and server_origin != host_server:
         return likesRequest(request.method, server_origin, AUTHOR_ID, POST_ID, COMMENT_ID)
     else:
         try:
@@ -630,7 +627,7 @@ def liked_post_obj(request, AUTHOR_ID):
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
-    if server_origin != host_server :
+    if server_origin is not None and server_origin != host_server:
         return likedRequest(request.method,server_origin, AUTHOR_ID)
     else:
         # can be optimized
@@ -679,7 +676,7 @@ def inbox(request, AUTHOR_ID):
     print("author id: ", AUTHOR_ID)
     print("user id: ", USER_ID)
 
-    if server_origin != host_server :
+    if server_origin is not None and server_origin != host_server:
         return inboxRequest(request.method,server_origin, AUTHOR_ID)
     else:
         if request.method == "POST":
@@ -798,7 +795,7 @@ def stream_obj(request, AUTHOR_ID):
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
-    if server_origin != host_server :
+    if server_origin is not None and server_origin != host_server:
         return likedRequest(request.method,server_origin, AUTHOR_ID)
     else:
         if request.method == 'GET':

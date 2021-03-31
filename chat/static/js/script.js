@@ -1,13 +1,20 @@
+
 'use strict'
 var url      = window.location.href;
 
 var new_url = url.split('/');
 var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
 console.log(url_header)
-var x_server = window.location.origin + '/author/'+new_url[4].toString();
+// var x_server = window.location.origin + '/author/'+new_url[4].toString();
+var x_server = window.location.origin +'/';
 
 var request_id_list = [];
 var inbox_num;
+
+var id;
+var host;
+var type;
+var displayName;
 // helper function to get csrf token
 function getCookie(name) {
     let cookieValue = null;
@@ -69,11 +76,54 @@ function ifFriendRequest(){
             }
           };
         }
-
-
     },
   });
 }
+
+function putFollow(type, id, host, displayName){
+  $.ajax({
+    // first author id is who I want to follow
+    // second author id is who I am
+    url:window.location.origin+'/author/'+ new_url[6].toString() +'/followers/'+new_url[4].toString(),
+    type: "PUT", // http method
+    // header
+    headers: {"X-SERVER": x_server},
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    },
+    contentType: 'application/json; charset=utf-8',
+    dataType: "json",
+    data: JSON.stringify({
+      type: type,
+      id: id,
+      host: host,
+      displayName: displayName,
+    }),
+    // fields = ['type','id', 'host', 'displayName', 'url', 'github']
+    // handle a successful response
+    success : function(data) {
+        console.log(data); // sanity check
+    },
+  });
+}
+
+// function putFollowLocol(type, id, host, displayName){
+//   $.ajax({
+//     url:window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString(),
+//     type: "PUT", // http method
+//     // header
+//     headers: {"X-SERVER": x_server},
+//     beforeSend: function(xhr) {
+//       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+//     },
+//     contentType: 'application/json; charset=utf-8',
+//     dataType: "json",
+//     // handle a successful response
+//     success : function(data) {
+//         console.log(data); // sanity check
+//     },
+//   });
+// }
 
 jQuery(document).ready(function($) {
   const csrftoken = getCookie('csrftoken');
@@ -279,28 +329,26 @@ jQuery(document).ready(function($) {
 
   $('body').on('click', '#followBtn', function(){
 
-    $('#following').attr("style", "display: block");
-    $(this).attr("style", "display: none");
-    // console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
+    // $('#following').attr("style", "display: block");
+    $(this).parent('a').html("<h4>Following</h4>");
+
     $.ajax({
-      // author/<str:AUTHOR_ID>/inbox/
-      url:window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString(),
-      type: "PUT", // http method
-      // header
-      headers: {"X-SERVER": x_server},
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-      },
-      contentType: 'application/json; charset=utf-8',
-      dataType: "json",
-      data: {},
-      // handle a successful response
-      success : function(data) {
-          console.log(data); // sanity check
-      },
+      url:window.location.origin+'/get_user',
+      type:"GET",
+      success: function(data){
+        console.log(data)
+        var id = data.id;
+        var host = data.host;
+        var type = data.type;
+        var displayName = data.displayName;
+
+        putFollow(type, id, host, displayName);
+      }
     });
+    // console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
+
   });
 
-  // setInterval(ifFriendRequest, 5000);
+  setInterval(ifFriendRequest, 5000);
 
 });
