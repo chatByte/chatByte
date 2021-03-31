@@ -685,7 +685,7 @@ def inbox(request, AUTHOR_ID):
             # print(request.data)
             # data = JSONParser().parse(request)
             # data = request.data
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             print("User: ", user)
             print("Data: ", data)
             if data['type'] == "post":
