@@ -341,11 +341,15 @@ jQuery(document).ready(function($) {
         var host = data.host;
         var type = data.type;
         var displayName = data.displayName;
-
-        putFollow(type, id, host, displayName);
+        var github = data.github;
       }
     });
-    // console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
+    
+    console.log("clicked follow button")
+    console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
+
+    // //can use Jinjia {{}}    
+    // putFollow(type, id, host, displayName);
 
   });
 

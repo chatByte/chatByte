@@ -109,36 +109,38 @@ Generate response at friend_profile page , Now is deafault friend Zoe, need to b
 """
 @login_required
 def foreign_public_channel(request, AUTHOR_ID, FOREIGN_ID):
-    cur_author = getUser(FOREIGN_ID)
-    cur_user_name = cur_author.username
+    foreign_author = getUser(FOREIGN_ID)
+    cur_author = getUser(AUTHOR_ID)
+    foreign_user_name = foreign_author.username
 
-    if getFriend(request.user.id, cur_author.id):
+    if getFriend(request.user.id, foreign_author.id):
         isFriend = True;
     else:
         isFriend = False;
 
-    if getFollowing(request.user.id, cur_author.id):
+    if getFollowing(request.user.id, foreign_author.id):
         isFollowing = True;
     else:
         isFollowing = False;
 
     # a list of post
-    mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
+    foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
 
-    author_num_follwers = len(cur_author.profile.followers.items.all())
-    friend_request_num = len(cur_author.profile.friend_requests.all())
+    author_num_follwers = len(foreign_author.profile.followers.items.all())
+    friend_request_num = len(foreign_author.profile.friend_requests.all())
 
     dynamic_contain = {
-        'myName' : cur_author.profile.displayName,
-        'timeline': mytimeline,
+        'foreignName' : foreign_author.profile.displayName,
+        'timeline': foreign_timeline,
         'author_num_follwers': author_num_follwers,
         'isFriend': isFriend,
         'isFollowing': isFollowing,
-        'myId':cur_author.id,
+        'foreignId':foreign_author.id,
         'friend_request_num': friend_request_num,
+        'cur_author': cur_author
 
     }
-    response = render(request, "chat/foreginProfile.html", dynamic_contain)
+    response = render(request, "chat/foreign_public_channel.html", dynamic_contain)
     return response
 
 

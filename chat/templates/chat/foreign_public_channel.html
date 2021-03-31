@@ -98,9 +98,9 @@
                   <li><a href="" class="active">Her Timeline</a></li>
                   <li><a href="">Her Friends</a></li>
                   {% if isFriend %}
-                    <li><button class="btn-primary unfriend" href="../../friends/delete/{{myId}}/">Unfriend</button></li>
+                    <li><button class="btn-primary unfriend" href="../../friends/delete/{{foreignId}}/">Unfriend</button></li>
                   {% else %}
-                    <li><button class="btn-primary befriend" value="../../friends/add/{{myId}}/">Befriend</button></li>
+                    <li><button class="btn-primary befriend" value="../../friends/add/{{foreignId}}/">Befriend</button></li>
       						{% endif %}
 
                 </ul>
@@ -115,10 +115,10 @@
               <div class="activities">
                 <!--Activity SUmmary-->
                 <div id="sticky-sidebar">
-                  <h4 class="grey"><a href="" class="profile-link" id="name">{{myName}}</a>'s activity</h4>
+                  <h4 class="grey"><a href="" class="profile-link" id="name">{{foreignName}}</a>'s activity</h4>
                   <div class="feed-item">
                     <div class="live-activity">
-                      <p><a href="#" class="profile-link" id="name">{{myName}}</a> Posted on a Photo</p>
+                      <p><a href="#" class="profile-link" id="name">{{foreignName}}</a> Posted on a Photo</p>
                       <p class="text-muted"> xxxx mins ago</p>
                     </div>
                   </div>
