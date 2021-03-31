@@ -19,7 +19,7 @@ urlpatterns = [
 
     # show info => get request, views.public_channel originally called feed, and able to comment
     path(r"author/<str:AUTHOR_ID>/my_stream/", views.my_stream, name="my_stream"),
-    path(r"author/<str:AUTHOR_ID>/my_stream/<str:FOREIGN_ID>/", views.friend_public_channel, name="public_channel"),
+    path(r"author/<str:AUTHOR_ID>/my_stream/<str:SERVER>/<str:FOREIGN_ID>/", views.foreign_public_channel, name="foreign_public_channel"),
 
     path(r"author/<str:AUTHOR_ID>/stream/", api.stream_obj, name="stream"),
 
@@ -27,7 +27,7 @@ urlpatterns = [
     # get search bar
     path(r"author/<str:AUTHOR_ID>/search/", views.search, name="search"),
 
-    path(r"author/<str:AUTHOR_ID>/my_posts/?search<str:FOREGIN_ID>", views.search_user, name="search"),
+    # path(r"author/<str:AUTHOR_ID>/my_posts/?search<str:FOREIGN_ID>", views.search_user, name="search"),
 
     # show friend list
     path(r"author/<str:AUTHOR_ID>/my_friends/", views.my_friends, name="my_friends"),
@@ -47,6 +47,7 @@ urlpatterns = [
     # URL: ://service/author/{AUTHOR_ID}/followers/
     path(r"author/<str:AUTHOR_ID>/followers/", api.followers_obj, name="followers_obj"),
     # URL:URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
+    # add a follower FOREIGN to AUTHOR
     path(r"author/<str:AUTHOR_ID>/followers/<str:FOREIGN_AUTHOR_ID>", api.follower_obj, name="follower_obj"),
     path(r"get_user/<str:AUTHOR_ID>/", views.get_user_info, name="get_user_info"),
 
@@ -54,10 +55,19 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/liked/", api.liked_post_obj, name="like_post"),
 
 
+    #follow: following a body, inside view, we need it, since we need to refresh page, or we can do it in AJAX_ js
+    path(r"author/<str:AUTHOR_ID>/following/<str:FOREIGN_ID>/", views.following,name="following_view"),
+
+
+
+
+
+
+
+
 
     #  Doing----------------------------------------------------------------------------------------------------
-    # #follow: follow a body, inside view, we need it, since we need to refresh page, or we can do it in AJAX_ js
-    # path(r"author/<str:AUTHOR_ID>/follow/<str:FOREIGN_AUTHOR_ID>/", views.follow,,name="follow_view"),
+ 
     # #follow: unfollow a body, inside view
     # ath(r"author/<str:AUTHOR_ID>/unfollow/<str:FOREIGN_AUTHOR_ID>/", views.unfollow,name="unfollow_view"),
 

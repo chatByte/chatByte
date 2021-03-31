@@ -15,17 +15,17 @@ def profileRequest(method, origin, user_id, profile=None):
     the author's profile in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/"
-    user = User.objects.get(first_name=origin)
+    user = User.objects.get(last_name=origin)
     headers = {
         'Origin': host,
         'X-Request-User': str(host) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
         serializer = ProfileSerializer(data=profile)
         if serializer.is_valid(raise_exception=True):
-            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         else:
             response =  JsonResponse(serializer.errors, status=400)
     return response
@@ -39,15 +39,16 @@ def postsRequest(method, origin, user_id, post=None):
     the post to be created in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/posts/"
-    user = User.objects.get(first_name=origin)
+    user = User.objects.get(last_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        #response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
     elif method == "POST":
         serializer = PostSerializer(data=post)
         if serializer.is_valid(raise_exception=True):
-            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         else:
             response =  JsonResponse(serializer.errors, status=400)
     return response

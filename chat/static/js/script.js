@@ -1,12 +1,12 @@
 'use strict'
-var url      = window.location.href;
+var url = window.location.href;
 
 var new_url = url.split('/');
 var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
-console.log(url_header)
+console.log(url_header);
 // var x_server = window.location.origin + '/author/'+new_url[4].toString();
-var x_server = window.location.origin +'/';
-
+// var x_server = window.location.origin +'/';
+var x_server = "http://127.0.0.1:8000/";
 var request_id_list = [];
 var inbox_num;
 
@@ -79,7 +79,41 @@ function ifFriendRequest(){
   });
 }
 
-function putFollow(type, id, host, displayName){
+
+// create a following, add foreigner to be my followings
+function create_following() {
+    var cur_author_id = new_url[4].toString();
+    var foreign_id = new_url[6].toString();
+    console.log(cur_author_id);
+    console.log(foreign_id);
+
+    $.ajax({
+    // "author/<str:AUTHOR_ID>/following/<str:FOREIGN_AUTHOR_ID>/"
+    url:window.location.origin+'/author/'+ cur_author_id +'/following/'+ foreign_id + "/",
+    type: "POST", // http method
+    // header
+    headers: {"X-SERVER": x_server},
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    },
+    contentType: 'application/json; charset=utf-8',
+    dataType: "json",
+    data: JSON.stringify({
+    }),
+    // fields = ['type','id', 'host', 'displayName', 'url', 'github']
+    // handle a successful response
+    success : function(data) {
+        console.log(data); // sanity check
+    },
+  });
+
+}
+
+
+
+// add myself to be others followers
+function putFollow(type, id, host, displayName, url, github){
+  create_following();
   $.ajax({
     // first author id is who I want to follow
     // second author id is who I am
@@ -97,6 +131,9 @@ function putFollow(type, id, host, displayName){
       id: id,
       host: host,
       displayName: displayName,
+      url: url,
+      github: github
+
     }),
     // fields = ['type','id', 'host', 'displayName', 'url', 'github']
     // handle a successful response
@@ -358,28 +395,43 @@ jQuery(document).ready(function($) {
 
   });
 
-  $('body').on('click', '#followBtn', function(){
+  // $('body').on('click', '#followBtn', function(){
 
-    // $('#following').attr("style", "display: block");
-    $(this).parent('a').html("<h4>Following</h4>");
+  //   // $('#following').attr("style", "display: block");
+  //   $(this).parent('a').html("<h4>Following</h4>");
 
-    $.ajax({
-      url:window.location.origin+'/get_user',
-      type:"GET",
-      success: function(data){
-        console.log(data)
-        var id = data.id;
-        var host = data.host;
-        var type = data.type;
-        var displayName = data.displayName;
+  //   // $.ajax({
+  //   //   url:window.location.origin+'/get_user',
+  //   //   type:"GET",
+  //   //   success: function(data){
+  //   //     console.log(data)
+  //   //     var id = data.id;
+  //   //     var host = data.host;
+  //   //     var type = data.type;
+  //   //     var displayName = data.displayName;
+  //   //     var github = data.github;
+  //   //   }
+  //   // });
 
-        putFollow(type, id, host, displayName);
-      }
-    });
-    // console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
 
-  });
+  //   console.log("clicked follow button")
+  //   console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
 
-  // setInterval(ifFriendRequest, 5000);
+  //   // //can use Jinjia {{}}
+  //   // var id = {{cur_author.id}};
+  //   // var host = {{cur_author.host}};
+  //   // var type = {{cur_author.type}};
+  //   // var displayName = {{cur_author.displayName}};
+  //   // var github = {{cur_author.github}};
+
+  //   // console.log("Jinjia: ", id, host, type, displayName, github )
+
+
+  //   var test = "{{cur_author}}";
+  //   console.log("Jinjia: ", test)
+
+  // });
+
+  setInterval(ifFriendRequest, 5000);
 
 });
