@@ -19,7 +19,7 @@ urlpatterns = [
 
     # show info => get request, views.public_channel originally called feed, and able to comment
     path(r"author/<str:AUTHOR_ID>/my_stream/", views.my_stream, name="my_stream"),
-    path(r"author/<str:AUTHOR_ID>/my_stream/<str:FOREIGN_ID>/", views.foreign_public_channel, name="foreign_public_channel"),
+    path(r"author/<str:AUTHOR_ID>/my_stream/<str:SERVER>/<str:FOREIGN_ID>/", views.foreign_public_channel, name="foreign_public_channel"),
 
     path(r"author/<str:AUTHOR_ID>/stream/", api.stream_obj, name="stream"),
 
@@ -27,7 +27,7 @@ urlpatterns = [
     # get search bar
     path(r"author/<str:AUTHOR_ID>/search/", views.search, name="search"),
 
-    path(r"author/<str:AUTHOR_ID>/my_posts/?search<str:FOREIGN_ID>", views.search_user, name="search"),
+    # path(r"author/<str:AUTHOR_ID>/my_posts/?search<str:FOREIGN_ID>", views.search_user, name="search"),
 
     # show friend list
     path(r"author/<str:AUTHOR_ID>/my_friends/", views.my_friends, name="my_friends"),
@@ -56,7 +56,7 @@ urlpatterns = [
 
 
     #follow: following a body, inside view, we need it, since we need to refresh page, or we can do it in AJAX_ js
-    path(r"author/<str:AUTHOR_ID>/following/<str:FOREIGN_AUTHOR_ID>/", views.following,name="following_view"),
+    path(r"author/<str:AUTHOR_ID>/following/<str:FOREIGN_ID>/", views.following,name="following_view"),
 
 
 

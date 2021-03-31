@@ -345,7 +345,7 @@ def profile_obj(request, AUTHOR_ID):
         # query to database
         if request.method == "GET":
             serializer = ProfileSerializer(profile)
-            return JsonResponse(serializer.data)
+            return JsonResponse(serializer.data, status=201)
         elif request.method == "POST":
             data = JSONParser().parse(request)
             serializer = ProfileSerializer(profile, data=data)
@@ -434,7 +434,6 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
                 return JsonResponse({'status':'false','message':'FOREIGN_AUTHOR_ID: ' + FOREIGN_AUTHOR_ID + ' does not exists'}, status=404)
 
         elif (request.method == "PUT"):
-            print(".....................................Haha1..................................................")
             #add a follower , with FOREIGN_AUTHOR_ID
             data = JSONParser().parse(request)
             serializer = ProfileSerializer(data=data)

@@ -3,10 +3,10 @@ var url = window.location.href;
 
 var new_url = url.split('/');
 var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
-console.log(url_header)
+console.log(url_header);
 // var x_server = window.location.origin + '/author/'+new_url[4].toString();
-var x_server = window.location.origin +'/';
-
+// var x_server = window.location.origin +'/';
+var x_server = "http://127.0.0.1:8000/";
 var request_id_list = [];
 var inbox_num;
 
@@ -80,15 +80,16 @@ function ifFriendRequest(){
 }
 
 
-
 // create a following, add foreigner to be my followings
 function create_following() {
     var cur_author_id = new_url[4].toString();
-    var foregin_id = new_url[6].toString();
+    var foreign_id = new_url[6].toString();
+    console.log(cur_author_id);
+    console.log(foreign_id);
 
     $.ajax({
     // "author/<str:AUTHOR_ID>/following/<str:FOREIGN_AUTHOR_ID>/"
-    url:window.location.origin+'/author/'+ cur_author_id +'/following/'+ foregin_id,
+    url:window.location.origin+'/author/'+ cur_author_id +'/following/'+ foreign_id + "/",
     type: "POST", // http method
     // header
     headers: {"X-SERVER": x_server},
@@ -98,7 +99,6 @@ function create_following() {
     contentType: 'application/json; charset=utf-8',
     dataType: "json",
     data: JSON.stringify({
-
     }),
     // fields = ['type','id', 'host', 'displayName', 'url', 'github']
     // handle a successful response

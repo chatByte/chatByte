@@ -108,39 +108,46 @@ def my_stream(request, AUTHOR_ID):
 Generate response at friend_profile page , Now is deafault friend Zoe, need to be handled later
 """
 @login_required
-def foreign_public_channel(request, AUTHOR_ID, FOREIGN_ID):
+def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
+    server = User.objects.get(username=SERVER)
+    host = server.last_name
     foreign_author = getUser(FOREIGN_ID)
-    cur_author = getUser(AUTHOR_ID)
-    foreign_user_name = foreign_author.username
+    author_id = host + "author/" + AUTHOR_ID
+    cur_author = Profile.objects.get(id=author_id)
+    if foreign_author != None:
+        foreign_user_name = foreign_author.username
 
-    if getFriend(request.user.id, foreign_author.id):
-        isFriend = True;
-    else:
-        isFriend = False;
+        if getFriend(request.user.id, foreign_author.id):
+            isFriend = True;
+        else:
+            isFriend = False;
 
-    if getFollowing(request.user.id, foreign_author.id):
-        isFollowing = True;
-    else:
-        isFollowing = False;
+        if getFollowing(request.user.id, foreign_author.id):
+            isFollowing = True;
+        else:
+            isFollowing = False;
 
-    # a list of post
-    foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
+        # a list of post
+        #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
+        foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['results']
+        foreign_timeline = PostSerializer(foreign_timeline, many=True).data
 
-    author_num_follwers = len(foreign_author.profile.followers.items.all())
-    friend_request_num = len(foreign_author.profile.friend_requests.all())
+        author_num_follwers = len(foreign_author.profile.followers.items.all())
+        friend_request_num = len(foreign_author.profile.friend_requests.all())
 
-    dynamic_contain = {
-        'foreignName' : foreign_author.profile.displayName,
-        'timeline': foreign_timeline,
-        'author_num_follwers': author_num_follwers,
-        'isFriend': isFriend,
-        'isFollowing': isFollowing,
-        'foreignId':foreign_author.id,
-        'friend_request_num': friend_request_num,
-        'cur_author': cur_author
-    }
-    response = render(request, "chat/foreign_public_channel.html", dynamic_contain)
-    return response
+        dynamic_contain = {
+            'foreignName' : foreign_author.profile.displayName,
+            'timeline': foreign_timeline,
+            'author_num_follwers': author_num_follwers,
+            'isFriend': isFriend,
+            'isFollowing': isFollowing,
+            'foreignId':foreign_author.id,
+            'friend_request_num': friend_request_num,
+            'cur_author': cur_author,
+        }
+        response = render(request, "chat/foreign_public_channel.html", dynamic_contain)
+        return response
+    return HttpResponse(404)
 
 
 
@@ -437,15 +444,14 @@ search a specifc user ID, redirect to http://127.0.0.1:8000/author/1/my_stream/2
 @login_required
 def search(request, AUTHOR_ID):
     server_origin = request.META["HTTP_X_SERVER"]
+    user = User.objects.get(last_name=server_origin)
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-
-    print("...........................???.....")
 
     data = JSONParser().parse(request)
 
     try:
         target_id = data["url"]
-        print(target_id)
+        author_origin = "http://" + target_id.split("/")[2] + "/"
     except:
         return JsonResponse({}, status=409)
     try:
@@ -457,35 +463,31 @@ def search(request, AUTHOR_ID):
         # 127.0.0.1:8000/author/1/my_stream/2
         # ID
         #http://127.0.0.1:8000/author/2
-        response = redirect("../my_stream/" + numberID_target + "/")
+        server_name = user.username
+        #response = redirect("../my_stream/" + server_name +"/" + numberID_target + "/")
 
         # return response
-        redirect_url = "../my_stream/" + numberID_target + "/"
+        redirect_url = "../my_stream/" + server_name +"/" + numberID_target + "/"
 
 
         json_dict = {"url": redirect_url}
 
-        return JsonResponse(json_dict, status=201)
+        return JsonResponse(json_dict, status=200)
     except Profile.DoesNotExist:
-        return profileRequest("GET", server_origin, target_id)
-
-
-@require_http_methods(["POST"])
-@login_required
-def search_user(request, AUTHOR_ID, FOREIGN_ID):
-    server_origin = request.META["HTTP_X_SERVER"]
-    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    # data = JSONParser().parse(request)
-    # try:
-    #     target_id = data["url"]
-    # except:
-    #     return JsonResponse({}, status=409)
-    try:
-        target = Profile.objects.get(id=FOREIGN_ID)
-        serializer = ProfileSerializer(target)
-        return JsonResponse(serializer.data, status=201)
-    except Profile.DoesNotExist:
-        return profileRequest("GET", server_origin, FOREIGN_ID)
+        #response = profileRequest("GET", author_origin, target_id)
+        #print(author_origin)
+        # if response.status_code == 200:
+        #foreign_author = response.json()
+        foreign_author = {'type': 'author', 
+                        'id': 'http://127.0.0.1:5000/author/10', 
+                        'host': 'http://127.0.0.1:5000/author/10', 
+                        'displayName': 'Jonathan', 
+                        'url': 'http://127.0.0.1:5000/author/10', 
+                        'github': 'http://127.0.0.1:5000/author/10'}
+        serializer = ProfileSerializer(data=foreign_author)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return JsonResponse({"url": "../mystream/2/"}, status=200)
 
 
 
@@ -495,8 +497,13 @@ create a following, add foreigner to be my followings
 @login_required
 @require_http_methods(["POST", "PUT"])
 def following(request, AUTHOR_ID, FOREIGN_ID):
-   
-    return JsonResponse({}, status=200)
+    AUTHOR_ID = host_server + "author/"+ AUTHOR_ID
+    FOREIGN_ID = host_server + "author/"+ FOREIGN_ID
+    foreigner = Profile.objects.get(id=FOREIGN_ID)
+    profile = Profile.objects.get(id=AUTHOR_ID)
+    profile.followings.add(foreigner)
+    profile.save()
+    return JsonResponse({}, status=204)
 
 
 '''

@@ -29,8 +29,8 @@ import requests
 #         domain=settings.SESSION_COOKIE_DOMAIN,
 #         secure=settings.SESSION_COOKIE_SECURE or None,
 #     )
-def getUser(usr_id):
-    return User.objects.get(id=usr_id)
+# def getUser(usr_id):
+#     return User.objects.get(id=usr_id)
 
 def updateUser(username, password):
     # Please authenticate before calling this method
