@@ -1,4 +1,3 @@
-
 'use strict'
 var url      = window.location.href;
 
@@ -349,6 +348,6 @@ jQuery(document).ready(function($) {
 
   });
 
-  setInterval(ifFriendRequest, 5000);
+  // setInterval(ifFriendRequest, 5000);
 
 });

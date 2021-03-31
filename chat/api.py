@@ -94,7 +94,7 @@ Testing method
 @permission_classes([IsAuthenticated])
 def post_obj(request, AUTHOR_ID, POST_ID):
     # ex. equest.META[Origin] == ("https:\\chatbyte"):
-    # req_origin = request.META["Origin"] 
+    # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
@@ -454,7 +454,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
             profile.followers.remove(follower)
             return JsonResponse({}, status=200)
 
-        return JsonResponse({"Error": "Bad request"}, status=400) 
+        return JsonResponse({"Error": "Bad request"}, status=400)
 
 
 
@@ -642,6 +642,15 @@ def liked_post_obj(request, AUTHOR_ID):
 '''
 # Inbox has a one-to-one relationship with User, and the User id is an integer, AUTHOR_ID
 # to avoid Reference problem , make a copy of AUTHOR_ID by creating a new string
+
+URL: ://service/author/{AUTHOR_ID}/inbox
+GET: if authenticated get a list of posts sent to {AUTHOR_ID}
+POST: send a post to the author
+    if the type is “post” then add that post to the author’s inbox
+    Here folllow is equal to be a friend request
+    if the type is “follow” then add that follow is added to the author’s inbox to approve later
+    if the type is “like” then add that like to the author’s inbox
+DELETE: clear the inbox
 '''
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
@@ -806,9 +815,9 @@ def stream_obj(request, AUTHOR_ID):
 
             pagination = PageNumberPagination()
             paginated_results = pagination.paginate_queryset(posts_result, request)
-        
+
             serializer = PostSerializer(paginated_results, many=True)
-        
+
             data = {
                 'count': pagination.page.paginator.count,
                 'next': pagination.get_next_link(),
