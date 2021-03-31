@@ -138,7 +138,7 @@ function deletePost(id){
   $.ajax({
         url : url, // the endpoint
         type : "DELETE", // http method
-        dataType: 'text', // what to expect back from the server
+        // dataType: 'text', // what to expect back from the server
         cache: false,
         contentType: "application/json",
         headers: {"X-Server": x_server},
