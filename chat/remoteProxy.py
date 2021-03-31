@@ -87,7 +87,7 @@ def commentRequest(method, origin, user_id, post_id, data=None):
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
-        response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -116,7 +116,7 @@ def inboxRequest(method, origin, user_id, data=None):
             print(response.status_code)
         elif data['type'] == 'follow':
             print("Recieved a friend request!")
-            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+            response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
         else:
             return JsonResponse({"Error": "Invalid inbox type"}, status=400) 
@@ -160,7 +160,7 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "POST":
-        response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
