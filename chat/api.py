@@ -94,7 +94,7 @@ Testing method
 @permission_classes([IsAuthenticated])
 def post_obj(request, AUTHOR_ID, POST_ID):
     # ex. equest.META[Origin] == ("https:\\chatbyte"):
-    # req_origin = request.META["Origin"] 
+    # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
@@ -402,16 +402,12 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     print("host_server", host_server)
 
 
-
     if server_origin is not None and server_origin != host_server:
-
         return followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID)
     else:
         # can be optimized
         try:
-
             profile = Profile.objects.get(user_id=USER_ID)
-
         except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
@@ -457,7 +453,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
             profile.followers.remove(follower)
             return JsonResponse({}, status=200)
 
-        return JsonResponse({"Error": "Bad request"}, status=400) 
+        return JsonResponse({"Error": "Bad request"}, status=400)
 
 
 
@@ -818,9 +814,9 @@ def stream_obj(request, AUTHOR_ID):
 
             pagination = PageNumberPagination()
             paginated_results = pagination.paginate_queryset(posts_result, request)
-        
+
             serializer = PostSerializer(paginated_results, many=True)
-        
+
             data = {
                 'count': pagination.page.paginator.count,
                 'next': pagination.get_next_link(),

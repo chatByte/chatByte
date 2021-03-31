@@ -310,7 +310,7 @@ def delete_friend(request, AUTHOR_ID, FRIEND_ID):
     return HttpResponse(status=304)
 
 
-# Method that generate a friend request 
+# Method that generate a friend request
 @login_required
 def add_friend(request, AUTHOR_ID, FRIEND_ID):
     print(AUTHOR_ID, FRIEND_ID)
@@ -382,11 +382,11 @@ def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     except BaseException as e:
         return HttpResponse(status=401)
 
-        
 @require_http_methods(["GET"])
 @login_required
-def get_user_info(request):
+def get_user_info(request, AUTHOR_ID):
     try:
+        usr_id = host+'author/'+AUTHOR_ID
         user = getUser(request.user.id)
         type = user.profile.type
         id = user.profile.id
@@ -476,6 +476,7 @@ def search(request, AUTHOR_ID):
     except Profile.DoesNotExist:
         response = profileRequest("GET", author_origin, target_id)
         #print(author_origin)
+
         if response.status_code == 200:
             foreign_author = response.json()
             # foreign_author = {'type': 'author', 

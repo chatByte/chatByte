@@ -49,7 +49,7 @@ urlpatterns = [
     # URL:URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
     # add a follower FOREIGN to AUTHOR
     path(r"author/<str:AUTHOR_ID>/followers/<str:FOREIGN_AUTHOR_ID>", api.follower_obj, name="follower_obj"),
-    path(r"get_user", views.get_user_info, name="get_user_info"),
+    path(r"get_user/<str:AUTHOR_ID>/", views.get_user_info, name="get_user_info"),
 
     #Liked
     path("author/<str:AUTHOR_ID>/liked/", api.liked_post_obj, name="like_post"),
