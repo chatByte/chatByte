@@ -645,6 +645,15 @@ def liked_post_obj(request, AUTHOR_ID):
 '''
 # Inbox has a one-to-one relationship with User, and the User id is an integer, AUTHOR_ID
 # to avoid Reference problem , make a copy of AUTHOR_ID by creating a new string
+
+URL: ://service/author/{AUTHOR_ID}/inbox
+GET: if authenticated get a list of posts sent to {AUTHOR_ID}
+POST: send a post to the author
+    if the type is “post” then add that post to the author’s inbox
+    Here folllow is equal to be a friend request
+    if the type is “follow” then add that follow is added to the author’s inbox to approve later
+    if the type is “like” then add that like to the author’s inbox
+DELETE: clear the inbox
 '''
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])

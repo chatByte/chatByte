@@ -252,48 +252,6 @@ def profile(request, AUTHOR_ID):
         return response
 
 
-"""
-Generate response ,when delete user at home page ,
-For user frinedly feature
-"""
-@login_required
-@require_http_methods(["DELETE", "POST"])
-def delete(request, ID):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
-    # post_id = request.build_absolute_uri().split("/")[-2][6:]
-    cur_author = request.user.profile #getAuthor(cur_user_name)
-    deletePost(ID)
-
-    # TODO: may not redirect
-    response = redirect("/author/"+ str(request.user.id) + "/public_channel/")
-    return response
-
-
-def edit(request, ID):
-    print(request.POST)
-    new_description = request.POST.get("editText")
-    print(new_description)
-    editPostDescription(ID, new_description)
-    # TODO: may not redirect
-    response = redirect("/chat/feed/")
-
-    return response
-
-# delete later
-# get feed and
-# post: comment/like => send post request to host server(edit post function),
-@require_http_methods(["GET", "POST"])
-def edit_in_feed(request, ID):
-    print(request.POST)
-    new_description = request.POST.get("editText")
-    print(new_description)
-    print(editPostDescription(ID, new_description))
-    response = redirect("/chat/feed/")
-
-    return response
-
 
 
 @login_required
@@ -337,7 +295,8 @@ def delete_friend(request, AUTHOR_ID, FRIEND_ID):
         return HttpResponse(status=401)
     return HttpResponse(status=304)
 
-# @require_http_methods(["GET"])
+
+# Method that generate a friend request 
 @login_required
 def add_friend(request, AUTHOR_ID, FRIEND_ID):
     print(AUTHOR_ID, FRIEND_ID)
@@ -490,3 +449,56 @@ def search_user(request, AUTHOR_ID, FOREGIN_ID):
         return JsonResponse(serializer.data, status=201)
     except Profile.DoesNotExist:
         return profileRequest("GET", server_origin, FOREGIN_ID)
+
+'''
+Below is the dead code, or previous version, keep it , incase need that in the future
+
+
+HEAD=================================>
+
+
+"""
+Generate response ,when delete user at home page ,
+For user frinedly feature
+"""
+@login_required
+@require_http_methods(["DELETE", "POST"])
+def delete(request, ID):
+    cur_user_name = None
+    if request.user.is_authenticated:
+        cur_user_name = request.user.username
+    # post_id = request.build_absolute_uri().split("/")[-2][6:]
+    cur_author = request.user.profile #getAuthor(cur_user_name)
+    deletePost(ID)
+
+    # TODO: may not redirect
+    response = redirect("/author/"+ str(request.user.id) + "/public_channel/")
+    return response
+
+
+def edit(request, ID):
+    print(request.POST)
+    new_description = request.POST.get("editText")
+    print(new_description)
+    editPostDescription(ID, new_description)
+    # TODO: may not redirect
+    response = redirect("/chat/feed/")
+
+    return response
+
+# delete later
+# get feed and
+# post: comment/like => send post request to host server(edit post function),
+@require_http_methods(["GET", "POST"])
+def edit_in_feed(request, ID):
+    print(request.POST)
+    new_description = request.POST.get("editText")
+    print(new_description)
+    print(editPostDescription(ID, new_description))
+    response = redirect("/chat/feed/")
+
+    return response
+
+taile<==================================================================
+
+'''
