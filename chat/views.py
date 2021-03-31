@@ -108,7 +108,7 @@ def my_stream(request, AUTHOR_ID):
 Generate response at friend_profile page , Now is deafault friend Zoe, need to be handled later
 """
 @login_required
-def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
+def foreign_public_channel(request, AUTHOR_ID, FOREIGN_ID):
     cur_author = getUser(FOREIGN_ID)
     cur_user_name = cur_author.username
 
@@ -138,7 +138,7 @@ def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
         'friend_request_num': friend_request_num,
 
     }
-    response = render(request, "chat/friendProfile.html", dynamic_contain)
+    response = render(request, "chat/foreginProfile.html", dynamic_contain)
     return response
 
 
@@ -469,7 +469,7 @@ def search(request, AUTHOR_ID):
 
 @require_http_methods(["POST"])
 @login_required
-def search_user(request, AUTHOR_ID, FOREGIN_ID):
+def search_user(request, AUTHOR_ID, FOREIGN_ID):
     server_origin = request.META["HTTP_X_SERVER"]
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     # data = JSONParser().parse(request)
@@ -478,11 +478,11 @@ def search_user(request, AUTHOR_ID, FOREGIN_ID):
     # except:
     #     return JsonResponse({}, status=409)
     try:
-        target = Profile.objects.get(id=FOREGIN_ID)
+        target = Profile.objects.get(id=FOREIGN_ID)
         serializer = ProfileSerializer(target)
         return JsonResponse(serializer.data, status=201)
     except Profile.DoesNotExist:
-        return profileRequest("GET", server_origin, FOREGIN_ID)
+        return profileRequest("GET", server_origin, FOREIGN_ID)
 
 '''
 Below is the dead code, or previous version, keep it , incase need that in the future
