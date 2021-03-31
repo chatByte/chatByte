@@ -37,15 +37,15 @@ $.ajax({
         }),
 
 
-        // handle a successful response
-        success : function(json) {
+        success: function(json) {
             console.log("success"); // sanity check
-
+            console.log("haha");
             console.log(json);
+            var url = json["url"];
 
 
-            location.reload();
-        },
+            window.location.replace(url);
+        }, 
       }); 
 
 } 
@@ -180,9 +180,10 @@ function readImg(input) {
 function editPost(POST_ID) {
       var id = POST_ID.split('/posts/')[1];
       console.log('' + POST_ID)
-      title = $('#title').val();
-      description = $('#description').val();
+      title = $('#editTitle').val();
+      description = $('#editDescription').val();
       console.log("title = ", title);
+      console.log("des = ", description);
       var x_server = window.location.origin
       var csrftoken = getCookie('csrftoken');
 
@@ -217,9 +218,41 @@ function editPost(POST_ID) {
         // handle a successful response
         success : function(json) {
             console.log("success"); // sanity check
-            // window.location.reload();
+            window.location.reload();
         },
       });
+    }
+
+    function editButton(title, description) {
+      $('body').on('click', 'a.editBtn', function(e) {
+        e.preventDefault();
+  
+        var content_holder = $(this).closest('.post-detail').find('p')
+  
+        content_holder.attr("style", "display: none");
+        // var div_content = $('div .form-group-col').html();
+        var div_content = $('div .form-group-col').clone();
+        var find_element = div_content.find('#title');
+        var find_description = div_content.find('#description');
+        // console.log(find_element);
+        find_element.attr("id", "editTitle");
+        find_element.text(title);
+
+        find_description.attr("id", "editDescription");
+        find_description.text(description);
+
+        // console.log(find_element);
+        var new_div = $(this).closest('.post-detail').find('div .editText')
+        new_div.attr("style", "display: block");
+        new_div.html(div_content.html());
+        
+  
+        // show submit btn, hide edit btn
+        $(this).attr("style", "display: none");
+        $(this).closest('div .edit').find('.submitBtn').attr("style", "display: block");
+  
+      });
+  
     }
 
 
@@ -259,22 +292,26 @@ $( document ).ready(function() {
 
     // deal with edit button
     // show textarea and hide p
-    $('body').on('click', 'a.editBtn', function(e) {
-      e.preventDefault();
+    // $('body').on('click', 'a.editBtn', function(e) {
+    //   e.preventDefault();
 
-      var content_holder = $(this).closest('.post-detail').find('p')
+    //   var content_holder = $(this).closest('.post-detail').find('p')
 
-      content_holder.attr("style", "display: none");
-      var div_content = $('div .form-group-col').html();
-      var new_div = $(this).closest('.post-detail').find('div .editText')
-      new_div.attr("style", "display: block");
-      new_div.html(div_content);
+    //   content_holder.attr("style", "display: none");
+    //   // var div_content = $('div .form-group-col').html();
+    //   var div_content = $('div .form-group-col').clone();
+    //   div_content.find('#title').attr("id", "editTitle");
+    //   div_content.find('#description').attr("id", "editDescription");
+    //   var new_div = $(this).closest('.post-detail').find('div .editText')
+    //   new_div.attr("style", "display: block");
+    //   new_div.html(div_content.html());
+      
 
-      // show submit btn, hide edit btn
-      $(this).attr("style", "display: none");
-      $(this).closest('div .edit').find('.submitBtn').attr("style", "display: block");
+    //   // show submit btn, hide edit btn
+    //   $(this).attr("style", "display: none");
+    //   $(this).closest('div .edit').find('.submitBtn').attr("style", "display: block");
 
-    });
+    // });
 
 
 

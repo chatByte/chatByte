@@ -5,7 +5,7 @@ from rest_framework.authtoken.models import Token
 
 from .models import Comment, Post, Profile, Inbox, PostInbox, Liked, Follower
 
-host = "https://chatbyte.herokuapp.com/"
+host = "http://127.0.0.1:8000/"
 # host = "https://localhost:8000/"
 
 @receiver(post_save, sender=User)
@@ -17,7 +17,7 @@ def update_profile_signal(sender, instance, created, **kwargs):
         except:
             liked = Liked.objects.create()
             followers = Follower.objects.create()
-            Profile.objects.create(user=instance,liked=liked, followers=followers)
+            Profile.objects.create(id=host + "author/" + str(instance.id), user=instance,liked=liked, followers=followers)
         try:
             instance.inbox
         except:
@@ -26,7 +26,6 @@ def update_profile_signal(sender, instance, created, **kwargs):
         Token.objects.create(user=instance)
 
         instance.profile.displayName = instance.username
-        instance.profile.id = host + "author/" + str(instance.id)
         instance.profile.save()
         instance.inbox.post_inbox.author = instance.id
         instance.inbox.post_inbox.save()
