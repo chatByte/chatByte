@@ -185,7 +185,7 @@ def posts(request, AUTHOR_ID):
         visibility = request_post.get("visibility", "")
 
         f = request.FILES.get("file", "")
-        categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
+        categories = ["text/plain"] # web, tutorial, can be delete  # ?? dropdown
 
 
         if len(f) > 0:
