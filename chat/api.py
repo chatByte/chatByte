@@ -814,11 +814,13 @@ def stream_obj(request, AUTHOR_ID):
                 print("here")
                 profile = Profile.objects.get(id=AUTHOR_ID)
                 print(profile)
-                all_author_posts = Post.objects.filter(author=profile)
-                print(all_author_posts)
-                all_following = Follower.objects.filter(items__id=profile)
-                print(all_following)
-                posts_result = all_author_posts
+                posts_result = Post.objects.all()
+                print(posts_result)
+                # all_author_posts = Post.objects.filter(author=profile)
+                # print(all_author_posts)
+                # all_following = Follower.objects.filter(items__id=profile)
+                # print(all_following)
+                # posts_result = all_author_posts
                 # print("Result: ", posts_result)
                 # for following in all_following:
                 #     posts_result = posts_result | following.timeline.filter(visibility='public')
