@@ -837,8 +837,8 @@ def stream_obj(request, AUTHOR_ID):
         
             data = {
                 'count': pagination.page.paginator.count,
-                'next': pagination.get_next_link(),
-                'previous': pagination.get_previous_link(),
-                'results': serializer.data,
+                'next': "", # pagination.get_next_link(),
+                'previous': "", # pagination.get_previous_link(),
+                'posts': serializer.data,
             }
             return JsonResponse(data, safe=False)
