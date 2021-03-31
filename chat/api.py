@@ -657,6 +657,10 @@ DELETE: clear the inbox
 @api_view(['POST', 'GET', 'DELETE'])
 def inbox(request, AUTHOR_ID):
 
+    print("inbox: ", request)
+
+
+
     USER_ID = (AUTHOR_ID + '.')[:-1]
 
     # add for test purpose
@@ -750,10 +754,19 @@ def inbox(request, AUTHOR_ID):
 
             elif data['type'] == 'follow':
                 print("Recieved a friend request!")
+                print(data['actor'])
+                print(data['object'])
+                print(data['summary'])
+
                 serializer = FriendReuqestSerializer(data=data)
                 if serializer.is_valid(raise_exception=True):
                     friend_req = serializer.save()
                     user.inbox.friend_requests.add(friend_req)
+                    print("friend req: ", friend_req)
+
+                    # should not be id, should be obj 
+                    print(friend_req.__dict__)
+
                     user.inbox.save()
                     return JsonResponse(data, status=200)
                 return JsonResponse(serializer.errors, status=400)

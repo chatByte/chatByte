@@ -330,12 +330,15 @@ def add_friend(request, AUTHOR_ID, FRIEND_ID):
 @require_http_methods(["GET"])
 @login_required
 def if_friend_request(request):
+
     try:
         cur_user_name = None
         if request.user.is_authenticated:
             cur_user_name = request.user.username
 
         all_friend_request = getALLFriendRequests(request.user.id)
+
+
         if len(all_friend_request)>0:
             newest = all_friend_request.reverse()[0]
             data = {}
@@ -384,17 +387,24 @@ def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
 @require_http_methods(["GET"])
 @login_required
-def get_user_info(request, AUTHOR_ID):
+def get_user(request,SERVER,AUTHOR_ID):
+    # get 
+    print("---------------------------Getting user ---------------")
     try:
-        usr_id = host+'author/'+AUTHOR_ID
-        user = getUser(request.user.id)
-        type = user.profile.type
-        id = user.profile.id
-        host = user.profile.host
-        displayName = user.profile.displayName
-        return JsonResponse({'type':type, 'id':id, 'host':host, 'displayName':displayName}, status=200)
+        server = User.objects.get(username=SERVER)
+        foreign_server = server.last_name
+        user_id = foreign_server + "author/"+ AUTHOR_ID 
+        profile = Profile.objects.get(id=user_id)
+        type = profile.type
+        id = profile.id
+        host = profile.host
+        displayName = profile.displayName
+        github = profile.github
+        url = profile.url
+        return JsonResponse({'type':type, 'id':id, 'host':host, 'displayName':displayName, 'github':github, "url":url}, status=200)
     except BaseException as e:
-        return HttpResponse(status=401)
+        print(e)
+        return HttpResponse(status=400)
 
 @login_required
 @require_http_methods(["POST"])

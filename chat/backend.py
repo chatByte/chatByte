@@ -157,10 +157,15 @@ def addFriendViaRequest(usr_id, friend_request_id):
         return False
 
 def getALLFriendRequests(usr_id):
+
+    print("getALLFriendRequests")
+
     try:
         user = User.objects.get(id=usr_id)
         # print(user.profile.friend_requests.all())
-        return user.profile.friend_requests.all()
+        print("try")
+        print(user.inbox.friend_requests)
+        return user.inbox.friend_requests.all()
     except BaseException as e:
         print(e)
         return None

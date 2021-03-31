@@ -112,12 +112,17 @@ function create_following() {
 
 
 // add myself to be others followers
-function putFollow(type, id, host, displayName, url, github){
+function putFollow(type, id, host, displayName, url, github, foreignId){
   create_following();
+  
+  x_server = foreignId.split("author/")[0];
+
+
   $.ajax({
     // first author id is who I want to follow
     // second author id is who I am
     // http://127.0.0.1:8000/author/1/my_stream/david/5/
+
 
 
     url:window.location.origin+'/author/'+ new_url[7].toString() +'/followers/'+new_url[4].toString(),
@@ -146,83 +151,163 @@ function putFollow(type, id, host, displayName, url, github){
   });
 }
 
+// function sendFriendRequest(type, summary, author, object) {
+
+
+//   console.log("sening Friend Request");
+//   $.ajax({
+//     // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
+//     url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
+//     type : "POST", // http method
+//     // header
+//     headers: {"X-Server": x_server},
+//     beforeSend: function(xhr) {
+//       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+//     },
+//     contentType: false,
+//     processData: false,
+//     dataType: "json",
+//     data: JSON.stringify({
+//       type: 'follow',
+//       summary: summary,
+//       author: author,
+//       object: object,
+//     }),
+//     // handle a successful response
+//     success : function(data) {
+//         console.log(data); // sanity check
+//     },
+//   });
+// }
+
 function sendFriendRequest(type, summary, author, object) {
+  var foreign_id = object["id"];
+  var fi = foreign_id.split("/");
+  var x_server_header = fi[0]+"//"+fi[2]+"/";
+
+  console.log("sending Friend Request");
   $.ajax({
     // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
-    url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
+    url: window.location.origin +'/author/'+ new_url[4].toString() +'/inbox/',
     type : "POST", // http method
     // header
-    headers: {"X-Server": x_server},
+    headers: {"X-Server": x_server_header},
     beforeSend: function(xhr) {
       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      console.log("author, obj");
+      console.log(author);
+      console.log(object);
     },
-    contentType: false,
+
+
+
+    contentType: "application/json",
     processData: false,
     dataType: "json",
     data: JSON.stringify({
       type: 'follow',
       summary: summary,
-      author: author,
+      actor: author,
       object: object,
-    })
+    }),
     // handle a successful response
     success : function(data) {
-        console.log(data); // sanity check
+        // sanity check
+        console.log(data); 
     },
   });
+} 
+
+
+
+// be friend , to send friend request
+function be_friend(type, id, host, displayName, url, github) {
+    var summary = displayName + " want to be friend with you";
+
+
+
+    var actor = 
+    { type: type,
+      id: id,
+      host: host,
+      displayName: displayName,
+      url: url,
+      github: github };
+
+    $.ajax({
+    //http://127.0.0.1:8000/author/6/my_stream/david/1/
+    url:window.location.origin+'/get_user/'+ new_url[6].toString() +"/"+ new_url[7].toString() +'/',
+    type:"GET",
+    
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    },
+
+
+    success: function(data){
+      console.log("---------------------befriend, data");
+      console.log(data);
+      object = data;
+      sendFriendRequest("follow",summary, actor, object);
+    }
+  });
+
 }
 
 
 jQuery(document).ready(function($) {
   const csrftoken = getCookie('csrftoken');
 
-  // handle follow a person (send friend request)
-  $('body').on('click', '.befriend',function(){
+  // // handle follow a person (send friend request)
+  // $('body').on('click', '.befriend',function(){
 
-    $(this).text("Friend Request Sent");
+  //   $(this).text("Friend Request Sent");
 
-    console.log($(this).val())
-    // views.py
-    $.ajax({
-      // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
-      url:$(this).val(),
-      type : "GET", // http method
-      // header
-      headers: {"X-Server": x_server},
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-      },
-      contentType: false,
-      processData: false,
-      dataType: "json",
-      // handle a successful response
-      success : function(data) {
-          console.log(data); // sanity check
-      },
-    });
+  //   console.log($(this).val())
+  //   // // views.py
+  //   // $.ajax({
+  //   //   // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
+  //   //   url:$(this).val(),
+  //   //   type : "GET", // http method
+  //   //   // header
+  //   //   headers: {"X-Server": x_server},
+  //   //   beforeSend: function(xhr) {
+  //   //     xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+  //   //   },
+  //   //   contentType: false,
+  //   //   processData: false,
+  //   //   dataType: "json",
+  //   //   // handle a successful response
+  //   //   success : function(data) {
+  //   //       console.log(data); // sanity check
+  //   //   },
+  //   // });
 
-    // api.py
-    //  fields = ['type','id', 'summary', 'author', 'object']
-    // first get user info
-    $.ajax({
-      url:window.location.origin+'/get_user/'+ new_url[4].toString() +'/',
-      type:"GET",
-      success: function(data){
-        console.log(data);
-        author = data;
+  //   // api.py
+  //   //  fields = ['type','id', 'summary', 'author', 'object']
+  //   // first get user info
 
-        $.ajax({
-          url:window.location.origin+'/get_user/'+ new_url[6].toString() +'/',
-          type:"GET",
-          success: function(data){
-            console.log(data);
-            object = data;
-            sendFriendRequest(type, id, summary, author, object)
-          }
-        });
-      },
-    });
-  });
+
+  //   $.ajax({
+  //     url:window.location.origin+'/get_user/'+ new_url[4].toString() +'/',
+  //     type:"GET",
+  //     success: function(data){
+  //       console.log(data);
+  //       author = data;
+
+  //       $.ajax({
+  //         //http://127.0.0.1:8000/author/6/my_stream/david/1/
+  //         url:window.location.origin+'/get_user/'+ new_url[6].toString() +"/"+ new_url[7].toString() +'/',
+  //         type:"GET",
+  //         success: function(data){
+  //           console.log(data);
+  //           object = data;
+  //           sendFriendRequest(type, id, summary, author, object)
+  //         }
+  //       });
+  //     },
+  //   });
+  // });
 
   // handle unfollow a friend
   $('body').on('click', '.unfriend',function(){
