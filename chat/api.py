@@ -380,14 +380,14 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     FOREIGN_USER_ID = FOREIGN_AUTHOR_ID
-    FOREIGN_AUTHOR_ID = host_server + "/posts/" + FOREIGN_AUTHOR_ID
-    print("post id: ", FOREIGN_AUTHOR_ID)
+    FOREIGN_AUTHOR_ID = host_server + "author/" + FOREIGN_AUTHOR_ID
+    print("foreign author id: ", FOREIGN_AUTHOR_ID)
 
     try:
         FOREIGN_AUTHOR_ID = request.META["HTTP_X_REQUEST_USER"]
     except:
         FOREIGN_AUTHOR_ID = host_server + "/posts/" + FOREIGN_AUTHOR_ID
-    print("post id: ", FOREIGN_AUTHOR_ID)
+    print("foreign author id: ", FOREIGN_AUTHOR_ID)
 
     if server_origin != host_server :
         return followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID)
@@ -418,6 +418,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
             print("here!")
             # data = JSONParser().parse(request)
             data = request.data
+            print(data)
 
             serializer = ProfileSerializer(data=data)
             if serializer.is_valid(raise_exception=True):

@@ -414,6 +414,18 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
 #         return HttpResponse(status=200)
 #     except BaseException as e:
 #         return HttpResponse(status=401)
+@require_http_methods(["GET"])
+@login_required
+def get_user_info(request):
+    try:
+        user = getUser(request.user.id)
+        type = user.profile.type
+        id = user.profile.id
+        host = user.profile.host
+        displayName = user.profile.displayName
+        return JsonResponse({'type':type, 'id':id, 'host':host, 'displayName':displayName}, status=200)
+    except BaseException as e:
+        return HttpResponse(status=401)
 
 @login_required
 @require_http_methods(["POST"])

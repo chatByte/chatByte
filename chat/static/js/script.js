@@ -10,6 +10,11 @@ var x_server = "https://chatbyte.herokuapp.com/"
 
 var request_id_list = [];
 var inbox_num;
+
+var id;
+var host;
+var type;
+var displayName;
 // helper function to get csrf token
 function getCookie(name) {
     let cookieValue = null;
@@ -71,8 +76,32 @@ function ifFriendRequest(){
             }
           };
         }
+    },
+  });
+}
 
-
+function putFollow(type, id, host, displayName){
+  $.ajax({
+    // author/<str:AUTHOR_ID>/inbox/
+    url:window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString(),
+    type: "PUT", // http method
+    // header
+    headers: {"X-SERVER": x_server},
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    },
+    contentType: 'application/json; charset=utf-8',
+    dataType: "json",
+    data: JSON.stringify({
+      type: type,
+      id: id,
+      host: host,
+      displayName: displayName,
+    }),
+    // fields = ['type','id', 'host', 'displayName', 'url', 'github']
+    // handle a successful response
+    success : function(data) {
+        console.log(data); // sanity check
     },
   });
 }
@@ -283,30 +312,22 @@ jQuery(document).ready(function($) {
 
     // $('#following').attr("style", "display: block");
     $(this).parent('a').html("<h4>Following</h4>");
-    // console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
+
     $.ajax({
-      // author/<str:AUTHOR_ID>/inbox/
-      url:window.location.origin+'/author/'+ new_url[4].toString() +'/follow/'+new_url[6].toString(),
-      type: "GET", // http method
-      // header
-      headers: {"X-SERVER": x_server},
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-      },
-      contentType: 'application/json; charset=utf-8',
-      dataType: "json",
-      data: {
-        type: 'author',
-        id:,
-        host:,
-        displayName:,
+      url:window.location.origin+'/get_user',
+      type:"GET",
+      success: function(data){
+        console.log(data)
+        var id = data.id;
+        var host = data.host;
+        var type = data.type;
+        var displayName = data.displayName;
+
+        putFollow(type, id, host, displayName);
       }
-      // fields = ['type','id', 'host', 'displayName', 'url', 'github']
-      // handle a successful response
-      success : function(data) {
-          console.log(data); // sanity check
-      },
     });
+    // console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
+
   });
 
   setInterval(ifFriendRequest, 5000);
