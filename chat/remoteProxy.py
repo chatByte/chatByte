@@ -5,6 +5,7 @@ import requests
 from .signals import host
 from requests.auth import HTTPBasicAuth
 from django.contrib.auth.models import User
+import json
 
 def profileRequest(method, origin, user_id, data=None):
     '''
@@ -109,7 +110,7 @@ def inboxRequest(method, origin, user_id, data=None):
         if data['type'] == "post":
             print("Recieved a post inbox!")
             print("Username: ", user.username, "first_name: ", user.first_name)
-            response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+            response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
         elif data['type'] == 'like':
             response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
