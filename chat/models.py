@@ -31,7 +31,7 @@ class Profile(models.Model):
     # the friend request i snet
     friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
     # the iteams, that i currenly liked
-    liked = models.OneToOneField('Liked', on_delete=models.CASCADE, blank=True)
+    liked = models.OneToOneField('Liked', on_delete=models.CASCADE, null=True, blank=True)
 
     def __unicode__(self): # for Python 2
         return self.user.username

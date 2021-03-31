@@ -45,16 +45,16 @@ def create_post_signal(sender, instance, created, **kwargs):
             # change to new id and save the instance as a new object
             instance.id = str(instance.author.id) + "/posts/" + str(instance.id)
             instance.comments_url = instance.id + '/comments/'
-            try:
-                instance.liked
-            except:
-                liked = Liked.objects.create()
-                instance.liked = liked
-            try:
-                instance.followers
-            except:
-                followers = Follower.objects.create()
-                instance.followers = followers
+            # try:
+            #     instance.liked
+            # except:
+            #     liked = Liked.objects.create()
+            #     instance.liked = liked
+            # try:
+            #     instance.followers
+            # except:
+            #     followers = Follower.objects.create()
+            #     instance.followers = followers
             instance.save()
             # # remove the old instance
             old_instance = Post.objects.get(pk=id_temp)
