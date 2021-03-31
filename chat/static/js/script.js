@@ -10,10 +10,10 @@ var x_server = window.location.origin +'/';
 var request_id_list = [];
 var inbox_num;
 
-var id;
-var host;
-var type;
-var displayName;
+var author;
+var object;
+
+
 // helper function to get csrf token
 function getCookie(name) {
     let cookieValue = null;
@@ -106,23 +106,32 @@ function putFollow(type, id, host, displayName){
   });
 }
 
-// function putFollowLocol(type, id, host, displayName){
-//   $.ajax({
-//     url:window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString(),
-//     type: "PUT", // http method
-//     // header
-//     headers: {"X-SERVER": x_server},
-//     beforeSend: function(xhr) {
-//       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-//     },
-//     contentType: 'application/json; charset=utf-8',
-//     dataType: "json",
-//     // handle a successful response
-//     success : function(data) {
-//         console.log(data); // sanity check
-//     },
-//   });
-// }
+function sendFriendRequest(type, summary, author, object) {
+  $.ajax({
+    // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
+    url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
+    type : "POST", // http method
+    // header
+    headers: {"X-Server": x_server},
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    },
+    contentType: false,
+    processData: false,
+    dataType: "json",
+    data: JSON.stringify({
+      type: 'follow',
+      summary: summary,
+      author: author,
+      object: object,
+    })
+    // handle a successful response
+    success : function(data) {
+        console.log(data); // sanity check
+    },
+  });
+}
+
 
 jQuery(document).ready(function($) {
   const csrftoken = getCookie('csrftoken');
@@ -133,6 +142,7 @@ jQuery(document).ready(function($) {
     $(this).text("Friend Request Sent");
 
     console.log($(this).val())
+    // views.py
     $.ajax({
       // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
       url:$(this).val(),
@@ -148,6 +158,28 @@ jQuery(document).ready(function($) {
       // handle a successful response
       success : function(data) {
           console.log(data); // sanity check
+      },
+    });
+
+    // api.py
+    //  fields = ['type','id', 'summary', 'author', 'object']
+    // first get user info
+    $.ajax({
+      url:window.location.origin+'/get_user/'+ new_url[4].toString() +'/',
+      type:"GET",
+      success: function(data){
+        console.log(data);
+        author = data;
+
+        $.ajax({
+          url:window.location.origin+'/get_user/'+ new_url[6].toString() +'/',
+          type:"GET",
+          success: function(data){
+            console.log(data);
+            object = data;
+            sendFriendRequest(type, id, summary, author, object)
+          }
+        });
       },
     });
   });

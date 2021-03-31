@@ -750,7 +750,7 @@ def inbox(request, AUTHOR_ID):
                     return JsonResponse(serializer.errors, status=400)
 
             elif data['type'] == 'follow':
-                print("Recieved a friend request!")
+                print("Recieved a friend request!") 
                 serializer = FriendReuqestSerializer(data=data)
                 if serializer.is_valid(raise_exception=True):
                     friend_req = serializer.save()
