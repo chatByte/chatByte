@@ -17,7 +17,7 @@ def update_profile_signal(sender, instance, created, **kwargs):
         except:
             liked = Liked.objects.create()
             followers = Follower.objects.create()
-            Profile.objects.create(user=instance,liked=liked, followers=followers)
+            Profile.objects.create(id=host + "author/" + str(instance.id), user=instance,liked=liked, followers=followers)
         try:
             instance.inbox
         except:
@@ -26,7 +26,6 @@ def update_profile_signal(sender, instance, created, **kwargs):
         Token.objects.create(user=instance)
 
         instance.profile.displayName = instance.username
-        instance.profile.id = host + "author/" + str(instance.id)
         instance.profile.save()
         instance.inbox.post_inbox.author = instance.id
         instance.inbox.post_inbox.save()
