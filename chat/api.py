@@ -402,11 +402,13 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
 
     if server_origin != host_server :
+
         return followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID)
     else:
         # can be optimized
         try:
             print(".....................................Haha..................................................")
+
             profile = Profile.objects.get(id=AUTHOR_ID)
         except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
@@ -429,7 +431,9 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
         elif (request.method == "PUT"):
             print(".....................................Haha1..................................................")
             #add a follower , with FOREIGN_AUTHOR_ID
-            data = JSONParser().parse(request)
+            print("here!")
+            # data = JSONParser().parse(request)
+            data = request.data
 
             serializer = ProfileSerializer(data=data)
             if serializer.is_valid(raise_exception=True):

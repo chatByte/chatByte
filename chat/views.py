@@ -117,6 +117,12 @@ def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
         isFriend = True;
     else:
         isFriend = False;
+
+    if getFollowing(request.user.id, cur_author.id):
+        isFollowing = True;
+    else:
+        isFollowing = False;
+
     # a list of post
     mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
 
@@ -128,6 +134,7 @@ def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
         'timeline': mytimeline,
         'author_num_follwers': author_num_follwers,
         'isFriend': isFriend,
+        'isFollowing': isFollowing,
         'myId':cur_author.id,
         'friend_request_num': friend_request_num,
 
@@ -396,6 +403,18 @@ def update_post(request, AUTHOR_ID, POST_ID):
     
     response = redirect("/author/" + str(user.id) + "/my_posts/")
     return response
+
+@require_http_methods(["GET"])
+@login_required
+def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
+    try:
+        addFollow(request.user.id, FOREIGN_AUTHOR_ID)
+        return HttpResponse(status=200)
+    except BaseException as e:
+        return HttpResponse(status=401)
+
+
+
 @require_http_methods(["POST"])
 @login_required
 def search(request, AUTHOR_ID):
