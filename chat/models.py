@@ -1,4 +1,5 @@
 from django.db import models
+from django_mysql.models import ListCharField
 import uuid
 import django
 from django.contrib.auth.models import User
@@ -67,7 +68,11 @@ class Post(models.Model):
     content = models.TextField()
     # the author has an ID where by authors can be disambiguated
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    categories = models.CharField(max_length=200)
+    categories = ListCharField(
+        base_field=models.CharField(max_length=200),
+        size=6,
+        max_length=(200)
+    )
     count = models.IntegerField(default=0)
     size = models.IntegerField(default=0)
     comments_url = models.CharField(max_length=200)

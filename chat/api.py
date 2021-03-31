@@ -691,6 +691,14 @@ def inbox(request, AUTHOR_ID):
                     try:
                         post = Post.objects.get(id=post_id)
                     except:
+                        author_dict = data['author']
+                        print(author_dict)
+                        try:
+                            author = Profile.objects.get(author_dict['id'])
+                        except Profile.DoesNotExist:
+                           author_serializer = ProfileSerializer(data=author_dict)
+                           if author_serializer.is_valid(raise_exception=True):
+                               author_serializer.save()
                         serializer.save()
                         post = Post.objects.get(id=post_id)
                     user.inbox.post_inbox.items.add(post)
