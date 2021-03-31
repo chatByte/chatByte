@@ -138,7 +138,6 @@ def foreign_public_channel(request, AUTHOR_ID, FOREIGN_ID):
         'foreignId':foreign_author.id,
         'friend_request_num': friend_request_num,
         'cur_author': cur_author
-
     }
     response = render(request, "chat/foreign_public_channel.html", dynamic_contain)
     return response

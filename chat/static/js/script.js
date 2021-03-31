@@ -81,6 +81,8 @@ function ifFriendRequest(){
 }
 
 function putFollow(type, id, host, displayName){
+
+  
   $.ajax({
     // first author id is who I want to follow
     // second author id is who I am
@@ -327,31 +329,42 @@ jQuery(document).ready(function($) {
 
   });
 
-  $('body').on('click', '#followBtn', function(){
+  // $('body').on('click', '#followBtn', function(){
 
-    // $('#following').attr("style", "display: block");
-    $(this).parent('a').html("<h4>Following</h4>");
+  //   // $('#following').attr("style", "display: block");
+  //   $(this).parent('a').html("<h4>Following</h4>");
 
-    $.ajax({
-      url:window.location.origin+'/get_user',
-      type:"GET",
-      success: function(data){
-        console.log(data)
-        var id = data.id;
-        var host = data.host;
-        var type = data.type;
-        var displayName = data.displayName;
-        var github = data.github;
-      }
-    });
+  //   // $.ajax({
+  //   //   url:window.location.origin+'/get_user',
+  //   //   type:"GET",
+  //   //   success: function(data){
+  //   //     console.log(data)
+  //   //     var id = data.id;
+  //   //     var host = data.host;
+  //   //     var type = data.type;
+  //   //     var displayName = data.displayName;
+  //   //     var github = data.github;
+  //   //   }
+  //   // });
+
+
+  //   console.log("clicked follow button")
+  //   console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
+
+  //   // //can use Jinjia {{}}  
+  //   // var id = {{cur_author.id}};
+  //   // var host = {{cur_author.host}};
+  //   // var type = {{cur_author.type}};
+  //   // var displayName = {{cur_author.displayName}};
+  //   // var github = {{cur_author.github}};
     
-    console.log("clicked follow button")
-    console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
+  //   // console.log("Jinjia: ", id, host, type, displayName, github )
 
-    // //can use Jinjia {{}}    
-    // putFollow(type, id, host, displayName);
 
-  });
+  //   var test = "{{cur_author}}";
+  //   console.log("Jinjia: ", test)
+
+  // });
 
   setInterval(ifFriendRequest, 5000);
 

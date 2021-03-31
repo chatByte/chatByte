@@ -83,12 +83,13 @@
               <div class="col-md-3">
                 <div class="profile-info">
                   <img src="{% static 'images/snow-mount.jpg' %}" alt="" class="img-responsive profile-photo" />
-                  <h3 id="fullName">{{myName}}</h3>
+                  <h3 id="fullName">{{foreignName}}</h3>
                   <p class="text-muted"> {{author_num_follwers}} people is following her</p>
                   {% if isFollowing %}
                     <h4 style="display: block" id="following">Following</h4>
                   {% else %}
-                    <a href="#" ><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" id='followBtn'/></a>
+                    <a href="#" ><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" id='followBtn' 
+                            onclick="putFollow( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}')"/></a>
                   {% endif %}
 
                 </div>
@@ -222,5 +223,6 @@
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
+
   </body>
 </html>
