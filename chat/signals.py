@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 from .models import Comment, Post, Profile, Inbox, PostInbox, Liked, Follower
 
 host = "https://chatbyte.herokuapp.com/"
-# host = "https://localhost:8000/"
+# host = "https://127.0.0.1:8000/"
 
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):
