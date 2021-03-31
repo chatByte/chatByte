@@ -108,6 +108,7 @@ def inboxRequest(method, origin, user_id, data=None):
     if method == "POST":
         if data['type'] == "post":
             print("Recieved a post inbox!")
+            print("Username: ", user.username, "password: ", user.password)
             response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
             print(response.status_code)
         elif data['type'] == 'like':
