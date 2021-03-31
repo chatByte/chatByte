@@ -1,12 +1,10 @@
-
 'use strict'
 var url      = window.location.href;
 
 var new_url = url.split('/');
 var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
 console.log(url_header)
-// var x_server = window.location.origin + '/author/'+new_url[4].toString();
-var x_server = "https://chatbyte.herokuapp.com/"
+var x_server = window.location.origin + '/author/'+new_url[4].toString();
 
 var request_id_list = [];
 var inbox_num;
@@ -281,13 +279,13 @@ jQuery(document).ready(function($) {
 
   $('body').on('click', '#followBtn', function(){
 
-    // $('#following').attr("style", "display: block");
-    $(this).parent('a').html("<h4>Following</h4>");
+    $('#following').attr("style", "display: block");
+    $(this).attr("style", "display: none");
     // console.log(window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString())
     $.ajax({
       // author/<str:AUTHOR_ID>/inbox/
-      url:window.location.origin+'/author/'+ new_url[4].toString() +'/follow/'+new_url[6].toString(),
-      type: "GET", // http method
+      url:window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString(),
+      type: "PUT", // http method
       // header
       headers: {"X-SERVER": x_server},
       beforeSend: function(xhr) {
@@ -295,13 +293,7 @@ jQuery(document).ready(function($) {
       },
       contentType: 'application/json; charset=utf-8',
       dataType: "json",
-      data: {
-        type: 'author',
-        id:,
-        host:,
-        displayName:,
-      }
-      // fields = ['type','id', 'host', 'displayName', 'url', 'github']
+      data: {},
       // handle a successful response
       success : function(data) {
           console.log(data); // sanity check
@@ -309,6 +301,6 @@ jQuery(document).ready(function($) {
     });
   });
 
-  setInterval(ifFriendRequest, 5000);
+  // setInterval(ifFriendRequest, 5000);
 
 });
