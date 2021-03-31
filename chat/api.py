@@ -641,13 +641,17 @@ def liked_post_obj(request, AUTHOR_ID):
 
         return JsonResponse(serializer.errors, status=400)
 
+
+'''
+# Inbox has a one-to-one relationship with User, and the User id is an integer, AUTHOR_ID
+# to avoid Reference problem , make a copy of AUTHOR_ID by creating a new string
+'''
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET', 'DELETE'])
 def inbox(request, AUTHOR_ID):
-    # Inbox has a one-to-one relationship with User, and the User id is an integer, AUTHOR_ID
-    # to avoid Reference problem , make a copy of AUTHOR_ID by creating a new string
+
     USER_ID = (AUTHOR_ID + '.')[:-1]
 
     # add for test purpose
