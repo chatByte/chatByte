@@ -496,14 +496,16 @@ create a following, add foreigner to be my followings
 '''
 @login_required
 @require_http_methods(["POST", "PUT"])
-def following(request, AUTHOR_ID, FOREIGN_ID):
+def following(request, AUTHOR_ID, SERVER, FOREIGN_ID):
+    server = User.objects.get(username=SERVER)
+    foreign_server = server.last_name
     AUTHOR_ID = host_server + "author/"+ AUTHOR_ID
-    FOREIGN_ID = host_server + "author/"+ FOREIGN_ID
+    FOREIGN_ID = foreign_server + "author/"+ FOREIGN_ID
     foreigner = Profile.objects.get(id=FOREIGN_ID)
     profile = Profile.objects.get(id=AUTHOR_ID)
     profile.followings.add(foreigner)
     profile.save()
-    return JsonResponse({}, status=204)
+    return JsonResponse({}, status=204) 
 
 
 '''

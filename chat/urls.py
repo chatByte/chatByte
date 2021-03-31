@@ -56,13 +56,7 @@ urlpatterns = [
 
 
     #follow: following a body, inside view, we need it, since we need to refresh page, or we can do it in AJAX_ js
-    path(r"author/<str:AUTHOR_ID>/following/<str:FOREIGN_ID>/", views.following,name="following_view"),
-
-
-
-
-
-
+    path(r"author/<str:AUTHOR_ID>/following/<str:SERVER>/<str:FOREIGN_ID>/", views.following,name="following_view"), 
 
 
 
