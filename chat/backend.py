@@ -66,6 +66,16 @@ def deleteFriend(usr_id, friend_id):
         print(e)
         return False
 
+def getFollowing(usr_id, following_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        following = User.objects.get(id=following_id)
+        if following.profile in user.profile.followings.all(): return following
+        return None
+    except BaseException as e:
+        print(e)
+        return None
+
 def getFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
@@ -84,15 +94,14 @@ def getFriends(usr_id):
         print(e)
         return None
 
-def addFollow(usr_id, friend_id):
+def addFollow(usr_id, follow_id):
     user = User.objects.get(id=usr_id)
-    friend = User.objects.get(id=friend_id)
-
-    user.profile.followings.add(friend.profile)
-    friend.profile.followers.add(user.profile)
-
+    follow = User.objects.get(id=follow_id)
+    print(follow)
+    user.profile.followings.add(follow.profile)
+    follow.profile.followers.add(user.profile)
     user.save()
-    friend.save()
+    follow.save()
     return True
 
 

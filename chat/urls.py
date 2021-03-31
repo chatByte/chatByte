@@ -52,7 +52,7 @@ urlpatterns = [
     path(r"author/<str:AUTHOR_ID>/followers/", api.followers_obj, name="followers_obj"),
     # URL:URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
     path(r"author/<str:AUTHOR_ID>/followers/<str:FOREIGN_AUTHOR_ID>", api.follower_obj, name="follower_obj"),
-
+    path(r"author/<str:AUTHOR_ID>/follow/<str:FOREIGN_AUTHOR_ID>", views.add_follow, name="add_follow"),
 
     #Liked
     path("author/<str:AUTHOR_ID>/liked/", api.liked_post_obj, name="like_post"),
