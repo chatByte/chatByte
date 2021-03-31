@@ -24,7 +24,6 @@ Create your views here.
 """
 
 
-
 @login_required
 def start_homepage(request):
     if request.user.is_authenticated:

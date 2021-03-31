@@ -13,16 +13,16 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     type = models.CharField(max_length=200, default="author")
     id = models.CharField(max_length=200, primary_key=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     host = models.URLField(max_length=200, null=True)
-    displayName = models.CharField(max_length=200, unique=True, null=True)
+    displayName = models.CharField(max_length=200, null=True)
     url = models.URLField(max_length=200, null=True)
     github = models.URLField(max_length=200, null=True)
 
     # a group of author, that i accepted to be my friend
     friends = models.ManyToManyField("Profile", related_name='%(class)s_friends', blank=True)
     # a group of author, that  followed me
-    followers = models.OneToOneField("Follower", on_delete=models.CASCADE, blank=True)
+    followers = models.OneToOneField("Follower", on_delete=models.CASCADE, null=True, blank=True)
     # a group of author, that i am currently following
     followings = models.ManyToManyField("Profile", related_name='%(class)s_followings', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
@@ -31,7 +31,7 @@ class Profile(models.Model):
     # the friend request i snet
     friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
     # the iteams, that i currenly liked
-    liked = models.OneToOneField('Liked', on_delete=models.CASCADE, blank=True)
+    liked = models.OneToOneField('Liked', on_delete=models.CASCADE, null=True, blank=True)
 
     def __unicode__(self): # for Python 2
         return self.user.username

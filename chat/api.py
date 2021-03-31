@@ -51,7 +51,6 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
 
 
 
-
 '''
 Testing method
 

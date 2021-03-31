@@ -60,7 +60,6 @@ def addFriend(usr_id, friend_id):
         print(e)
         return False
 
-
 def deleteFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
