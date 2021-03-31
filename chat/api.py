@@ -698,8 +698,8 @@ def inbox(request, AUTHOR_ID):
                         except Profile.DoesNotExist:
                            author_serializer = ProfileSerializer(data=author_dict)
                            if author_serializer.is_valid(raise_exception=True):
-                               author_serializer.save()
-                        serializer.save()
+                               author = author_serializer.save()
+                        serializer.save(author=author)
                         post = Post.objects.get(id=post_id)
                     user.inbox.post_inbox.items.add(post)
                     user.inbox.post_inbox.save()
