@@ -191,7 +191,8 @@ def createPost(title, source, origin, description, content_type, content, author
             print(friend_profile.id)
             author_id = friend_profile.id.split('author/')[1]
             serializer = PostSerializer(post)
-            if origin == host:
+            server_origin = friend_profile.id.split("author/")[0]
+            if server_origin == host:
                 print("doing locally")
                 # send post to inbox
                 friend_profile.user.inbox.post_inbox.items.add(post)
@@ -199,7 +200,8 @@ def createPost(title, source, origin, description, content_type, content, author
                 friend_profile.timeline.add(post)
             else:
                 # send post to remote inbox
-                inboxRequest("POST", origin, author_id, serializer.data)
+                print(serializer.data)
+                inboxRequest("POST", server_origin, author_id, serializer.data)
         print("done")
         return True
     except BaseException as e:
