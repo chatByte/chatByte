@@ -80,9 +80,9 @@ function ifFriendRequest(){
   });
 }
 
-function putFollow(type, id, host, displayName){
+function putFollow(type, id, host, displayName, url, github){
 
-  
+
   $.ajax({
     // first author id is who I want to follow
     // second author id is who I am
@@ -100,6 +100,9 @@ function putFollow(type, id, host, displayName){
       id: id,
       host: host,
       displayName: displayName,
+      url: url,
+      github: github
+
     }),
     // fields = ['type','id', 'host', 'displayName', 'url', 'github']
     // handle a successful response

@@ -89,7 +89,7 @@
                     <h4 style="display: block" id="following">Following</h4>
                   {% else %}
                     <a href="#" ><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" id='followBtn' 
-                            onclick="putFollow( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}')"/></a>
+                            onclick="putFollow( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}, {{cur_author.url}}, {{cur_author.github}}')"/></a>
                   {% endif %}
 
                 </div>
