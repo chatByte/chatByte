@@ -653,7 +653,7 @@ def liked_post_obj(request, AUTHOR_ID):
 # to avoid Reference problem , make a copy of AUTHOR_ID by creating a new string
 '''
 @csrf_exempt
-@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+# @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 # @permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET', 'DELETE'])
 def inbox(request, AUTHOR_ID):
