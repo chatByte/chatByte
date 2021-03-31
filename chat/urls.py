@@ -29,11 +29,11 @@ urlpatterns = [
 
     path(r"author/<str:AUTHOR_ID>/my_posts/?search<str:FOREGIN_ID>", views.search_user, name="search"),
 
-    # show friend list
+
     path(r"author/<str:AUTHOR_ID>/my_friends/", views.my_friends, name="my_friends"),
     # check if new friend request
     path("ifFriendRequest/", views.if_friend_request, name="if_friend_request"),
-
+    # show friend list
     path(r"author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", views.delete_friend, name="friend_delete"),
 
     # add friend
