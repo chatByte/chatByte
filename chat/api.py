@@ -654,7 +654,7 @@ def liked_post_obj(request, AUTHOR_ID):
 '''
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET', 'DELETE'])
 def inbox(request, AUTHOR_ID):
 
