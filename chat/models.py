@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     type = models.CharField(max_length=200, default="author")
     id = models.CharField(max_length=200, primary_key=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     host = models.URLField(max_length=200, null=True)
     displayName = models.CharField(max_length=200, null=True)
     url = models.URLField(max_length=200, null=True)
