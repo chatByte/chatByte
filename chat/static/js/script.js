@@ -83,7 +83,7 @@ function ifFriendRequest(){
 // create a following, add foreigner to be my followings
 function create_following() {
     var cur_author_id = new_url[4].toString();
-    var foreign_id = new_url[6].toString();
+    var foreign_id = new_url[7].toString();
     console.log(cur_author_id);
     console.log(foreign_id);
 
@@ -117,7 +117,10 @@ function putFollow(type, id, host, displayName, url, github){
   $.ajax({
     // first author id is who I want to follow
     // second author id is who I am
-    url:window.location.origin+'/author/'+ new_url[6].toString() +'/followers/'+new_url[4].toString(),
+    // http://127.0.0.1:8000/author/1/my_stream/david/5/
+
+
+    url:window.location.origin+'/author/'+ new_url[7].toString() +'/followers/'+new_url[4].toString(),
     type: "PUT", // http method
     // header
     headers: {"X-SERVER": x_server},
