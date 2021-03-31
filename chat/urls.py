@@ -55,10 +55,19 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/liked/", api.liked_post_obj, name="like_post"),
 
 
+    #follow: following a body, inside view, we need it, since we need to refresh page, or we can do it in AJAX_ js
+    path(r"author/<str:AUTHOR_ID>/following/<str:FOREIGN_AUTHOR_ID>/", views.following,name="following_view"),
+
+
+
+
+
+
+
+
 
     #  Doing----------------------------------------------------------------------------------------------------
-    # #follow: follow a body, inside view, we need it, since we need to refresh page, or we can do it in AJAX_ js
-    # path(r"author/<str:AUTHOR_ID>/follow/<str:FOREIGN_AUTHOR_ID>/", views.follow,,name="follow_view"),
+ 
     # #follow: unfollow a body, inside view
     # ath(r"author/<str:AUTHOR_ID>/unfollow/<str:FOREIGN_AUTHOR_ID>/", views.unfollow,name="unfollow_view"),
 

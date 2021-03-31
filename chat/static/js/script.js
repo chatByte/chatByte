@@ -1,6 +1,5 @@
-
 'use strict'
-var url      = window.location.href;
+var url = window.location.href;
 
 var new_url = url.split('/');
 var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
@@ -80,9 +79,41 @@ function ifFriendRequest(){
   });
 }
 
+
+
+// create a following, add foreigner to be my followings
+function create_following() {
+    var cur_author_id = new_url[4].toString();
+    var foregin_id = new_url[6].toString();
+
+    $.ajax({
+    // "author/<str:AUTHOR_ID>/following/<str:FOREIGN_AUTHOR_ID>/"
+    url:window.location.origin+'/author/'+ cur_author_id +'/following/'+ foregin_id,
+    type: "POST", // http method
+    // header
+    headers: {"X-SERVER": x_server},
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    },
+    contentType: 'application/json; charset=utf-8',
+    dataType: "json",
+    data: JSON.stringify({
+
+    }),
+    // fields = ['type','id', 'host', 'displayName', 'url', 'github']
+    // handle a successful response
+    success : function(data) {
+        console.log(data); // sanity check
+    },
+  });
+
+}
+
+
+
+// add myself to be others followers
 function putFollow(type, id, host, displayName, url, github){
-
-
+  create_following();
   $.ajax({
     // first author id is who I want to follow
     // second author id is who I am

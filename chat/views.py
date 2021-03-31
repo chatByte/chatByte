@@ -430,7 +430,9 @@ def update_post(request, AUTHOR_ID, POST_ID):
 
 
 
-
+'''
+search a specifc user ID, redirect to http://127.0.0.1:8000/author/1/my_stream/2/#
+'''
 @require_http_methods(["POST"])
 @login_required
 def search(request, AUTHOR_ID):
@@ -484,6 +486,18 @@ def search_user(request, AUTHOR_ID, FOREIGN_ID):
         return JsonResponse(serializer.data, status=201)
     except Profile.DoesNotExist:
         return profileRequest("GET", server_origin, FOREIGN_ID)
+
+
+
+'''
+create a following, add foreigner to be my followings
+'''
+@login_required
+@require_http_methods(["POST", "PUT"])
+def following(request, AUTHOR_ID, FOREIGN_ID):
+   
+    return JsonResponse({}, status=200)
+
 
 '''
 Below is the dead code, or previous version, keep it , incase need that in the future
