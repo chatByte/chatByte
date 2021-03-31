@@ -1,9 +1,15 @@
+from rest_framework.serializers import Serializer
 from .models import Post, Comment, Profile, Follower, FriendRequest, Like, Liked
 import datetime
 from django.conf import settings
 import django
 from django.contrib.auth.models import User
 import traceback
+from .signals import host
+from .serializers import PostSerializer
+from requests.auth import HTTPBasicAuth
+from .remoteProxy import inboxRequest
+import requests
 
 # def setCookie(response, key, value, days_expire=1):
 #     # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
@@ -188,6 +194,23 @@ def createPost(title, source, origin, description, content_type, content, author
         # print(post.author)
         author.timeline.add(post)
         author.save()
+
+        print("Broadcasting post to friends...")
+        # Broadcast to friends
+        for friend_profile in author.friends.all():
+            print(friend_profile.id)
+            author_id = friend_profile.id.split('author/')[1]
+            serializer = PostSerializer(post)
+            if origin == host:
+                print("doing locally")
+                # send post to inbox
+                friend_profile.user.inbox.post_inbox.items.add(post)
+                # add post into timeline
+                friend_profile.timeline.add(post)
+            else:
+                # send post to remote inbox
+                inboxRequest("POST", origin, author_id, serializer.data)
+        print("done")
         return True
     except BaseException as e:
         print(repr(e))
@@ -198,8 +221,9 @@ def createPost(title, source, origin, description, content_type, content, author
 def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
     # Please authenticate before calling this method
     try:
+        print("here")
         post = Post.objects.get(id=id)
-        # print("old title:", post.title)
+        print("old id:", id)
         post.title = title
 
         post.source = source

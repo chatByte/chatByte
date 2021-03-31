@@ -10,6 +10,7 @@ from rest_framework.parsers import JSONParser
 
 from .form import *
 from .backend import *
+from .signals import host
 import base64
 import os
 import json
@@ -184,8 +185,8 @@ def posts(request, AUTHOR_ID):
 
         request_post = request.POST
 
-        source = cur_user_name # Who share it to me
-        origin = cur_user_name # who origin create
+        source = request.user.profile.id # Who share it to me
+        origin = host_server # who origin create
         title = request_post.get("title", "")
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
@@ -405,14 +406,53 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
         return HttpResponse(status=401)
 
 
-@require_http_methods(["GET"])
+# @require_http_methods(["GET"])
+# @login_required
+# def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
+#     try:
+#         addFollow(request.user.id, FOREIGN_AUTHOR_ID)
+#         return HttpResponse(status=200)
+#     except BaseException as e:
+#         return HttpResponse(status=401)
+
 @login_required
-def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
-    try:
-        addFollow(request.user.id, FOREIGN_AUTHOR_ID)
-        return HttpResponse(status=200)
-    except BaseException as e:
-        return HttpResponse(status=401)
+@require_http_methods(["POST"])
+def update_post(request, AUTHOR_ID, POST_ID):
+    print('edited arguemnt POST_ID', str(POST_ID))
+    id = host_server + 'author/' + str(AUTHOR_ID) + '/posts/' + str(POST_ID)
+    print("edited post id:", id)
+    user = None
+    username=""
+    if request.user.is_authenticated:
+        user = request.user
+        username = request.user.profile.displayName
+
+    request_post = request.POST
+    source = username # Who share it to me
+    origin = username # who origin create
+    title = request_post.get("title", "")
+    description = request_post.get("description", "")
+    content_type = request_post.get("contentType", "")
+    visibility = request_post.get("visibility", "")
+    f = request.FILES.get("file", "")
+    categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
+    if len(f) > 0:
+        categories = "image/" + os.path.splitext(f.name)[-1][1:]
+        with f.open("rb") as image_file:
+            content = base64.b64encode(image_file.read())
+    else:
+        content = description
+
+    updateFlag = updatePost(id, title, source, origin, description, content_type, content, categories, visibility)
+    if updateFlag:
+        print("Successful edited post, info: ", description)
+        response = HttpResponse(status=200)
+        return response
+    else:
+        print("failed to edit the post!!", description)
+
+    response = redirect("/author/" + str(user.id) + "/my_posts/")
+    return response
 
 
 @require_http_methods(["POST"])
@@ -433,9 +473,24 @@ def search(request, AUTHOR_ID):
     try:
         target = Profile.objects.get(id=target_id)
         serializer = ProfileSerializer(target)
-        return JsonResponse(serializer.data, status=201)
+
+        numberID_target = target_id.split("/")[-1]
+
+        # 127.0.0.1:8000/author/1/my_stream/2
+        # ID
+        #http://127.0.0.1:8000/author/2
+        response = redirect("../my_stream/" + numberID_target + "/")
+
+        # return response
+        redirect_url = "../my_stream/" + numberID_target + "/"
+
+
+        json_dict = {"url": redirect_url}
+
+        return JsonResponse(json_dict, status=201)
     except Profile.DoesNotExist:
         return profileRequest("GET", server_origin, target_id)
+
 
 @require_http_methods(["POST"])
 @login_required
