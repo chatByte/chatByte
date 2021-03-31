@@ -5,6 +5,7 @@ import requests
 from .signals import host
 from requests.auth import HTTPBasicAuth
 from django.contrib.auth.models import User
+import json
 
 def profileRequest(method, origin, user_id, data=None):
     '''
@@ -23,7 +24,7 @@ def profileRequest(method, origin, user_id, data=None):
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
-        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -42,7 +43,7 @@ def postsRequest(method, origin, user_id, data=None):
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
-        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -59,7 +60,7 @@ def postRequest(method, origin, user_id, post_id, data=None):
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
-        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
@@ -68,7 +69,7 @@ def postRequest(method, origin, user_id, post_id, data=None):
         response = requests.delete(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "PUT":
-        response = requests.put(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        response = requests.put(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -87,7 +88,7 @@ def commentRequest(method, origin, user_id, post_id, data=None):
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
-        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -109,14 +110,14 @@ def inboxRequest(method, origin, user_id, data=None):
         if data['type'] == "post":
             print("Recieved a post inbox!")
             print("Username: ", user.username, "first_name: ", user.first_name)
-            response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+            response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
         elif data['type'] == 'like':
-            response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+            response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
         elif data['type'] == 'follow':
             print("Recieved a friend request!")
-            response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+            response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
         else:
             return JsonResponse({"Error": "Invalid inbox type"}, status=400) 
@@ -160,7 +161,7 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "POST":
-        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
