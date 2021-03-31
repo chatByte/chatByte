@@ -693,19 +693,19 @@ def inbox(request, AUTHOR_ID):
                 serializer = PostSerializer(data=data)
                 if serializer.is_valid(raise_exception=True):
                     post_id = data['id']
+                    # try:
+                    #     post = Post.objects.get(id=post_id)
+                    # except:
+                    author_dict = data['author']
+                    print(author_dict)
                     try:
-                        post = Post.objects.get(id=post_id)
-                    except:
-                        author_dict = data['author']
-                        print(author_dict)
-                        try:
-                            author = Profile.objects.get(author_dict['id'])
-                        except Profile.DoesNotExist:
-                           author_serializer = ProfileSerializer(data=author_dict)
-                           if author_serializer.is_valid(raise_exception=True):
-                               author = author_serializer.save()
-                        serializer.save(author=author)
-                        post = Post.objects.get(id=post_id)
+                        author = Profile.objects.get(id=author_dict['id'])
+                    except Profile.DoesNotExist:
+                        author_serializer = ProfileSerializer(data=author_dict)
+                        if author_serializer.is_valid(raise_exception=True):
+                            author = author_serializer.save()
+                    serializer.save(author=author)
+                    post = Post.objects.get(id=post_id)
                     user.inbox.post_inbox.items.add(post)
                     user.inbox.post_inbox.save()
                     user.profile.timeline.add(post)
