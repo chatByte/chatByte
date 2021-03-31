@@ -144,6 +144,7 @@ function deletePost(id){
         headers: {"X-Server": x_server},
         beforeSend: function(xhr) {
           xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+          xhr.setRequestHeader("Accept","application/json");
         },
         contentType: false,
         processData: false,
