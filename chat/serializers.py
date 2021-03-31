@@ -119,7 +119,7 @@ class PostSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(read_only=True)
     class Meta:
         model = Post
-        fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'comments_url', 'comments', 'published', 'visibility', 'unlisted'  ]
+        fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'comment_url', 'comments', 'published', 'visibility', 'unlisted'  ]
         
 
 class PostInboxSerializer(serializers.ModelSerializer):
