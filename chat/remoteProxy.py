@@ -21,9 +21,9 @@ def profileRequest(method, origin, user_id, data=None):
         'X-Request-User': str(host) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
-        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -40,9 +40,9 @@ def postsRequest(method, origin, user_id, data=None):
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
-        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -59,16 +59,16 @@ def postRequest(method, origin, user_id, post_id, data=None):
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
-        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "DELETE":
-        response = requests.delete(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.delete(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "PUT":
-        response = requests.put(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.put(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -85,9 +85,9 @@ def commentRequest(method, origin, user_id, post_id, data=None):
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
-        response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -108,23 +108,24 @@ def inboxRequest(method, origin, user_id, data=None):
     if method == "POST":
         if data['type'] == "post":
             print("Recieved a post inbox!")
-            response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+            print("Username: ", user.username, "first_name: ", user.first_name)
+            response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
         elif data['type'] == 'like':
-            response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+            response = requests.post(url, data=data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
         elif data['type'] == 'follow':
             print("Recieved a friend request!")
-            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
         else:
             return JsonResponse({"Error": "Invalid inbox type"}, status=400) 
     elif method == "DELETE":
-        response = requests.delete(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.delete(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "GET":
         print("Get request processing...")
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -140,7 +141,7 @@ def followersRequest(method, origin, user_id, data=None):
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -156,10 +157,10 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "POST":
-        response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -177,7 +178,7 @@ def likedRequest(method, origin, user_id, data=None):
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -194,7 +195,7 @@ def likesRequest(method, origin, user_id, post_id, data=None):
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -211,7 +212,7 @@ def commentLikesRequest(method, origin, user_id, post_id, comment_id, data=None)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
@@ -228,6 +229,6 @@ def friendsRequest(method, origin, user_id, post_id, comment_id, data=None):
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
