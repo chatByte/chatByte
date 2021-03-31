@@ -477,15 +477,14 @@ def followers_obj(request, AUTHOR_ID):
         return followersRequest(request.method,server_origin, AUTHOR_ID)
     else:
         try:
-            profile = Profile.objects.get(user_id=AUTHOR_ID)
+            profile = Profile.objects.get(id=AUTHOR_ID)
         except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
-        followers = profile.followers
-        serializer = FollowerSerializer(followers, many=True)
+        followers = profile.followers.items.all()
+        serializer = ProfileSerializer(followers, many=True)
         if request.method == "GET":
-            if serializer.is_valid(raise_exception=True):
-                return JsonResponse(serializer.data, status=200)
+            return JsonResponse(serializer.data, status=200, safe=False)
 
         return JsonResponse(serializer.errors, status=400)
 
