@@ -37,8 +37,8 @@ class Profile(models.Model):
     def __unicode__(self): # for Python 2
         return self.user.username
 
-    # class Meta:
-    #     managed = False
+    class Meta:
+        managed = False
 
 class Comment(models.Model):
     type = models.CharField(max_length=200, default="comment")
@@ -74,7 +74,7 @@ class Post(models.Model):
     )
     count = models.IntegerField(default=0)
     size = models.IntegerField(default=0)
-    comments_url = models.CharField(max_length=200)
+    comment_url = models.CharField(max_length=200)
     comments = models.ManyToManyField('Comment', blank=True)
     # published date
     published = models.DateTimeField(default=django.utils.timezone.now)
