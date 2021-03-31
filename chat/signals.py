@@ -5,7 +5,7 @@ from rest_framework.authtoken.models import Token
 
 from .models import Comment, Post, Profile, Inbox, PostInbox, Liked, Follower
 
-host = "https://app-chatbyte.herokuapp.com/"
+host = "https://chatbyte.herokuapp.com/"
 # host = "https://localhost:8000/"
 
 @receiver(post_save, sender=User)
