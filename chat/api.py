@@ -107,7 +107,8 @@ def post_obj(request, AUTHOR_ID, POST_ID):
     print(server_origin)
 
     if server_origin is not None and server_origin != host_server:
-        return postRequest(request.method,server_origin, USER_ID, USER_POST_ID)
+        print("Remote request body: ", request.data)
+        return postRequest(request.method,server_origin, USER_ID, USER_POST_ID, request.data)
     else:
         if request.method == "DELETE":
             # remove the post
@@ -171,7 +172,8 @@ def posts_obj(request, AUTHOR_ID):
     print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
-        return postsRequest(request.method,server_origin, USER_ID)
+        print("Remote request body: ", request.data)
+        return postsRequest(request.method,server_origin, USER_ID, request.data)
     else:
         if request.method == 'GET':
             profile = Profile.objects.get(id=AUTHOR_ID)
@@ -249,7 +251,8 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
     print("post id: ", POST_ID)
 
     if server_origin is not None and server_origin != host_server:
-        return commentRequest(request.method,server_origin, USER_ID, USER_POST_ID)
+        print("Remote request body: ", request.data)
+        return commentRequest(request.method,server_origin, USER_ID, USER_POST_ID, request.data)
     else:
         # checking, comments' father exist or not
         try:
@@ -334,8 +337,8 @@ def profile_obj(request, AUTHOR_ID):
     print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
-        print("origin is different, going to remote...")
-        return profileRequest(request.method,server_origin, USER_ID)
+        print("Remote request body: ", request.data)
+        return profileRequest(request.method,server_origin, USER_ID, request.data)
     else:
         try:
             profile = Profile.objects.get(id=AUTHOR_ID)
@@ -403,7 +406,8 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
 
     if server_origin is not None and server_origin != host_server:
-        return followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID)
+        print("Remote request body: ", request.data)
+        return followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID, request.data)
     else:
         # can be optimized
         try:
@@ -474,7 +478,8 @@ def followers_obj(request, AUTHOR_ID):
     print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
-        return followersRequest(request.method,server_origin, AUTHOR_ID)
+        print("Remote request body: ", request.data)
+        return followersRequest(request.method,server_origin, AUTHOR_ID, request.data)
     else:
         try:
             profile = Profile.objects.get(id=AUTHOR_ID)
@@ -512,7 +517,8 @@ def get_friends_obj(request, AUTHOR_ID):
     print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
-        return friendsRequest(request.method,server_origin, AUTHOR_ID)
+        print("Remote request body: ", request.data)
+        return friendsRequest(request.method,server_origin, AUTHOR_ID, request.data)
     else:
         try:
             profile = Profile.objects.get(user_id=AUTHOR_ID)
@@ -569,7 +575,8 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
     print("post id: ", POST_ID)
 
     if server_origin is not None and server_origin != host_server:
-        return likesRequest(request.method, server_origin, AUTHOR_ID, POST_ID)
+        print("Remote request body: ", request.data)
+        return likesRequest(request.method, server_origin, AUTHOR_ID, POST_ID, request.data)
     else:
         try:
             post = Post.objects.get(pk=POST_ID)
@@ -597,7 +604,8 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     print("post id: ", COMMENT_ID)
 
     if server_origin is not None and server_origin != host_server:
-        return likesRequest(request.method, server_origin, AUTHOR_ID, POST_ID, COMMENT_ID)
+        print("Remote request body: ", request.data)
+        return likesRequest(request.method, server_origin, AUTHOR_ID, POST_ID, COMMENT_ID, request.data)
     else:
         try:
             comment = Comment.objects.get(pk=COMMENT_ID)
@@ -624,7 +632,8 @@ def liked_post_obj(request, AUTHOR_ID):
     print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
-        return likedRequest(request.method,server_origin, AUTHOR_ID)
+        print("Remote request body: ", request.data)
+        return likedRequest(request.method,server_origin, AUTHOR_ID, request.data)
     else:
         # can be optimized
         try:
@@ -664,7 +673,8 @@ def inbox(request, AUTHOR_ID):
     print("user id: ", USER_ID)
 
     if server_origin is not None and server_origin != host_server:
-        return inboxRequest(request.method,server_origin, AUTHOR_ID)
+        print("------ Remote request body: ", request.data)
+        return inboxRequest(request.method,server_origin, AUTHOR_ID, request.data)
     else:
         if request.method == "POST":
             user = User.objects.get(pk=USER_ID)
@@ -783,7 +793,8 @@ def stream_obj(request, AUTHOR_ID):
     print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
-        return likedRequest(request.method,server_origin, AUTHOR_ID)
+        print("Remote request body: ", request.data)
+        return likedRequest(request.method,server_origin, AUTHOR_ID, request.data)
     else:
         if request.method == 'GET':
             try:
