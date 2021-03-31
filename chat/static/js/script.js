@@ -6,7 +6,7 @@ var new_url = url.split('/');
 var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
 console.log(url_header)
 // var x_server = window.location.origin + '/author/'+new_url[4].toString();
-var x_server = "https://chatbyte.herokuapp.com/"
+var x_server = window.location.origin +'/';
 
 var request_id_list = [];
 var inbox_num;
@@ -82,8 +82,9 @@ function ifFriendRequest(){
 
 function putFollow(type, id, host, displayName){
   $.ajax({
-    // author/<str:AUTHOR_ID>/inbox/
-    url:window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString(),
+    // first author id is who I want to follow
+    // second author id is who I am
+    url:window.location.origin+'/author/'+ new_url[6].toString() +'/followers/'+new_url[4].toString(),
     type: "PUT", // http method
     // header
     headers: {"X-SERVER": x_server},
@@ -105,6 +106,24 @@ function putFollow(type, id, host, displayName){
     },
   });
 }
+
+// function putFollowLocol(type, id, host, displayName){
+//   $.ajax({
+//     url:window.location.origin+'/author/'+ new_url[4].toString() +'/followers/'+new_url[6].toString(),
+//     type: "PUT", // http method
+//     // header
+//     headers: {"X-SERVER": x_server},
+//     beforeSend: function(xhr) {
+//       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+//     },
+//     contentType: 'application/json; charset=utf-8',
+//     dataType: "json",
+//     // handle a successful response
+//     success : function(data) {
+//         console.log(data); // sanity check
+//     },
+//   });
+// }
 
 jQuery(document).ready(function($) {
   const csrftoken = getCookie('csrftoken');

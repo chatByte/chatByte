@@ -405,14 +405,16 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
         return HttpResponse(status=401)
 
 
-# @require_http_methods(["GET"])
-# @login_required
-# def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
-#     try:
-#         addFollow(request.user.id, FOREIGN_AUTHOR_ID)
-#         return HttpResponse(status=200)
-#     except BaseException as e:
-#         return HttpResponse(status=401)
+@require_http_methods(["GET"])
+@login_required
+def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
+    try:
+        addFollow(request.user.id, FOREIGN_AUTHOR_ID)
+        return HttpResponse(status=200)
+    except BaseException as e:
+        return HttpResponse(status=401)
+
+        
 @require_http_methods(["GET"])
 @login_required
 def get_user_info(request):
