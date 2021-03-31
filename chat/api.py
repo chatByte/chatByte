@@ -760,12 +760,34 @@ def inbox(request, AUTHOR_ID):
 
                 serializer = FriendReuqestSerializer(data=data)
                 if serializer.is_valid(raise_exception=True):
-                    friend_req = serializer.save()
+
+                    actor_dict = data['actor'] 
+
+                    try:
+                        actor = Profile.objects.get(id=actor_dict['id'])
+                    except Profile.DoesNotExist:
+                        actor_serializer = ProfileSerializer(data=actor_dict)
+                        if actor_serializer.is_valid(raise_exception=True):
+                            actor = actor_serializer.save()
+
+                    object_dict = data['object'] 
+
+                    try:
+                        object = Profile.objects.get(id=object_dict['id'])
+                    except Profile.DoesNotExist:
+                        object_serializer = ProfileSerializer(data=object_dict)
+                        if object_serializer.is_valid(raise_exception=True):
+                            object = object_serializer.save()
+                    friend_req = serializer.save(actor=actor, object=object)
+
+                    #friend_req = serializer.save()
+
+
                     user.inbox.friend_requests.add(friend_req)
-                    print("friend req: ", friend_req)
+                    #print("friend req: ", friend_req)
 
                     # should not be id, should be obj 
-                    print(friend_req.__dict__)
+                    # print(friend_req.dict)
 
                     user.inbox.save()
                     return JsonResponse(data, status=200)
