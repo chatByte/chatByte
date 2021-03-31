@@ -378,6 +378,14 @@ URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     # ex. request.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
+# <<<<<<< HEAD
+#     # print(request.META)
+#     server_origin = request.META["HTTP_X_SERVER"]
+#     print(server_origin)
+#     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+#     print("author id: ", AUTHOR_ID)
+
+# =======
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -385,11 +393,15 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     FOREIGN_USER_ID = FOREIGN_AUTHOR_ID
     print("follower's id: ", FOREIGN_AUTHOR_ID)
 
+
     try:
         FOREIGN_AUTHOR_ID = server_origin + "author/" + FOREIGN_AUTHOR_ID
     except:
         FOREIGN_AUTHOR_ID = host_server + "author/" + FOREIGN_AUTHOR_ID
     print("post id: ", FOREIGN_AUTHOR_ID)
+    print("server_origin", server_origin)
+    print("host_server", host_server)
+
 
     if server_origin is not None and server_origin != host_server:
         return followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID)
@@ -419,6 +431,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
                 return JsonResponse({'status':'false','message':'FOREIGN_AUTHOR_ID: ' + FOREIGN_AUTHOR_ID + ' does not exists'}, status=404)
 
         elif (request.method == "PUT"):
+            print(".....................................Haha1..................................................")
             #add a follower , with FOREIGN_AUTHOR_ID
             data = JSONParser().parse(request)
             serializer = ProfileSerializer(data=data)
@@ -443,6 +456,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
             return JsonResponse({}, status=200)
 
         return JsonResponse({"Error": "Bad request"}, status=400) 
+
 
 
 
@@ -626,13 +640,17 @@ def liked_post_obj(request, AUTHOR_ID):
 
         return JsonResponse(serializer.errors, status=400)
 
+
+'''
+# Inbox has a one-to-one relationship with User, and the User id is an integer, AUTHOR_ID
+# to avoid Reference problem , make a copy of AUTHOR_ID by creating a new string
+'''
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET', 'DELETE'])
 def inbox(request, AUTHOR_ID):
-    # Inbox has a one-to-one relationship with User, and the User id is an integer, AUTHOR_ID
-    # to avoid Reference problem , make a copy of AUTHOR_ID by creating a new string
+
     USER_ID = (AUTHOR_ID + '.')[:-1]
 
     # add for test purpose
