@@ -15,7 +15,7 @@ def profileRequest(method, origin, user_id, profile=None):
     the author's profile in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/"
-    user = User.objects.get(username=origin)
+    user = User.objects.get(first_name=origin)
     headers = {
         'Origin': host,
         'X-Request-User': str(host) + "author/" + str(user_id) + "/"}
@@ -39,7 +39,7 @@ def postsRequest(method, origin, user_id, post=None):
     the post to be created in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/posts/"
-    user = User.objects.get(username=origin)
+    user = User.objects.get(first_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
@@ -61,7 +61,7 @@ def postRequest(method, origin, user_id, post_id, post=None):
     the post in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/"
-    user = User.objects.get(username=origin)
+    user = User.objects.get(first_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
@@ -93,7 +93,7 @@ def commentRequest(method, origin, user_id, post_id, comment=None):
     the comment in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/comments/"
-    user = User.objects.get(username=origin)
+    user = User.objects.get(first_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
@@ -117,7 +117,7 @@ def inboxRequest(method, origin, user_id, data=None):
     the inbox in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/inbox/"
-    user = User.objects.get(username=origin)
+    user = User.objects.get(first_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
@@ -158,7 +158,7 @@ def followersRequest(method, origin, user_id, data=None):
     The body of the request is empty.
     '''
     url = str(origin) + "author/" + str(user_id) + "/followers/"
-    user = User.objects.get(username=origin)
+    user = User.objects.get(first_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
@@ -173,7 +173,7 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
     The body of the request is empty.
     '''
     url = str(origin) + "author/" + str(user_id) + "/" + str(foreign_author_id) + "/"
-    user = User.objects.get(username=origin)
+    user = User.objects.get(first_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
@@ -197,7 +197,7 @@ def likedRequest(method, origin, user_id, data=None):
     '''
 
     url = str(origin) + "author/" + str(user_id) + "/liked/"
-    user = User.objects.get(username=origin)
+    user = User.objects.get(first_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
@@ -213,7 +213,7 @@ def likesRequest(method, origin, user_id, post_id, data=None):
     '''
 
     url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/likes/"
-    user = User.objects.get(username=origin)
+    user = User.objects.get(first_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
@@ -229,7 +229,7 @@ def commentLikesRequest(method, origin, user_id, post_id, comment_id, data=None)
     '''
 
     url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/comments/" + comment_id + "/likes/"
-    user = User.objects.get(username=origin)
+    user = User.objects.get(first_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
@@ -245,7 +245,7 @@ def friendsRequest(method, origin, user_id, post_id, comment_id, data=None):
     '''
 
     url = str(origin) + "author/" + str(user_id) + "/friends/"
-    user = User.objects.get(username=origin)
+    user = User.objects.get(first_name=origin)
     headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":

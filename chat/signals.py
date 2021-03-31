@@ -5,8 +5,8 @@ from rest_framework.authtoken.models import Token
 
 from .models import Comment, Post, Profile, Inbox, PostInbox, Liked, Follower
 
-host = "https://chatbyte.herokuapp.com/"
-# host = "https://127.0.0.1:8000/"
+host = "https://app-chatbyte.herokuapp.com/"
+# host = "https://localhost:8000/"
 
 @receiver(post_save, sender=User)
 def update_profile_signal(sender, instance, created, **kwargs):
@@ -17,7 +17,7 @@ def update_profile_signal(sender, instance, created, **kwargs):
         except:
             liked = Liked.objects.create()
             followers = Follower.objects.create()
-            Profile.objects.create(user=instance,liked=liked, followers=followers)
+            Profile.objects.create(id=host + "author/" + str(instance.id), user=instance,liked=liked, followers=followers)
         try:
             instance.inbox
         except:
@@ -26,7 +26,6 @@ def update_profile_signal(sender, instance, created, **kwargs):
         Token.objects.create(user=instance)
 
         instance.profile.displayName = instance.username
-        instance.profile.id = host + "author/" + str(instance.id)
         instance.profile.save()
         instance.inbox.post_inbox.author = instance.id
         instance.inbox.post_inbox.save()
@@ -46,6 +45,16 @@ def create_post_signal(sender, instance, created, **kwargs):
             # change to new id and save the instance as a new object
             instance.id = str(instance.author.id) + "/posts/" + str(instance.id)
             instance.comments_url = instance.id + '/comments/'
+            # try:
+            #     instance.liked
+            # except:
+            #     liked = Liked.objects.create()
+            #     instance.liked = liked
+            # try:
+            #     instance.followers
+            # except:
+            #     followers = Follower.objects.create()
+            #     instance.followers = followers
             instance.save()
             # # remove the old instance
             old_instance = Post.objects.get(pk=id_temp)
