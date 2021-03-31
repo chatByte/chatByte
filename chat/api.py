@@ -819,9 +819,9 @@ def stream_obj(request, AUTHOR_ID):
                 all_following = Follower.objects.filter(items__id=profile)
                 print(all_following)
                 posts_result = all_author_posts
-                print("Result: ", posts_result)
-                for following in all_following:
-                    posts_result = posts_result | following.timeline.filter(visibility='public')
+                # print("Result: ", posts_result)
+                # for following in all_following:
+                #     posts_result = posts_result | following.timeline.filter(visibility='public')
             except BaseException as e:
                 print(e)
                 posts_result = []
