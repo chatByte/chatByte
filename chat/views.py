@@ -87,7 +87,7 @@ def my_stream(request, AUTHOR_ID):
                     print(post['id'])
                     post_id = post['id']
                     try:
-                        post = Post.objects.get(id=post_id)
+                        post_obj = Post.objects.get(id=post_id)
                     except Post.DoesNotExist:
                         author_dict = post['author']
                         print(author_dict)
@@ -98,10 +98,10 @@ def my_stream(request, AUTHOR_ID):
                             if author_serializer.is_valid(raise_exception=True):
                                 author = author_serializer.save()
                         serializer.save(author=author)
-                        post = Post.objects.get(id=post_id)
+                        post_obj = Post.objects.get(id=post_id)
                     # add stream post into public channel
-                    mytimeline.add(post)
-                    print(post)
+                    mytimeline.add(post_obj)
+                    print(post_obj)
         except BaseException as e:
             print(e)
         
