@@ -478,7 +478,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
         elif request.method == "DELETE":
             follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
             profile.followers.items.remove(follower)
-            return JsonResponse({}, status=200)
+            return JsonResponse({"status": "true"}, status=200)
 
         return JsonResponse({"Error": "Bad request"}, status=400)
 
