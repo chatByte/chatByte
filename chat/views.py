@@ -86,19 +86,31 @@ def my_stream(request, AUTHOR_ID):
                 try:
                     post_obj = Post.objects.get(id=post_id)
                 except Post.DoesNotExist:
+                    author_dict = post['author']
+                    print("Author dict: ", author_dict)
+                    try:
+                        author = Profile.objects.get(id=author_dict['id'])
+                    except Profile.DoesNotExist:
+                        author_serializer = ProfileSerializer(data=author_dict)
+                        if author_serializer.is_valid(raise_exception=True):
+                            author = author_serializer.save()
+                    comments_dict = post['comments']
+                    comments_list = list()
+                    for comment in comments_dict:
+                        try:
+                            comment_obj = Comment.objects.get(id=comment['id'])
+                            comments_list.append(comment_obj)
+                        except Comment.DoesNotExist:
+                            comment_serializer = CommentSerializer(data=comment)
+                            if comment_serializer.is_valid(raise_exception=True):
+                                comment_obj = comment_serializer.save()
+                                comments_list.append(comment_obj)
+                        
                     serializer = PostSerializer(data=post)
                     print("here")
                     # print(serializer)
                     if serializer.is_valid(raise_exception=True):
-                        author_dict = post['author']
-                        print("Author dict: ", author_dict)
-                        try:
-                            author = Profile.objects.get(id=author_dict['id'])
-                        except Profile.DoesNotExist:
-                            author_serializer = ProfileSerializer(data=author_dict)
-                            if author_serializer.is_valid(raise_exception=True):
-                                author = author_serializer.save()
-                        serializer.save(author=author)
+                        serializer.save(author=author, comments=comments_list)
                         post_obj = Post.objects.get(id=post_id)
                 # add stream post into public channel
                 mytimeline.add(post_obj)
