@@ -558,7 +558,7 @@ def get_friends_obj(request, AUTHOR_ID):
         friends = profile.friends
         serializer = ProfileSerializer(friends, many=True)
         if request.method == "GET":
-            return JsonResponse({serializer.data}, status=200, safe=False)
+            return JsonResponse(serializer.data, status=200, safe=False)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -650,7 +650,7 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
         except Comment.DoesNotExist:
             return JsonResponse({'status':'false','message':'comment id: ' + COMMENT_ID + ' does not exists'}, status=404)
         likes = comment.likes
-        serializer = LikeSerializer(data=likes, many=True)
+        serializer = LikeSerializer(likes, many=True)
         if serializer.is_valid(raise_exception=True):
             return JsonResponse(serializer.data, status=200)
 
