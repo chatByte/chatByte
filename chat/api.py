@@ -714,6 +714,7 @@ def inbox(request, AUTHOR_ID):
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    print("Origin header: ", origin_server)
     print("author id: ", AUTHOR_ID)
     print("user id: ", USER_ID)
 
