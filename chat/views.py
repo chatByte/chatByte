@@ -90,6 +90,7 @@ def my_stream(request, AUTHOR_ID):
     # order by date
     public_channel_posts = public_channel_posts.order_by('published')
 
+    stream_set = set()
     for node in Node.objects.all():
         print("Get stream from: ", node.origin)
         print("Username: ", node.username, " password: ", node.password)
@@ -117,9 +118,11 @@ def my_stream(request, AUTHOR_ID):
                         serializer.save(author=author)
                         post = Post.objects.get(id=post_id)
                     # add stream post into public channel
-                    public_channel_posts.add(post)
+                    stream_set.add(post)
         except BaseException as e:
             print(e)
+    
+    public_channel_posts = public_channel_posts | stream_set
     
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
