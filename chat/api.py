@@ -755,7 +755,8 @@ def inbox(request, AUTHOR_ID):
                     user.profile.timeline.add(post)
                     user.profile.save()
                     return JsonResponse(data, status=200)
-                return JsonResponse(serializer.errors, status=400)
+                else:
+                    return JsonResponse(serializer.errors, status=400)
             elif data['type'] == 'like':
                 print("Recieved a like inbox!")
                 post_url = data['object'].split("/")
