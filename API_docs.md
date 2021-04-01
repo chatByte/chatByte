@@ -11,7 +11,7 @@
     }
     
 ### **Author Profile API**
-#### `Author Object Structure`
+#### `Author Object format`
 ```
 {
     "type":"author",
@@ -252,7 +252,7 @@ Response (200):
 
     
 ### **Comments API**
-#### `Comment Object Structure`
+#### `Comment Object format`
 ```
 {
     "type":"comment",
@@ -309,7 +309,7 @@ Allowed Content Types: (text/plain,text/markdown, application/base64,image/png;b
 
 
 ### **Likes API**
-#### `Like Object Structure`
+#### `Like Object format`
 ```
 {
      "@context": "https://www.w3.org/ns/activitystreams",
@@ -362,7 +362,7 @@ Depending on which is sent, a corresponding like will be created.
 ```
 
 ### **Liked API**
-#### `Liked Object Structure`
+#### `Liked Object format`
 ```
 {
     "type":"liked",
@@ -391,7 +391,7 @@ Depending on which is sent, a corresponding like will be created.
 ```
 
 ### **Post API**
-#### `Post Object Structure`
+#### `Post Object format`
 
 ```
 {
@@ -645,7 +645,7 @@ Allowed visibility: (public, friend, private)
 
 ### **Inbox API**
 
-#### `inbox Object Structure`
+#### `inbox Object format`
 ```
 {
     "type":"inbox",
