@@ -737,7 +737,7 @@ def inbox(request, AUTHOR_ID):
     else:
         print("Request: ", request)
         # print("Request data: ", request.data)
-        print("Request body: ", request.body)
+        # print("Request body: ", request.body)
         if request.method == "POST":
             user = User.objects.get(pk=USER_ID)
             # print(request.data)
