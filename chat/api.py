@@ -549,14 +549,14 @@ def get_friends_obj(request, AUTHOR_ID):
         return friendsRequest(request.method,server_origin, AUTHOR_ID, request.data)
     else:
         try:
-            profile = Profile.objects.get(user_id=AUTHOR_ID)
+            profile = Profile.objects.get(id=AUTHOR_ID)
         except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
         friends = profile.friends
         serializer = ProfileSerializer(friends, many=True)
         if request.method == "GET":
-            return JsonResponse(serializer.data, status=200)
+            return JsonResponse({serializer.data}, status=200, safe=False)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -732,7 +732,7 @@ def inbox(request, AUTHOR_ID):
     else:
         print("Request: ", request)
         # print("Request data: ", request.data)
-        print("Request body: ", request.body)
+        # print("Request body: ", request.body)
         if request.method == "POST":
             user = User.objects.get(pk=USER_ID)
             # print(request.data)
