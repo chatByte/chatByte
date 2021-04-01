@@ -188,6 +188,7 @@ def posts_obj(request, AUTHOR_ID):
         if request.method == 'GET':
             profile = Profile.objects.get(id=AUTHOR_ID)
             posts = profile.timeline
+            print(posts.all())
             # serializer = PostSerializer(posts, many=True)
             # pagination
             pagination = PageNumberPagination()
