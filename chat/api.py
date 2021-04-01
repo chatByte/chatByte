@@ -97,7 +97,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
     # ex. equest.META[Origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"] 
     USER_ID = (AUTHOR_ID + '.')[:-1]
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
@@ -173,7 +173,7 @@ def posts_obj(request, AUTHOR_ID):
     # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
@@ -253,7 +253,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
     # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
@@ -346,7 +346,7 @@ def profile_obj(request, AUTHOR_ID):
     server_origin = request.META.get("HTTP_X_SERVER")
     print("Origin: ", host_server)
     print("Request origin: ", server_origin)
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
@@ -407,7 +407,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 # =======
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
@@ -495,7 +495,7 @@ def followers_obj(request, AUTHOR_ID):
     # ex. equest.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
@@ -538,7 +538,7 @@ def followers_obj(request, AUTHOR_ID):
 def get_friends_obj(request, AUTHOR_ID):
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
@@ -598,7 +598,7 @@ Response Object Structure: [list of Like objects]
 def likes_post_obj(request, AUTHOR_ID, POST_ID):
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
@@ -629,7 +629,7 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
 def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
@@ -665,7 +665,7 @@ def liked_post_obj(request, AUTHOR_ID):
 
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
@@ -709,7 +709,7 @@ def inbox(request, AUTHOR_ID):
         # req_origin = request.META["Origin"]
         server_origin = request.META.get("HTTP_X_SERVER")
     # Profile/AUTHOR ID is the full url
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
