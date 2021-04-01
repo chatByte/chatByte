@@ -490,6 +490,161 @@ POST a friend: Response(200)
 ```
 
 
+### **Post API**
+#### `Post Object format`
+
+```
+{
+    count: 0, # Number of comments for post
+    posts: [List of Post Objects],
+    next: url to the next page if exists else "",
+    prev: url to the prev page if exists, else "",
+}
+```
+#### `GET`
+
+<i>Get Post Using PostId</i>
+
+```
+URL:https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}
+Response (200):
+{
+    "type": "post",
+    "id": "https://app-chatbyte.herokuapp.com/author/7/posts/122ad56c-c153-4f60-9fa4-450c258df40e",
+    "title": "test",
+    "source": "https://app-chatbyte.herokuapp.com/author/7",
+    "origin": "https://app-chatbyte.herokuapp.com/",
+    "description": "test",
+    "contentType": "text",
+    "content": "test",
+    "author": {
+        "type": "author",
+        "id": "https://app-chatbyte.herokuapp.com/author/7",
+        "host": null,
+        "displayName": "choo",
+        "url": null,
+        "github": null
+    },
+    "categories": [
+        "text/plain"
+    ],
+    "count": 4,
+    "size": 0,
+    "comment_url": "",
+    "comments": [
+        "dc891869-8a7e-4496-8a0f-6443b83597d9"
+    ],
+    "published": "2021-04-01T09:37:19Z",
+    "visibility": "public",
+    "unlisted": "false"
+}
+```
+#### `POST`
+```
+URL://service/author/{AUTHOR_ID}/posts/{POST_ID}
+```
+Response (200): updated post JSON object
+```
+{
+    "type": "post",
+    "id": "https://app-chatbyte.herokuapp.com/author/7/posts/122ad56c-c153-4f60-9fa4-450c258df40e",
+    "title": "test",
+    "source": "https://app-chatbyte.herokuapp.com/author/7",
+    "origin": "https://app-chatbyte.herokuapp.com/",
+    "description": "testtestpost",
+    "contentType": "text",
+    "content": "test",
+    "author": {
+        "type": "author",
+        "id": "https://app-chatbyte.herokuapp.com/author/7",
+        "host": null,
+        "displayName": "choo",
+        "url": null,
+        "github": null
+    },
+    "categories": [
+        "text/plain"
+    ],
+    "count": 4,
+    "size": 0,
+    "comment_url": "",
+    "comments": [
+        "dc891869-8a7e-4496-8a0f-6443b83597d9"
+    ],
+    "published": "2021-04-01T09:37:19Z",
+    "visibility": "public",
+    "unlisted": "false"
+}
+```
+- Supports Pagination through **query parameters**
+    - page -> Default value is set to 1 if not provided
+    - size -> Default value is set to 5 if not provided
+
+#### `GET`
+<i>Get all posts from one author Using AuthorId</i>
+
+```
+URL https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts
+```
+
+Response (200):
+```
+{
+    count: 0, # Number of comments for post
+    posts: [List of Post Objects],
+    next: url to the next page if exists else "",
+    prev: url to the prev page if exists, else "",
+}
+```
+- Supports Pagination through **query parameters**
+    - page -> Default value is set to 1 if not provided
+    - size -> Default value is set to 5 if not provided
+
+
+#### `DELETE`
+<i>Delete A Post By PostId</i>
+```
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}
+```
+
+#### `PUT`
+<i>Create A Post By PostId</i>
+<br>
+<i>Side Effect: Sends To Friend Inbox, Erase Own Post With Same PostId</i>
+Body of Request:
+```
+{
+    "type": "post",
+    "id": "https://app-chatbyte.herokuapp.com/author/7/posts/3aacce7e-407c-4605-8f80-7b1b0a8de08fabc",
+    "title": "choo",
+    "source": "https://app-chatbyte.herokuapp.com/author/7",
+    "origin": "https://app-chatbyte.herokuapp.com/",
+    "description": "choo",
+    "contentType": "text",
+    "content": "choo",
+    "author": {
+        "type": "author",
+        "id": "https://app-chatbyte.herokuapp.com/author/7",
+        "host": null,
+        "displayName": "choo",
+        "url": null,
+        "github": null
+    },
+    "categories": [
+        "text/plain"
+    ],
+    "count": 0,
+    "size": 0,
+    "comment_url": "",
+    "comments": [],
+    "published": "2021-04-01T09:37:43.806644Z",
+    "visibility": "public",
+    "unlisted": "false"
+}
+```
+Allowed Content Types: (text/plain,text/markdown, application/base64,image/png;base64,image/jpeg;base64)
+Allowed visibility: (public, friend, private)
+
 
 ### **Follower API**
 ### `GET`
@@ -673,161 +828,6 @@ Response:
     "published": "2015-03-09T13:07:04Z"
 }
 ```
-
-### **Post API**
-#### `Post Object format`
-
-```
-{
-    count: 0, # Number of comments for post
-    posts: [List of Post Objects],
-    next: url to the next page if exists else "",
-    prev: url to the prev page if exists, else "",
-}
-```
-#### `GET`
-
-<i>Get Post Using PostId</i>
-
-```
-URL:https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}
-Response (200):
-{
-    "type": "post",
-    "id": "https://app-chatbyte.herokuapp.com/author/7/posts/122ad56c-c153-4f60-9fa4-450c258df40e",
-    "title": "test",
-    "source": "https://app-chatbyte.herokuapp.com/author/7",
-    "origin": "https://app-chatbyte.herokuapp.com/",
-    "description": "test",
-    "contentType": "text",
-    "content": "test",
-    "author": {
-        "type": "author",
-        "id": "https://app-chatbyte.herokuapp.com/author/7",
-        "host": null,
-        "displayName": "choo",
-        "url": null,
-        "github": null
-    },
-    "categories": [
-        "text/plain"
-    ],
-    "count": 4,
-    "size": 0,
-    "comment_url": "",
-    "comments": [
-        "dc891869-8a7e-4496-8a0f-6443b83597d9"
-    ],
-    "published": "2021-04-01T09:37:19Z",
-    "visibility": "public",
-    "unlisted": "false"
-}
-```
-#### `POST`
-```
-URL://service/author/{AUTHOR_ID}/posts/{POST_ID}
-```
-Response (200): updated post JSON object
-```
-{
-    "type": "post",
-    "id": "https://app-chatbyte.herokuapp.com/author/7/posts/122ad56c-c153-4f60-9fa4-450c258df40e",
-    "title": "test",
-    "source": "https://app-chatbyte.herokuapp.com/author/7",
-    "origin": "https://app-chatbyte.herokuapp.com/",
-    "description": "testtestpost",
-    "contentType": "text",
-    "content": "test",
-    "author": {
-        "type": "author",
-        "id": "https://app-chatbyte.herokuapp.com/author/7",
-        "host": null,
-        "displayName": "choo",
-        "url": null,
-        "github": null
-    },
-    "categories": [
-        "text/plain"
-    ],
-    "count": 4,
-    "size": 0,
-    "comment_url": "",
-    "comments": [
-        "dc891869-8a7e-4496-8a0f-6443b83597d9"
-    ],
-    "published": "2021-04-01T09:37:19Z",
-    "visibility": "public",
-    "unlisted": "false"
-}
-```
-- Supports Pagination through **query parameters**
-    - page -> Default value is set to 1 if not provided
-    - size -> Default value is set to 5 if not provided
-
-#### `GET`
-<i>Get all posts from one author Using AuthorId</i>
-
-```
-URL https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts
-```
-
-Response (200):
-```
-{
-    count: 0, # Number of comments for post
-    posts: [List of Post Objects],
-    next: url to the next page if exists else "",
-    prev: url to the prev page if exists, else "",
-}
-```
-- Supports Pagination through **query parameters**
-    - page -> Default value is set to 1 if not provided
-    - size -> Default value is set to 5 if not provided
-
-
-#### `DELETE`
-<i>Delete A Post By PostId</i>
-```
-URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}
-```
-
-#### `PUT`
-<i>Create A Post By PostId</i>
-<br>
-<i>Side Effect: Sends To Friend Inbox, Erase Own Post With Same PostId</i>
-Body of Request:
-```
-{
-    "type": "post",
-    "id": "https://app-chatbyte.herokuapp.com/author/7/posts/3aacce7e-407c-4605-8f80-7b1b0a8de08fabc",
-    "title": "choo",
-    "source": "https://app-chatbyte.herokuapp.com/author/7",
-    "origin": "https://app-chatbyte.herokuapp.com/",
-    "description": "choo",
-    "contentType": "text",
-    "content": "choo",
-    "author": {
-        "type": "author",
-        "id": "https://app-chatbyte.herokuapp.com/author/7",
-        "host": null,
-        "displayName": "choo",
-        "url": null,
-        "github": null
-    },
-    "categories": [
-        "text/plain"
-    ],
-    "count": 0,
-    "size": 0,
-    "comment_url": "",
-    "comments": [],
-    "published": "2021-04-01T09:37:43.806644Z",
-    "visibility": "public",
-    "unlisted": "false"
-}
-```
-Allowed Content Types: (text/plain,text/markdown, application/base64,image/png;base64,image/jpeg;base64)
-Allowed visibility: (public, friend, private)
 
 
 ### **Likes API**
