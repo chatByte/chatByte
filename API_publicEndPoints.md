@@ -1,3 +1,8 @@
+# Social Distribution public Api endpoints Documentation
+Currently, we are allowed public access while API with authentication
+
+
+
 ### **Author Profile API**
 ```
 URL: ://service/author/{AUTHOR_ID}/
