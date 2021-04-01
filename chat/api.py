@@ -556,7 +556,7 @@ def get_friends_obj(request, AUTHOR_ID):
         friends = profile.friends
         serializer = ProfileSerializer(friends, many=True)
         if request.method == "GET":
-            return JsonResponse(serializer.data, status=200)
+            return JsonResponse({serializer.data}, status=200, safe=False)
 
         return JsonResponse(serializer.errors, status=400)
 
