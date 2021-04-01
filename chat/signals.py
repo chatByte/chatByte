@@ -5,7 +5,7 @@ from rest_framework.authtoken.models import Token
 
 from .models import *
 
-host = "https://app-chatbyte.herokuapp.com/"
+host = "https://chatbyte.herokuapp.com/"
 # host = "https://localhost:8000/"
 
 @receiver(post_save, sender=User)
@@ -13,23 +13,26 @@ def update_profile_signal(sender, instance, created, **kwargs):
     # instance is a User object
     if created:
         try:
-            instance.profile
+            Node.objects.get(username=instance.username)
         except:
-            liked = Liked.objects.create()
-            followers = Follower.objects.create()
-            Profile.objects.create(id=host + "author/" + str(instance.id), user=instance,liked=liked, followers=followers)
-        try:
-            instance.inbox
-        except:
-            inbox = Inbox.objects.create(user=instance,)
-            inbox.post_inbox = PostInbox.objects.create()
-        Token.objects.create(user=instance)
+            try:
+                instance.profile
+            except:
+                liked = Liked.objects.create()
+                followers = Follower.objects.create()
+                Profile.objects.create(id=host + "author/" + str(instance.id), user=instance,liked=liked, followers=followers)
+            try:
+                instance.inbox
+            except:
+                inbox = Inbox.objects.create(user=instance,)
+                inbox.post_inbox = PostInbox.objects.create()
+            Token.objects.create(user=instance)
 
-        instance.profile.displayName = instance.username
-        instance.profile.save()
-        instance.inbox.post_inbox.author = instance.id
-        instance.inbox.post_inbox.save()
-        instance.inbox.save()
+            instance.profile.displayName = instance.username
+            instance.profile.save()
+            instance.inbox.post_inbox.author = instance.id
+            instance.inbox.post_inbox.save()
+            instance.inbox.save()
 
 @receiver(post_save, sender=Post)
 def create_post_signal(sender, instance, created, **kwargs):

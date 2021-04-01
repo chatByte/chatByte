@@ -714,6 +714,7 @@ def inbox(request, AUTHOR_ID):
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    print("Origin header: ", origin_server)
     print("author id: ", AUTHOR_ID)
     print("user id: ", USER_ID)
 
@@ -733,9 +734,11 @@ def inbox(request, AUTHOR_ID):
             print("User: ", user)
             print("Data: ", data)
             if data['type'] == "post":
-                print("Recieved a post inbox!")
+                print("Recieved a post inbox...!")
                 serializer = PostSerializer(data=data)
+                print(serializer)
                 if serializer.is_valid(raise_exception=True):
+                    print(data['id'])
                     post_id = data['id']
                     # try:
                     #     post = Post.objects.get(id=post_id)
@@ -756,6 +759,7 @@ def inbox(request, AUTHOR_ID):
                     user.profile.save()
                     return JsonResponse(data, status=200)
                 else:
+                    print("here")
                     return JsonResponse(serializer.errors, status=400)
             elif data['type'] == 'like':
                 print("Recieved a like inbox!")
@@ -863,14 +867,16 @@ def stream_obj(request, AUTHOR_ID):
                 print("here")
                 profile = Profile.objects.get(id=AUTHOR_ID)
                 print(profile)
-                all_author_posts = Post.objects.filter(author=profile)
-                print(all_author_posts)
-                all_following = Follower.objects.filter(items__id=profile)
-                print(all_following)
-                posts_result = all_author_posts
-                print("Result: ", posts_result)
-                for following in all_following:
-                    posts_result = posts_result | following.timeline.filter(visibility='public')
+                posts_result = Post.objects.all()
+                print(posts_result)
+                # all_author_posts = Post.objects.filter(author=profile)
+                # print(all_author_posts)
+                # all_following = Follower.objects.filter(items__id=profile)
+                # print(all_following)
+                # posts_result = all_author_posts
+                # print("Result: ", posts_result)
+                # for following in all_following:
+                #     posts_result = posts_result | following.timeline.filter(visibility='public')
             except BaseException as e:
                 print(e)
                 posts_result = []
@@ -884,8 +890,8 @@ def stream_obj(request, AUTHOR_ID):
         
             data = {
                 'count': pagination.page.paginator.count,
-                'next': pagination.get_next_link(),
-                'previous': pagination.get_previous_link(),
-                'comments': serializer.data,
+                'next': "", # pagination.get_next_link(),
+                'previous': "", # pagination.get_previous_link(),
+                'posts': serializer.data,
             }
             return JsonResponse(data, safe=False)
