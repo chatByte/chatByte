@@ -71,24 +71,7 @@ def my_stream(request, AUTHOR_ID):
 
     cur_author = request.user
     # a list of post, django.db.models.query.QuerySet
-    mytimeline = cur_author.profile.timeline.all()
-    # a group of author, that i am currently following, django.db.models.query.QuerySet
-    followings = cur_author.profile.followings.all()
-
-    # merging quesryset
-    public_channel_posts = mytimeline
-
-    for following_profile in followings:
-
-
-        public_posts = following_profile.timeline.filter(visibility='public')
-        public_channel_posts = public_channel_posts | public_posts
-
-
-    author_num_follwers = len(cur_author.profile.followers.items.all())
-    friend_request_num = len(cur_author.profile.friend_requests.all())
-    # order by date
-    public_channel_posts = public_channel_posts.order_by('published')
+    mytimeline = cur_author.profile.timeline
 
     for node in Node.objects.all():
         print("Get stream from: ", node.origin)
@@ -117,9 +100,30 @@ def my_stream(request, AUTHOR_ID):
                         serializer.save(author=author)
                         post = Post.objects.get(id=post_id)
                     # add stream post into public channel
-                    public_channel_posts._result_cache.append(post)
+                    mytimeline.add(post)
+                    print(post)
         except BaseException as e:
             print(e)
+        
+    # a group of author, that i am currently following, django.db.models.query.QuerySet
+    followings = cur_author.profile.followings.all()
+
+    # merging quesryset
+    public_channel_posts = mytimeline.all()
+
+    for following_profile in followings:
+
+
+        public_posts = following_profile.timeline.filter(visibility='public')
+        public_channel_posts = public_channel_posts | public_posts
+
+
+    author_num_follwers = len(cur_author.profile.followers.items.all())
+    friend_request_num = len(cur_author.profile.friend_requests.all())
+    # order by date
+    public_channel_posts = public_channel_posts.order_by('published')
+
+    
     
     
     dynamic_contain = {
