@@ -81,15 +81,15 @@ def my_stream(request, AUTHOR_ID):
             data = res.json()
             # print(data['posts'])
             for post in data['posts']:
-                serializer = PostSerializer(data=post)
-                print("here")
-                # print(serializer)
-                if serializer.is_valid(raise_exception=True):
-                    print("Post id: ", post['id'])
-                    post_id = post['id']
-                    try:
-                        post_obj = Post.objects.get(id=post_id)
-                    except Post.DoesNotExist:
+                print("Post id: ", post['id'])
+                post_id = post['id']
+                try:
+                    post_obj = Post.objects.get(id=post_id)
+                except Post.DoesNotExist:
+                    serializer = PostSerializer(data=post)
+                    print("here")
+                    # print(serializer)
+                    if serializer.is_valid(raise_exception=True):
                         author_dict = post['author']
                         print("Author dict: ", author_dict)
                         try:
@@ -100,9 +100,9 @@ def my_stream(request, AUTHOR_ID):
                                 author = author_serializer.save()
                         serializer.save(author=author)
                         post_obj = Post.objects.get(id=post_id)
-                    # add stream post into public channel
-                    mytimeline.add(post_obj)
-                    print("Post object", post_obj)
+                # add stream post into public channel
+                mytimeline.add(post_obj)
+                print("Post object", post_obj)
         except BaseException as e:
             print(e)
         
