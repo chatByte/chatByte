@@ -94,7 +94,7 @@ def my_stream(request, AUTHOR_ID):
         print("Get stream from: ", node.origin)
         print("Username: ", node.username, " password: ", node.password)
         res = streamRequest(node.origin, request.user.id)
-        data = JSONParser().parse(res.data)
+        data = res.json()
         print(data['posts'])
     
 
