@@ -788,7 +788,7 @@ Response (200):
 #### `DELETE`
 <i>Delete A Post By PostId</i>
 ```
-:https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}
 ```
 
 #### `PUT`
@@ -851,7 +851,7 @@ Allowed visibility: (public, friend, private)
 #### `GET`
 <i>Get Likes for a Post</i>
 ```
-://service/author/{AUTHOR_ID}/posts/{POST_ID}/likes
+URL: //service/author/{AUTHOR_ID}/posts/{POST_ID}/likes
 ```
 ```
 Response (200):
@@ -861,7 +861,7 @@ Response (200):
 ```
 <i>Get Likes for a Comment</i>
 ```
-://service/author/{AUTHOR_ID}/posts/{POST_ID}/comments/{COMMENT_ID}/likes
+URL: //service/author/{AUTHOR_ID}/posts/{POST_ID}/comments/{COMMENT_ID}/likes
 ```
 ```
 Response (200):
@@ -874,7 +874,7 @@ Response (200):
 <br>
 <i>Side Effect: Sends To Inbox</i>
 ```
-://service/author/{AUTHOR_ID}/likes
+URL: //service/author/{AUTHOR_ID}/likes
 ```
 ```
 Request Body:
@@ -911,6 +911,6 @@ Depending on which is sent, a corresponding like will be created.
 #### `GET`
 <i>Get Liked for an author</i>
 ```
-://service/author/{AUTHOR_ID}/liked
+URL: //service/author/{AUTHOR_ID}/liked
 ```
 
