@@ -179,7 +179,7 @@ def createPost(title, source, origin, description, content_type, content, author
     # Please authenticate before calling this method
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
-            , categories=categories, count=0, size=0, comments_url=0, visibility=visibility, author=author)
+            , categories=categories, count=0, size=0, comment_url=0, visibility=visibility, author=author)
         # print(post.author)
         author.timeline.add(post)
         author.save()
