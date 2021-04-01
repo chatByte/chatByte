@@ -103,6 +103,7 @@ def my_stream(request, AUTHOR_ID):
                             comments_list.append(comment_obj)
                         except Comment.DoesNotExist:
                             comm_author_dict = comment['author']
+                            print("Comment author: ", comm_author)
                             try:
                                 comm_author = Profile.objects.get(id=comm_author_dict['id'])
                             except Profile.DoesNotExist:
