@@ -521,7 +521,7 @@ def search(request, AUTHOR_ID):
 
     try:
         target_id = data["url"]
-        author_origin = "http://" + target_id.split("/")[2] + "/"
+        author_origin = "https://" + target_id.split("/")[2] + "/"
     except:
         return JsonResponse({}, status=409)
     try:
