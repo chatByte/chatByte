@@ -549,7 +549,7 @@ def get_friends_obj(request, AUTHOR_ID):
         return friendsRequest(request.method,server_origin, AUTHOR_ID, request.data)
     else:
         try:
-            profile = Profile.objects.get(user_id=AUTHOR_ID)
+            profile = Profile.objects.get(id=AUTHOR_ID)
         except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
