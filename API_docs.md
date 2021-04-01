@@ -19,7 +19,7 @@ POST: update profile
 #### `Author Object format` 
 <i>retrieve their profile</i>
 ```
-URL: ://service/author/{AUTHOR_ID}/
+URL://service/author/{AUTHOR_ID}/
 GET: response(200) 
 retrieve user profile
 POST: response(200)
@@ -41,7 +41,7 @@ update user profile (with pagination)
 ### `GET`
 <i>GET USER Stream with Pagination</i>
 ```
-URL: ://service/author/{AUTHOR_ID}/followers
+URL ://service/author/{AUTHOR_ID}/followers
 ```
 ```
 {
@@ -277,7 +277,10 @@ URL: ://service/author/{AUTHOR_ID}/followers
 }
 ```
 ### **Inbox API**
-<i>GET USER notifications</i>
+<i>GET USER notifications in Inbox</i>
+```
+URL ://service/author/<str:AUTHOR_ID>/inbox/
+```
 ### GET: Response(200)
 
 ```
@@ -407,7 +410,7 @@ URL: ://service/author/{AUTHOR_ID}/followers
 <i>get a list of authors who are their followers</i>
 ```
 URL: ://service/author/{AUTHOR_ID}/followers
-GET:
+GET: Response (200)
 POST:
 DELETE:
 ```
@@ -493,23 +496,14 @@ Response:
 ```
 Response (200):
 {
-    "type": "friends",      
-    "items":[
+    "friends": [
         {
-            "type":"author",
-            "id":"http://127.0.0.1:8000/author/1d698d25ff008f7538453c120f581471",
-            "url":"http://127.0.0.1:8000/author/1d698d25ff008f7538453c120f581471",
-            "host":"http://127.0.0.1:8000/",
-            "displayName":"Greg Johnson",
-            "github": "http://github.com/gjohnson"
-        },
-        {
-            "type":"author",
-            "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            "host":"http://127.0.0.1:8000/",
-            "displayName":"Lara Croft",
-            "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            "github": "http://github.com/laracroft"
+            "type": "author",
+            "id": "https://chatbyte.herokuapp.com/author/1",
+            "host": null,
+            "displayName": "test",
+            "url": null,
+            "github": null
         }
     ]
 }
@@ -523,7 +517,7 @@ URL: ://service/author/{AUTHOR_ID}/friends/
 Body of Request:
 ```
 {
-"url":"http://127.0.0.1:8000/author/8de17f29c12e8f97bcbbd34cc908f1baba40658e",
+"url":"https://service/author/8de17f29c12e8f97bcbbd34cc908f1baba40658e",
 }
 ```
 Response:
