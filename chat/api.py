@@ -708,11 +708,7 @@ DELETE: clear the inbox
 @permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET', 'DELETE'])
 def inbox(request, AUTHOR_ID):
-
-    print("inbox: ", request)
-
-
-
+    # print("inbox: ", request)
     USER_ID = (AUTHOR_ID + '.')[:-1]
 
     # add for test purpose
