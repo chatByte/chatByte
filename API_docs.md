@@ -18,19 +18,15 @@ POST: update profile
 #### `Author Object format`
 
 ```
-{
-    "type":"author",
-    # ID of the Author
-    "id":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-    # the home host of the author
-    "host":"http://127.0.0.1:5454/",
-    # the display name of the author
-    "displayName":"Lara Croft",
-    # url to the authors profile
-    "url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-    # HATEOS url for Github API
-    "github": "http://github.com/laracroft"
+{ 
+"type": "author",
+ 	"id": "https://chatbyte.herokuapp.com/author/1", 
+"host": null, 
+"displayName": "test", 
+"url": null, 
+"github": null
 }
+
 ```
 
 #### `GET`
@@ -43,10 +39,10 @@ Response:
 Response (200):
 {
     "type":"author",
-    "id":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-    "host":"http://127.0.0.1:5454/",
+    "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+    "host":"http://127.0.0.1:8000/",
     "displayName":"Lara Croft",
-    "url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+    "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
     "github": "http://github.com/laracroft"
 }
 ```
@@ -60,10 +56,10 @@ Body of Request:
 ```
 {
     "type":"author",
-    "id":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-    "host":"http://127.0.0.1:5454/",
+    "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+    "host":"http://127.0.0.1:8000/",
     "displayName":"Lara Croft",
-    "url":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+    "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
     "github": "http://github.com/laracroft"
 }
 ```
