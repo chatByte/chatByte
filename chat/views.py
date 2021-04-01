@@ -111,15 +111,17 @@ def my_stream(request, AUTHOR_ID):
                                 if author_serializer.is_valid(raise_exception=True):
                                     comm_author = author_serializer.save()
                             comment_serializer = CommentSerializer(data=comment)
+                            print(comment_serializer)
                             if comment_serializer.is_valid(raise_exception=True):
                                 comment_obj = comment_serializer.save(author=comm_author)
+                                print("Created comment obj: ", comment_obj)
                                 comments_list.append(comment_obj)
                         
                     serializer = PostSerializer(data=post)
                     print("here")
                     # print(serializer)
                     if serializer.is_valid(raise_exception=True):
-                        serializer.save(author=author, comments=comments_list)
+                        serializer.save(author=author) # comments=comments_list
                         post_obj = Post.objects.get(id=post_id)
                 # add stream post into public channel
                 mytimeline.add(post_obj)

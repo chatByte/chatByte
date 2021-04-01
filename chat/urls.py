@@ -80,7 +80,7 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="inbox"),
 
     # # Get likes for a Comment
-    path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
 
 
 
