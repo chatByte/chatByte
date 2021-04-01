@@ -416,25 +416,24 @@ DELETE:
 ```
 Response:
 ```
-Response (200):
 {
-    "type": "followers",      
-    "items":[
+    "type": "followers",
+    "items": [
         {
-            "type":"author",
-            "id":"http://127.0.0.1:8000/author/1d698d25ff008f7538453c120f581471",
-            "url":"http://127.0.0.1:8000/author/1d698d25ff008f7538453c120f581471",
-            "host":"http://127.0.0.1:8000/",
-            "displayName":"Greg Johnson",
-            "github": "http://github.com/gjohnson"
+            "type": "author",
+            "id": "https://app-chatbyte.herokuapp.com/author/1",
+            "host": "https://app-chatbyte.herokuapp.com/",
+            "displayName": "test",
+            "url": "https://app-chatbyte.herokuapp.com/author/1",
+            "github": "https://app-chatbyte.herokuapp.com/author/1"
         },
         {
-            "type":"author",
-            "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            "host":"http://127.0.0.1:8000/",
-            "displayName":"Lara Croft",
-            "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            "github": "http://github.com/laracroft"
+            "type": "author",
+            "id": "https://app-chatbyte.herokuapp.com/author/6",
+            "host": null,
+            "displayName": "testuser",
+            "url": null,
+            "github": null
         }
     ]
 }
@@ -496,12 +495,21 @@ Response:
 ```
 Response (200):
 {
-    "friends": [
+    "type": "friends",
+    "items": [
         {
             "type": "author",
-            "id": "https://chatbyte.herokuapp.com/author/1",
+            "id": "https://app-chatbyte.herokuapp.com/author/6",
             "host": null,
-            "displayName": "test",
+            "displayName": "testuser",
+            "url": null,
+            "github": null
+        },
+        {
+            "type": "author",
+            "id": "https://app-chatbyte.herokuapp.com/author/7",
+            "host": null,
+            "displayName": "choo",
             "url": null,
             "github": null
         }
@@ -877,55 +885,13 @@ Allowed visibility: (public, friend, private)
 ### **Inbox API**
 
 #### `inbox Object format`
-```
-{
-    "type":"inbox",
-    "author":"http://127.0.0.1:8000/author/c1e3db8ccea4541a0f3d7e5c75feb3fb",
-    "items":[
-        {
-            "type":"post",
-            "title":"DID YOU READ MY POST YET?",
-            "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/999999983dda1e11db47671c4a3bbd9e"
-            "source":"http://lastplaceigotthisfrom.com/posts/yyyyy",
-            "origin":"http://whereitcamefrom.com/posts/zzzzz",
-            "description":"Whatever",
-            "contentType":"text/plain",
-            "content":"Are you even reading my posts Arjun?",
-            "author":{
-                  "type":"author",
-            	"id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            	"host":"http://127.0.0.1:8000/",
-            	"displayName":"Lara Croft",
-            	"url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            	"github": "http://github.com/laracroft"
-            },
-            "categories":["web","tutorial"],
-            "comments":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments"
-            "published":"2015-03-09T13:07:04+00:00",
-            "visibility":"FRIENDS",
-            "unlisted":false
-        }
-    ]
-}
-```
+
 #### `GET`
 
 <i>Get all inbox for author using author_id</i>
 
-```
-://service/author/<str:author_id>/inbox
-```
 
-```
-Response (200):
-{
-    "type":"inbox",
-    "author":"http://127.0.0.1:8000/author/c1e3db8ccea4541a0f3d7e5c75feb3fb",
-    "items":[
-        A list of all inbox items for author
-    ]
-}
-```
+
 
 #### `POST`
 
