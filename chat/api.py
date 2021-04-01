@@ -733,9 +733,11 @@ def inbox(request, AUTHOR_ID):
             print("User: ", user)
             print("Data: ", data)
             if data['type'] == "post":
-                print("Recieved a post inbox!")
+                print("Recieved a post inbox...!")
                 serializer = PostSerializer(data=data)
+                print(serializer)
                 if serializer.is_valid(raise_exception=True):
+                    print(data['id'])
                     post_id = data['id']
                     # try:
                     #     post = Post.objects.get(id=post_id)
