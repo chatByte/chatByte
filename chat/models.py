@@ -74,7 +74,7 @@ class Post(models.Model):
     )
     count = models.IntegerField(default=0)
     size = models.IntegerField(default=0)
-    comment_url = models.CharField(max_length=200)
+    comment_url = models.CharField(max_length=200, blank=True)
     comments = models.ManyToManyField('Comment', blank=True)
     # published date
     published = models.DateTimeField(default=django.utils.timezone.now)
