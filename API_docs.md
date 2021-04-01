@@ -609,7 +609,7 @@ Response (200):
 #### `GET`
 <i>Get comments for a Post</i>
 ```
-://service/author/{AUTHOR_ID}/posts/{POST_ID}/comments
+URL: //service/author/{AUTHOR_ID}/posts/{POST_ID}/comments
 ```
 - Supports Pagination through **query parameters**
     - page -> Default value is set to 1 if not provided
