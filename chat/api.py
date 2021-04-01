@@ -756,6 +756,7 @@ def inbox(request, AUTHOR_ID):
                     user.profile.save()
                     return JsonResponse(data, status=200)
                 else:
+                    print("here")
                     return JsonResponse(serializer.errors, status=400)
             elif data['type'] == 'like':
                 print("Recieved a like inbox!")
