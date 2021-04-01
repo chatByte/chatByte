@@ -1,15 +1,14 @@
-# Social Distribution API Documentation :stuck_out_tongue_winking_eye:
+# Social Distribution Api Documentation
 ### Request Headers
     - Local Request: {
-    Authorization: CSRF token
-    X-server: where is it coming from. 
-}
+        Authorization: CSRF Token,
+        X-server: where is it coming from.
+    }
     - Remote Request: {
-    Authorization: Basic <Base64 Encoded username:password>,
-    Origin: <Host from which the request originates>,
-    X-Request-User: <Full URL id of the author making the request>
-}
-
+        Authorization: Basic <Base64 Encoded username:password>,
+        Origin: <Host from which the request originates>,
+        X-Request-User: <Full URL id of the author making the request>
+    }
     
 ### **Author Profile API**
 URL: ://service/author/{AUTHOR_ID}/
