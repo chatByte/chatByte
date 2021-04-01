@@ -102,9 +102,16 @@ def my_stream(request, AUTHOR_ID):
                             comment_obj = Comment.objects.get(id=comment['id'])
                             comments_list.append(comment_obj)
                         except Comment.DoesNotExist:
+                            comm_author_dict = comment['author']
+                            try:
+                                comm_author = Profile.objects.get(id=comm_author_dict['id'])
+                            except Profile.DoesNotExist:
+                                author_serializer = ProfileSerializer(data=comm_author_dict)
+                                if author_serializer.is_valid(raise_exception=True):
+                                    comm_author = author_serializer.save()
                             comment_serializer = CommentSerializer(data=comment)
                             if comment_serializer.is_valid(raise_exception=True):
-                                comment_obj = comment_serializer.save()
+                                comment_obj = comment_serializer.save(author=comm_author)
                                 comments_list.append(comment_obj)
                         
                     serializer = PostSerializer(data=post)
