@@ -120,6 +120,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
             try:
                 Post.objects.get(id=POST_ID)
             except Post.DoesNotExist:
+                print("here post does not exist")
                 return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
             deletePost(POST_ID)
             return JsonResponse({'status':'true','message':'successful'}, status=204)
