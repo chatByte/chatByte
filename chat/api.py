@@ -736,15 +736,15 @@ def inbox(request, AUTHOR_ID):
             if data['type'] == "post":
                 print("Recieved a post inbox...!")
                 serializer = PostSerializer(data=data)
-                print(serializer)
+                # print(serializer)
                 if serializer.is_valid(raise_exception=True):
-                    print(data['id'])
+                    print("Post id: ", data['id'])
                     post_id = data['id']
                     try:
                         post = Post.objects.get(id=post_id)
-                    except:
+                    except Post.DoesNotExist:
                         author_dict = data['author']
-                        print(author_dict)
+                        print("Author dict: ", author_dict)
                         try:
                             author = Profile.objects.get(id=author_dict['id'])
                         except Profile.DoesNotExist:
