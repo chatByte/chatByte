@@ -650,7 +650,7 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
         except Comment.DoesNotExist:
             return JsonResponse({'status':'false','message':'comment id: ' + COMMENT_ID + ' does not exists'}, status=404)
         likes = comment.likes
-        serializer = LikeSerializer(likes, many=True)
+        serializer = LikeSerializer(data=likes, many=True)
         if serializer.is_valid(raise_exception=True):
             return JsonResponse(serializer.data, status=200)
 
