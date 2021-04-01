@@ -166,31 +166,46 @@ def my_stream(request, AUTHOR_ID):
 Generate response at friend_profile page , Now is deafault friend Zoe, need to be handled later
 """
 @login_required
-def friend_public_channel(request, AUTHOR_ID, FOREIGN_ID):
-    cur_author = getUser(FOREIGN_ID)
-    cur_user_name = cur_author.username
+def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
+    server = User.objects.get(username=SERVER)
+    host = server.last_name
+    foreign_author = getUser(FOREIGN_ID)
+    author_id = host + "author/" + AUTHOR_ID
+    cur_author = Profile.objects.get(id=author_id)
+    if foreign_author != None:
+        foreign_user_name = foreign_author.username
 
-    if getFriend(request.user.id, cur_author.id):
-        isFriend = True;
-    else:
-        isFriend = False;
-    # a list of post
-    mytimeline = cur_author.profile.timeline.all() #getTimeline(cur_user_name)
+        if getFriend(request.user.id, foreign_author.id):
+            isFriend = True;
+        else:
+            isFriend = False;
 
-    author_num_follwers = len(cur_author.profile.followers.items.all())
-    friend_request_num = len(cur_author.profile.friend_requests.all())
+        if getFollowing(request.user.id, foreign_author.id):
+            isFollowing = True;
+        else:
+            isFollowing = False;
 
-    dynamic_contain = {
-        'myName' : cur_author.profile.displayName,
-        'timeline': mytimeline,
-        'author_num_follwers': author_num_follwers,
-        'isFriend': isFriend,
-        'myId':cur_author.id,
-        'friend_request_num': friend_request_num,
+        # a list of post
+        #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
+        foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['results']
+        foreign_timeline = PostSerializer(foreign_timeline, many=True).data
 
-    }
-    response = render(request, "chat/friendProfile.html", dynamic_contain)
-    return response
+        author_num_follwers = len(foreign_author.profile.followers.items.all())
+        friend_request_num = len(foreign_author.profile.friend_requests.all())
+
+        dynamic_contain = {
+            'foreignName' : foreign_author.profile.displayName,
+            'timeline': foreign_timeline,
+            'author_num_follwers': author_num_follwers,
+            'isFriend': isFriend,
+            'isFollowing': isFollowing,
+            'foreignId':foreign_author.id,
+            'friend_request_num': friend_request_num,
+            'cur_author': cur_author,
+        }
+        response = render(request, "chat/foreign_public_channel.html", dynamic_contain)
+        return response
+    return HttpResponse(404)
 
 
 
@@ -309,48 +324,6 @@ def profile(request, AUTHOR_ID):
         return response
 
 
-"""
-Generate response ,when delete user at home page ,
-For user frinedly feature
-"""
-@login_required
-@require_http_methods(["DELETE", "POST"])
-def delete(request, ID):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
-    # post_id = request.build_absolute_uri().split("/")[-2][6:]
-    cur_author = request.user.profile #getAuthor(cur_user_name)
-    deletePost(ID)
-
-    # TODO: may not redirect
-    response = redirect("/author/"+ str(request.user.id) + "/public_channel/")
-    return response
-
-
-def edit(request, ID):
-    print(request.POST)
-    new_description = request.POST.get("editText")
-    print(new_description)
-    editPostDescription(ID, new_description)
-    # TODO: may not redirect
-    response = redirect("/chat/feed/")
-
-    return response
-
-# delete later
-# get feed and
-# post: comment/like => send post request to host server(edit post function),
-@require_http_methods(["GET", "POST"])
-def edit_in_feed(request, ID):
-    print(request.POST)
-    new_description = request.POST.get("editText")
-    print(new_description)
-    print(editPostDescription(ID, new_description))
-    response = redirect("/chat/feed/")
-
-    return response
-
 
 
 @login_required
@@ -394,7 +367,8 @@ def delete_friend(request, AUTHOR_ID, FRIEND_ID):
         return HttpResponse(status=401)
     return HttpResponse(status=304)
 
-# @require_http_methods(["GET"])
+
+# Method that generate a friend request
 @login_required
 def add_friend(request, AUTHOR_ID, FRIEND_ID):
     print(AUTHOR_ID, FRIEND_ID)
@@ -414,12 +388,15 @@ def add_friend(request, AUTHOR_ID, FRIEND_ID):
 @require_http_methods(["GET"])
 @login_required
 def if_friend_request(request):
+
     try:
         cur_user_name = None
         if request.user.is_authenticated:
             cur_user_name = request.user.username
 
         all_friend_request = getALLFriendRequests(request.user.id)
+
+
         if len(all_friend_request)>0:
             newest = all_friend_request.reverse()[0]
             data = {}
@@ -456,6 +433,37 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
         return HttpResponse(status=401)
 
 
+
+@require_http_methods(["GET"])
+@login_required
+def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
+    try:
+        addFollow(request.user.id, FOREIGN_AUTHOR_ID)
+        return HttpResponse(status=200)
+    except BaseException as e:
+        return HttpResponse(status=401)
+
+@require_http_methods(["GET"])
+@login_required
+def get_user(request,SERVER,AUTHOR_ID):
+    # get 
+    print("---------------------------Getting user ---------------")
+    try:
+        server = User.objects.get(username=SERVER)
+        foreign_server = server.last_name
+        user_id = foreign_server + "author/"+ AUTHOR_ID 
+        profile = Profile.objects.get(id=user_id)
+        type = profile.type
+        id = profile.id
+        host = profile.host
+        displayName = profile.displayName
+        github = profile.github
+        url = profile.url
+        return JsonResponse({'type':type, 'id':id, 'host':host, 'displayName':displayName, 'github':github, "url":url}, status=200)
+    except BaseException as e:
+        print(e)
+        return HttpResponse(status=400)
+
 @login_required
 @require_http_methods(["POST"])
 def update_post(request, AUTHOR_ID, POST_ID):
@@ -491,59 +499,133 @@ def update_post(request, AUTHOR_ID, POST_ID):
         return response
     else:
         print("failed to edit the post!!", description)
-    
+
     response = redirect("/author/" + str(user.id) + "/my_posts/")
     return response
+
+
+
+'''
+search a specifc user ID, redirect to http://127.0.0.1:8000/author/1/my_stream/2/#
+'''
 @require_http_methods(["POST"])
 @login_required
 def search(request, AUTHOR_ID):
     server_origin = request.META["HTTP_X_SERVER"]
+    user = User.objects.get(last_name=server_origin)
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-
-    print("...........................???.....")
 
     data = JSONParser().parse(request)
 
     try:
         target_id = data["url"]
-        print(target_id)
+        author_origin = "http://" + target_id.split("/")[2] + "/"
     except:
         return JsonResponse({}, status=409)
     try:
         target = Profile.objects.get(id=target_id)
         serializer = ProfileSerializer(target)
-        
+
         numberID_target = target_id.split("/")[-1]
 
         # 127.0.0.1:8000/author/1/my_stream/2
         # ID
         #http://127.0.0.1:8000/author/2
-        response = redirect("../my_stream/" + numberID_target + "/")
+        server_name = user.username
+        #response = redirect("../my_stream/" + server_name +"/" + numberID_target + "/")
 
         # return response
-        redirect_url = "../my_stream/" + numberID_target + "/"
+        redirect_url = "../my_stream/" + server_name +"/" + numberID_target + "/"
 
 
-        json_dict = {"url": redirect_url}  
+        json_dict = {"url": redirect_url}
 
-        return JsonResponse(json_dict, status=201)
+        return JsonResponse(json_dict, status=200)
     except Profile.DoesNotExist:
-        return profileRequest("GET", server_origin, target_id)
+        response = profileRequest("GET", author_origin, target_id)
+        #print(author_origin)
+
+        if response.status_code == 200:
+            foreign_author = response.json()
+            # foreign_author = {'type': 'author', 
+            #                 'id': 'http://127.0.0.1:5000/author/10', 
+            #                 'host': 'http://127.0.0.1:5000/author/10', 
+            #                 'displayName': 'Jonathan', 
+            #                 'url': 'http://127.0.0.1:5000/author/10', 
+            #                 'github': 'http://127.0.0.1:5000/author/10'}
+            serializer = ProfileSerializer(data=foreign_author)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return JsonResponse({"url": "../mystream/2/"}, status=200)
 
 
-@require_http_methods(["POST"])
+
+'''
+create a following, add foreigner to be my followings
+'''
 @login_required
-def search_user(request, AUTHOR_ID, FOREGIN_ID):
-    server_origin = request.META["HTTP_X_SERVER"]
-    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    # data = JSONParser().parse(request)
-    # try:
-    #     target_id = data["url"]
-    # except:
-    #     return JsonResponse({}, status=409)
-    try:
-        target = Profile.objects.get(id=FOREGIN_ID)
-        serializer = ProfileSerializer(target)
-        return JsonResponse(serializer.data, status=201)
-    except Profile.DoesNotExist:
-        return profileRequest("GET", server_origin, FOREGIN_ID)
+@require_http_methods(["POST", "PUT"])
+def following(request, AUTHOR_ID, SERVER, FOREIGN_ID):
+    server = User.objects.get(username=SERVER)
+    foreign_server = server.last_name
+    AUTHOR_ID = host_server + "author/"+ AUTHOR_ID
+    FOREIGN_ID = foreign_server + "author/"+ FOREIGN_ID
+    foreigner = Profile.objects.get(id=FOREIGN_ID)
+    profile = Profile.objects.get(id=AUTHOR_ID)
+    profile.followings.add(foreigner)
+    profile.save()
+    return JsonResponse({}, status=204) 
+
+
+'''
+Below is the dead code, or previous version, keep it , incase need that in the future
+
+
+TOP=================================>
+
+
+"""
+Generate response ,when delete user at home page ,
+For user frinedly feature
+"""
+@login_required
+@require_http_methods(["DELETE", "POST"])
+def delete(request, ID):
+    cur_user_name = None
+    if request.user.is_authenticated:
+        cur_user_name = request.user.username
+    # post_id = request.build_absolute_uri().split("/")[-2][6:]
+    cur_author = request.user.profile #getAuthor(cur_user_name)
+    deletePost(ID)
+
+    # TODO: may not redirect
+    response = redirect("/author/"+ str(request.user.id) + "/public_channel/")
+    return response
+
+
+def edit(request, ID):
+    print(request.POST)
+    new_description = request.POST.get("editText")
+    print(new_description)
+    editPostDescription(ID, new_description)
+    # TODO: may not redirect
+    response = redirect("/chat/feed/")
+
+    return response
+
+# delete later
+# get feed and
+# post: comment/like => send post request to host server(edit post function),
+@require_http_methods(["GET", "POST"])
+def edit_in_feed(request, ID):
+    print(request.POST)
+    new_description = request.POST.get("editText")
+    print(new_description)
+    print(editPostDescription(ID, new_description))
+    response = redirect("/chat/feed/")
+
+    return response
+
+BOT<==================================================================
+
+'''
