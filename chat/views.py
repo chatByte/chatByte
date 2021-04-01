@@ -113,6 +113,7 @@ def my_stream(request, AUTHOR_ID):
                             comment_serializer = CommentSerializer(data=comment)
                             if comment_serializer.is_valid(raise_exception=True):
                                 comment_obj = comment_serializer.save(author=comm_author)
+                                print("Created comment obj: ", comment_obj)
                                 comments_list.append(comment_obj)
                         
                     serializer = PostSerializer(data=post)
