@@ -858,6 +858,8 @@ def stream_obj(request, AUTHOR_ID):
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     print("Origin header: ", origin_server)
+    print(request.META)
+    print(request.headers)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
