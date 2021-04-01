@@ -783,7 +783,16 @@ def inbox(request, AUTHOR_ID):
                     #friend_req = serializer.save()
 
 
-                    user.inbox.friend_requests.add(friend_req)
+                    # -----------------
+                    # add to object's inbox
+                    # TODO: handle remote object
+
+                    object.user.inbox.friend_requests.add(friend_req)
+                    # -----------------
+
+
+
+                    # user.inbox.friend_requests.add(friend_req)
                     #print("friend req: ", friend_req)
 
                     # should not be id, should be obj 
