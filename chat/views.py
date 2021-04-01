@@ -94,7 +94,10 @@ def my_stream(request, AUTHOR_ID):
         print("Get stream from: ", node.origin)
         print("Username: ", node.username, " password: ", node.password)
         res = streamRequest(node.origin, request.user.id)
-        print(res)
+        data = JSONParser().parse(res)
+        print(data['posts'])
+    
+
 
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
