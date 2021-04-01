@@ -275,6 +275,132 @@ URL: ://service/author/{AUTHOR_ID}/followers
     ]
 }
 ```
+### **Inbox API**
+<i>GET USER notifications</i>
+### GET: Response(200)
+
+```
+{
+    "type": "inbox",
+    "author": "1",
+    "items": [
+        {
+            "type": "post",
+            "id": "https://chatbyte.herokuapp.com/author/1/posts/5e69d182-2ba3-4093-8633-adbbb1042d70",
+            "title": "ttoo",
+            "source": "https://chatbyte.herokuapp.com/author/1",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "too",
+            "contentType": "text",
+            "content": "too",
+            "author": {
+                "type": "author",
+                "id": "https://chatbyte.herokuapp.com/author/1",
+                "host": null,
+                "displayName": "test",
+                "url": null,
+                "github": null
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "https://chatbyte.herokuapp.com/author/1/posts/5e69d182-2ba3-4093-8633-adbbb1042d70/comments/",
+            "comments": [],
+            "published": "2021-04-01T09:30:12.393119Z",
+            "visibility": "public",
+            "unlisted": "false"
+        },
+        {
+            "type": "post",
+            "id": "https://chatbyte.herokuapp.com/author/1/posts/92e9035c-8dc6-446e-be02-da68b86fbee5",
+            "title": "gaga",
+            "source": "https://chatbyte.herokuapp.com/author/1",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "gaga",
+            "contentType": "text",
+            "content": "gaga",
+            "author": {
+                "type": "author",
+                "id": "https://chatbyte.herokuapp.com/author/1",
+                "host": null,
+                "displayName": "test",
+                "url": null,
+                "github": null
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "https://chatbyte.herokuapp.com/author/1/posts/92e9035c-8dc6-446e-be02-da68b86fbee5/comments/",
+            "comments": [],
+            "published": "2021-04-01T09:58:00.546001Z",
+            "visibility": "public",
+            "unlisted": "false"
+        },
+        {
+            "type": "post",
+            "id": "https://chatbyte.herokuapp.com/author/1/posts/9737bb60-cac1-4600-9e04-8abd7f5aea31",
+            "title": "yao",
+            "source": "https://chatbyte.herokuapp.com/author/1",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "yao",
+            "contentType": "text",
+            "content": "yao",
+            "author": {
+                "type": "author",
+                "id": "https://chatbyte.herokuapp.com/author/1",
+                "host": null,
+                "displayName": "test",
+                "url": null,
+                "github": null
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "https://chatbyte.herokuapp.com/author/1/posts/9737bb60-cac1-4600-9e04-8abd7f5aea31/comments/",
+            "comments": [],
+            "published": "2021-04-01T18:10:38.835281Z",
+            "visibility": "public",
+            "unlisted": "false"
+        },
+        {
+            "type": "post",
+            "id": "https://chatbyte.herokuapp.com/author/1/posts/ad35e5e5-cb9d-49e6-a412-e938168ea22a",
+            "title": "wow",
+            "source": "https://chatbyte.herokuapp.com/author/1",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "wow",
+            "contentType": "text",
+            "content": "wow",
+            "author": {
+                "type": "author",
+                "id": "https://chatbyte.herokuapp.com/author/1",
+                "host": null,
+                "displayName": "test",
+                "url": null,
+                "github": null
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "https://chatbyte.herokuapp.com/author/1/posts/ad35e5e5-cb9d-49e6-a412-e938168ea22a/comments/",
+            "comments": [],
+            "published": "2021-04-01T09:30:36.174855Z",
+            "visibility": "friend",
+            "unlisted": "false"
+        }
+    ]
+}
+```
+
+
 ### **Follower API**
 ### `GET`
 <i>get a list of authors who are their followers</i>
