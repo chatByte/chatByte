@@ -91,6 +91,8 @@ def my_stream(request, AUTHOR_ID):
     public_channel_posts = public_channel_posts.order_by('published')
 
     for node in Node.objects.all():
+        print("Get stream from: ", origin)
+        print("Username: ", node.username, " password: ", node.password)
         res = streamRequest(node.origin, request.user.id)
         print(res)
 
