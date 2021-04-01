@@ -674,61 +674,6 @@ Response:
 }
 ```
 
-
-
-### **Likes API**
-#### `Like Object format`
-```
-{
-     "@context": "https://www.w3.org/ns/activitystreams",
-     "summary": "Lara Croft Likes your post",         
-     "type": "Like",
-     "author":{
-         "type":"author",
-          "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-         "host":"http://127.0.0.1:8000/",
-         "displayName":"Lara Croft",
-         "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-         "github":"http://github.com/laracroft"
-     },
-     "object":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/764efa883dda1e11db47671c4a3bbd9e"
-}
-```
-#### `GET`
-<i>Get Likes for a Post</i>
-```
-://service/author/{AUTHOR_ID}/posts/{POST_ID}/likes
-```
-```
-Response (200):
-[
-    List of Like Objects
-]
-```
-<i>Get Likes for a Comment</i>
-```
-://service/author/{AUTHOR_ID}/posts/{POST_ID}/comments/{COMMENT_ID}/likes
-```
-```
-Response (200):
-[
-    List of Like Objects
-]
-```
-#### `POST`
-<i>Create a Like for either a Post or a Comment</i>
-<br>
-<i>Side Effect: Sends To Inbox</i>
-```
-://service/author/{AUTHOR_ID}/likes
-```
-```
-Request Body:
-Comment Object || Post Object
-
-Depending on which is sent, a corresponding like will be created.
-```
-
 ### **Post API**
 #### `Post Object format`
 
@@ -885,6 +830,62 @@ Body of Request:
 ```
 Allowed Content Types: (text/plain,text/markdown, application/base64,image/png;base64,image/jpeg;base64)
 Allowed visibility: (public, friend, private)
+
+
+
+
+### **Likes API**
+#### `Like Object format`
+```
+{
+     "@context": "https://www.w3.org/ns/activitystreams",
+     "summary": "Lara Croft Likes your post",         
+     "type": "Like",
+     "author":{
+         "type":"author",
+          "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+         "host":"http://127.0.0.1:8000/",
+         "displayName":"Lara Croft",
+         "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+         "github":"http://github.com/laracroft"
+     },
+     "object":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/764efa883dda1e11db47671c4a3bbd9e"
+}
+```
+#### `GET`
+<i>Get Likes for a Post</i>
+```
+://service/author/{AUTHOR_ID}/posts/{POST_ID}/likes
+```
+```
+Response (200):
+[
+    List of Like Objects
+]
+```
+<i>Get Likes for a Comment</i>
+```
+://service/author/{AUTHOR_ID}/posts/{POST_ID}/comments/{COMMENT_ID}/likes
+```
+```
+Response (200):
+[
+    List of Like Objects
+]
+```
+#### `POST`
+<i>Create a Like for either a Post or a Comment</i>
+<br>
+<i>Side Effect: Sends To Inbox</i>
+```
+://service/author/{AUTHOR_ID}/likes
+```
+```
+Request Body:
+Comment Object || Post Object
+
+Depending on which is sent, a corresponding like will be created.
+```
 
 
 
