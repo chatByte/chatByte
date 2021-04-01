@@ -2,7 +2,8 @@
 Project wiki: https://github.com/chatByte/chatByte/wiki 
 
 Working progress controled by our product backlog: https://github.com/chatByte/chatByte/projects/1
-
+## API documentation:
+https://github.com/chatByte/chatByte/blob/main/API_docs.md
 ## Required installation:
 - Django
 - Djongo
@@ -31,6 +32,7 @@ To run the test cases, make sure you are in the outer mysite directory:
 
 ## Herokuapp login method:
 https://app-chatbyte.herokuapp.com/
+
 https://chatbyte.herokuapp.com/
 
 ## Local host:
