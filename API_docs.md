@@ -295,7 +295,7 @@ URL ://service/author/{AUTHOR_ID}/followers
 ```
 URL ://service/author/<str:AUTHOR_ID>/inbox/
 ```
-### GET: Response(200)
+### `GET`
 
 ```
 {
@@ -417,16 +417,86 @@ URL ://service/author/<str:AUTHOR_ID>/inbox/
     ]
 }
 ```
+### `DELETE`
+```
+{
+    "type": "inbox",
+    "author": "1",
+    "items": []
+}
+```
+### `POST`
+
+```
+POST a post: Response (200)
+{
+    "type": "inbox",
+    "author": "1",
+    "items": [
+        {
+            "type": "post",
+            "id": "https://chatbyte.herokuapp.com/author/1/posts/5e69d182-2ba3-4093-8633-adbbb1042d70abc",
+            "title": "ttoo",
+            "source": "https://chatbyte.herokuapp.com/author/1",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "too",
+            "contentType": "text",
+            "content": "too",
+            "author": {
+                "type": "author",
+                "id": "https://chatbyte.herokuapp.com/author/1",
+                "host": null,
+                "displayName": "test",
+                "url": null,
+                "github": null
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "https://chatbyte.herokuapp.com/author/1/posts/5e69d182-2ba3-4093-8633-adbbb1042d70/comments/",
+            "comments": [],
+            "published": "2021-04-01T09:30:12.393119Z",
+            "visibility": "public",
+            "unlisted": "false"
+        }
+    ]
+}
+```
+
+```
+POST a friend: Response(200)
+{
+    "type": "follow",
+    "summary": "Greg wants to follow Lara",
+    "actor": {
+        "type": "author",
+        "id": "http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+        "url": "http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+        "host": "http://127.0.0.1:5454/",
+        "displayName": "Greg Johnson",
+        "github": "http://github.com/gjohnson"
+    },
+    "object": {
+        "type": "author",
+        "id": "https://app-chatbyte.herokuapp.com/author/1",
+        "host": "http://127.0.0.1:5454/",
+        "displayName": "Lara Croft",
+        "url": "http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+        "github": "http://github.com/laracroft"
+    }
+}
+```
+
 
 
 ### **Follower API**
 ### `GET`
 <i>get a list of authors who are their followers</i>
 ```
-URL: ://service/author/{AUTHOR_ID}/followers
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/followers
 GET: Response (200)
-POST:
-DELETE:
 ```
 Response:
 ```
@@ -454,9 +524,9 @@ Response:
 ```
 
 ### `GET`
-<i>check if follower</i>
+<i>GET a specific follower</i>
 ```
-URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 ```
 Response:
 ```
@@ -473,37 +543,37 @@ Response (200):
 }
 ```
 
-### `PUT`
+### `POST`
 <i>Add a follower</i>
 ```
-URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 ```
 Response:
 ```
 Response (200):
 {
-"followee":"http://127.0.0.1:8000/author/1d698d25ff008f7538453c120f581471",
-"follower_url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+    "detail": "true"
 }
-
 ```
 
 ### `DELETE`
 <i>remove a follower</i>
 ```
-URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 ```
 Response:
 ```
 Response (200):
-<None>
+{
+    "status": "true"
+}
 ```
 
 ### **Friend API**
 ### `GET`
 <i>get all friends of author</i>
 ```
-URL: ://service/author/{AUTHOR_ID}/friends/
+URL: "https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/friends/
 ```
 Response:
 ```
@@ -531,75 +601,15 @@ Response (200):
 }
 ```
 
-### `POST`
-<i>add a friend to author</i>
-```
-URL: ://service/author/{AUTHOR_ID}/friends/
-```
-Body of Request:
-```
-{
-"url":"https://service/author/8de17f29c12e8f97bcbbd34cc908f1baba40658e",
-}
-```
-Response:
-```
-Response (200):
-<None>
-```
 
-### `DELETE`
-<i>delete a friend from author</i>
-```
-URL: ://service/author/{AUTHOR_ID}/friends/
-```
-Body of Request:
-```
-{
-"url":"http://127.0.0.1:8000/author/8de17f29c12e8f97bcbbd34cc908f1baba40658e",
-}
-```
-Response:
-```
-Response (200):
-<None>
-```
-
-### `GET`
-<i>get all authors has the author as friend</i>
-```
-URL: ://service/author/asFriend/<query: url=<url of the author>>
-```
-Response:
-```
-Response (200):
-{
-    "type": "asFriend",      
-    "items":[
-        {
-            "type":"author",
-            "id":"http://127.0.0.1:8000/author/1d698d25ff008f7538453c120f581471",
-            "url":"http://127.0.0.1:8000/author/1d698d25ff008f7538453c120f581471",
-            "host":"http://127.0.0.1:8000/",
-            "displayName":"Greg Johnson",
-            "github": "http://github.com/gjohnson"
-        },
-        {
-            "type":"author",
-            "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            "host":"http://127.0.0.1:8000/",
-            "displayName":"Lara Croft",
-            "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            "github": "http://github.com/laracroft"
-        }
-    ]
-}
-```
 
     
 ### **Comments API**
-#### `Comment Object format`
+### `GET` 
 ```
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}/comments
+
+Response(200):
 {
     "count": 1,
     "next": null,
@@ -623,23 +633,11 @@ Response (200):
     ]
 }
 ```
-#### `GET`
-<i>Get comments for a Post</i>
-```
-URL: //service/author/{AUTHOR_ID}/posts/{POST_ID}/comments
-```
+
 - Supports Pagination through **query parameters**
     - page -> Default value is set to 1 if not provided
     - size -> Default value is set to 5 if not provided
-```
-Response (200):
-{
-    count: 0, # Number of comments for post
-    comments: [List of Comment Objects],
-    next: url to the next page if exists else "",
-    prev: url to the prev page if exists, else "",
-}
-```
+
 #### `POST`
 <i>Create Comment on a Post</i>
 ```
@@ -648,11 +646,33 @@ Response (200):
 Body of Request:
 ```
 {
-    content: "some content",
-    contentType: "some content type"
+    "type":"comment",
+      "author":{
+        "type":"author",
+        "id":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+        "url":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+          "host":"http://127.0.0.1:5454/",
+          "displayName":"Greg Johnson",
+          "github": "http://github.com/gjohnson"
+    },
+    "comment":"Sick Olde English",
+    "contentType":"text/markdown",
+    "published":"2015-03-09T13:07:04+00:00",
+    "id":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments/f6255bb01c648fe967714d52a89e8e9c"
 }
 ```
 Allowed Content Types: (text/plain,text/markdown, application/base64,image/png;base64,image/jpeg;base64)
+
+```
+Response:
+{
+    "type": "comment",
+    "id": "http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments/f6255bb01c648fe967714d52a89e8e9c",
+    "comment": "Sick Olde English",
+    "contentType": "text/markdown",
+    "published": "2015-03-09T13:07:04Z"
+}
+```
 
 
 
@@ -707,35 +727,6 @@ Request Body:
 Comment Object || Post Object
 
 Depending on which is sent, a corresponding like will be created.
-```
-
-### **Liked API**
-#### `Liked Object format`
-```
-{
-    "type":"liked",
-    "items":[
-        {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": "Lara Croft Likes your post",         
-            "type": "Like",
-            "author":{
-                "type":"author",
-                   "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-                "host":"http://127.0.0.1:8000/",
-                "displayName":"Lara Croft",
-                "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-                "github":"http://github.com/laracroft"
-            },
-            "object":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/764efa883dda1e11db47671c4a3bbd9e"
-        }
-    ]
-}
-```
-#### `GET`
-<i>Get Liked for an author</i>
-```
-://service/author/{AUTHOR_ID}/liked
 ```
 
 ### **Post API**
@@ -896,110 +887,33 @@ Allowed Content Types: (text/plain,text/markdown, application/base64,image/png;b
 Allowed visibility: (public, friend, private)
 
 
-### **Inbox API**
 
-#### `inbox Object format`
-
-#### `GET`
-
-<i>Get all inbox for author using author_id</i>
-
-
-
-
-#### `POST`
-
-<i>Create a inbox obejct for author using author_id</i>
-
-```
-://service/author/<str:author_id>/inbox
-```
-
-Body of Request (follow inbox):
-
+### **Liked API (In Progress) **
+#### `Liked Object format`
 ```
 {
-    "type": "Follow",      
-    "summary":"Greg wants to follow Lara",
-    "actor":{
-        "type":"author",
-        "id":"http://127.0.0.1:8000/author/1d698d25ff008f7538453c120f581471",
-        "url":"http://127.0.0.1:8000/author/1d698d25ff008f7538453c120f581471",
-        "host":"http://127.0.0.1:8000/",
-        "displayName":"Greg Johnson",
-        "github": "http://github.com/gjohnson"
-    },
-    "object":{
-        "type":"author",
-        "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-        "host":"http://127.0.0.1:8000/",
-        "displayName":"Lara Croft",
-        "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-        "github": "http://github.com/laracroft"
-    }
-}
-```
-
-Body of Request (like inbox):
-
-```
-{
-    "type":"Like",
-            "@context":"",
-            "summary":"Ankush Sharma Likes your post",
+    "type":"liked",
+    "items":[
+        {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "summary": "Lara Croft Likes your post",         
+            "type": "Like",
             "author":{
                 "type":"author",
-                "id":"http://localhost:8000/author/ecc154e4-eb48-4282-b721-bad9d56ada82",
-                "host":"http://localhost:8000/",
-                "displayName":"Ankush Sharma",
-                "url":"http://localhost:8000/author/ecc154e4-eb48-4282-b721-bad9d56ada82",
-                "github":"https://github.com/AnkushSharma2698"
+                   "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+                "host":"http://127.0.0.1:8000/",
+                "displayName":"Lara Croft",
+                "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+                "github":"http://github.com/laracroft"
             },
-            "object":"http://localhost:8000/author/ecc154e4-eb48-4282-b721-bad9d56ada82/posts/3c11a77e-27cf-47af-8c27-4ff4b97c8cc1"
-
-    
+            "object":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/764efa883dda1e11db47671c4a3bbd9e"
+        }
+    ]
 }
 ```
-
-Body of Request (post inbox):
-
+#### `GET`
+<i>Get Liked for an author</i>
 ```
-{
-    "type":"post",
-            "title":"A Friendly post title about a post about web dev",
-            "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/764efa883dda1e11db47671c4a3bbd9e",
-            "source":"http://lastplaceigotthisfrom.com/posts/yyyyy",
-            "origin":"http://whereitcamefrom.com/posts/zzzzz",
-            "description":"This post discusses stuff -- brief",
-            "contentType":"text/plain",
-            "content":"Þā wæs on burgum Bēowulf Scyldinga, lēof lēod-cyning, longe þrāge folcum gefrǣge (fæder ellor hwearf, aldor of earde), oð þæt him eft onwōc hēah Healfdene; hēold þenden lifde, gamol and gūð-rēow, glæde Scyldingas. Þǣm fēower bearn forð-gerīmed in worold wōcun, weoroda rǣswan, Heorogār and Hrōðgār and Hālga til; hȳrde ic, þat Elan cwēn Ongenþēowes wæs Heaðoscilfinges heals-gebedde. Þā wæs Hrōðgāre here-spēd gyfen, wīges weorð-mynd, þæt him his wine-māgas georne hȳrdon, oð þæt sēo geogoð gewēox, mago-driht micel. Him on mōd bearn, þæt heal-reced hātan wolde, medo-ærn micel men gewyrcean, þone yldo bearn ǣfre gefrūnon, and þǣr on innan eall gedǣlan geongum and ealdum, swylc him god sealde, būton folc-scare and feorum gumena. Þā ic wīde gefrægn weorc gebannan manigre mǣgðe geond þisne middan-geard, folc-stede frætwan. Him on fyrste gelomp ǣdre mid yldum, þæt hit wearð eal gearo, heal-ærna mǣst; scōp him Heort naman, sē þe his wordes geweald wīde hæfde. Hē bēot ne ālēh, bēagas dǣlde, sinc æt symle. Sele hlīfade hēah and horn-gēap: heaðo-wylma bād, lāðan līges; ne wæs hit lenge þā gēn þæt se ecg-hete āðum-swerian 85 æfter wæl-nīðe wæcnan scolde. Þā se ellen-gǣst earfoðlīce þrāge geþolode, sē þe in þȳstrum bād, þæt hē dōgora gehwām drēam gehȳrde hlūdne in healle; þǣr wæs hearpan swēg, swutol sang scopes. Sægde sē þe cūðe frum-sceaft fīra feorran reccan",
-            "author":{
-                  "type":"author",
-            	"id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            	"host":"http://127.0.0.1:8000/",
-            	"displayName":"Lara Croft",
-            	"url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-            	"github": "http://github.com/laracroft"
-            },
-            "categories":["web","tutorial"],
-            "comments":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments",
-            "published":"2015-03-09T13:07:04+00:00",
-            "visibility":"FRIENDS",
-            "unlisted":false
-
-    
-}
+://service/author/{AUTHOR_ID}/liked
 ```
 
-#### `DELETE`
-<i>Delete all inbox for author using author_id</i>
-
-```
-://service/author/<str:author_id>/inbox
-```
-
-<i>Delete a single inbox for author using author_id and item_id</i>
-
-```
-://service/author/<str:author_id>/inbox/<str:item_id>
-```
