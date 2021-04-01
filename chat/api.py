@@ -477,8 +477,8 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
         elif request.method == "DELETE":
             follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
-            profile.followers.remove(follower)
-            return JsonResponse({}, status=200)
+            profile.followers.items.remove(follower)
+            return JsonResponse({"status": "true"}, status=200)
 
         return JsonResponse({"Error": "Bad request"}, status=400)
 
@@ -515,7 +515,7 @@ def followers_obj(request, AUTHOR_ID):
         followers = profile.followers.items.all()
         serializer = ProfileSerializer(followers, many=True)
         if request.method == "GET":
-            return JsonResponse(serializer.data, status=200, safe=False)
+            return JsonResponse({"type": "followers", "items": serializer.data}, status=200, safe=False)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -558,7 +558,7 @@ def get_friends_obj(request, AUTHOR_ID):
         friends = profile.friends
         serializer = ProfileSerializer(friends, many=True)
         if request.method == "GET":
-            return JsonResponse({serializer.data}, status=200, safe=False)
+            return JsonResponse({"type": "friends", "items": serializer.data}, status=200, safe=False)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -638,8 +638,8 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     print("author id: ", AUTHOR_ID)
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
-    COMMENT_ID = AUTHOR_ID + "/posts/" + POST_ID + "/comments/" + COMMENT_ID
-    print("post id: ", COMMENT_ID)
+    COMMENT_ID = POST_ID + "/comments/" + COMMENT_ID
+    print("comment id: ", COMMENT_ID)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
