@@ -94,11 +94,33 @@ def my_stream(request, AUTHOR_ID):
         print("Get stream from: ", node.origin)
         print("Username: ", node.username, " password: ", node.password)
         res = streamRequest(node.origin, request.user.id)
-        data = res.json()
-        print(data['posts'])
+        try:
+            data = res.json()
+            print(data['posts'])
+            for post in data['posts']:
+                serializer = PostSerializer(data=post)
+                print(serializer)
+                if serializer.is_valid(raise_exception=True):
+                    print(post['id'])
+                    post_id = post['id']
+                    try:
+                        post = Post.objects.get(id=post_id)
+                    except Post.DoesNotExist:
+                        author_dict = post['author']
+                        print(author_dict)
+                        try:
+                            author = Profile.objects.get(id=author_dict['id'])
+                        except Profile.DoesNotExist:
+                            author_serializer = ProfileSerializer(data=author_dict)
+                            if author_serializer.is_valid(raise_exception=True):
+                                author = author_serializer.save()
+                        serializer.save(author=author)
+                        post = Post.objects.get(id=post_id)
+                    # add stream post into public channel
+                    public_channel_posts.add(post)
+        except BaseException as e:
+            print(e)
     
-
-
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
         # 'timeline': mytimeline,
