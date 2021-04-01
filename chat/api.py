@@ -851,12 +851,14 @@ def stream_obj(request, AUTHOR_ID):
 
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("Origin")
+    origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server != host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
+    print("Origin header: ", origin_server)
+    print(request.META)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
