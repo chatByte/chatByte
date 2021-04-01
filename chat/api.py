@@ -95,10 +95,10 @@ Testing method
 @permission_classes([IsAuthenticated])
 def post_obj(request, AUTHOR_ID, POST_ID):
     # ex. equest.META[Origin] == ("https:\\chatbyte"):
-    # req_origin = request.META["Origin"] 
+    # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -174,7 +174,7 @@ def posts_obj(request, AUTHOR_ID):
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -254,7 +254,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -347,7 +347,7 @@ def profile_obj(request, AUTHOR_ID):
     print("Origin: ", host_server)
     print("Request origin: ", server_origin)
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -365,7 +365,7 @@ def profile_obj(request, AUTHOR_ID):
         # query to database
         if request.method == "GET":
             serializer = ProfileSerializer(profile)
-            return JsonResponse(serializer.data)
+            return JsonResponse(serializer.data, status=201)
         elif request.method == "POST":
             data = JSONParser().parse(request)
             serializer = ProfileSerializer(profile, data=data)
@@ -408,7 +408,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -455,7 +455,6 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
                 return JsonResponse({'status':'false','message':'FOREIGN_AUTHOR_ID: ' + FOREIGN_AUTHOR_ID + ' does not exists'}, status=404)
 
         elif (request.method == "PUT"):
-            print(".....................................Haha1..................................................")
             #add a follower , with FOREIGN_AUTHOR_ID
             data = JSONParser().parse(request)
             serializer = ProfileSerializer(data=data)
@@ -479,7 +478,7 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
             profile.followers.remove(follower)
             return JsonResponse({}, status=200)
 
-        return JsonResponse({"Error": "Bad request"}, status=400) 
+        return JsonResponse({"Error": "Bad request"}, status=400)
 
 
 
@@ -496,7 +495,7 @@ def followers_obj(request, AUTHOR_ID):
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -539,7 +538,7 @@ def get_friends_obj(request, AUTHOR_ID):
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -599,7 +598,7 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -630,7 +629,7 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -666,7 +665,7 @@ def liked_post_obj(request, AUTHOR_ID):
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -692,12 +691,25 @@ def liked_post_obj(request, AUTHOR_ID):
 '''
 # Inbox has a one-to-one relationship with User, and the User id is an integer, AUTHOR_ID
 # to avoid Reference problem , make a copy of AUTHOR_ID by creating a new string
+
+URL: ://service/author/{AUTHOR_ID}/inbox
+GET: if authenticated get a list of posts sent to {AUTHOR_ID}
+POST: send a post to the author
+    if the type is “post” then add that post to the author’s inbox
+    Here folllow is equal to be a friend request
+    if the type is “follow” then add that follow is added to the author’s inbox to approve later
+    if the type is “like” then add that like to the author’s inbox
+DELETE: clear the inbox
 '''
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET', 'DELETE'])
 def inbox(request, AUTHOR_ID):
+
+    print("inbox: ", request)
+
+
 
     USER_ID = (AUTHOR_ID + '.')[:-1]
 
@@ -710,7 +722,7 @@ def inbox(request, AUTHOR_ID):
         server_origin = request.META.get("HTTP_X_SERVER")
     # Profile/AUTHOR ID is the full url
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -736,22 +748,23 @@ def inbox(request, AUTHOR_ID):
             if data['type'] == "post":
                 print("Recieved a post inbox...!")
                 serializer = PostSerializer(data=data)
-                print(serializer)
+                # print(serializer)
                 if serializer.is_valid(raise_exception=True):
-                    print(data['id'])
+                    print("Post id: ", data['id'])
                     post_id = data['id']
-                    # try:
-                    #     post = Post.objects.get(id=post_id)
-                    # except:
-                    author_dict = data['author']
-                    print(author_dict)
                     try:
-                        author = Profile.objects.get(id=author_dict['id'])
-                    except Profile.DoesNotExist:
-                        author_serializer = ProfileSerializer(data=author_dict)
-                        if author_serializer.is_valid(raise_exception=True):
-                            author = author_serializer.save()
-                    serializer.save(author=author)
+                        post = Post.objects.get(id=post_id)
+                    except Post.DoesNotExist:
+                        author_dict = data['author']
+                        print("Author dict: ", author_dict)
+                        try:
+                            author = Profile.objects.get(id=author_dict['id'])
+                        except Profile.DoesNotExist:
+                            author_serializer = ProfileSerializer(data=author_dict)
+                            if author_serializer.is_valid(raise_exception=True):
+                                author = author_serializer.save()
+                        post = serializer.save(author=author)
+                    print("Post: ", post)
                     post = Post.objects.get(id=post_id)
                     user.inbox.post_inbox.items.add(post)
                     user.inbox.post_inbox.save()
@@ -814,10 +827,50 @@ def inbox(request, AUTHOR_ID):
 
             elif data['type'] == 'follow':
                 print("Recieved a friend request!")
+                print(data['actor'])
+                print(data['object'])
+                print(data['summary'])
+
                 serializer = FriendReuqestSerializer(data=data)
                 if serializer.is_valid(raise_exception=True):
-                    friend_req = serializer.save()
-                    user.inbox.friend_requests.add(friend_req)
+
+                    actor_dict = data['actor'] 
+
+                    try:
+                        actor = Profile.objects.get(id=actor_dict['id'])
+                    except Profile.DoesNotExist:
+                        actor_serializer = ProfileSerializer(data=actor_dict)
+                        if actor_serializer.is_valid(raise_exception=True):
+                            actor = actor_serializer.save()
+
+                    object_dict = data['object'] 
+
+                    try:
+                        object = Profile.objects.get(id=object_dict['id'])
+                    except Profile.DoesNotExist:
+                        object_serializer = ProfileSerializer(data=object_dict)
+                        if object_serializer.is_valid(raise_exception=True):
+                            object = object_serializer.save()
+                    friend_req = serializer.save(actor=actor, object=object)
+
+                    #friend_req = serializer.save()
+
+
+                    # -----------------
+                    # add to object's inbox
+                    # TODO: handle remote object
+
+                    object.user.inbox.friend_requests.add(friend_req)
+                    # -----------------
+
+
+
+                    # user.inbox.friend_requests.add(friend_req)
+                    #print("friend req: ", friend_req)
+
+                    # should not be id, should be obj 
+                    # print(friend_req.dict)
+
                     user.inbox.save()
                     return JsonResponse(data, status=200)
                 return JsonResponse(serializer.errors, status=400)
@@ -852,7 +905,7 @@ def stream_obj(request, AUTHOR_ID):
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server != host_server:
+    if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
@@ -866,9 +919,12 @@ def stream_obj(request, AUTHOR_ID):
         if request.method == 'GET':
             try:
                 print("here")
-                profile = Profile.objects.get(id=AUTHOR_ID)
-                print(profile)
-                posts_result = Post.objects.all()
+                try:
+                    profile = Profile.objects.get(id=AUTHOR_ID)
+                    print(profile)
+                except Profile.DoesNotExist:
+                    print("profile not found!")
+                posts_result = Post.objects.filter(visibility='public')
                 print(posts_result)
                 # all_author_posts = Post.objects.filter(author=profile)
                 # print(all_author_posts)
@@ -886,9 +942,9 @@ def stream_obj(request, AUTHOR_ID):
 
             pagination = PageNumberPagination()
             paginated_results = pagination.paginate_queryset(posts_result, request)
-        
+
             serializer = PostSerializer(paginated_results, many=True)
-        
+
             data = {
                 'count': pagination.page.paginator.count,
                 'next': "", # pagination.get_next_link(),
