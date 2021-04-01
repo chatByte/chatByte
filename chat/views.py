@@ -90,6 +90,10 @@ def my_stream(request, AUTHOR_ID):
     # order by date
     public_channel_posts = public_channel_posts.order_by('published')
 
+    for node in Node.objects.all():
+        res = streamRequest(node.origin, request.user.id)
+        print(res)
+
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
         # 'timeline': mytimeline,
