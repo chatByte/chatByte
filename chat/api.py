@@ -638,8 +638,8 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     print("author id: ", AUTHOR_ID)
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
-    COMMENT_ID = AUTHOR_ID + "/posts/" + POST_ID + "/comments/" + COMMENT_ID
-    print("post id: ", COMMENT_ID)
+    COMMENT_ID = POST_ID + "/comments/" + COMMENT_ID
+    print("comment id: ", COMMENT_ID)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
