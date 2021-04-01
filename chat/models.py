@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 import django
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 # class Actor(models.Model):
@@ -12,7 +13,7 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     type = models.CharField(max_length=200, default="author")
-    id = models.CharField(max_length=200, primary_key=True)
+    id = models.CharField(max_length=200, primary_key=True, default=uuid.uuid4)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     host = models.URLField(max_length=200, null=True)
     displayName = models.CharField(max_length=200, null=True)
@@ -50,7 +51,7 @@ class Comment(models.Model):
     published = models.DateTimeField(default=django.utils.timezone.now)
     likes = models.ManyToManyField('Like', blank=True)
     # # the father of Comeent is POST
-    parent_post = models.ForeignKey("Post", on_delete= models.CASCADE)
+    parent_post = models.ForeignKey("Post", on_delete= models.CASCADE, null=True, blank=True)
 
 
 
@@ -67,10 +68,13 @@ class Post(models.Model):
     content = models.TextField()
     # the author has an ID where by authors can be disambiguated
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    categories = models.CharField(max_length=200)
+    categories = ArrayField(
+        models.CharField(max_length=200, blank=True),
+        size=200,
+    )
     count = models.IntegerField(default=0)
     size = models.IntegerField(default=0)
-    comments_url = models.CharField(max_length=200)
+    comment_url = models.CharField(max_length=200, blank=True)
     comments = models.ManyToManyField('Comment', blank=True)
     # published date
     published = models.DateTimeField(default=django.utils.timezone.now)
@@ -124,3 +128,8 @@ class Liked(models.Model):
     type = models.CharField(max_length=200, default="liked")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     items = models.ManyToManyField('Like', blank=True)
+
+class Node(models.Model):
+    username = models.CharField(max_length=200, blank=True)
+    password = models.CharField(max_length=200,  blank=True)
+    origin = models.CharField(max_length=200,  blank=True)

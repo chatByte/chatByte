@@ -6,10 +6,9 @@ import django
 from django.contrib.auth.models import User
 import traceback
 from .signals import host
-from .serializers import PostSerializer
+from .serializers import PostSerializer, ProfileSerializer
 from requests.auth import HTTPBasicAuth
 from .remoteProxy import inboxRequest
-import requests
 
 # def setCookie(response, key, value, days_expire=1):
 #     # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
@@ -194,8 +193,10 @@ def createPost(title, source, origin, description, content_type, content, author
     # Please authenticate before calling this method
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
-            , categories=categories, count=0, size=0, comments_url=0, visibility=visibility, author=author)
+            , categories=categories, count=0, size=0, comment_url="", visibility=visibility, author=author)
         # print(post.author)
+        post.comment_url = post.id + "/comments/"
+        post.save()
         author.timeline.add(post)
         author.save()
 
@@ -204,16 +205,22 @@ def createPost(title, source, origin, description, content_type, content, author
         for friend_profile in author.friends.all():
             print(friend_profile.id)
             author_id = friend_profile.id.split('author/')[1]
-            serializer = PostSerializer(post)
-            if origin == host:
+            
+            server_origin = friend_profile.id.split("author/")[0]
+            if server_origin == host:
                 print("doing locally")
                 # send post to inbox
                 friend_profile.user.inbox.post_inbox.items.add(post)
                 # add post into timeline
                 friend_profile.timeline.add(post)
             else:
+                serializer = PostSerializer(post)
+                post_serialize = serializer.data
+                author_serialize = ProfileSerializer(post.author)
+                post_serialize['author'] = author_serialize.data
+                print(post_serialize)
                 # send post to remote inbox
-                inboxRequest("POST", origin, author_id, serializer.data)
+                inboxRequest("POST", server_origin, author_id, post_serialize)
         print("done")
         return True
     except BaseException as e:

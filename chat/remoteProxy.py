@@ -5,8 +5,9 @@ import requests
 from .signals import host
 from requests.auth import HTTPBasicAuth
 from django.contrib.auth.models import User
+import json
 
-def profileRequest(method, origin, user_id, profile=None):
+def profileRequest(method, origin, user_id, data=None):
     '''
     This function send a request to the remote server at:
         service/author/<author id>/
@@ -23,14 +24,11 @@ def profileRequest(method, origin, user_id, profile=None):
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
-        serializer = ProfileSerializer(data=profile)
-        if serializer.is_valid(raise_exception=True):
-            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
-        else:
-            response =  JsonResponse(serializer.errors, status=400)
+        response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     return response
 
-def postsRequest(method, origin, user_id, post=None):
+def postsRequest(method, origin, user_id, data=None):
     '''
     This function send a request to the remote server at:
         service/author/<author id>/posts/
@@ -40,20 +38,16 @@ def postsRequest(method, origin, user_id, post=None):
     '''
     url = str(origin) + "author/" + str(user_id) + "/posts/"
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
-        #response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
     elif method == "POST":
-        serializer = PostSerializer(data=post)
-        if serializer.is_valid(raise_exception=True):
-            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
-        else:
-            response =  JsonResponse(serializer.errors, status=400)
+        response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     return response
 
-def postRequest(method, origin, user_id, post_id, post=None):
+def postRequest(method, origin, user_id, post_id, data=None):
     '''
     This function send a request to the remote server at:
         service/author/<author id>/posts/<post id>/
@@ -62,30 +56,24 @@ def postRequest(method, origin, user_id, post_id, post=None):
     the post in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/"
-    user = User.objects.get(first_name=origin)
-    headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    user = User.objects.get(last_name=origin)
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
-        serializer = PostSerializer(data=post)
-        if serializer.is_valid(raise_exception=True):
-            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
-        else:
-            response =  JsonResponse(serializer.errors, status=400)
-        response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     elif method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     elif method == "DELETE":
-        response = requests.delete(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.delete(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     elif method == "PUT":
-        serializer = PostSerializer(data=post)
-        if serializer.is_valid(raise_exception=True):
-            response = requests.put(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
-        else:
-            response =  JsonResponse(serializer.errors, status=400)
-        response = requests.put(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.put(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     return response
 
-def commentRequest(method, origin, user_id, post_id, comment=None):
+def commentRequest(method, origin, user_id, post_id, data=None):
     '''
     This function send a request to the remote server at:
         service/author/<author id>/posts/<post id>/comments/
@@ -94,19 +82,14 @@ def commentRequest(method, origin, user_id, post_id, comment=None):
     the comment in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/comments/"
-    user = User.objects.get(first_name=origin)
-    headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    user = User.objects.get(last_name=origin)
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
-        serializer = CommentSerializer(data=comment)
-        if serializer.is_valid(raise_exception=True):
-            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
-        else:
-            response =  JsonResponse(serializer.errors, status=400)
-        response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
-        return response
+        response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     return response
 
 def inboxRequest(method, origin, user_id, data=None):
@@ -118,37 +101,34 @@ def inboxRequest(method, origin, user_id, data=None):
     the inbox in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/inbox/"
-    user = User.objects.get(first_name=origin)
-    headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    print("remote URL: ", url)
+    print("remote origin: ", origin)
+    user = User.objects.get(last_name=origin)
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
         if data['type'] == "post":
             print("Recieved a post inbox!")
-            serializer = PostSerializer(data=data)
-            if serializer.is_valid(raise_exception=True):
-                response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
-            else:
-                response =  JsonResponse(serializer.errors, status=400)
+            print("Username: ", user.username, "first_name: ", user.first_name)
+            print(json.dumps(data))
+            response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+            print(response.status_code)
         elif data['type'] == 'like':
-            serializer = LikeSerializer(data=data)
-            if serializer.is_valid(raise_exception=True):
-                response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
-            else:
-                response =  JsonResponse(serializer.errors, status=400) 
+            response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+            print(response.status_code)
         elif data['type'] == 'follow':
             print("Recieved a friend request!")
-            serializer = FriendReuqestSerializer(data=data)
-            if serializer.is_valid(raise_exception=True):
-                response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
-            else:
-                response =  JsonResponse(serializer.errors, status=400)
+            response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+            print(response.status_code)
         else:
             return JsonResponse({"Error": "Invalid inbox type"}, status=400) 
     elif method == "DELETE":
-        response = requests.delete(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.delete(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     elif method == "GET":
         print("Get request processing...")
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     return response
 
 def followersRequest(method, origin, user_id, data=None):
@@ -159,11 +139,12 @@ def followersRequest(method, origin, user_id, data=None):
     The body of the request is empty.
     '''
     url = str(origin) + "author/" + str(user_id) + "/followers/"
-    user = User.objects.get(first_name=origin)
-    headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    user = User.objects.get(last_name=origin)
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     return response
 
 def followerRequest(method, origin, user_id, foreign_author_id,data=None):
@@ -174,18 +155,15 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
     The body of the request is empty.
     '''
     url = str(origin) + "author/" + str(user_id) + "/" + str(foreign_author_id) + "/"
-    user = User.objects.get(first_name=origin)
-    headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    user = User.objects.get(last_name=origin)
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     elif method == "POST":
-        serializer = FollowerSerializer(data=data)
-        if serializer.is_valid(raise_exception=True):
-            response = requests.post(url, data=serializer.data, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
-        else:
-            response =  JsonResponse(serializer.errors, status=400)
-        return response
+        response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     return response
 
 
@@ -198,11 +176,12 @@ def likedRequest(method, origin, user_id, data=None):
     '''
 
     url = str(origin) + "author/" + str(user_id) + "/liked/"
-    user = User.objects.get(first_name=origin)
-    headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    user = User.objects.get(last_name=origin)
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     return response
 
 def likesRequest(method, origin, user_id, post_id, data=None):
@@ -214,11 +193,12 @@ def likesRequest(method, origin, user_id, post_id, data=None):
     '''
 
     url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/likes/"
-    user = User.objects.get(first_name=origin)
-    headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    user = User.objects.get(last_name=origin)
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     return response
 
 def commentLikesRequest(method, origin, user_id, post_id, comment_id, data=None):
@@ -230,11 +210,12 @@ def commentLikesRequest(method, origin, user_id, post_id, comment_id, data=None)
     '''
 
     url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/comments/" + comment_id + "/likes/"
-    user = User.objects.get(first_name=origin)
-    headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    user = User.objects.get(last_name=origin)
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
     return response
 
 def friendsRequest(method, origin, user_id, post_id, comment_id, data=None):
@@ -246,9 +227,26 @@ def friendsRequest(method, origin, user_id, post_id, comment_id, data=None):
     '''
 
     url = str(origin) + "author/" + str(user_id) + "/friends/"
-    user = User.objects.get(first_name=origin)
-    headers = {'Origin': origin, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    user = User.objects.get(last_name=origin)
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.password))
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
+    return response
+
+def streamRequest(origin, user_id):
+    '''
+    This function send a request to the remote server at:
+        "author/<str:AUTHOR_ID>/stream/"
+    with the corresponding method. Headers are included to ensure secure connections.
+    The body of the request is empty.
+    '''
+
+    url = str(origin) + "author/" + str(user_id) + "/stream/"
+    user = User.objects.get(last_name=origin)
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    response = JsonResponse({"Error": "Bad request"}, status=400) 
+    response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+    print(response.status_code)
     return response
