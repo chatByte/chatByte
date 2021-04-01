@@ -80,10 +80,8 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="inbox"),
 
     # # Get likes for a Comment
-    path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
-
-
-
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
+    # https://app-chatbyte.herokuapp.com/author/1/posts/767fcb2d-bfce-46c8-a269-990b654b1e71/comments/767fcb2d-bfce-46c8-a269-990b654b1e71/likes
 
 
 
