@@ -1,4 +1,4 @@
-# Social Distribution API Documentation :kissing_heart:
+# Social Distribution API Documentation :stuck_out_tongue_winking_eye:
 ### Request Headers
     - Local Request: {
         Authorization: Bearer <Token>,
