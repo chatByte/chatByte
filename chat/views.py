@@ -187,7 +187,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
 
         # a list of post
         #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
-        foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['results']
+        foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['posts']
         foreign_timeline = PostSerializer(foreign_timeline, many=True).data
 
         author_num_follwers = len(foreign_author.profile.followers.items.all())
