@@ -128,3 +128,8 @@ class Liked(models.Model):
     type = models.CharField(max_length=200, default="liked")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     items = models.ManyToManyField('Like', blank=True)
+
+class Node(models.Model):
+    username = models.CharField(max_length=200, blank=True)
+    password = models.CharField(max_length=200,  blank=True)
+    origin = models.CharField(max_length=200,  blank=True)

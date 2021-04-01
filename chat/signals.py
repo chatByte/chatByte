@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
-from .models import Comment, Post, Profile, Inbox, PostInbox, Liked, Follower
+from .models import *
 
 host = "https://chatbyte.herokuapp.com/"
 # host = "https://localhost:8000/"
@@ -77,3 +77,18 @@ def create_comment_signal(sender, instance, created, **kwargs):
             # remove the old instance
             old_instance = Comment.objects.get(pk=id_temp)
             old_instance.delete()
+
+@receiver(post_save, sender=Node)
+def create_comment_signal(sender, instance, created, **kwargs):
+    # instance is a Node object
+    if created:
+        # when create a Node object
+        # create a user with the corresponding credential
+
+        # check if the instance id is a url that includes '/comments/'
+        user = User.objects.create_user(instance.username, password=instance.password)
+        user.first_name = instance.password
+        user.last_name = instance.origin
+        user.is_superuser = False
+        user.is_staff = False
+        user.save()
