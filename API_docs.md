@@ -25,7 +25,7 @@ retrieve user profile
 POST: response(200)
 update user profile (with pagination)
 ```
-
+### `GET`
 ```
 {
     "type": "author",
@@ -37,6 +37,20 @@ update user profile (with pagination)
 }
 
 ```
+### `POST`
+<i>response is the new object</i>
+```
+{
+    "type": "author",
+    "id": "https://app-chatbyte.herokuapp.com/author/1",
+    "host": "https://app-chatbyte.herokuapp.com/",
+    "displayName": "test123",
+    "url": "https://app-chatbyte.herokuapp.com/author/1",
+    "github": "https://app-chatbyte.herokuapp.com/author/1"
+}
+
+```
+
 ### **Stream API**
 ### `GET`
 <i>GET USER Stream with Pagination</i>
