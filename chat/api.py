@@ -858,7 +858,6 @@ def stream_obj(request, AUTHOR_ID):
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     print("Origin header: ", origin_server)
-    print(request.META)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
@@ -867,8 +866,11 @@ def stream_obj(request, AUTHOR_ID):
         if request.method == 'GET':
             try:
                 print("here")
-                profile = Profile.objects.get(id=AUTHOR_ID)
-                print(profile)
+                try:
+                    profile = Profile.objects.get(id=AUTHOR_ID)
+                    print(profile)
+                except Profile.DoesNotExist:
+                    print("profile not found!")
                 posts_result = Post.objects.all()
                 print(posts_result)
                 # all_author_posts = Post.objects.filter(author=profile)
