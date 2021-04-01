@@ -20,8 +20,9 @@ POST: update profile
 ```
 URL: ://service/author/{AUTHOR_ID}/
 GET: response(200) 
-retrieve their profile
+retrieve user profile
 POST: response(200)
+update user profile (with pagination)
 ```
 
 ```
@@ -35,59 +36,253 @@ POST: response(200)
 }
 
 ```
-
-#### `GET`
-<i>retrieve their profile</i>
+### **Stream API**
+### `GET`
+<i>GET USER Stream with Pagination</i>
 ```
-URL: ://service/author/{AUTHOR_ID}/
+URL: ://service/author/{AUTHOR_ID}/followers
 ```
-Response:
-```
-Response (200):
-{
-    "type":"author",
-    "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-    "host":"http://127.0.0.1:8000/",
-    "displayName":"Lara Croft",
-    "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-    "github": "http://github.com/laracroft"
-}
-```
-
-#### `POST`
-<i>update profile</i>
-```
-URL: ://service/author/{AUTHOR_ID}/
-```
-Body of Request:
 ```
 {
-    "type":"author",
-    "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-    "host":"http://127.0.0.1:8000/",
-    "displayName":"Lara Croft",
-    "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-    "github": "http://github.com/laracroft"
+    "count": 8,
+    "next": "",
+    "previous": "",
+    "posts": [
+        {
+            "type": "post",
+            "id": "https://app-chatbyte.herokuapp.com/author/1/posts/b2e513ae-ab58-446c-a930-64bd17674447",
+            "title": "gugu",
+            "source": "https://app-chatbyte.herokuapp.com/author/1",
+            "origin": "https://app-chatbyte.herokuapp.com/",
+            "description": "gugu",
+            "contentType": "text",
+            "content": "gugu",
+            "author": {
+                "type": "author",
+                "id": "https://app-chatbyte.herokuapp.com/author/1",
+                "host": "https://app-chatbyte.herokuapp.com/",
+                "displayName": "test",
+                "url": "https://app-chatbyte.herokuapp.com/author/1",
+                "github": "https://app-chatbyte.herokuapp.com/author/1"
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "https://app-chatbyte.herokuapp.com/author/1/posts/b2e513ae-ab58-446c-a930-64bd17674447/comments/",
+            "comments": [],
+            "published": "2021-04-01T09:57:38.555123Z",
+            "visibility": "public",
+            "unlisted": "false"
+        },
+        {
+            "type": "post",
+            "id": "https://chatbyte.herokuapp.com/author/1/posts/92e9035c-8dc6-446e-be02-da68b86fbee5",
+            "title": "gaga",
+            "source": "https://chatbyte.herokuapp.com/author/1",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "gaga",
+            "contentType": "text",
+            "content": "gaga",
+            "author": {
+                "type": "author",
+                "id": "https://chatbyte.herokuapp.com/author/1",
+                "host": null,
+                "displayName": "test",
+                "url": null,
+                "github": null
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "https://chatbyte.herokuapp.com/author/1/posts/92e9035c-8dc6-446e-be02-da68b86fbee5/comments/",
+            "comments": [],
+            "published": "2021-04-01T09:58:00.546001Z",
+            "visibility": "public",
+            "unlisted": "false"
+        },
+        {
+            "type": "post",
+            "id": "https://app-chatbyte.herokuapp.com/author/1/posts/767fcb2d-bfce-46c8-a269-990b654b1e71",
+            "title": "claire",
+            "source": "https://app-chatbyte.herokuapp.com/author/1",
+            "origin": "https://app-chatbyte.herokuapp.com/",
+            "description": "claire",
+            "contentType": "text",
+            "content": "claire",
+            "author": {
+                "type": "author",
+                "id": "https://app-chatbyte.herokuapp.com/author/1",
+                "host": "https://app-chatbyte.herokuapp.com/",
+                "displayName": "test",
+                "url": "https://app-chatbyte.herokuapp.com/author/1",
+                "github": "https://app-chatbyte.herokuapp.com/author/1"
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "https://app-chatbyte.herokuapp.com/author/1/posts/767fcb2d-bfce-46c8-a269-990b654b1e71/comments/",
+            "comments": [],
+            "published": "2021-04-01T18:10:15.214994Z",
+            "visibility": "public",
+            "unlisted": "false"
+        },
+        {
+            "type": "post",
+            "id": "https://chatbyte.herokuapp.com/author/1/posts/9737bb60-cac1-4600-9e04-8abd7f5aea31",
+            "title": "yao",
+            "source": "https://chatbyte.herokuapp.com/author/1",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "yao",
+            "contentType": "text",
+            "content": "yao",
+            "author": {
+                "type": "author",
+                "id": "https://chatbyte.herokuapp.com/author/1",
+                "host": null,
+                "displayName": "test",
+                "url": null,
+                "github": null
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "https://chatbyte.herokuapp.com/author/1/posts/9737bb60-cac1-4600-9e04-8abd7f5aea31/comments/",
+            "comments": [],
+            "published": "2021-04-01T18:10:38.835281Z",
+            "visibility": "public",
+            "unlisted": "false"
+        },
+        {
+            "type": "post",
+            "id": "https://chatbyte.herokuapp.com/author/1/posts/5e69d182-2ba3-4093-8633-adbbb1042d70",
+            "title": "ttoo",
+            "source": "https://chatbyte.herokuapp.com/author/1",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "too",
+            "contentType": "text",
+            "content": "too",
+            "author": {
+                "type": "author",
+                "id": "https://chatbyte.herokuapp.com/author/1",
+                "host": null,
+                "displayName": "test",
+                "url": null,
+                "github": null
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "https://chatbyte.herokuapp.com/author/1/posts/5e69d182-2ba3-4093-8633-adbbb1042d70/comments/",
+            "comments": [],
+            "published": "2021-04-01T09:30:12.393119Z",
+            "visibility": "public",
+            "unlisted": "false"
+        },
+        {
+            "type": "post",
+            "id": "https://app-chatbyte.herokuapp.com/author/7/posts/122ad56c-c153-4f60-9fa4-450c258df40e",
+            "title": "test",
+            "source": "https://app-chatbyte.herokuapp.com/author/7",
+            "origin": "https://app-chatbyte.herokuapp.com/",
+            "description": "test",
+            "contentType": "text",
+            "content": "test",
+            "author": {
+                "type": "author",
+                "id": "https://app-chatbyte.herokuapp.com/author/7",
+                "host": null,
+                "displayName": "choo",
+                "url": null,
+                "github": null
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "",
+            "comments": [],
+            "published": "2021-04-01T09:37:19.452013Z",
+            "visibility": "public",
+            "unlisted": "false"
+        },
+        {
+            "type": "post",
+            "id": "https://app-chatbyte.herokuapp.com/author/7/posts/3aacce7e-407c-4605-8f80-7b1b0a8de08f",
+            "title": "choo",
+            "source": "https://app-chatbyte.herokuapp.com/author/7",
+            "origin": "https://app-chatbyte.herokuapp.com/",
+            "description": "choo",
+            "contentType": "text",
+            "content": "choo",
+            "author": {
+                "type": "author",
+                "id": "https://app-chatbyte.herokuapp.com/author/7",
+                "host": null,
+                "displayName": "choo",
+                "url": null,
+                "github": null
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "",
+            "comments": [],
+            "published": "2021-04-01T09:37:43.806644Z",
+            "visibility": "public",
+            "unlisted": "false"
+        },
+        {
+            "type": "post",
+            "id": "https://app-chatbyte.herokuapp.com/author/1/posts/0beae2cc-c43d-44ed-928c-e774f5cca749",
+            "title": "test",
+            "source": "https://app-chatbyte.herokuapp.com/author/1",
+            "origin": "https://app-chatbyte.herokuapp.com/",
+            "description": "test",
+            "contentType": "text",
+            "content": "test",
+            "author": {
+                "type": "author",
+                "id": "https://app-chatbyte.herokuapp.com/author/1",
+                "host": "https://app-chatbyte.herokuapp.com/",
+                "displayName": "test",
+                "url": "https://app-chatbyte.herokuapp.com/author/1",
+                "github": "https://app-chatbyte.herokuapp.com/author/1"
+            },
+            "categories": [
+                "text/plain"
+            ],
+            "count": 0,
+            "size": 0,
+            "comment_url": "",
+            "comments": [],
+            "published": "2021-04-01T09:27:06.948879Z",
+            "visibility": "public",
+            "unlisted": "false"
+        }
+    ]
 }
 ```
-Response:
-```
-Response (200):
-{
-    "type":"author",
-    "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-    "host":"http://127.0.0.1:8000/",
-    "displayName":"Lara Croft",
-    "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-    "github": "http://github.com/laracroft"
-}
-```
-
 ### **Follower API**
 ### `GET`
 <i>get a list of authors who are their followers</i>
 ```
 URL: ://service/author/{AUTHOR_ID}/followers
+GET:
+POST:
+DELETE:
 ```
 Response:
 ```
