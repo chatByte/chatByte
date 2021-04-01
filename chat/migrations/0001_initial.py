@@ -13,8 +13,8 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('auth', '0009_alter_user_last_name_max_length'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -66,6 +66,15 @@ class Migration(migrations.Migration):
                 ('type', models.CharField(default='liked', max_length=200)),
                 ('id', models.CharField(default=uuid.uuid4, max_length=200, primary_key=True, serialize=False, unique=True)),
                 ('items', models.ManyToManyField(blank=True, to='chat.Like')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Node',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('username', models.CharField(blank=True, max_length=200)),
+                ('password', models.CharField(blank=True, max_length=200)),
+                ('origin', models.CharField(blank=True, max_length=200)),
             ],
         ),
         migrations.CreateModel(

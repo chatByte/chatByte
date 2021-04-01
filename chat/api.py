@@ -198,7 +198,7 @@ def posts_obj(request, AUTHOR_ID):
                 'count': pagination.page.paginator.count,
                 'next': pagination.get_next_link(),
                 'previous': pagination.get_previous_link(),
-                'results': serializer.data,
+                'posts': serializer.data,
             }
             return JsonResponse(data, safe=False)
         elif request.method == 'POST':
