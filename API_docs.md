@@ -15,16 +15,23 @@ URL: ://service/author/{AUTHOR_ID}/
 GET: retrieve their profile
 POST: update profile
 
-#### `Author Object format`
+#### `Author Object format` 
+<i>retrieve their profile</i>
+```
+URL: ://service/author/{AUTHOR_ID}/
+GET: response(200) 
+retrieve their profile
+POST: response(200)
+```
 
 ```
-{ 
-"type": "author",
- 	"id": "https://chatbyte.herokuapp.com/author/1", 
-"host": null, 
-"displayName": "test", 
-"url": null, 
-"github": null
+{
+    "type": "author",
+    "id": "https://app-chatbyte.herokuapp.com/author/1",
+    "host": "https://app-chatbyte.herokuapp.com/",
+    "displayName": "test",
+    "url": "https://app-chatbyte.herokuapp.com/author/1",
+    "github": "https://app-chatbyte.herokuapp.com/author/1"
 }
 
 ```
