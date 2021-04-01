@@ -97,6 +97,7 @@ def my_stream(request, AUTHOR_ID):
                     comments_dict = post['comments']
                     comments_list = list()
                     for comment in comments_dict:
+                        print("Comment: ", comment)
                         try:
                             comment_obj = Comment.objects.get(id=comment['id'])
                             comments_list.append(comment_obj)
