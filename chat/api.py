@@ -872,7 +872,7 @@ def stream_obj(request, AUTHOR_ID):
                 print("here")
                 profile = Profile.objects.get(id=AUTHOR_ID)
                 print(profile)
-                posts_result = Post.objects.all()
+                posts_result = Post.objects.filter(visibility='public')
                 print(posts_result)
                 # all_author_posts = Post.objects.filter(author=profile)
                 # print(all_author_posts)
