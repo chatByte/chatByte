@@ -739,6 +739,7 @@ def inbox(request, AUTHOR_ID):
         # print("Request data: ", request.data)
         # print("Request body: ", request.body)
         if request.method == "POST":
+            print("Using post method")
             user = User.objects.get(pk=USER_ID)
             # print(request.data)
             data = JSONParser().parse(request)
