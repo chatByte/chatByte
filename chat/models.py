@@ -51,7 +51,7 @@ class Comment(models.Model):
     published = models.DateTimeField(default=django.utils.timezone.now)
     likes = models.ManyToManyField('Like', blank=True)
     # # the father of Comeent is POST
-    parent_post = models.ForeignKey("Post", on_delete= models.CASCADE)
+    parent_post = models.ForeignKey("Post", on_delete= models.CASCADE, null=True, blank=True)
 
 
 

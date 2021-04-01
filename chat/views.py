@@ -71,12 +71,67 @@ def my_stream(request, AUTHOR_ID):
 
     cur_author = request.user
     # a list of post, django.db.models.query.QuerySet
-    mytimeline = cur_author.profile.timeline.all()
+    mytimeline = cur_author.profile.timeline
+
+    for node in Node.objects.all():
+        print("Get stream from: ", node.origin)
+        print("Username: ", node.username, " password: ", node.password)
+        res = streamRequest(node.origin, request.user.id)
+        try:
+            data = res.json()
+            # print(data['posts'])
+            for post in data['posts']:
+                print("Post id: ", post['id'])
+                post_id = post['id']
+                try:
+                    post_obj = Post.objects.get(id=post_id)
+                except Post.DoesNotExist:
+                    author_dict = post['author']
+                    print("Author dict: ", author_dict)
+                    try:
+                        author = Profile.objects.get(id=author_dict['id'])
+                    except Profile.DoesNotExist:
+                        author_serializer = ProfileSerializer(data=author_dict)
+                        if author_serializer.is_valid(raise_exception=True):
+                            author = author_serializer.save()
+                    comments_dict = post['comments']
+                    comments_list = list()
+                    for comment in comments_dict:
+                        print("Comment: ", comment)
+                        try:
+                            comment_obj = Comment.objects.get(id=comment['id'])
+                            comments_list.append(comment_obj)
+                        except Comment.DoesNotExist:
+                            comm_author_dict = comment['author']
+                            print("Comment author: ", comm_author_dict)
+                            try:
+                                comm_author = Profile.objects.get(id=comm_author_dict['id'])
+                            except Profile.DoesNotExist:
+                                author_serializer = ProfileSerializer(data=comm_author_dict)
+                                if author_serializer.is_valid(raise_exception=True):
+                                    comm_author = author_serializer.save()
+                            comment_serializer = CommentSerializer(data=comment)
+                            if comment_serializer.is_valid(raise_exception=True):
+                                comment_obj = comment_serializer.save(author=comm_author)
+                                comments_list.append(comment_obj)
+                        
+                    serializer = PostSerializer(data=post)
+                    print("here")
+                    # print(serializer)
+                    if serializer.is_valid(raise_exception=True):
+                        serializer.save(author=author, comments=comments_list)
+                        post_obj = Post.objects.get(id=post_id)
+                # add stream post into public channel
+                mytimeline.add(post_obj)
+                print("Post object", post_obj)
+        except BaseException as e:
+            print(e)
+        
     # a group of author, that i am currently following, django.db.models.query.QuerySet
     followings = cur_author.profile.followings.all()
 
     # merging quesryset
-    public_channel_posts = mytimeline
+    public_channel_posts = mytimeline.all()
 
     for following_profile in followings:
 
@@ -90,12 +145,9 @@ def my_stream(request, AUTHOR_ID):
     # order by date
     public_channel_posts = public_channel_posts.order_by('published')
 
-    for node in Node.objects.all():
-        print("Get stream from: ", node.origin)
-        print("Username: ", node.username, " password: ", node.password)
-        res = streamRequest(node.origin, request.user.id)
-        print(res)
-
+    
+    
+    
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
         # 'timeline': mytimeline,
