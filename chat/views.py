@@ -212,7 +212,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
         #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
         foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['posts']
         foreign_timeline = PostSerializer(foreign_timeline, many=True).data
-
+        
         author_num_follwers = len(foreign_author.profile.followers.items.all())
         friend_request_num = len(foreign_author.profile.friend_requests.all())
 
@@ -248,7 +248,7 @@ def posts(request, AUTHOR_ID):
     cur_author = request.user.profile
     alltimeline = cur_author.timeline.all()
     #getTimeline(cur_user_name), by SQL query
-    mytimeline = alltimeline.filter(author=cur_author).order_by('published')
+    mytimeline = alltimeline.filter(author=cur_author).order_by('-published')
 
     author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(cur_author.friend_requests.all())
