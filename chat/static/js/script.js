@@ -206,7 +206,7 @@ function sendFriendRequest(type, summary, author, object) {
       console.log(author);
       console.log(object);
     },
-    contentType: "application/json; charset=utf-8",
+    contentType: false,
     processData: false,
     dataType: "json",
     data: JSON.stringify(data),
