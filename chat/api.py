@@ -663,10 +663,8 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
 @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def liked_post_obj(request, AUTHOR_ID):
-
     USER_ID = (AUTHOR_ID + '.')[:-1]
 
-    # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server not in host_server:
