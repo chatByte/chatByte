@@ -851,23 +851,70 @@ Response:
 #### `GET`
 <i>Get Likes for a Post</i>
 ```
-URL: //service/author/{AUTHOR_ID}/posts/{POST_ID}/likes
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}/likes
 ```
 ```
 Response (200):
-[
-    List of Like Objects
-]
+{
+    "likes": [
+        {
+            "type": "like",
+            "id": "530c2845-8bfb-40d0-bf2f-932698ca19b9",
+            "summary": "Like",
+            "author": {
+                "type": "author",
+                "id": "https://chatbyte.herokuapp.com/author/1",
+                "host": null,
+                "displayName": "test",
+                "url": null,
+                "github": null
+            },
+            "object": "Like",
+            "context": "Like"
+        }
+    ]
+}
 ```
 <i>Get Likes for a Comment</i>
 ```
-URL: //service/author/{AUTHOR_ID}/posts/{POST_ID}/comments/{COMMENT_ID}/likes
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}/comments/{COMMENT_ID}/likes
 ```
 ```
 Response (200):
-[
-    List of Like Objects
-]
+{
+    "likes": [
+        {
+            "type": "like",
+            "id": "530c2845-8bfb-40d0-bf2f-932698ca19b9",
+            "summary": "Like",
+            "author": {
+                "type": "author",
+                "id": "https://chatbyte.herokuapp.com/author/1",
+                "host": null,
+                "displayName": "test",
+                "url": null,
+                "github": null
+            },
+            "object": "Like",
+            "context": "Like"
+        },
+        {
+            "type": "like",
+            "id": "f716dbb1-43bb-4bfe-9804-2a68c13cf32e",
+            "summary": "Like",
+            "author": {
+                "type": "author",
+                "id": "https://app-chatbyte.herokuapp.com/author/1",
+                "host": "https://app-chatbyte.herokuapp.com/",
+                "displayName": "test",
+                "url": "https://app-chatbyte.herokuapp.com/author/1",
+                "github": "https://app-chatbyte.herokuapp.com/author/1"
+            },
+            "object": "Like",
+            "context": "Like"
+        }
+    ]
+}
 ```
 #### `POST`
 <i>Create a Like for either a Post or a Comment</i>
