@@ -185,6 +185,13 @@ function sendFriendRequest(type, summary, author, object) {
   var fi = foreign_id.split("/");
   var x_server_header = fi[0]+"//"+fi[2]+"/";
 
+  var data = {
+    'type': 'follow',
+    'summary': summary,
+    'actor': author,
+    'object': object,
+  }
+
   console.log("sending Friend Request");
   $.ajax({
     // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
@@ -198,18 +205,10 @@ function sendFriendRequest(type, summary, author, object) {
       console.log(author);
       console.log(object);
     },
-
-
-
     contentType: "application/json",
     processData: false,
     dataType: "json",
-    data: JSON.stringify({
-      'type': 'follow',
-      'summary': summary,
-      'actor': author,
-      'object': object,
-    }),
+    data: JSON.stringify(data),
     // handle a successful response
     success : function(data) {
         // sanity check
