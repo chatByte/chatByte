@@ -845,9 +845,7 @@ def inbox(request, AUTHOR_ID):
                     try:
                         object = Profile.objects.get(id=object_dict['id'])
                     except Profile.DoesNotExist:
-                        object_serializer = ProfileSerializer(data=object_dict)
-                        if object_serializer.is_valid(raise_exception=True):
-                            object = object_serializer.save()
+                        return JsonResponse({"Error": "object does not exist"}, status=404)
                     friend_req = serializer.save(actor=actor, object=object)
 
                     #friend_req = serializer.save()
