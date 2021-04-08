@@ -559,6 +559,8 @@ def search(request, AUTHOR_ID):
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return JsonResponse({"url": "../mystream/2/"}, status=200)
+        else:
+            return JsonResponse(response.json(), status=response.status_code)
 
 
 
