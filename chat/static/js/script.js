@@ -191,7 +191,7 @@ function sendFriendRequest(type, summary, author, object) {
     'actor': author,
     'object': object
   }
-  console.log("Data to be sent: ", data)
+  console.log("Data to be sent: ", JSON.stringify(data))
 
   console.log("sending Friend Request");
   $.ajax({
