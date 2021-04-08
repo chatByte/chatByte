@@ -16,7 +16,7 @@ def profileRequest(method, origin, user_id, data=None):
     the author's profile in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/"
-    print("Remote get pofile origin: ", origin)
+    print("Remote get profile origin: ", origin)
     user = User.objects.get(last_name=origin)
     headers = {
         'Origin': host,
