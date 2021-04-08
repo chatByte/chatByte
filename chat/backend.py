@@ -354,3 +354,10 @@ def getUser(usr_id):
     except BaseException as e:
         print(e)
         return None
+
+def likePost(post_id, author_id):
+    # TODO: post needs to know that it is liked
+    # TODO: author needs to know what is liked
+
+    # TODO: check if remote
+    pass
