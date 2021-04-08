@@ -544,7 +544,7 @@ def search(request, AUTHOR_ID):
 
         return JsonResponse(json_dict, status=200)
     except Profile.DoesNotExist:
-        response = profileRequest("GET", author_origin, target_id)
+        response = profileRequest("GET", author_origin, target_id.split("/")[-1])
         #print(author_origin)
 
         if response.status_code == 200:
