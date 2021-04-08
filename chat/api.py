@@ -741,7 +741,7 @@ def inbox(request, AUTHOR_ID):
             print("User", user)
             try:
                 # data = JSONParser().parse(request)
-                data=json.loads(request.raw_post_data)
+                data=json.loads(request.body)
             except BaseException as e:
                 print("error parsing request's body")
                 return JsonResponse({e}, status=400, safe=False)
