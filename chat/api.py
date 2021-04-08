@@ -617,7 +617,7 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
         except Post.DoesNotExist:
             return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
         likes = post.likes
-        serializer = LikeSerializer(likes, many=True)
+        serializer = LikeSerializer(data=likes, many=True)
         if serializer.is_valid(raise_exception=True):
             return JsonResponse(serializer.data, status=200)
 
