@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
+from django.core.paginator import Paginator
+
 from .signals import host as host_server
 from rest_framework.parsers import JSONParser
 
@@ -19,6 +21,7 @@ from .remoteProxy import *
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+
 
 
 """
@@ -108,6 +111,7 @@ def my_stream(request, AUTHOR_ID):
     # a list of post, django.db.models.query.QuerySet
     mytimeline = cur_author.profile.timeline
 
+    # Get stream from: node origins, since we have plenty remote server
     for node in Node.objects.all():
         print("Get stream from: ", node.origin)
         print("Username: ", node.username, " password: ", node.password)
@@ -116,13 +120,13 @@ def my_stream(request, AUTHOR_ID):
             data = res.json()
             # print(data['posts'])
             for post in data['posts']:
-                print("Post id: ", post['id'])
+                # print("Post id: ", post['id'])
                 post_id = post['id']
                 try:
                     post_obj = Post.objects.get(id=post_id)
                 except Post.DoesNotExist:
                     author_dict = post['author']
-                    print("Author dict: ", author_dict)
+                    # print("Author dict: ", author_dict)
                     try:
                         author = Profile.objects.get(id=author_dict['id'])
                     except Profile.DoesNotExist:
@@ -132,7 +136,7 @@ def my_stream(request, AUTHOR_ID):
                     comments_dict = post['comments']
                     comments_list = list()
                     for comment in comments_dict:
-                        print("Comment: ", comment)
+                        # print("Comment: ", comment)
                         try:
                             comment_obj = Comment.objects.get(id=comment['id'])
                             comments_list.append(comment_obj)
@@ -153,16 +157,20 @@ def my_stream(request, AUTHOR_ID):
                                 comments_list.append(comment_obj)
                         
                     serializer = PostSerializer(data=post)
-                    print("here")
+                    # print("here")
                     # print(serializer)
                     if serializer.is_valid(raise_exception=True):
                         serializer.save(author=author) # comments=comments_list
                         post_obj = Post.objects.get(id=post_id)
                 # add stream post into public channel
                 mytimeline.add(post_obj)
-                print("Post object", post_obj)
+                # print("Post object", post_obj)
         except BaseException as e:
             print(e)
+
+
+
+
         
     # a group of author, that i am currently following, django.db.models.query.QuerySet
     followings = cur_author.profile.followings.all()
@@ -180,16 +188,24 @@ def my_stream(request, AUTHOR_ID):
     author_num_follwers = len(cur_author.profile.followers.items.all())
     friend_request_num = len(cur_author.profile.friend_requests.all())
     # order by date
-    public_channel_posts = public_channel_posts.order_by('published')
+    public_channel_posts = public_channel_posts.order_by('-published')
 
-    
+    # create a paginator
+    paginator_public_channel_posts = Paginator(public_channel_posts, 8) # Show 25 contacts per page.
+
+
+
+    # if  page_number == None, we will get first page(can be empty)
+    page_number = request.GET.get('page')
+
+
+    page_obj = paginator_public_channel_posts.get_page(page_number)
     
     
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
-        # 'timeline': mytimeline,
-
         'public_channel_posts': public_channel_posts,
+        'page_obj': page_obj,
         'author_num_follwers': author_num_follwers,
         'friend_request_num': friend_request_num
     }
@@ -262,7 +278,7 @@ def posts(request, AUTHOR_ID):
     cur_author = request.user.profile
     alltimeline = cur_author.timeline.all()
     #getTimeline(cur_user_name), by SQL query
-    mytimeline = alltimeline.filter(author=cur_author).order_by('published')
+    mytimeline = alltimeline.filter(author=cur_author).order_by('-published')
 
     author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(cur_author.friend_requests.all())

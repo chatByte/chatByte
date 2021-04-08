@@ -132,13 +132,9 @@
             <div class="col-md-6">
         <div class="posts">
 
+              {% for cur_post in page_obj %}
 
-        <!--              ?? -->
-
-                {% for cur_post in public_channel_posts reversed %}
-
-                <!-- Post Content
-                ================================================= -->
+                <!-- Post Content ================================================= -->
 
                 <div class="post-content">
                   <!--Post Date-->
@@ -167,14 +163,6 @@
                         <p> {{cur_post.content}} </p>
                         {% endif %}
 
-	<!-- 											<form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
-                            {% csrf_token %}
-                            <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.content}}</textarea>
-                            <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
-                        </form>
-
-                        <div class="edit"><a href="/chat/home/edit{{ cur_post.ID }}/">Edit</a>&emsp;<a href="/chat/home/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div> -->
-
                       </div>
 
                       <div class="reaction-img">
@@ -183,25 +171,18 @@
                       </div>
 
                       <hr class="solid">
-<!--            show nested comment  -->
-            {% for comment in cur_post.comments.all %}
-                      <div class="post-comment">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                        <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
-                      </div>
+                  <!--              show nested comment  -->
+                  {% for comment in cur_post.comments.all %}
+                            <div class="post-comment">
+                              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
+                              <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
+                            </div>
 
-                      <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
-                      </div>
-                      {% endfor %}
-<!--                      end -->
-
-<!--                      <div class="post-comment">
-                        <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
-                        <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
-                      </div> -->
-
-
+                            <div class="reaction-img">
+                              <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
+                            </div>
+                  {% endfor %}
+                  <!--                      end -->
 
                       <div class="post-comment">
                         <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
@@ -212,10 +193,40 @@
                   </div>
                 </div>
 
-                {% endfor %}
+              {% endfor %}
                 <!-- Post Content
                 ================================================= -->
-            </div>
+
+
+              <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; first page</a>
+                        <a >&hearts; &hearts; &hearts;  </a>
+                        <a href="?page={{ page_obj.previous_page_number }}">previous page</a>
+                    {% endif %}
+
+                    <span class="current">
+                      </br>
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                      </br>
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">next page</a>
+                        <a >&hearts; &hearts;  &hearts;  </a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">last page &raquo;</a>
+                    {% endif %}
+                </span>
+              </div>
+
+        </div>
+
+
+
+
+
+
 
 
 
