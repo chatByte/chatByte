@@ -619,7 +619,7 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
         likes = post.likes
         serializer = LikeSerializer(likes, many=True)
         # if serializer.is_valid(raise_exception=True):
-        return JsonResponse({"likes": serializer.data}, status=200, safe=False)
+        return JsonResponse({"type": "likes", "items": serializer.data}, status=200, safe=False)
 
         # return JsonResponse(serializer.errors, status=400)
 
@@ -652,7 +652,7 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
         likes = comment.likes
         serializer = LikeSerializer(likes, many=True)
         # if serializer.is_valid(raise_exception=True):
-        return JsonResponse({"likes": serializer.data}, status=200)
+        return JsonResponse({"type": "likes", "items": serializer.data}, status=200)
 
         # return JsonResponse(serializer.errors, status=400)
 
@@ -684,10 +684,7 @@ def liked_post_obj(request, AUTHOR_ID):
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
         liked = profile.liked
         serializer = LikedSerializer(liked)
-        # if serializer.is_valid(raise_exception=True):
         return JsonResponse(serializer.data, status=200)
-
-        # return JsonResponse(serializer.errors, status=400)
 
 
 '''
