@@ -732,16 +732,12 @@ def inbox(request, AUTHOR_ID):
         print("------ Remote request body: ", request.body)
         return inboxRequest(request.method,server_origin, AUTHOR_ID, request.body)
     else:
-        print("Request: ", request)
-        # print("Request data: ", request.data)
-        # print("Request body: ", request.body)
         if request.method == "POST":
             print("Using post method")
             user = User.objects.get(pk=USER_ID)
             print("User", user)
             try:
-                # data = JSONParser().parse(request)
-                data=json.loads(request.body)
+                data = JSONParser().parse(request)
             except BaseException as e:
                 print("error parsing request's body")
                 return JsonResponse({e}, status=400, safe=False)
