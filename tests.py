@@ -253,9 +253,9 @@ class AccountTests(APITestCase):
         url = '/author/1/'
         user_json = {
             "type": "author",
-            "id": host + "author/2",
+            "id": host + "author/1",
             "host": "https://chatbyte.herokuapp.com/chat/author/2/",
-            "displayName": "asdfasdf",
+            "displayName": "asdfasdfasdfadsfasd",
             "url": "https://chatbyte.herokuapp.com/chat/author/2/profile/",
             "github": "https://github.com/Jeremy0818"
         }

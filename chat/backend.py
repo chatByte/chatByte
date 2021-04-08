@@ -6,10 +6,9 @@ import django
 from django.contrib.auth.models import User
 import traceback
 from .signals import host
-from .serializers import PostSerializer
+from .serializers import PostSerializer, ProfileSerializer
 from requests.auth import HTTPBasicAuth
 from .remoteProxy import inboxRequest
-import requests
 
 # def setCookie(response, key, value, days_expire=1):
 #     # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
@@ -29,8 +28,8 @@ import requests
 #         domain=settings.SESSION_COOKIE_DOMAIN,
 #         secure=settings.SESSION_COOKIE_SECURE or None,
 #     )
-def getUser(usr_id):
-    return User.objects.get(id=usr_id)
+# def getUser(usr_id):
+#     return User.objects.get(id=usr_id)
 
 def updateUser(username, password):
     # Please authenticate before calling this method
@@ -60,7 +59,6 @@ def addFriend(usr_id, friend_id):
         print(e)
         return False
 
-
 def deleteFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
@@ -71,6 +69,16 @@ def deleteFriend(usr_id, friend_id):
     except BaseException as e:
         print(e)
         return False
+
+def getFollowing(usr_id, following_id):
+    try:
+        user = User.objects.get(id=usr_id)
+        following = User.objects.get(id=following_id)
+        if following.profile in user.profile.followings.all(): return following
+        return None
+    except BaseException as e:
+        print(e)
+        return None
 
 def getFriend(usr_id, friend_id):
     try:
@@ -90,15 +98,14 @@ def getFriends(usr_id):
         print(e)
         return None
 
-def addFollow(usr_id, friend_id):
+def addFollow(usr_id, follow_id):
     user = User.objects.get(id=usr_id)
-    friend = User.objects.get(id=friend_id)
-
-    user.profile.followings.add(friend.profile)
-    friend.profile.followers.add(user.profile)
-
+    follow = User.objects.get(id=follow_id)
+    print(follow)
+    user.profile.followings.add(follow.profile)
+    follow.profile.followers.add(user.profile)
     user.save()
-    friend.save()
+    follow.save()
     return True
 
 
@@ -149,10 +156,15 @@ def addFriendViaRequest(usr_id, friend_request_id):
         return False
 
 def getALLFriendRequests(usr_id):
+
+    print("getALLFriendRequests")
+
     try:
         user = User.objects.get(id=usr_id)
         # print(user.profile.friend_requests.all())
-        return user.profile.friend_requests.all()
+        print("try")
+        print(user.inbox.friend_requests)
+        return user.inbox.friend_requests.all()
     except BaseException as e:
         print(e)
         return None
@@ -181,8 +193,10 @@ def createPost(title, source, origin, description, content_type, content, author
     # Please authenticate before calling this method
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
-            , categories=categories, count=0, size=0, comments_url=0, visibility=visibility, author=author)
+            , categories=categories, count=0, size=0, comment_url="", visibility=visibility, author=author)
         # print(post.author)
+        post.comment_url = post.id + "/comments/"
+        post.save()
         author.timeline.add(post)
         author.save()
 
@@ -191,16 +205,22 @@ def createPost(title, source, origin, description, content_type, content, author
         for friend_profile in author.friends.all():
             print(friend_profile.id)
             author_id = friend_profile.id.split('author/')[1]
-            serializer = PostSerializer(post)
-            if origin == host:
+            
+            server_origin = friend_profile.id.split("author/")[0]
+            if server_origin == host:
                 print("doing locally")
                 # send post to inbox
                 friend_profile.user.inbox.post_inbox.items.add(post)
                 # add post into timeline
                 friend_profile.timeline.add(post)
             else:
+                serializer = PostSerializer(post)
+                post_serialize = serializer.data
+                author_serialize = ProfileSerializer(post.author)
+                post_serialize['author'] = author_serialize.data
+                print(post_serialize)
                 # send post to remote inbox
-                inboxRequest("POST", origin, author_id, serializer.data)
+                inboxRequest("POST", server_origin, author_id, post_serialize)
         print("done")
         return True
     except BaseException as e:

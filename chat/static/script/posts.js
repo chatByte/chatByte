@@ -7,21 +7,19 @@ var form_data = new FormData();
 var edit_form_data = new FormData();
 var x_server = window.location.origin;
 
-
-
-
 function search(){
   var input = document.getElementById("search_user_input");
   var id = input.value;
-  console.log(id);
+  var host = id.split("/");
+  var host_name = host[0]+"//"+host[2]+"/";
 
 
 $.ajax({
         url : "../search/", // the endpoint
         type : "POST", // http method
-        dataType: 'text', // what to expect back from the server
+        dataType: 'json', // what to expect back from the server
         cache: false,
-        headers: {"X-Server": window.location.origin},
+        headers: {"X-Server": host_name},
         contentType: "application/json",
         processData: false,
         beforeSend: function(xhr) {
@@ -29,22 +27,18 @@ $.ajax({
           xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
           xhr.setRequestHeader("X-Request-User", id);
         },
-
-
-
-        data: JSON.stringify({
-            url: id,
-        }),
+        data: JSON.stringify({"url": id}),
 
 
         // handle a successful response
-        success : function(json) {
+        success: function(json) {
             console.log("success"); // sanity check
-
+            console.log("haha");
             console.log(json);
+            var url = json["url"];
 
 
-            location.reload();
+            window.location.replace(url);
         },
       }); 
 
@@ -88,11 +82,6 @@ $.ajax({
       //       window.location.reload();
       //   },
       // });
-
-
-
-
-
 
 
 
@@ -143,6 +132,7 @@ function deletePost(id){
         headers: {"X-Server": x_server},
         beforeSend: function(xhr) {
           xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+          xhr.setRequestHeader("X-Request-User", id);
         },
         contentType: false,
         processData: false,
@@ -156,6 +146,40 @@ function deletePost(id){
         },
       });
 }
+
+// function search(){
+//   var input = document.getElementById("search_user_input");
+//   var id = input.value;
+//   console.log(id);
+
+//   $.ajax({
+//         url : "../search/", // the endpoint
+//         type : "POST", // http method
+//         dataType: 'text', // what to expect back from the server
+//         cache: false,
+//         headers: {"X-Server": window.location.origin},
+//         contentType: false,
+//         processData: false,
+//         beforeSend: function(xhr) {
+//           console.log("why");
+//           xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+//           xhr.setRequestHeader("X-Request-User", id);
+//         },
+
+//         data: {"url": id},
+
+//         // handle a successful response
+//         success: function(json) {
+//             console.log("success"); // sanity check
+
+//             var url = json["url"];
+//             console.log(url);
+
+//             window.location.replace(url);
+//         }, 
+//       });
+// }
+
 
 // display selected local image
 function readImg(input) {
@@ -278,7 +302,6 @@ $( document ).ready(function() {
        } else {
          $("#contentType").find('i').attr("class", icon);
          contentType = id;
-
          // handle upload button
          if (id == "image"){
            $("#imageFile").attr("style", "display: block");
@@ -314,13 +337,9 @@ $( document ).ready(function() {
     // });
 
 
-
-
-
     // // deal with submit edit button
     // // submit form data
     // $('#submitBtn').click(function(e){
-
     //   title = $('#title').val();
     //   description = $('#description').val();
     //   console.log("title = ", title);
@@ -370,8 +389,6 @@ $( document ).ready(function() {
 
 
 
-
-
     // REQUEST POST: make_post
     // create a new post
     $('#publishBtn').click(function(e){
@@ -393,16 +410,10 @@ $( document ).ready(function() {
       form_data.append("title", title);
       form_data.append("description", description);
       form_data.append("csrfmiddlewaretoken", csrftoken);
-      var x_server = window.location.origin
 
       console.log("description");
       $.ajax({
         url : ".", // the endpoint
-        // header
-        headers: {"X-Server": x_server},
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-        },
         type : "POST", // http method
         dataType: 'text', // what to expect back from the server
         cache: false,
