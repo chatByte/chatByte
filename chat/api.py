@@ -740,7 +740,7 @@ def inbox(request, AUTHOR_ID):
             user = User.objects.get(pk=USER_ID)
             print("User", user)
             try:
-                data = json.loads(request.body)
+                data = JSONParser().parse(request)
             except BaseException as e:
                 print("error parsing request's body")
                 return JsonResponse({e}, status=400, safe=False)
