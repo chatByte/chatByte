@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
+from django.core.paginator import Paginator
+
 from .signals import host as host_server
 from rest_framework.parsers import JSONParser
 
@@ -15,6 +17,7 @@ import base64
 import os
 import json
 from .remoteProxy import *
+
 
 
 
@@ -128,6 +131,10 @@ def my_stream(request, AUTHOR_ID):
                 print("Post object", post_obj)
         except BaseException as e:
             print(e)
+
+
+
+
         
     # a group of author, that i am currently following, django.db.models.query.QuerySet
     followings = cur_author.profile.followings.all()

@@ -4,6 +4,9 @@ CLass info
 Chat API:
 reqServer.py: design for handling the request from other nodess
 
+Start DB
+sudo systemctl start mongod
+
 Delete DB
 	mongo
 	show dbs
