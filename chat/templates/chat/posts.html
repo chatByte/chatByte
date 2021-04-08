@@ -212,11 +212,13 @@
                       <hr class="solid">
                       <div class="post-text">
 
-                        <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">{{ cur_post.title}}</p>
+                        <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">
+                          {{ cur_post.title}}<br>
+                          ---------------------------------<br>
+                          {{ cur_post.description }}
+                        </p>
 
                         <!-- {% if 'text/' in cur_post.contentType  %} -->
-                        <p> --------------------------------- </p>
-                        <p> {{ cur_post.description }} </p>
 
                         <form action="." method="post" class="edit-block" style="display: none">
 
