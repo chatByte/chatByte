@@ -106,12 +106,69 @@ def my_stream(request, AUTHOR_ID):
 
     cur_author = request.user
     # a list of post, django.db.models.query.QuerySet
-    mytimeline = cur_author.profile.timeline.all()
+    mytimeline = cur_author.profile.timeline
+
+    for node in Node.objects.all():
+        print("Get stream from: ", node.origin)
+        print("Username: ", node.username, " password: ", node.password)
+        res = streamRequest(node.origin, request.user.id)
+        try:
+            data = res.json()
+            # print(data['posts'])
+            for post in data['posts']:
+                print("Post id: ", post['id'])
+                post_id = post['id']
+                try:
+                    post_obj = Post.objects.get(id=post_id)
+                except Post.DoesNotExist:
+                    author_dict = post['author']
+                    print("Author dict: ", author_dict)
+                    try:
+                        author = Profile.objects.get(id=author_dict['id'])
+                    except Profile.DoesNotExist:
+                        author_serializer = ProfileSerializer(data=author_dict)
+                        if author_serializer.is_valid(raise_exception=True):
+                            author = author_serializer.save()
+                    comments_dict = post['comments']
+                    comments_list = list()
+                    for comment in comments_dict:
+                        print("Comment: ", comment)
+                        try:
+                            comment_obj = Comment.objects.get(id=comment['id'])
+                            comments_list.append(comment_obj)
+                        except Comment.DoesNotExist:
+                            comm_author_dict = comment['author']
+                            print("Comment author: ", comm_author_dict)
+                            try:
+                                comm_author = Profile.objects.get(id=comm_author_dict['id'])
+                            except Profile.DoesNotExist:
+                                author_serializer = ProfileSerializer(data=comm_author_dict)
+                                if author_serializer.is_valid(raise_exception=True):
+                                    comm_author = author_serializer.save()
+                            comment_serializer = CommentSerializer(data=comment)
+                            print(comment_serializer)
+                            if comment_serializer.is_valid(raise_exception=True):
+                                comment_obj = comment_serializer.save(author=comm_author)
+                                print("Created comment obj: ", comment_obj)
+                                comments_list.append(comment_obj)
+                        
+                    serializer = PostSerializer(data=post)
+                    print("here")
+                    # print(serializer)
+                    if serializer.is_valid(raise_exception=True):
+                        serializer.save(author=author) # comments=comments_list
+                        post_obj = Post.objects.get(id=post_id)
+                # add stream post into public channel
+                mytimeline.add(post_obj)
+                print("Post object", post_obj)
+        except BaseException as e:
+            print(e)
+        
     # a group of author, that i am currently following, django.db.models.query.QuerySet
     followings = cur_author.profile.followings.all()
 
     # merging quesryset
-    public_channel_posts = mytimeline
+    public_channel_posts = mytimeline.all()
 
     for following_profile in followings:
 
@@ -125,6 +182,9 @@ def my_stream(request, AUTHOR_ID):
     # order by date
     public_channel_posts = public_channel_posts.order_by('published')
 
+    
+    
+    
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
         # 'timeline': mytimeline,
@@ -164,7 +224,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
 
         # a list of post
         #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
-        foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['results']
+        foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['posts']
         foreign_timeline = PostSerializer(foreign_timeline, many=True).data
 
         author_num_follwers = len(foreign_author.profile.followers.items.all())
@@ -235,7 +295,7 @@ def posts(request, AUTHOR_ID):
         visibility = request_post.get("visibility", "")
 
         f = request.FILES.get("file", "")
-        categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
+        categories = ["text/plain"] # web, tutorial, can be delete  # ?? dropdown
 
 
         if len(f) > 0:
@@ -365,12 +425,15 @@ def add_friend(request, AUTHOR_ID, FRIEND_ID):
 @require_http_methods(["GET"])
 @login_required
 def if_friend_request(request):
+
     try:
         cur_user_name = None
         if request.user.is_authenticated:
             cur_user_name = request.user.username
 
         all_friend_request = getALLFriendRequests(request.user.id)
+
+
         if len(all_friend_request)>0:
             newest = all_friend_request.reverse()[0]
             data = {}
@@ -419,17 +482,24 @@ def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
 @require_http_methods(["GET"])
 @login_required
-def get_user_info(request, AUTHOR_ID):
+def get_user(request,SERVER,AUTHOR_ID):
+    # get 
+    print("---------------------------Getting user ---------------")
     try:
-        usr_id = host+'author/'+AUTHOR_ID
-        user = getUser(request.user.id)
-        type = user.profile.type
-        id = user.profile.id
-        host = user.profile.host
-        displayName = user.profile.displayName
-        return JsonResponse({'type':type, 'id':id, 'host':host, 'displayName':displayName}, status=200)
+        server = User.objects.get(username=SERVER)
+        foreign_server = server.last_name
+        user_id = foreign_server + "author/"+ AUTHOR_ID 
+        profile = Profile.objects.get(id=user_id)
+        type = profile.type
+        id = profile.id
+        host = profile.host
+        displayName = profile.displayName
+        github = profile.github
+        url = profile.url
+        return JsonResponse({'type':type, 'id':id, 'host':host, 'displayName':displayName, 'github':github, "url":url}, status=200)
     except BaseException as e:
-        return HttpResponse(status=401)
+        print(e)
+        return HttpResponse(status=400)
 
 @login_required
 @require_http_methods(["POST"])
@@ -486,7 +556,7 @@ def search(request, AUTHOR_ID):
 
     try:
         target_id = data["url"]
-        author_origin = "http://" + target_id.split("/")[2] + "/"
+        author_origin = "https://" + target_id.split("/")[2] + "/"
     except:
         return JsonResponse({}, status=409)
     try:
@@ -509,20 +579,21 @@ def search(request, AUTHOR_ID):
 
         return JsonResponse(json_dict, status=200)
     except Profile.DoesNotExist:
-        #response = profileRequest("GET", author_origin, target_id)
+        response = profileRequest("GET", author_origin, target_id)
         #print(author_origin)
-        # if response.status_code == 200:
-        #foreign_author = response.json()
-        foreign_author = {'type': 'author',
-                        'id': 'http://127.0.0.1:5000/author/10',
-                        'host': 'http://127.0.0.1:5000/author/10',
-                        'displayName': 'Jonathan',
-                        'url': 'http://127.0.0.1:5000/author/10',
-                        'github': 'http://127.0.0.1:5000/author/10'}
-        serializer = ProfileSerializer(data=foreign_author)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return JsonResponse({"url": "../mystream/2/"}, status=200)
+
+        if response.status_code == 200:
+            foreign_author = response.json()
+            # foreign_author = {'type': 'author', 
+            #                 'id': 'http://127.0.0.1:5000/author/10', 
+            #                 'host': 'http://127.0.0.1:5000/author/10', 
+            #                 'displayName': 'Jonathan', 
+            #                 'url': 'http://127.0.0.1:5000/author/10', 
+            #                 'github': 'http://127.0.0.1:5000/author/10'}
+            serializer = ProfileSerializer(data=foreign_author)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return JsonResponse({"url": "../mystream/2/"}, status=200)
 
 
 
@@ -531,14 +602,16 @@ create a following, add foreigner to be my followings
 '''
 @login_required
 @require_http_methods(["POST", "PUT"])
-def following(request, AUTHOR_ID, FOREIGN_ID):
+def following(request, AUTHOR_ID, SERVER, FOREIGN_ID):
+    server = User.objects.get(username=SERVER)
+    foreign_server = server.last_name
     AUTHOR_ID = host_server + "author/"+ AUTHOR_ID
-    FOREIGN_ID = host_server + "author/"+ FOREIGN_ID
+    FOREIGN_ID = foreign_server + "author/"+ FOREIGN_ID
     foreigner = Profile.objects.get(id=FOREIGN_ID)
     profile = Profile.objects.get(id=AUTHOR_ID)
     profile.followings.add(foreigner)
     profile.save()
-    return JsonResponse({}, status=204)
+    return JsonResponse({}, status=204) 
 
 
 '''

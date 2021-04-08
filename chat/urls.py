@@ -50,20 +50,15 @@ urlpatterns = [
     # URL:URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
     # add a follower FOREIGN to AUTHOR
     path(r"author/<str:AUTHOR_ID>/followers/<str:FOREIGN_AUTHOR_ID>", api.follower_obj, name="follower_obj"),
-    path(r"get_user/<str:AUTHOR_ID>/", views.get_user_info, name="get_user_info"),
+    # http://127.0.0.1:8000/author/6/my_stream/david/1/
+    path(r"get_user/<str:SERVER>/<str:AUTHOR_ID>/", views.get_user, name="get_user"),
 
     #Liked
     path("author/<str:AUTHOR_ID>/liked/", api.liked_post_obj, name="like_post"),
 
 
     #follow: following a body, inside view, we need it, since we need to refresh page, or we can do it in AJAX_ js
-    path(r"author/<str:AUTHOR_ID>/following/<str:FOREIGN_ID>/", views.following,name="following_view"),
-
-
-
-
-
-
+    path(r"author/<str:AUTHOR_ID>/following/<str:SERVER>/<str:FOREIGN_ID>/", views.following,name="following_view"),
 
 
 
@@ -83,10 +78,10 @@ urlpatterns = [
 
     #Get likes for a Post
     path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
-    path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="likes_post"),
+    path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="inbox"),
 
     # # Get likes for a Comment
-    path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment"),
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment"),
 
     path(
     'pagedown/image-upload/',

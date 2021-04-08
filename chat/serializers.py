@@ -119,7 +119,7 @@ class PostSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(read_only=True)
     class Meta:
         model = Post
-        fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'comments_url', 'comments', 'published', 'visibility', 'unlisted'  ]
+        fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'comment_url', 'comments', 'published', 'visibility', 'unlisted'  ]
         
 
 class PostInboxSerializer(serializers.ModelSerializer):
@@ -129,11 +129,12 @@ class PostInboxSerializer(serializers.ModelSerializer):
         fields = ['type','author', 'items']
 
 class FriendReuqestSerializer(serializers.ModelSerializer):
-    author = ProfileSerializer(read_only=True)
+    actor = ProfileSerializer(read_only=True)
     object = ProfileSerializer(read_only=True)
+
     class Meta:
         model = FriendRequest
-        fields = ['type','id', 'summary', 'author', 'object']
+        fields = ['type','id', 'summary', 'actor', 'object']
 
 
 class LikeSerializer(serializers.ModelSerializer):

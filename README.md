@@ -3,7 +3,10 @@ Project wiki: https://github.com/chatByte/chatByte/wiki
 
 Working progress controled by our product backlog: https://github.com/chatByte/chatByte/projects/1
 ## API documentation:
-https://github.com/chatByte/chatByte/blob/main/API_docs.md
+:bowtie: FULL API doc <br />
+https://github.com/chatByte/chatByte/blob/main/API_docs.md <br />
+:bowtie: API endpoint URL doc <br />
+https://github.com/chatByte/chatByte/blob/main/API_publicEndPoints.md<br />
 ## Required installation:
 - Django
 - Djongo
