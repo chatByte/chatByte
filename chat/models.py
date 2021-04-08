@@ -118,11 +118,11 @@ class Like(models.Model):
     author = models.ForeignKey('Profile', related_name='%(class)s_author', on_delete=models.CASCADE,)
     # URL of the likes
 
-    context = models.CharField(max_length=200, default="Like")
+    context = models.CharField(max_length=200, default="")
     # likes items title, post title
-    summary = models.CharField(max_length=200, default="Like")
+    summary = models.CharField(max_length=200, default="")
     # Likes obj, ie post
-    object = models.CharField(max_length=200, default="Like")
+    object = models.CharField(max_length=200, default="")
 
 # People's liked items
 class Liked(models.Model):
