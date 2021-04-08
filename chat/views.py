@@ -156,9 +156,7 @@ def my_stream(request, AUTHOR_ID):
     public_channel_posts = public_channel_posts.order_by('-published')
 
     # create a paginator
-    paginator_public_channel_posts = Paginator(public_channel_posts, 8) # Show 25 contacts per page.
-
-
+    paginator_public_channel_posts = Paginator(public_channel_posts, 8) # Show 8 contacts per page.
 
     # if  page_number == None, we will get first page(can be empty)
     page_number = request.GET.get('page')
@@ -245,15 +243,28 @@ def posts(request, AUTHOR_ID):
     #getTimeline(cur_user_name), by SQL query
     mytimeline = alltimeline.filter(author=cur_author).order_by('-published')
 
+    
+    # create a paginator
+    paginator_mytimeline = Paginator(mytimeline, 8) # Show 8 contacts per page.
+
+    # if  page_number == None, we will get first page(can be empty)
+    page_number = request.GET.get('page')
+
+
+    page_obj = paginator_mytimeline.get_page(page_number)
+
+
     author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(cur_author.friend_requests.all())
+
+
 
     dynamic_contain = {
         'fullName':'Ritsu Onodera',
         'author_num_follwers': author_num_follwers,
         'test_name': cur_user_name,
         'myName' : cur_author.displayName,
-        'timeline': mytimeline,
+        'page_obj' : page_obj,
         'friend_request_num': friend_request_num,
 
     }
@@ -545,12 +556,8 @@ def search(request, AUTHOR_ID):
         serializer = ProfileSerializer(target)
 
         numberID_target = target_id.split("/")[-1]
-
-        # 127.0.0.1:8000/author/1/my_stream/2
-        # ID
-        #http://127.0.0.1:8000/author/2
         server_name = user.username
-        #response = redirect("../my_stream/" + server_name +"/" + numberID_target + "/")
+
 
         # return response
         redirect_url = "../my_stream/" + server_name +"/" + numberID_target + "/"

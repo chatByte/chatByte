@@ -182,13 +182,8 @@
 
 
 
-<!--             post content mine
-=====================================================-->
-          {% for cur_post in timeline %}
-
-                <!-- Post Content
-                ================================================= -->
-
+          <!--             post content mine =====================================================-->
+          {% for cur_post in page_obj %}
                 <div class="post-content" id={{cur_post.id}}>
                   <!--Post Date-->
                   <div class="post-date">
@@ -199,7 +194,6 @@
                   {% load image_filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
-                  <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
                   <div class="post-container">
                     <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
@@ -241,26 +235,19 @@
                         <a class="btn text-green"><i class="icon ion-share repost"></i></a>
                       </div>
 
-                      <hr class="solid">
-<!--            show nested comment  -->
-            {% for comment in cur_post.comments.all %}
-                      <div class="post-comment" id={{comment.id}}>
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                        <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
-                      </div>
+                    <hr class="solid">
+                      <!--            show nested comment  -->
+                    {% for comment in cur_post.comments.all %}
+                              <div class="post-comment" id={{comment.id}}>
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
+                                <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
+                              </div>
 
-                      <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like">{{ comment.likes | length }}</i></a>
-                      </div>
-                      {% endfor %}
-<!--                      end -->
-
-<!--                      <div class="post-comment">
-                        <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
-                        <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
-                      </div> -->
-
-
+                              <div class="reaction-img">
+                                <a class="btn text-red"><i class="icon ion-ios-heart comment-like">{{ comment.likes | length }}</i></a>
+                              </div>
+                    {% endfor %}
+                                <!--   show comments -->
 
                       <div class="post-comment">
                         <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
@@ -271,8 +258,29 @@
                   </div>
                 </div>
 
-                {% endfor %}
+          {% endfor %}
 
+          <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first page</a>
+                    <a >&hearts; &hearts; &hearts;  </a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous page</a>
+                {% endif %}
+
+                <span class="current">
+                  </br>
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                  </br>
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next page</a>
+                    <a >&hearts; &hearts; &hearts;  </a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">last page &raquo;</a>
+                {% endif %}
+            </span>
+          </div>
 
 
 

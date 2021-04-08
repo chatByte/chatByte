@@ -194,10 +194,8 @@
                 </div>
 
               {% endfor %}
-                <!-- Post Content
-                ================================================= -->
-
-
+              
+              <!-- Pagenation -->
               <div class="pagination">
                 <span class="step-links">
                     {% if page_obj.has_previous %}
@@ -214,7 +212,7 @@
 
                     {% if page_obj.has_next %}
                         <a href="?page={{ page_obj.next_page_number }}">next page</a>
-                        <a >&hearts; &hearts;  &hearts;  </a>
+                        <a >&hearts; &hearts; &hearts;  </a>
                         <a href="?page={{ page_obj.paginator.num_pages }}">last page &raquo;</a>
                     {% endif %}
                 </span>
