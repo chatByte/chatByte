@@ -155,7 +155,7 @@ def my_stream(request, AUTHOR_ID):
                                 comment_obj = comment_serializer.save(author=comm_author)
                                 print("Created comment obj: ", comment_obj)
                                 comments_list.append(comment_obj)
-                        
+
                     serializer = PostSerializer(data=post)
                     # print("here")
                     # print(serializer)
@@ -171,7 +171,7 @@ def my_stream(request, AUTHOR_ID):
 
 
 
-        
+
     # a group of author, that i am currently following, django.db.models.query.QuerySet
     followings = cur_author.profile.followings.all()
 
@@ -200,8 +200,8 @@ def my_stream(request, AUTHOR_ID):
 
 
     page_obj = paginator_public_channel_posts.get_page(page_number)
-    
-    
+
+
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
         'public_channel_posts': public_channel_posts,
@@ -270,7 +270,6 @@ Generate response at feed page ,
 def posts(request, AUTHOR_ID):
     """
     so far, only support text-only post and post with img and caption
-    Prob: 1. createPost return error!
     """
     cur_user_name = None
     if request.user.is_authenticated:
@@ -499,12 +498,12 @@ def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 @require_http_methods(["GET"])
 @login_required
 def get_user(request,SERVER,AUTHOR_ID):
-    # get 
+    # get
     print("---------------------------Getting user ---------------")
     try:
         server = User.objects.get(username=SERVER)
         foreign_server = server.last_name
-        user_id = foreign_server + "author/"+ AUTHOR_ID 
+        user_id = foreign_server + "author/"+ AUTHOR_ID
         profile = Profile.objects.get(id=user_id)
         type = profile.type
         id = profile.id
@@ -600,11 +599,11 @@ def search(request, AUTHOR_ID):
 
         if response.status_code == 200:
             foreign_author = response.json()
-            # foreign_author = {'type': 'author', 
-            #                 'id': 'http://127.0.0.1:5000/author/10', 
-            #                 'host': 'http://127.0.0.1:5000/author/10', 
-            #                 'displayName': 'Jonathan', 
-            #                 'url': 'http://127.0.0.1:5000/author/10', 
+            # foreign_author = {'type': 'author',
+            #                 'id': 'http://127.0.0.1:5000/author/10',
+            #                 'host': 'http://127.0.0.1:5000/author/10',
+            #                 'displayName': 'Jonathan',
+            #                 'url': 'http://127.0.0.1:5000/author/10',
             #                 'github': 'http://127.0.0.1:5000/author/10'}
             serializer = ProfileSerializer(data=foreign_author)
             if serializer.is_valid(raise_exception=True):
@@ -627,7 +626,7 @@ def following(request, AUTHOR_ID, SERVER, FOREIGN_ID):
     profile = Profile.objects.get(id=AUTHOR_ID)
     profile.followings.add(foreigner)
     profile.save()
-    return JsonResponse({}, status=204) 
+    return JsonResponse({}, status=204)
 
 
 '''
