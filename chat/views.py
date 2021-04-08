@@ -111,15 +111,17 @@ def my_stream(request, AUTHOR_ID):
                                 if author_serializer.is_valid(raise_exception=True):
                                     comm_author = author_serializer.save()
                             comment_serializer = CommentSerializer(data=comment)
+                            print(comment_serializer)
                             if comment_serializer.is_valid(raise_exception=True):
                                 comment_obj = comment_serializer.save(author=comm_author)
+                                print("Created comment obj: ", comment_obj)
                                 comments_list.append(comment_obj)
                         
                     serializer = PostSerializer(data=post)
                     print("here")
                     # print(serializer)
                     if serializer.is_valid(raise_exception=True):
-                        serializer.save(author=author, comments=comments_list)
+                        serializer.save(author=author) # comments=comments_list
                         post_obj = Post.objects.get(id=post_id)
                 # add stream post into public channel
                 mytimeline.add(post_obj)
@@ -187,7 +189,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
 
         # a list of post
         #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
-        foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['results']
+        foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['posts']
         foreign_timeline = PostSerializer(foreign_timeline, many=True).data
 
         author_num_follwers = len(foreign_author.profile.followers.items.all())
@@ -519,7 +521,7 @@ def search(request, AUTHOR_ID):
 
     try:
         target_id = data["url"]
-        author_origin = "http://" + target_id.split("/")[2] + "/"
+        author_origin = "https://" + target_id.split("/")[2] + "/"
     except:
         return JsonResponse({}, status=409)
     try:

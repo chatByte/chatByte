@@ -120,6 +120,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
             try:
                 Post.objects.get(id=POST_ID)
             except Post.DoesNotExist:
+                print("here post does not exist")
                 return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
             deletePost(POST_ID)
             return JsonResponse({'status':'true','message':'successful'}, status=204)
@@ -187,6 +188,7 @@ def posts_obj(request, AUTHOR_ID):
         if request.method == 'GET':
             profile = Profile.objects.get(id=AUTHOR_ID)
             posts = profile.timeline
+            print(posts.all())
             # serializer = PostSerializer(posts, many=True)
             # pagination
             pagination = PageNumberPagination()
@@ -475,8 +477,8 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
         elif request.method == "DELETE":
             follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
-            profile.followers.remove(follower)
-            return JsonResponse({}, status=200)
+            profile.followers.items.remove(follower)
+            return JsonResponse({"status": "true"}, status=200)
 
         return JsonResponse({"Error": "Bad request"}, status=400)
 
@@ -513,7 +515,7 @@ def followers_obj(request, AUTHOR_ID):
         followers = profile.followers.items.all()
         serializer = ProfileSerializer(followers, many=True)
         if request.method == "GET":
-            return JsonResponse(serializer.data, status=200, safe=False)
+            return JsonResponse({"type": "followers", "items": serializer.data}, status=200, safe=False)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -549,14 +551,14 @@ def get_friends_obj(request, AUTHOR_ID):
         return friendsRequest(request.method,server_origin, AUTHOR_ID, request.data)
     else:
         try:
-            profile = Profile.objects.get(user_id=AUTHOR_ID)
+            profile = Profile.objects.get(id=AUTHOR_ID)
         except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
 
         friends = profile.friends
         serializer = ProfileSerializer(friends, many=True)
         if request.method == "GET":
-            return JsonResponse(serializer.data, status=200)
+            return JsonResponse({"type": "friends", "items": serializer.data}, status=200, safe=False)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -615,9 +617,9 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
         except Post.DoesNotExist:
             return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
         likes = post.likes
-        serializer = LikeSerializer(likes, many=True)
-        if serializer.is_valid(raise_exception=True):
-            return JsonResponse(serializer.data, status=200)
+        serializer = LikeSerializer(data=likes, many=True)
+        # if serializer.is_valid(raise_exception=True):
+        return JsonResponse({"likes": serializer.data}, status=200, safe=False)
 
         return JsonResponse(serializer.errors, status=400)
 
@@ -636,8 +638,8 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     print("author id: ", AUTHOR_ID)
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
-    COMMENT_ID = AUTHOR_ID + "/posts/" + POST_ID + "/comments/" + COMMENT_ID
-    print("post id: ", COMMENT_ID)
+    COMMENT_ID = POST_ID + "/comments/" + COMMENT_ID
+    print("comment id: ", COMMENT_ID)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
@@ -706,11 +708,7 @@ DELETE: clear the inbox
 @permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET', 'DELETE'])
 def inbox(request, AUTHOR_ID):
-
-    print("inbox: ", request)
-
-
-
+    # print("inbox: ", request)
     USER_ID = (AUTHOR_ID + '.')[:-1]
 
     # add for test purpose
@@ -736,10 +734,12 @@ def inbox(request, AUTHOR_ID):
     else:
         print("Request: ", request)
         # print("Request data: ", request.data)
-        print("Request body: ", request.body)
+        # print("Request body: ", request.body)
         if request.method == "POST":
+            print("Using post method")
             user = User.objects.get(pk=USER_ID)
             # print(request.data)
+            print("User", user)
             data = JSONParser().parse(request)
             # data = request.data
             # data = json.loads(request.body.decode('utf-8'))
