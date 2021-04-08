@@ -219,7 +219,7 @@ class AccountTests(APITestCase):
                                         categories='',
                                         count=0,
                                         size=0,
-                                        comments_url='0',
+                                        comment_url='0',
                                         visibility='public')
         self.post_id = 3
         self.comment = Comment.objects.create(id="5", 
@@ -239,7 +239,7 @@ class AccountTests(APITestCase):
         response = self.client.get(url,  **{'HTTP_X_SERVER': host})
         # print(response.content)
         user_json = {"type": "author", "id": host + "author/1", "host": None, "displayName": "test", "url": None, "github": None}
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
             user_json
@@ -302,7 +302,7 @@ class AccountTests(APITestCase):
             "categories": "text/plain",
             "count": 1,
             "size": 1,
-            "comments_url": "1",
+            "comment_url": "1",
             "comments": [],
             "published": "2021-03-26T19:04:53Z",
             "visibility": "public",
