@@ -85,13 +85,13 @@ def my_stream(request, AUTHOR_ID):
             data = res.json()
             # print(data['posts'])
             for post in data['posts']:
-                print("Post id: ", post['id'])
+                # print("Post id: ", post['id'])
                 post_id = post['id']
                 try:
                     post_obj = Post.objects.get(id=post_id)
                 except Post.DoesNotExist:
                     author_dict = post['author']
-                    print("Author dict: ", author_dict)
+                    # print("Author dict: ", author_dict)
                     try:
                         author = Profile.objects.get(id=author_dict['id'])
                     except Profile.DoesNotExist:
@@ -101,7 +101,7 @@ def my_stream(request, AUTHOR_ID):
                     comments_dict = post['comments']
                     comments_list = list()
                     for comment in comments_dict:
-                        print("Comment: ", comment)
+                        # print("Comment: ", comment)
                         try:
                             comment_obj = Comment.objects.get(id=comment['id'])
                             comments_list.append(comment_obj)
@@ -122,14 +122,14 @@ def my_stream(request, AUTHOR_ID):
                                 comments_list.append(comment_obj)
                         
                     serializer = PostSerializer(data=post)
-                    print("here")
+                    # print("here")
                     # print(serializer)
                     if serializer.is_valid(raise_exception=True):
                         serializer.save(author=author) # comments=comments_list
                         post_obj = Post.objects.get(id=post_id)
                 # add stream post into public channel
                 mytimeline.add(post_obj)
-                print("Post object", post_obj)
+                # print("Post object", post_obj)
         except BaseException as e:
             print(e)
 
@@ -155,27 +155,22 @@ def my_stream(request, AUTHOR_ID):
     # order by date
     public_channel_posts = public_channel_posts.order_by('-published')
 
-    
-    print("__________________type public_channel_posts")
-    print(type(public_channel_posts))
-    paginator_public_channel_posts = Paginator(public_channel_posts, 2) # Show 25 contacts per page.
-    print("____________, paginator_public_channel_posts ???")
-    print(paginator_public_channel_posts.object_list)
-    print("__________________________________________________ page_range ???")
-
-    print(paginator_public_channel_posts.page_range)
-    print("__________________________________________________ num_pages ???")
-    print(paginator_public_channel_posts.num_pages)
+    # create a paginator
+    paginator_public_channel_posts = Paginator(public_channel_posts, 8) # Show 25 contacts per page.
 
 
 
+    # if  page_number == None, we will get first page(can be empty)
+    page_number = request.GET.get('page')
+
+
+    page_obj = paginator_public_channel_posts.get_page(page_number)
     
     
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
-
         'public_channel_posts': public_channel_posts,
-        'paginator_public_channel_posts': paginator_public_channel_posts,
+        'page_obj': page_obj,
         'author_num_follwers': author_num_follwers,
         'friend_request_num': friend_request_num
     }
@@ -212,7 +207,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
         #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
         foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['posts']
         foreign_timeline = PostSerializer(foreign_timeline, many=True).data
-        
+
         author_num_follwers = len(foreign_author.profile.followers.items.all())
         friend_request_num = len(foreign_author.profile.friend_requests.all())
 
