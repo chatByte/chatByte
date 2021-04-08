@@ -189,7 +189,7 @@ function sendFriendRequest(type, summary, author, object) {
     'type': 'follow',
     'summary': summary,
     'actor': author,
-    'object': object,
+    'object': object
   }
   console.log("Data to be sent: ", data)
 
