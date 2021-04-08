@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from . import api
+from pagedown.views import image_upload_view
 # from .views import SignUpView
 
 urlpatterns = [
@@ -67,7 +68,7 @@ urlpatterns = [
 
 
     #  Doing----------------------------------------------------------------------------------------------------
- 
+
     # #follow: unfollow a body, inside view
     # ath(r"author/<str:AUTHOR_ID>/unfollow/<str:FOREIGN_AUTHOR_ID>/", views.unfollow,name="unfollow_view"),
 
@@ -85,8 +86,12 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="likes_post"),
 
     # # Get likes for a Comment
-    path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
+    path("://service/author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment"),
 
+    path(
+    'pagedown/image-upload/',
+    image_upload_view,
+    name="pagedown-image-upload"),
 
 
 

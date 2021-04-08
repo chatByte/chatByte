@@ -39,7 +39,7 @@
           <!-- # search bar -->
           <!-- Load icon library -->
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-          
+
           <!-- The form -->
 <!--           <form class="search_user" action=""> -->
             <input type="text" placeholder="Search.." name="search" id = "search_user_input">
@@ -140,7 +140,11 @@
                         <textarea  id="title" cols="45" rows="1" class="form-title-control" placeholder="Title" required></textarea>
                         <!-- <span class="zoom"><img id="uploadImg"></span> -->
                         <img id="uploadImg">
-                        <textarea  id="description" cols="45" rows="4" class="form-control" placeholder="Description: Anything exciting?"></textarea>
+
+                        <textarea name="{{ widget.name }}"{% include "./attr.html" %}>
+                        {% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+
+                        <!-- <textarea  id="description" cols="45" rows="4" class="form-control" placeholder="Description: Anything exciting?"></textarea> -->
                         <input type='file' id='imageFile' accept="image/*" onchange="readImg(this);">
 
                           <div class="dropdown">
@@ -223,7 +227,7 @@
                             <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.content}}</textarea>
                             <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
 
-                        </form> 
+                        </form>
                         <div class="editText" style="display: none">
                         </div>
                         {% endif %}
