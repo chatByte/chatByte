@@ -663,7 +663,7 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
 @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def liked_post_obj(request, AUTHOR_ID):
-
+    USER_ID = (AUTHOR_ID + '.')[:-1]
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
@@ -679,7 +679,7 @@ def liked_post_obj(request, AUTHOR_ID):
     else:
         # can be optimized
         try:
-            profile = Profile.objects.get(user_id=AUTHOR_ID)
+            profile = Profile.objects.get(user_id=USER_ID)
         except Profile.DoesNotExist:
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
         liked = profile.liked
