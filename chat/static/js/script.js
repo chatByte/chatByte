@@ -197,7 +197,11 @@ function sendFriendRequest(type, summary, author, object) {
   $.ajax({
     // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
     url: window.location.origin +'/author/'+ new_url[4].toString() +'/inbox/',
-    type : "POST", // http method
+    type : 'POST', // http method
+    contentType: "application/json",
+    processData: false,
+    dataType: 'json',
+    data: JSON.stringify(data),
     // header
     headers: {"X-Server": x_server_header},
     beforeSend: function(xhr) {
@@ -206,10 +210,7 @@ function sendFriendRequest(type, summary, author, object) {
       console.log(author);
       console.log(object);
     },
-    contentType: false,
-    processData: false,
-    dataType: "json",
-    data: JSON.stringify(data),
+    
     // handle a successful response
     success : function(data) {
         // sanity check
