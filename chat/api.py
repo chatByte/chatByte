@@ -617,11 +617,11 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
         except Post.DoesNotExist:
             return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
         likes = post.likes
-        serializer = LikeSerializer(data=likes, many=True)
+        serializer = LikeSerializer(likes, many=True)
         # if serializer.is_valid(raise_exception=True):
-        return JsonResponse({"likes": serializer.data}, status=200, safe=False)
+        return JsonResponse({"type": "likes", "items": serializer.data}, status=200, safe=False)
 
-        return JsonResponse(serializer.errors, status=400)
+        # return JsonResponse(serializer.errors, status=400)
 
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
@@ -651,10 +651,10 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
             return JsonResponse({'status':'false','message':'comment id: ' + COMMENT_ID + ' does not exists'}, status=404)
         likes = comment.likes
         serializer = LikeSerializer(likes, many=True)
-        if serializer.is_valid(raise_exception=True):
-            return JsonResponse(serializer.data, status=200)
+        # if serializer.is_valid(raise_exception=True):
+        return JsonResponse({"type": "likes", "items": serializer.data}, status=200)
 
-        return JsonResponse(serializer.errors, status=400)
+        # return JsonResponse(serializer.errors, status=400)
 
 
 
@@ -664,7 +664,6 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
 @api_view(['GET'])
 def liked_post_obj(request, AUTHOR_ID):
     USER_ID = (AUTHOR_ID + '.')[:-1]
-    # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server not in host_server:
@@ -684,10 +683,7 @@ def liked_post_obj(request, AUTHOR_ID):
             return JsonResponse({'status':'false','message':'user id: ' + AUTHOR_ID + ' does not exists'}, status=404)
         liked = profile.liked
         serializer = LikedSerializer(liked)
-        if serializer.is_valid(raise_exception=True):
-            return JsonResponse(serializer.data, status=200)
-
-        return JsonResponse(serializer.errors, status=400)
+        return JsonResponse(serializer.data, status=200)
 
 
 '''
@@ -730,20 +726,14 @@ def inbox(request, AUTHOR_ID):
 
     if server_origin is not None and server_origin != host_server:
         print("------ Remote request body: ", request.data)
-        return inboxRequest(request.method,server_origin, AUTHOR_ID, request.data)
+        res = inboxRequest(request.method,server_origin, USER_ID, request.data)
+        return JsonResponse(res.json(), status=res.status_code)
     else:
-        print("Request: ", request)
-        # print("Request data: ", request.data)
-        # print("Request body: ", request.body)
         if request.method == "POST":
             print("Using post method")
             user = User.objects.get(pk=USER_ID)
-            # print(request.data)
             print("User", user)
-            data = JSONParser().parse(request)
-            # data = request.data
-            # data = json.loads(request.body.decode('utf-8'))
-            print("User: ", user)
+            data = request.data
             print("Data: ", data)
             if data['type'] == "post":
                 print("Recieved a post inbox...!")
@@ -848,9 +838,7 @@ def inbox(request, AUTHOR_ID):
                     try:
                         object = Profile.objects.get(id=object_dict['id'])
                     except Profile.DoesNotExist:
-                        object_serializer = ProfileSerializer(data=object_dict)
-                        if object_serializer.is_valid(raise_exception=True):
-                            object = object_serializer.save()
+                        return JsonResponse({"Error": "object does not exist"}, status=404)
                     friend_req = serializer.save(actor=actor, object=object)
 
                     #friend_req = serializer.save()
@@ -858,8 +846,8 @@ def inbox(request, AUTHOR_ID):
 
                     # -----------------
                     # add to object's inbox
-                    # TODO: handle remote object
-
+                    print("Object: ", object)
+                    print("Object's User: ", object.user)
                     object.user.inbox.friend_requests.add(friend_req)
                     # -----------------
 

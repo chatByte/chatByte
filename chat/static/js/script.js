@@ -2,7 +2,7 @@
 var url = window.location.href;
 
 var new_url = url.split('/');
-var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
+var url_header = "https://"+ new_url[1].toString()  + new_url[2].toString() + '/';
 console.log(url_header);
 // var x_server = window.location.origin + '/author/'+new_url[4].toString();
 // var x_server = window.location.origin +'/';
@@ -185,11 +185,23 @@ function sendFriendRequest(type, summary, author, object) {
   var fi = foreign_id.split("/");
   var x_server_header = fi[0]+"//"+fi[2]+"/";
 
+  var data = {
+    'type': 'follow',
+    'summary': summary,
+    'actor': author,
+    'object': object
+  }
+  console.log("Data to be sent: ", JSON.stringify(data))
+
   console.log("sending Friend Request");
   $.ajax({
     // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
     url: window.location.origin +'/author/'+ new_url[4].toString() +'/inbox/',
-    type : "POST", // http method
+    type : 'POST', // http method
+    contentType: "application/json",
+    processData: false,
+    dataType: 'json',
+    data: JSON.stringify(data),
     // header
     headers: {"X-Server": x_server_header},
     beforeSend: function(xhr) {
@@ -198,18 +210,7 @@ function sendFriendRequest(type, summary, author, object) {
       console.log(author);
       console.log(object);
     },
-
-
-
-    contentType: "application/json",
-    processData: false,
-    dataType: "json",
-    data: JSON.stringify({
-      type: 'follow',
-      summary: summary,
-      actor: author,
-      object: object,
-    }),
+    
     // handle a successful response
     success : function(data) {
         // sanity check
