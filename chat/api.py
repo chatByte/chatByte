@@ -853,8 +853,8 @@ def inbox(request, AUTHOR_ID):
 
                     # -----------------
                     # add to object's inbox
-                    # TODO: handle remote object
-
+                    print("Object: ", object)
+                    print("Object's User: ", object.user)
                     object.user.inbox.friend_requests.add(friend_req)
                     # -----------------
 
