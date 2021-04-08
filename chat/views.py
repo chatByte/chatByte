@@ -76,6 +76,7 @@ def my_stream(request, AUTHOR_ID):
     # a list of post, django.db.models.query.QuerySet
     mytimeline = cur_author.profile.timeline
 
+    # Get stream from: node origins, since we have plenty remote server
     for node in Node.objects.all():
         print("Get stream from: ", node.origin)
         print("Username: ", node.username, " password: ", node.password)
@@ -152,16 +153,29 @@ def my_stream(request, AUTHOR_ID):
     author_num_follwers = len(cur_author.profile.followers.items.all())
     friend_request_num = len(cur_author.profile.friend_requests.all())
     # order by date
-    public_channel_posts = public_channel_posts.order_by('published')
+    public_channel_posts = public_channel_posts.order_by('-published')
 
     
+    print("__________________type public_channel_posts")
+    print(type(public_channel_posts))
+    paginator_public_channel_posts = Paginator(public_channel_posts, 2) # Show 25 contacts per page.
+    print("____________, paginator_public_channel_posts ???")
+    print(paginator_public_channel_posts.object_list)
+    print("__________________________________________________ page_range ???")
+
+    print(paginator_public_channel_posts.page_range)
+    print("__________________________________________________ num_pages ???")
+    print(paginator_public_channel_posts.num_pages)
+
+
+
     
     
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
-        # 'timeline': mytimeline,
 
         'public_channel_posts': public_channel_posts,
+        'paginator_public_channel_posts': paginator_public_channel_posts,
         'author_num_follwers': author_num_follwers,
         'friend_request_num': friend_request_num
     }
