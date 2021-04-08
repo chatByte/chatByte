@@ -732,17 +732,11 @@ def inbox(request, AUTHOR_ID):
         print("------ Remote request body: ", request.data)
         return inboxRequest(request.method,server_origin, AUTHOR_ID, request.data)
     else:
-        print("Request: ", request)
-        # print("Request data: ", request.data)
-        # print("Request body: ", request.body)
         if request.method == "POST":
             print("Using post method")
             user = User.objects.get(pk=USER_ID)
-            print(request.data)
             print("User", user)
-            # data = JSONParser().parse(request)
             data = request.data
-            print("User: ", user)
             print("Data: ", data)
             if data['type'] == "post":
                 print("Recieved a post inbox...!")
@@ -847,9 +841,7 @@ def inbox(request, AUTHOR_ID):
                     try:
                         object = Profile.objects.get(id=object_dict['id'])
                     except Profile.DoesNotExist:
-                        object_serializer = ProfileSerializer(data=object_dict)
-                        if object_serializer.is_valid(raise_exception=True):
-                            object = object_serializer.save()
+                        return JsonResponse({"Error": "object does not exist"}, status=404)
                     friend_req = serializer.save(actor=actor, object=object)
 
                     #friend_req = serializer.save()
@@ -857,8 +849,8 @@ def inbox(request, AUTHOR_ID):
 
                     # -----------------
                     # add to object's inbox
-                    # TODO: handle remote object
-
+                    print("Object: ", object)
+                    print("Object's User: ", object.user)
                     object.user.inbox.friend_requests.add(friend_req)
                     # -----------------
 
