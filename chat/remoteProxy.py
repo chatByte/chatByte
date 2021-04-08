@@ -108,6 +108,7 @@ def inboxRequest(method, origin, user_id, data=None):
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
+        headers['Content-type'] = 'application/json'
         if data['type'] == "post":
             print("Recieved a post inbox!")
             print("Username: ", user.username, "first_name: ", user.first_name)
