@@ -205,10 +205,10 @@ function sendFriendRequest(type, summary, author, object) {
     processData: false,
     dataType: "json",
     data: JSON.stringify({
-      type: 'follow',
-      summary: summary,
-      actor: author,
-      object: object,
+      'type': 'follow',
+      'summary': summary,
+      'actor': author,
+      'object': object,
     }),
     // handle a successful response
     success : function(data) {

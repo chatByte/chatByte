@@ -727,7 +727,6 @@ def inbox(request, AUTHOR_ID):
     print("Origin header: ", origin_server)
     print("author id: ", AUTHOR_ID)
     print("user id: ", USER_ID)
-    print("Request body: ", request.body)
 
     if server_origin is not None and server_origin != host_server:
         print("------ Remote request body: ", request.body)
