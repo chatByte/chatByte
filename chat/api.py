@@ -729,8 +729,8 @@ def inbox(request, AUTHOR_ID):
     print("user id: ", USER_ID)
 
     if server_origin is not None and server_origin != host_server:
-        print("------ Remote request body: ", request.data)
-        return inboxRequest(request.method,server_origin, AUTHOR_ID, request.data)
+        print("------ Remote request body: ", request.body)
+        return inboxRequest(request.method,server_origin, AUTHOR_ID, request.body)
     else:
         print("Request: ", request)
         # print("Request data: ", request.data)
@@ -742,7 +742,7 @@ def inbox(request, AUTHOR_ID):
             print("User", user)
             try:
                 # data = JSONParser().parse(request.data)
-                data = json.loads(request.data)
+                data = json.loads(request.body)
             except BaseException as e:
                 print("error parsing request's body")
                 return JsonResponse({e}, status=400, safe=False)
