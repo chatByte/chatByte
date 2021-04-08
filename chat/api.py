@@ -711,6 +711,8 @@ def inbox(request, AUTHOR_ID):
     # print("inbox: ", request)
     USER_ID = (AUTHOR_ID + '.')[:-1]
 
+    data = JSONParser().parse(request)
+
     # add for test purpose
     if not request.META.get("HTTP_X_SERVER"):
         server_origin = host_server
@@ -738,17 +740,14 @@ def inbox(request, AUTHOR_ID):
         if request.method == "POST":
             print("Using post method")
             user = User.objects.get(pk=USER_ID)
-            # print(request.data)
             print("User", user)
-            try:
-                # data = JSONParser().parse(request.data)
-                data = json.loads(request.body)
-            except BaseException as e:
-                print("error parsing request's body")
-                return JsonResponse({e}, status=400, safe=False)
+            # try:
+            #     data = json.loads(request.body)
+            # except BaseException as e:
+            #     print("error parsing request's body")
+            #     return JsonResponse({e}, status=400, safe=False)
             # data = request.data
             # data = json.loads(request.body.decode('utf-8'))
-            print("User: ", user)
             print("Data: ", data)
             if data['type'] == "post":
                 print("Recieved a post inbox...!")
