@@ -55,9 +55,12 @@
               <li class="dropdown" id="myInbox">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
-                  {% for friend_requests in user.profile.friend_requests.all %}
-                    <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
-                  {% endfor %}
+                  <!-- {% for friend_requests in user.profile.friend_requests.all %}
+                    <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!what</a><button class="accept" onclick="accept('l')">Accept</button><button class="reject">Reject</button></li>
+                  {% endfor %}-->
+                  {% for friend_request in user.inbox.friend_requests.all %}
+                    <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_request.summary}}</a></a><button class="accept" onclick="accept_or_reject('accept', '{{friend_request.id}}')">Accept</button><button class="reject" onclick="accept_or_reject('reject', '{{friend_request.id}}')">Reject</button></li>
+                  {% endfor %}                
                 </ul>
               </li>
 
@@ -110,7 +113,7 @@
                   <div class="block-title">
                     <h4 class="">Edit My Profile</h4>
                     <hr class="solid">
-                    <p>You can edit your profile information below</p>
+                    <p>You can edit your profile information below.</p>
                     <div class="line"></div>
                   </div>
                   <div class="edit-block">

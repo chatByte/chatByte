@@ -40,10 +40,13 @@ urlpatterns = [
     # add friend
     path(r"author/<str:AUTHOR_ID>/friends/add/<str:FRIEND_ID>/", views.add_friend, name="friend_add"),
 
-    path(r"author/<str:AUTHOR_ID>/friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
-    path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
+    # path(r"author/<str:AUTHOR_ID>/friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
+    # path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
 
+    path(r"author/<str:AUTHOR_ID>/makefriend/", views.make_friend, name="make_friend"),
+    path(r"author/<str:AUTHOR_ID>/unbefriend/", views.unbefriend, name="unbefriend"),
 
+    path(r"author/<str:AUTHOR_ID>/reshare/", views.reshare, name="reshare"),
 
     # URL: ://service/author/{AUTHOR_ID}/followers/
     path(r"author/<str:AUTHOR_ID>/followers/", api.followers_obj, name="followers_obj"),
@@ -87,7 +90,6 @@ urlpatterns = [
     # 'pagedown/image-upload/',
     # image_upload_view,
     # name="pagedown-image-upload"),
-
 
 
 
