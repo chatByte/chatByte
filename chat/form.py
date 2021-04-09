@@ -4,7 +4,7 @@ from django.core.validators import FileExtensionValidator
 
 from django.contrib.auth.models import User
 # from .models import Profile, NewPost
-from .models import Profile
+# from .models import Profile
 from .widgets import AdminPagedownWidget, PagedownWidget
 
 IMAGE_UPLOAD_EXTENSIONS = getattr(

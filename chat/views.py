@@ -30,37 +30,37 @@ Create your views here.
 """
 # =============================================================================
 
-from pagedown.forms import ImageUploadForm
+# from pagedown.forms import ImageUploadForm
 
 
-IMAGE_UPLOAD_PATH = getattr(
-    settings, 'PAGEDOWN_IMAGE_UPLOAD_PATH', 'pagedown-uploads')
-IMAGE_UPLOAD_UNIQUE = getattr(
-    settings, 'PAGEDOWN_IMAGE_UPLOAD_UNIQUE', False)
-IMAGE_UPLOAD_ENABLED = getattr(
-    settings, 'PAGEDOWN_IMAGE_UPLOAD_ENABLED', False)
+# IMAGE_UPLOAD_PATH = getattr(
+#     settings, 'PAGEDOWN_IMAGE_UPLOAD_PATH', 'pagedown-uploads')
+# IMAGE_UPLOAD_UNIQUE = getattr(
+#     settings, 'PAGEDOWN_IMAGE_UPLOAD_UNIQUE', False)
+# IMAGE_UPLOAD_ENABLED = getattr(
+#     settings, 'PAGEDOWN_IMAGE_UPLOAD_ENABLED', False)
 
 
-@login_required
-def image_upload_view(request):
-    if not request.method == 'POST':
-        raise PermissionDenied()
+# @login_required
+# def image_upload_view(request):
+#     if not request.method == 'POST':
+#         raise PermissionDenied()
 
-    if not IMAGE_UPLOAD_ENABLED:
-        raise ImproperlyConfigured('Image upload is disabled')
+#     if not IMAGE_UPLOAD_ENABLED:
+#         raise ImproperlyConfigured('Image upload is disabled')
 
-    form = ImageUploadForm(request.POST, request.FILES)
-    if form.is_valid():
-        image = request.FILES['image']
-        path_args = [IMAGE_UPLOAD_PATH, image.name]
-        if IMAGE_UPLOAD_UNIQUE:
-            path_args.insert(1, str(uuid.uuid4()))
-        path = os.path.join(*path_args)
-        path = default_storage.save(path, image)
-        url = default_storage.url(path)
-        return JsonResponse({'success': True, 'url': url})
+#     form = ImageUploadForm(request.POST, request.FILES)
+#     if form.is_valid():
+#         image = request.FILES['image']
+#         path_args = [IMAGE_UPLOAD_PATH, image.name]
+#         if IMAGE_UPLOAD_UNIQUE:
+#             path_args.insert(1, str(uuid.uuid4()))
+#         path = os.path.join(*path_args)
+#         path = default_storage.save(path, image)
+#         url = default_storage.url(path)
+#         return JsonResponse({'success': True, 'url': url})
 
-    return JsonResponse({'success': False, 'error': form.errors})
+#     return JsonResponse({'success': False, 'error': form.errors})
 # =============================================================================
 @login_required
 def start_homepage(request):
@@ -217,16 +217,33 @@ def my_stream(request, AUTHOR_ID):
         print("_________________________________________________________")
         print(type(request_post))
 
+        contentType = request_post.get("type","")
+        cur_author_id = cur_author.id
 
-        # source = request.user.profile.id # Who share it to me
-        # origin = host_server # who origin create
-        # title = request_post.get("title", "")
-        # description = request_post.get("description", "")
-        # content_type = request_post.get("contentType", "")
-        # visibility = request_post.get("visibility", "")
+        if contentType == "like":
 
-        testing_response = render(request, "chat/stream.html", dynamic_contain)
-        return testing_response
+            object_type = request_post.get("object_type","")
+            if object_type == "post":
+                object_id = request_post.get("object_id","")
+                likePost(object_id, cur_author_id)
+                response = render(request, "chat/stream.html", dynamic_contain)
+            elif object_type == "comment":
+                # TODO waiting backend
+                # object_id = request_post.get("object_id","")
+                # likeComment(object_id, cur_author_id)
+                # response = render(request, "chat/stream.html", dynamic_contain)
+                pass
+            else:
+                response = JsonResponse({}, status=400)
+
+        elif contentType == "comment":
+            pass
+
+        else:
+            response = JsonResponse({}, status=400)
+
+
+        return response
 
 
 
