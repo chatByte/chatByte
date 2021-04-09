@@ -337,11 +337,11 @@ def posts(request, AUTHOR_ID):
         visibility = request_post.get("visibility", "")
 
         f = request.FILES.get("file", "")
-        categories = ["text/plain"] # web, tutorial, can be delete  # ?? dropdown
+        categories = ["web"] # web, tutorial, can be delete  # ?? dropdown
 
 
         if len(f) > 0:
-            categories = "image/" + os.path.splitext(f.name)[-1][1:]
+            content_type = "image/" + os.path.splitext(f.name)[-1][1:]
             with f.open("rb") as image_file:
                 content = base64.b64encode(image_file.read())
         else:

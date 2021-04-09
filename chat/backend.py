@@ -356,8 +356,20 @@ def getUser(usr_id):
         return None
 
 def likePost(post_id, author_id):
-    # TODO: post needs to know that it is liked
-    # TODO: author needs to know what is liked
 
+    try:
+        user_profile = Profile.objects.get(id=author_id)
+        new_like = Like.objects.create(author=user_profile, object=post_id)
+        user_liked = user_profile.liked
+        items_list = user_liked.items
+        items_list.add(new_like)
+        post = Post.objects.get(id=post_id)
+        post.likes.add(new_like)
+        post.save()
+        user_profile.liked.save()
+
+    except BaseException as e:
+        print(e)
+        return None 
+        
     # TODO: check if remote
-    pass

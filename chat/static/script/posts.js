@@ -1,5 +1,5 @@
 'use strict'
-var contentType = 'text';
+var contentType = 'text/markdown';
 var visibility = 'public';
 var description = "";
 var title = "";

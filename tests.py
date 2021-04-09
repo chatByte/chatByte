@@ -51,8 +51,12 @@ from chat.signals import host
 
 class PostTestCase(TestCase):
     def setUp(self):
+        self.liked = Liked.objects.create()
+        self.profile = Profile.objects.create(liked=self.liked)
         self.user = User.objects.create_user(id=1,email='testuser@123.com',username='1')
+        self.user.profile = self.profile
         self.post = Post.objects.create(id=2, title='abc', description='test_des', author=self.user.profile)
+        
         # Post.objects.create(ID=1)
         # Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
 
@@ -101,6 +105,7 @@ class PostTestCase(TestCase):
         editPostDescription(self.post.id, 'new_des')
         filter_after = Post.objects.filter(description='test_des')
         list_after = list(filter_after)
+        
         # print("after id:", filter_after[0].ID)
         # print("len abc:", len(filter_after))
         after = list(filter_after)
@@ -108,6 +113,18 @@ class PostTestCase(TestCase):
         # print("new len:", len(new_after))
         self.assertEqual(len(after) - len(list_before), -1)
 
+    def test_likePost(self):
+        print("profile:", self.user.profile)
+        user_liked = self.user.profile.liked
+        print("liked:", user_liked)
+        print("items", user_liked.items)
+        author_liked_before = list(self.user.profile.liked.items.all())
+        post_likes_before = list(self.post.likes.all())
+        likePost(self.post.id, self.user.profile.id)
+        author_liked_after = list(self.user.profile.liked.items.all())
+        post_likes_after = list(self.post.likes.all())
+        self.assertEqual(len(author_liked_after) - len(author_liked_before), 1)
+        self.assertEqual(len(post_likes_after) - len(post_likes_before), 1)
 
 class CommentTestCase(TestCase):
     def setUp(self):
@@ -219,7 +236,7 @@ class AccountTests(APITestCase):
                                         categories='',
                                         count=0,
                                         size=0,
-                                        comments_url='0',
+                                        comment_url='0',
                                         visibility='public')
         self.post_id = 3
         self.comment = Comment.objects.create(id="5", 
@@ -239,7 +256,7 @@ class AccountTests(APITestCase):
         response = self.client.get(url,  **{'HTTP_X_SERVER': host})
         # print(response.content)
         user_json = {"type": "author", "id": host + "author/1", "host": None, "displayName": "test", "url": None, "github": None}
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
             user_json
@@ -302,7 +319,7 @@ class AccountTests(APITestCase):
             "categories": "text/plain",
             "count": 1,
             "size": 1,
-            "comments_url": "1",
+            "comment_url": "1",
             "comments": [],
             "published": "2021-03-26T19:04:53Z",
             "visibility": "public",
@@ -412,9 +429,9 @@ class AccountTests(APITestCase):
     
     def test_get_comments(self):
         self.client.login(username=self.username, password=self.password)
-        url = '/author/1/posts/3/comments/'
+        url = 'author/1/posts/3/comments/'
         response = self.client.get(url, **{'HTTP_X_SERVER': host})
-        print(response.content)
+        print("test_get_comments response content:",response.content)
         self.assertEqual(response.status_code, 200)
 
     def test_post_comments(self):

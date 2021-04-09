@@ -234,8 +234,8 @@
 
 
                   </div><!--Post Date End-->
-                  {% if 'image/' in cur_post.categories  %}
-                  {% load image_filter %}
+                  {% if 'image/' in cur_post.contentType  %}
+                  {% load filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
                   <div class="post-container">
@@ -250,21 +250,25 @@
                       <hr class="solid">
                       <div class="post-text">
 
-                        <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">{{ cur_post.title}}</p>
+                        <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">
+                          {{ cur_post.title}}
+                        </p>
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ cur_post.description | markdown | safe }}
+                        </p>
 
-                        {% if 'text/' in cur_post.categories  %}
-                        <p> {{cur_post.content}} </p>
+                        <!-- {% if 'text/' in cur_post.contentType  %} -->
 
                         <form action="." method="post" class="edit-block" style="display: none">
 
                             {% csrf_token %}
-                            <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.content}}</textarea>
+                            <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.description}}</textarea>
                             <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
 
                         </form>
                         <div class="editText" style="display: none">
                         </div>
-                        {% endif %}
+                        <!-- {% endif %} -->
 
                         <div class="edit">
                           <!-- <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button> -->

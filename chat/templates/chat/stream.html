@@ -141,8 +141,8 @@
                   <div class="post-date">
 
                   </div><!--Post Date End-->
-                  {% if 'image/' in cur_post.categories  %}
-                  {% load image_filter %}
+                  {% if 'image/' in cur_post.contentType  %}
+                  {% load filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
                   <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
@@ -157,11 +157,13 @@
                       </div>
                       <hr class="solid">
                       <div class="post-text">
-												<p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">{{ cur_post.title}}</p>
-
-                        {% if 'text/' in cur_post.categories  %}
-                        <p> {{cur_post.content}} </p>
-                        {% endif %}
+                        
+                        <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">
+                          {{ cur_post.title}}
+                        </p>
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ cur_post.description | markdown | safe }}
+                        </p>
 
                       </div>
 
