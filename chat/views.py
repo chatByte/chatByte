@@ -380,8 +380,8 @@ def profile(request, AUTHOR_ID):
     form.fields['email'].initial = user.email
     form.fields['URL'].initial = profile.url
     form.fields['GITHUB'].initial = profile.github
-    form.fields['first_name'].initial = user.first_name
-    form.fields['last_name'].initial = user.last_name
+    form.fields['display_name'].initial = profile.displayName
+    # form.fields['last_name'].initial = profile.displayName
     context = {}
     context['form']= form
 
@@ -389,21 +389,24 @@ def profile(request, AUTHOR_ID):
 
     context['friend_request_num']=friend_request_num
 
-
     # query to database
     if request.method == "GET":
         # check if this is my profile or other's profile
         response = render(request, "chat/profile.html", context)
         return response
+
     elif request.method == "POST":
         post_obj = request.POST
         url = post_obj["URL"]
         email = post_obj["email"]
         github = post_obj["GITHUB"]
-        first_name = post_obj["first_name"]
-        last_name = post_obj["last_name"]
-        updateProfile(user.id, first_name, last_name, email, url, github)
-        response = redirect("/author/"+ str(request.user.id) + "/profile/")
+        print("new url:", url)
+        display_name = post_obj["display_name"]
+        print("new name:", display_name)
+        updateProfile(user.id, display_name, email, url, github)
+        print("profile id:",  str(request.user.profile.id))
+        # response = redirect("author/"+ str(request.user.profile.id).split('/')[-1] + "/profile/")
+        response = redirect("")
         return response
 
 

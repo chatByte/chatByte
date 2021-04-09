@@ -12,7 +12,7 @@ urlpatterns = [
 
     path(r"author/<str:AUTHOR_ID>/my_posts/", views.posts, name="make_posts"),
     path(r"author/<str:AUTHOR_ID>/my_posts/<str:POST_ID>/edit/", views.update_post, name="update_posts"),
-    #
+    
     path(r'author/<str:AUTHOR_ID>/posts/',api.posts_obj, name='make_posts_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',api.post_obj, name='make_post_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/',api.comment_list_obj, name='comment_list_obj'),
