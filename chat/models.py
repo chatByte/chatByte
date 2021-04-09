@@ -9,6 +9,16 @@ from django.contrib.postgres.fields import ArrayField
 #     # for authorization only
 #     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
 #     USERNAME = models.CharField(max_length=50, unique=True)
+# class NewPost(models.Model):
+#     name = models.CharField(max_length=128)
+#     description = models.TextField(blank=True)
+#     lyrics = models.TextField(blank=True)
+
+#     def __str__(self):
+#         return self.name
+
+#     def get_absolute_url(self):
+#         return reverse('music:songs:detail', args=[str(self.id)])
 
 
 class Profile(models.Model):
@@ -37,8 +47,8 @@ class Profile(models.Model):
     def __unicode__(self): # for Python 2
         return self.user.username
 
-    # class Meta:
-    #     managed = False
+    class Meta:
+        managed = False
 
 class Comment(models.Model):
     type = models.CharField(max_length=200, default="comment")
@@ -68,10 +78,11 @@ class Post(models.Model):
     content = models.TextField()
     # the author has an ID where by authors can be disambiguated
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    categories = ArrayField(
-        models.CharField(max_length=200, blank=True),
-        size=200,
-    )
+    # categories = ArrayField(
+    #     models.CharField(max_length=200, blank=True),
+    #     size=200,
+    # )
+    categories = models.CharField(max_length=200, blank=True)
     count = models.IntegerField(default=0)
     size = models.IntegerField(default=0)
     comment_url = models.CharField(max_length=200, blank=True)
