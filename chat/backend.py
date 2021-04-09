@@ -200,28 +200,30 @@ def createPost(title, source, origin, description, content_type, content, author
         author.timeline.add(post)
         author.save()
 
-        print("Broadcasting post to friends...")
+        
         # Broadcast to friends
-        for friend_profile in author.friends.all():
-            print(friend_profile.id)
-            author_id = friend_profile.id.split('author/')[1]
-            
-            server_origin = friend_profile.id.split("author/")[0]
-            if server_origin == host:
-                print("doing locally")
-                # send post to inbox
-                friend_profile.user.inbox.post_inbox.items.add(post)
-                # add post into timeline
-                friend_profile.timeline.add(post)
-            else:
-                serializer = PostSerializer(post)
-                post_serialize = serializer.data
-                author_serialize = ProfileSerializer(post.author)
-                post_serialize['author'] = author_serialize.data
-                print(post_serialize)
-                # send post to remote inbox
-                inboxRequest("POST", server_origin, author_id, post_serialize)
-        print("done")
+        if (visibility == 'friend'):
+            print("Broadcasting post to friends...")
+            for friend_profile in author.friends.all():
+                print(friend_profile.id)
+                author_id = friend_profile.id.split('author/')[1]
+                
+                server_origin = friend_profile.id.split("author/")[0]
+                if server_origin == host:
+                    print("doing locally")
+                    # send post to inbox
+                    friend_profile.user.inbox.post_inbox.items.add(post)
+                    # add post into timeline
+                    friend_profile.timeline.add(post)
+                else:
+                    serializer = PostSerializer(post)
+                    post_serialize = serializer.data
+                    author_serialize = ProfileSerializer(post.author)
+                    post_serialize['author'] = author_serialize.data
+                    print(post_serialize)
+                    # send post to remote inbox
+                    inboxRequest("POST", server_origin, author_id, post_serialize)
+            print("done")
         return True
     except BaseException as e:
         print(repr(e))
