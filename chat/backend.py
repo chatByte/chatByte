@@ -273,7 +273,9 @@ def deletePost(id):
         print(e)
         return False
 
-
+'''
+Design for create comment, here author is a profile
+'''
 def createComment(author, post_id, comment, content_type, published=django.utils.timezone.now()):
     try:
         post = Post.objects.get(id=post_id)
@@ -375,3 +377,6 @@ def likePost(post_id, author_id):
         return None 
         
     # TODO: check if remote
+def likeComment(comment_id, author_id):
+    # TODO
+    pass
