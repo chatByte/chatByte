@@ -241,12 +241,15 @@ def my_stream(request, AUTHOR_ID):
 
         elif contentType == "comment":
 
-            request.
+            post_id = request_post.get("post_id","")
+            comment_contain = request_post.get("comment","")
+            comment_content_type = request_post.get("content_type","")
 
-
-            createComment()
-
-            pass
+            #if successful create a comment
+            if  createComment(cur_author.profile, post_id, comment_contain, comment_content_type) :
+                response = render(request, "chat/stream.html", dynamic_contain)
+            else:
+                response = JsonResponse({}, status=500)
 
         else:
             response = JsonResponse({}, status=400)
