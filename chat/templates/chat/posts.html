@@ -94,27 +94,15 @@
             <div class="friend-list">
               <h3 class="">My Friends</h3>
               <hr class="solid">
+              {% for friend in friends %}
               <div class="friend">
-                <img src="https://i1.sndcdn.com/artworks-000633504211-qcdzak-t500x500.jpg" alt="" class="profile-photo-sm pull-left" />
+                <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm pull-left" />
                 <div>
-                  <h5><a href="../friend">Hirose Koichi</a></h5>
-                  <a href="#" class="text-muted">Just Posted</a>
+                  <h5><a href="../friend">friend.profile.displayName</a></h5>
+                  <!-- <a href="#" class="text-muted">Just Posted</a> -->
                 </div>
               </div>
-              <div class="friend">
-                <img src="https://i.pinimg.com/736x/3c/88/c8/3c88c8510028f627cf58792795629ed1.jpg" alt="" class="profile-photo-sm pull-left" />
-                <div>
-                  <h5><a href="../friend">Higashikata Josuke</a></h5>
-                  <a href="#" class="text-muted">Posted 3 days ago</a>
-                </div>
-              </div>
-              <div class="friend">
-                <img src="https://media.comicbook.com/2019/01/jotaro-1154567-1280x0.jpeg" alt="" class="profile-photo-sm pull-left" />
-                <div>
-                  <h5><a href="../friend">Kujo Jotaro</a></h5>
-                  <a href="#" class="text-muted">Posted 3 weeks ago</a>
-                </div>
-              </div>
+              {% endfor %}
             </div>
           </div>
 
@@ -133,7 +121,7 @@
               <div class="row">
                   <div class="col-md-1">
                     <div class="form-group">
-                      <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="profile-photo-lg" />
+                      <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-lg" />
                       <!-- <div class="form-group-col">
                         {% csrf_token %}
                         <textarea  id="title" cols="45" rows="1" class="form-title-control" placeholder="Title" required></textarea>
@@ -164,7 +152,7 @@
                     </div>
                   </div>
 
-                  <div class="col-md-1">
+                  <div class="col-md-7">
                     <div class="tools">
                       <!-- <button class="btn btn-primary" id="publishBtn">Publish</button> -->
                       <button class="btn btn-primary" id="postBtn" data-toggle="modal" data-target="#exampleModal">Make Post</button>
@@ -221,7 +209,6 @@
 
                   </div>
                 </div>
-              </div>
             <!-- Post Create Box End-->
 
 
@@ -239,7 +226,7 @@
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
                   <div class="post-container">
-                    <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
+                    <img src="{% static 'images/user.png' %}" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
                       <div class="user-info">
                         <h5><a href="" class="profile-link" id="fullName">{{cur_post.origin}}</a> </h5>
@@ -278,7 +265,9 @@
                           <!-- <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button> -->
                           <button id="submitBtn" class="submitBtn btn-primary-sm" style="display: none" onclick="editPost( '{{ cur_post.id }}' )">Submit</button>
                           <a href="/chat/feed/edit{{ cur_post.id }}/" class="editBtn" onclick="editButton( '{{ cur_post.title }}', ' {{cur_post.description}} ' )">Edit</a>
-                          <button id="{{ cur_post.id }}" class="btn-primary-sm" onclick="deletePost( '{{ cur_post.id }}' )">Delete</button></div>
+                          &thinsp;
+                          <a href='#' id="{{ cur_post.id }}" class="deleteBtn" onclick="deletePost( '{{ cur_post.id }}' )">Delete</a>
+                        </div>
 
                       </div>
 
@@ -291,8 +280,8 @@
                       <!--            show nested comment  -->
                     {% for comment in cur_post.comments.all %}
                               <div class="post-comment" id={{comment.id}}>
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                                <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
+                                <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
+                                <p><a href="" class="profile-link">{{comment.author.displayName}} </a>{{comment.comment}}</p>
                               </div>
 
                               <div class="reaction-img">
@@ -300,7 +289,7 @@
                               </div>
                     {% endfor %}
                                 <!--   show comments -->
-<!-- 
+<!--
                       <div class="post-comment">
                         <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
                         <a href="" class="profile-link">{{user.profile.displayName}} </a>
