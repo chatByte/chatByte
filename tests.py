@@ -245,6 +245,9 @@ class AccountTests(APITestCase):
                                               contentType='text',
                                               parent_post=self.post
                                               )
+        self.post.comments.add(self.comment)
+        self.user.profile.timeline.add(self.post)
+        self.user.profile.save()
         return super().setUp()
     
     def test_get_profile(self):
@@ -429,7 +432,7 @@ class AccountTests(APITestCase):
     
     def test_get_comments(self):
         self.client.login(username=self.username, password=self.password)
-        url = 'author/1/posts/3/comments/'
+        url = '/author/'+ str(self.user.id) +'/posts/3/comments/'
         response = self.client.get(url, **{'HTTP_X_SERVER': host})
         print("test_get_comments response content:",response.content)
         self.assertEqual(response.status_code, 200)
