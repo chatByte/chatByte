@@ -38,8 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    # 'django.contrib.sites',
+    # 'django.contrib.flatpages',
+    # 'pagedown.apps.PagedownConfig',
 ]
+
+SITE_ID = 1
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -126,7 +132,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'chat/static')
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'mongoDB_123',
+        'NAME': 'mongoDB_new',
     }
 }
 

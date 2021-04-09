@@ -40,15 +40,15 @@
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right main-menu">
 
-              <li class="dropdown"><a href="../public_channel/">My Home</a></li>
-              <li class="dropdown"><a href="../friends">My Friends</a></li>
-              <li class="dropdown"><a href="../my_posts">My Posts</a></li>
+              <li class="dropdown"><a href="../../">My Stream</a></li>
+              <li class="dropdown"><a href="../../../my_friends">My Friends</a></li>
+              <li class="dropdown"><a href="../../../my_posts">My Posts</a></li>
 
 
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
-                  <li><a href="../profile/">Edit Profile</a></li>
+                  <li><a href="../../../profile/">Edit Profile</a></li>
                 </ul>
               </li>
 
@@ -56,12 +56,12 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
                   {% for friend_requests in user.profile.friend_requests.all %}
-                    <li><a href="" id={{friend_requests.id}}>{{friend_requests.author.profile.displayName}} has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
+                    <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
                   {% endfor %}
                 </ul>
               </li>
 
-
+              <li class="dropdown"><a href="/accounts/logout">Logout</a></li>
 
             </ul>
 
@@ -83,8 +83,15 @@
               <div class="col-md-3">
                 <div class="profile-info">
                   <img src="{% static 'images/snow-mount.jpg' %}" alt="" class="img-responsive profile-photo" />
-                  <h3 id="fullName">{{myName}}</h3>
+                  <h3 id="fullName">{{foreignName}}</h3>
                   <p class="text-muted"> {{author_num_follwers}} people is following her</p>
+                  {% if isFollowing %}
+                    <h4 style="display: block" id="following">Following</h4>
+                  {% else %}
+                    <a href="." ><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" id='followBtn' 
+                            onclick="putFollow( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}', '{{cur_author.url}}', '{{cur_author.github}}', '{{foreignId}}')"/></a>
+                  {% endif %}
+
                 </div>
               </div>
               <div class="col-md-9">
@@ -92,9 +99,10 @@
                   <li><a href="" class="active">Her Timeline</a></li>
                   <li><a href="">Her Friends</a></li>
                   {% if isFriend %}
-                    <li><button class="btn-primary unfollow" href="../../friends/delete/{{myId}}/">Unfollow</button></li>
+                    <li><button class="btn-primary unfriend" href="../../friends/delete/{{foreignId}}/">Unfriend</button></li>
                   {% else %}
-                    <li><button class="btn-primary follow" value="../../friends/add/{{myId}}/">Follow</button></li>
+                    <li><button class="btn-primary befriend" value="../../friends/add/{{foreignId}}/" 
+                        onclick="be_friend( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}', '{{cur_author.url}}', '{{cur_author.github}}')" >Befriend</button></li>
       						{% endif %}
 
                 </ul>
@@ -109,10 +117,10 @@
               <div class="activities">
                 <!--Activity SUmmary-->
                 <div id="sticky-sidebar">
-                  <h4 class="grey"><a href="" class="profile-link" id="name">{{myName}}</a>'s activity</h4>
+                  <h4 class="grey"><a href="" class="profile-link" id="name">{{foreignName}}</a>'s activity</h4>
                   <div class="feed-item">
                     <div class="live-activity">
-                      <p><a href="#" class="profile-link" id="name">{{myName}}</a> Posted on a Photo</p>
+                      <p><a href="#" class="profile-link" id="name">{{foreignName}}</a> Posted on a Photo</p>
                       <p class="text-muted"> xxxx mins ago</p>
                     </div>
                   </div>
@@ -136,7 +144,7 @@
 
                   </div><!--Post Date End-->
                   {% if 'image/' in cur_post.categories  %}
-                  {% load image_filter %}
+                  {% load filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.CONTENT | bin_2_img }}"/>
                   {% endif %}
                   <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
@@ -144,7 +152,7 @@
                     <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
                       <div class="user-info">
-                        <h5><a href="" class="profile-link" id="fullName">{{cur_post.origin}}</a> </h5>
+                        <h5><a href="" class="profile-link" id="fullName">{{cur_post.author.displayName}}</a> </h5>
                         <p class="text-grey post_date" >{{cur_post.published}} </p>
 
                         <p class="text-muted">{{cur_post.categories}}</p>
@@ -157,13 +165,13 @@
                         <p> {{cur_post.content}} </p>
                         {% endif %}
 
-                        <form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
+                <!--         <form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
                             {% csrf_token %}
                             <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.content}}</textarea>
                             <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
                         </form>
 
-                        <div class="edit"><a href="/chat/home/edit{{ cur_post.ID }}/">Edit</a>&emsp;<a href="/chat/home/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div>
+                        <div class="edit"><a href="/chat/home/edit{{ cur_post.ID }}/">Edit</a>&emsp;<a href="/chat/home/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div> -->
 
                       </div>
 
@@ -216,5 +224,6 @@
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
+
   </body>
 </html>

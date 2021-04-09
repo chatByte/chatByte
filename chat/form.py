@@ -1,45 +1,41 @@
 from django import forms
+from django.conf import settings
+from django.core.validators import FileExtensionValidator
+
 from django.contrib.auth.models import User
-from .models import Profile
+# from .models import Profile, NewPost
+# from .models import Profile
+from .widgets import AdminPagedownWidget, PagedownWidget
 
-# # creating a form
-# class LoginForm(forms.Form):
+IMAGE_UPLOAD_EXTENSIONS = getattr(
+    settings,
+    'PAGEDOWN_IMAGE_UPLOAD_EXTENSIONS', [
+        'jpg',
+        'jpeg',
+        'png',
+        'webp'
+    ])
 
-#     # first_name = forms.CharField(initial='Your first name', max_length = 200)
-#     Username = forms.CharField(max_length = 200)
-#     # roll_number = forms.IntegerField(
-#     #                  help_text = "Enter 6 digit roll number"
-#     #                  )
-#     Password = forms.CharField(widget = forms.PasswordInput())
-
-# class CreateAuthorForm(forms.Form):
-#     User_name = forms.CharField(max_length=200)
-#     Password = forms.CharField(widget = forms.PasswordInput())
-#     Retype_password = forms.CharField(widget = forms.PasswordInput())
-#     Host = forms.CharField(max_length=200)
-#     Url = forms.CharField(max_length=200)
-#     GitHub = forms.CharField(max_length=200)
-
+# creating a form
+# Profile form, that can passing profile info
 class ProfileForm(forms.Form):
-    first_name = forms.CharField(max_length=200)
-    last_name = forms.CharField(max_length=200)
-    URL = forms.CharField(max_length=200)
-    GITHUB = forms.CharField(max_length=200)
+    display_name = forms.CharField(max_length=200)
+    # last_name = forms.CharField(max_length=200)
+    URL = forms.URLField(max_length=200)
+    GITHUB = forms.URLField(max_length=200)
     email = forms.CharField(max_length=200)
 
-# class CreatePostForm(forms.Form):
-#     title = forms.CharField(label=False, widget=forms.Textarea(attrs={'id':'title', 'cols':35, 'rows':1, 'class':'form-title-control', 'placeholder':'Title'}))
-#     description = forms.CharField(label=False, widget=forms.Textarea(attrs={'id':'description', 'cols':35, 'rows':4, 'class':'form-title-control', 'placeholder':'Description: Anything exciting?'}))
-#     # contentType = forms.CharField(max_length = 200)
-#     # visibility = forms.CharField(max_length = 200)
 
-# class UserForm(forms.ModelForm):
-#     class Meta:
-#         model = User
-#         fields = ('first_name', 'last_name')
+# class PagedownField(forms.CharField):
+#     widget = PagedownWidget
 
-# class ProfileForm(forms.ModelForm):
-#     class Meta:
-#         model = Profile
-#         fields = ('URL', 'GITHUB', 'DISPLAY_NAME')
 
+# class AdminPagedownField(forms.CharField):
+#     widget = AdminPagedownWidget
+
+
+# class ImageUploadForm(forms.Form):
+#     image = forms.ImageField(
+#         required=True,
+#         validators=[FileExtensionValidator(
+#             allowed_extensions=IMAGE_UPLOAD_EXTENSIONS)])

@@ -1,4 +1,5 @@
-from rest_framework import serializers
+from rest_framework import serializers, pagination
+from django.http import JsonResponse
 from .models import *
 
 
@@ -118,7 +119,7 @@ class PostSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(read_only=True)
     class Meta:
         model = Post
-        fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'commentsPage', 'comments', 'published', 'visibility', 'unlisted'  ]
+        fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'comment_url', 'comments', 'published', 'visibility', 'unlisted'  ]
         
 
 class PostInboxSerializer(serializers.ModelSerializer):
@@ -128,11 +129,12 @@ class PostInboxSerializer(serializers.ModelSerializer):
         fields = ['type','author', 'items']
 
 class FriendReuqestSerializer(serializers.ModelSerializer):
-    author = ProfileSerializer(read_only=True)
+    actor = ProfileSerializer(read_only=True)
     object = ProfileSerializer(read_only=True)
+
     class Meta:
         model = FriendRequest
-        fields = ['type','id', 'summary', 'author', 'object']
+        fields = ['type','id', 'summary', 'actor', 'object']
 
 
 class LikeSerializer(serializers.ModelSerializer):
@@ -152,3 +154,21 @@ class LikedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Liked
         fields = ['type', 'items']
+
+# class CommentCustomPagination(pagination.PageNumberPagination):
+#     def get_paginated_response(self, data):
+#         return JsonResponse({
+#             'next': self.get_next_link(),
+#             'previous': self.get_previous_link(),
+#             'count': self.page.paginator.count,
+#             'comments': data
+#         }, safe=False)
+
+# class PostCustomPagination(pagination.PageNumberPagination):
+#     def get_paginated_response(self, data):
+#         return JsonResponse({
+#             'next': self.get_next_link(),
+#             'previous': self.get_previous_link(),
+#             'count': self.page.paginator.count,
+#             'posts': data
+#         }, safe=False)

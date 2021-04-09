@@ -61,7 +61,7 @@
                 </ul>
               </li>
 
-
+              <li class="dropdown"><a href="/accounts/logout">Logout</a></li>
 
             </ul>
 
@@ -178,20 +178,16 @@
                       </div>
 
                       <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart"></i>{{ cur_post.likes | length }}</a>
+                        <a class="btn text-red"><i class="icon ion-ios-heart"></i> 13</a>
                         <a class="btn text-green"><i class="icon ion-share"></i></a>
                       </div>
 
                       <hr class="solid">
 <!--            show nested comment  -->
-            {% for comment in cur_post.comments.all %}
+            {% for comment in cur_post.COMMENTS.all %}
                       <div class="post-comment">
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
                         <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
-                      </div>
-
-                      <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
                       </div>
                       {% endfor %}
 <!--                      end -->
@@ -230,6 +226,7 @@
     <div id="spinner-wrapper">
       <div class="spinner"></div>
     </div>
+
 
 
     <!-- Scripts
