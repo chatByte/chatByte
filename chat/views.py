@@ -6,7 +6,6 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator
-from django.contrib import messages
 
 from .signals import host as host_server
 from rest_framework.parsers import JSONParser
@@ -82,21 +81,15 @@ def signup(request):
 
     if form.is_valid():
         print("is valid")
-        user = form.save(commit=False)
-        # sets the field to False
-        user.is_active=False
-        user.save()
+        form.save()
         username = form.cleaned_data.get('username')
-        messages.success(request, f'Your account has been created! You are now able to log in')
-        return redirect('login')
-        # username = form.cleaned_data.get('username')
-        # password = form.cleaned_data.get('password1')
-        # print("authenticating...")
-        # user = authenticate(username=username, password=password)
-        # print("logging in...")
-        # login(request, user)
+        password = form.cleaned_data.get('password1')
+        print("authenticating...")
+        user = authenticate(username=username, password=password)
+        print("logging in...")
+        login(request, user)
 
-        # return redirect('/author/' + str(user.id) + "/profile/")
+        return redirect('/author/' + str(user.id) + "/profile/")
     return render(request, 'registration/signup.html', {'form': form})
 
 
@@ -194,7 +187,7 @@ def my_stream(request, AUTHOR_ID):
 
 
         author_num_follwers = len(cur_author.profile.followers.items.all())
-        friend_request_num = len(cur_author.profile.friend_requests.all())
+        friend_request_num = len(cur_author.inbox.friend_requests.all())
         # order by date
         public_channel_posts = public_channel_posts.order_by('-published')
 
@@ -301,7 +294,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
         foreign_timeline = PostSerializer(foreign_timeline, many=True).data
 
         author_num_follwers = len(foreign_author.profile.followers.items.all())
-        friend_request_num = len(foreign_author.profile.friend_requests.all())
+        friend_request_num = len(request.user.inbox.friend_requests.all())
 
         dynamic_contain = {
             'foreignName' : foreign_author.profile.displayName,
@@ -353,7 +346,7 @@ def posts(request, AUTHOR_ID):
 
 
         author_num_follwers = len(cur_author.followers.items.all())
-        friend_request_num = len(cur_author.friend_requests.all())
+        friend_request_num = len(request.user.inbox.friend_requests.all())
 
 
 
@@ -476,7 +469,7 @@ def my_friends(request,AUTHOR_ID):
     print(friend_list)
     cur_author = request.user.profile
     author_num_follwers = len(cur_author.followers.items.all())
-    friend_request_num = len(cur_author.friend_requests.all())
+    friend_request_num = len(request.user.inbox.friend_requests.all())
     dynamic_contain = {
         'myName' : cur_author.displayName,
         'friend_list': friend_list,
