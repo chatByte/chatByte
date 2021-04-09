@@ -178,7 +178,7 @@
 
                       <hr class="solid">
                   <!--              show nested comment  -->
-                  {% for comment in cur_post.comments.all %}
+                  <!-- {% for comment in cur_post.comments.all %}
                             <div class="post-comment">
                               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
                               <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
@@ -187,13 +187,16 @@
                             <div class="reaction-img">
                               <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
                             </div>
-                  {% endfor %}
+                  {% endfor %} -->
                   <!--                      end -->
 
                   <div class="post-comment">
-                    <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
+                    <!-- <div>
+                      <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
                     <a href="" class="profile-link">{{user.profile.displayName}} </a>
-                    <button class="btn btn-primary" id="postBtn" data-toggle="modal" data-target="#exampleModal">Make Post</button>
+                    </div> -->
+                    
+                    <button class="btn btn-primary" id="postBtn" data-toggle="modal" data-target="#exampleModal">Make Comment</button>
 
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -205,21 +208,21 @@
                                   <div class="form-group">
                                       <div class="form-group-col">
                                         {% csrf_token %}
-                                        <textarea  id="title" cols="45" rows="1" class="form-title-control" placeholder="Title" required></textarea>
+                                        <!-- <textarea  id="title" cols="45" rows="1" class="form-title-control" placeholder="Title" required></textarea> -->
                                         <img id="uploadImg">
 
                                         <textarea  id="description" cols="45" rows="4" class="form-control" placeholder="Description: Anything exciting?"></textarea>
                                         <input type='file' id='imageFile' accept="image/*" onchange="readImg(this);">
 
-                                          <div class="dropdown">
-                                            <div class="publicity"><a id="visibility" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-users"></i><a></div>
+                                            <!-- <div class="dropdown">
+                                              <div class="publicity"><a id="visibility" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-users"></i><a></div>
                                               <div class="dropdown-content">
                                                 <a href="#" id="public"><i class="fas fa-users"></i>&ensp;<span>Allow everyone to see the post</span></a>
                                                 <a href="#" id="friend"><i class="fas fa-user-friends"></i>&ensp;<span>Allow only friends to see the post</span></a>
                                                 <a href="#" id="private"><i class="fas fa-user"></i>&ensp;<span>Post only to myself</span></a>
                                               </div>
-                                            </div>
-                                            &thinsp;
+                                            </div> -->
+                                            <!-- &thinsp; -->
                                             <div class="dropdown">
                                                <div class="publicity"><a id="contentType" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-edit"></i><a></div>
                                                 <div class="dropdown-content">
@@ -237,7 +240,7 @@
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="submitComment">Submit</button>
+                            <button type="button" class="btn btn-primary" id="submitComment" onclick="createComment('{{ cur_post.id }}')">Submit</button>
                           </div>
                         </div>
                       </div>
