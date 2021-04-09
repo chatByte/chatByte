@@ -1,5 +1,5 @@
 'use strict'
-var contentType = 'text';
+var contentType = 'text/plain';
 var visibility = 'public';
 var description = "";
 var title = "";

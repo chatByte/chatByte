@@ -199,10 +199,10 @@
                                           <div class="dropdown">
                                              <div class="publicity"><a id="contentType" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-edit"></i><a></div>
                                               <div class="dropdown-content">
-                                                <a href="#" id="text"><i class="fas fa-edit"></i>&ensp;<span>This is simply a text post</span></a>
+                                                <a href="#" id="text/plain"><i class="fas fa-edit"></i>&ensp;<span>This is simply a text post</span></a>
                                                 <a href="#" id="github"><i class="fab fa-github"></i>&ensp;<span>This is a Github stream</span></a>
                                                 <a href="#" id="image"><i class="ion-images"></i>&ensp;<span>This is an image post</span></a>
-                                                <a href="#" id="markdown"><i class="far fa-file"></i>&ensp;<span>This is a Common Markdown post</span></a>
+                                                <a href="#" id="text/markdown"><i class="far fa-file"></i>&ensp;<span>This is a Common Markdown post</span></a>
                                               </div>
                                           </div>
                                         </div>
@@ -253,11 +253,16 @@
                         <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">
                           {{ cur_post.title}}
                         </p>
+
+                        {% if 'plain' in cur_post.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ cur_post.description | linebreaks }}
+                        </p>
+                        {% elif 'markdown' in cur_post.contentType %}
                         <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
                           {{ cur_post.description | markdown | safe }}
                         </p>
-
-                        <!-- {% if 'text/' in cur_post.contentType  %} -->
+                        {% endif %}
 
                         <form action="." method="post" class="edit-block" style="display: none">
 
@@ -268,7 +273,6 @@
                         </form>
                         <div class="editText" style="display: none">
                         </div>
-                        <!-- {% endif %} -->
 
                         <div class="edit">
                           <!-- <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button> -->
