@@ -70,9 +70,9 @@
               <li class="dropdown" id="myInbox">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
-                  {% for friend_requests in user.profile.friend_requests.all %}
-                    <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
-                  {% endfor %}
+                  {% for friend_request in user.inbox.friend_requests.all %}
+                    <li><a >{{friend_request.summary}}</a><button class="accept" onclick="accept_or_reject('accept', '{{friend_request.id}}')">Accept</button><button class="reject" onclick="accept_or_reject('reject', '{{friend_request.id}}')">Reject</button></li>
+                  {% endfor %} 
                 </ul>
               </li>
 
@@ -241,8 +241,10 @@
                   <div class="post-container">
                     <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
+                      <h5>Source: <a href="{{cur_post.source}}">{{cur_post.source}}</a> </h5>
+                      <h5>Origin: <a href="{{cur_post.origin}}">{{cur_post.origin}}</a> </h5>
                       <div class="user-info">
-                        <h5><a href="" class="profile-link" id="fullName">{{cur_post.origin}}</a> </h5>
+                        <h5><a href="" class="profile-link" id="fullName">{{cur_post.author.displayName}}</a> </h5>
                         <p class="text-grey post_date" >{{cur_post.published}} </p>
 
                         <p class="text-muted">{{cur_post.categories}}</p>
@@ -290,14 +292,24 @@
                     <hr class="solid">
                       <!--            show nested comment  -->
                     {% for comment in cur_post.comments.all %}
-                              <div class="post-comment" id={{comment.id}}>
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                                <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
-                              </div>
+                    <div class="post-comment">
+                      <div>
+                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
+                      <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a> 
+                      </div>
 
-                              <div class="reaction-img">
-                                <a class="btn text-red"><i class="icon ion-ios-heart comment-like">{{ comment.likes | length }}</i></a>
-                              </div>
+                      {% if 'plain' in comment.contentType %}
+                      <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                        {{ comment.comment | linebreaks }}
+                      </p>
+                      {% elif 'markdown' in comment.contentType %}
+                      <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                        {{ comment.comment | markdown | safe }}
+                      </p>
+                      {% endif %}
+                      
+                    </div>
+                    <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
                     {% endfor %}
                                 <!--   show comments -->
 <!-- 

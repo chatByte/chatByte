@@ -38,9 +38,9 @@ class Profile(models.Model):
     followings = models.ManyToManyField("Profile", related_name='%(class)s_followings', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
     # the friend request i received
-    friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
+    # friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
     # the friend request i snet
-    friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
+    # friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
     # the iteams, that i currenly liked
     liked = models.OneToOneField('Liked', on_delete=models.CASCADE, null=True, blank=True)
 
