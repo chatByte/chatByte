@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'django.contrib.sites',
-    'django.contrib.flatpages',
-    'pagedown.apps.PagedownConfig',
+    # 'django.contrib.sites',
+    # 'django.contrib.flatpages',
+    # 'pagedown.apps.PagedownConfig',
 ]
 
 SITE_ID = 1

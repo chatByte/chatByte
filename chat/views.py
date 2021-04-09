@@ -30,37 +30,37 @@ Create your views here.
 """
 # =============================================================================
 
-from pagedown.forms import ImageUploadForm
+# from pagedown.forms import ImageUploadForm
 
 
-IMAGE_UPLOAD_PATH = getattr(
-    settings, 'PAGEDOWN_IMAGE_UPLOAD_PATH', 'pagedown-uploads')
-IMAGE_UPLOAD_UNIQUE = getattr(
-    settings, 'PAGEDOWN_IMAGE_UPLOAD_UNIQUE', False)
-IMAGE_UPLOAD_ENABLED = getattr(
-    settings, 'PAGEDOWN_IMAGE_UPLOAD_ENABLED', False)
+# IMAGE_UPLOAD_PATH = getattr(
+#     settings, 'PAGEDOWN_IMAGE_UPLOAD_PATH', 'pagedown-uploads')
+# IMAGE_UPLOAD_UNIQUE = getattr(
+#     settings, 'PAGEDOWN_IMAGE_UPLOAD_UNIQUE', False)
+# IMAGE_UPLOAD_ENABLED = getattr(
+#     settings, 'PAGEDOWN_IMAGE_UPLOAD_ENABLED', False)
 
 
-@login_required
-def image_upload_view(request):
-    if not request.method == 'POST':
-        raise PermissionDenied()
+# @login_required
+# def image_upload_view(request):
+#     if not request.method == 'POST':
+#         raise PermissionDenied()
 
-    if not IMAGE_UPLOAD_ENABLED:
-        raise ImproperlyConfigured('Image upload is disabled')
+#     if not IMAGE_UPLOAD_ENABLED:
+#         raise ImproperlyConfigured('Image upload is disabled')
 
-    form = ImageUploadForm(request.POST, request.FILES)
-    if form.is_valid():
-        image = request.FILES['image']
-        path_args = [IMAGE_UPLOAD_PATH, image.name]
-        if IMAGE_UPLOAD_UNIQUE:
-            path_args.insert(1, str(uuid.uuid4()))
-        path = os.path.join(*path_args)
-        path = default_storage.save(path, image)
-        url = default_storage.url(path)
-        return JsonResponse({'success': True, 'url': url})
+#     form = ImageUploadForm(request.POST, request.FILES)
+#     if form.is_valid():
+#         image = request.FILES['image']
+#         path_args = [IMAGE_UPLOAD_PATH, image.name]
+#         if IMAGE_UPLOAD_UNIQUE:
+#             path_args.insert(1, str(uuid.uuid4()))
+#         path = os.path.join(*path_args)
+#         path = default_storage.save(path, image)
+#         url = default_storage.url(path)
+#         return JsonResponse({'success': True, 'url': url})
 
-    return JsonResponse({'success': False, 'error': form.errors})
+#     return JsonResponse({'success': False, 'error': form.errors})
 # =============================================================================
 @login_required
 def start_homepage(request):

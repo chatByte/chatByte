@@ -4,7 +4,7 @@ from django.contrib import admin
 from .models import Post, Comment, Profile, FriendRequest, Follower, Inbox, PostInbox, Like, Liked, Node
 
 from rest_framework.authtoken.admin import TokenAdmin
-from pagedown.widgets import AdminPagedownWidget
+# from pagedown.widgets import AdminPagedownWidget
 
 TokenAdmin.raw_id_fields = ('user',)
 

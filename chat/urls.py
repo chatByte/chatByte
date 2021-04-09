@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from . import api
-from pagedown.views import image_upload_view
+# from pagedown.views import image_upload_view
 # from .views import SignUpView
 
 urlpatterns = [
@@ -83,10 +83,10 @@ urlpatterns = [
     # # Get likes for a Comment
     path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment"),
 
-    path(
-    'pagedown/image-upload/',
-    image_upload_view,
-    name="pagedown-image-upload"),
+    # path(
+    # 'pagedown/image-upload/',
+    # image_upload_view,
+    # name="pagedown-image-upload"),
 
 
 
