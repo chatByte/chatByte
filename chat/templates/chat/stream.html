@@ -178,16 +178,20 @@
 
                       <hr class="solid">
                   <!--              show nested comment  -->
-                  <!-- {% for comment in cur_post.comments.all %}
+                  {% for comment in cur_post.comments.all %}
                             <div class="post-comment">
+                              <div>
                               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                              <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
+                              <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a> 
+                              </div>
+
+                              <p>{{ comment.comment }} </p>
                             </div>
 
                             <div class="reaction-img">
                               <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
                             </div>
-                  {% endfor %} -->
+                  {% endfor %}
                   <!--                      end -->
 
                   <div class="post-comment">

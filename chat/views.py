@@ -252,7 +252,7 @@ def my_stream(request, AUTHOR_ID):
 
             #if successful create a comment
             if  createComment(cur_author.profile, post_id, comment_contain, comment_content_type) :
-                JsonResponse({'redirect_url': "current"}, status=200)
+                response = JsonResponse({'redirect_url': "current"}, status=200)
             else:
                 response = JsonResponse({}, status=500)
 
