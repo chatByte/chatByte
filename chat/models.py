@@ -68,8 +68,11 @@ class Post(models.Model):
     content = models.TextField()
     # the author has an ID where by authors can be disambiguated
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    categories = models.CharField(max_length=200, blank=True),
-
+    # categories = ArrayField(
+    #     models.CharField(max_length=200, blank=True),
+    #     size=200,
+    # )
+    categories = models.CharField(max_length=200, blank=True)
     count = models.IntegerField(default=0)
     size = models.IntegerField(default=0)
     comment_url = models.CharField(max_length=200, blank=True)
