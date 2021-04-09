@@ -19,10 +19,10 @@ IMAGE_UPLOAD_EXTENSIONS = getattr(
 # creating a form
 # Profile form, that can passing profile info
 class ProfileForm(forms.Form):
-    first_name = forms.CharField(max_length=200)
-    last_name = forms.CharField(max_length=200)
-    URL = forms.CharField(max_length=200)
-    GITHUB = forms.CharField(max_length=200)
+    display_name = forms.CharField(max_length=200)
+    # last_name = forms.CharField(max_length=200)
+    URL = forms.URLField(max_length=200)
+    GITHUB = forms.URLField(max_length=200)
     email = forms.CharField(max_length=200)
 
 

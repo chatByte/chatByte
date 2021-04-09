@@ -170,18 +170,19 @@ def getALLFriendRequests(usr_id):
         return None
 
 
-def updateProfile(id, first_name, last_name, email, url, github):
+def updateProfile(id, display_name, email, url, github):
     # Please authenticate before calling this method
     try:
         user = User.objects.get(pk=id)
-        profile = Profile.objects.get(pk=id)
+        profile = user.profile
+        # profile = Profile.objects.get(pk=id)
         # update element here
-        user.first_name = first_name
-        user.last_name = last_name
+        # user.first_name = first_name
+        # user.last_name = last_name
         user.email = email
         profile.url = url
         profile.github = github
-
+        profile.displayName = display_name
         user.save()
         profile.save()
         return True
