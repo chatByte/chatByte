@@ -9,6 +9,16 @@ from django.contrib.postgres.fields import ArrayField
 #     # for authorization only
 #     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
 #     USERNAME = models.CharField(max_length=50, unique=True)
+# class NewPost(models.Model):
+#     name = models.CharField(max_length=128)
+#     description = models.TextField(blank=True)
+#     lyrics = models.TextField(blank=True)
+
+#     def __str__(self):
+#         return self.name
+
+#     def get_absolute_url(self):
+#         return reverse('music:songs:detail', args=[str(self.id)])
 
 
 class Profile(models.Model):

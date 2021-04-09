@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
+from django.core.paginator import Paginator
+
 from .signals import host as host_server
 from rest_framework.parsers import JSONParser
 
@@ -16,14 +18,50 @@ import os
 import json
 from .remoteProxy import *
 
+from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
+
 
 
 """
 views.py receive request and create repose to client,
 Create your views here.
 """
+# =============================================================================
+
+from pagedown.forms import ImageUploadForm
 
 
+IMAGE_UPLOAD_PATH = getattr(
+    settings, 'PAGEDOWN_IMAGE_UPLOAD_PATH', 'pagedown-uploads')
+IMAGE_UPLOAD_UNIQUE = getattr(
+    settings, 'PAGEDOWN_IMAGE_UPLOAD_UNIQUE', False)
+IMAGE_UPLOAD_ENABLED = getattr(
+    settings, 'PAGEDOWN_IMAGE_UPLOAD_ENABLED', False)
+
+
+@login_required
+def image_upload_view(request):
+    if not request.method == 'POST':
+        raise PermissionDenied()
+
+    if not IMAGE_UPLOAD_ENABLED:
+        raise ImproperlyConfigured('Image upload is disabled')
+
+    form = ImageUploadForm(request.POST, request.FILES)
+    if form.is_valid():
+        image = request.FILES['image']
+        path_args = [IMAGE_UPLOAD_PATH, image.name]
+        if IMAGE_UPLOAD_UNIQUE:
+            path_args.insert(1, str(uuid.uuid4()))
+        path = os.path.join(*path_args)
+        path = default_storage.save(path, image)
+        url = default_storage.url(path)
+        return JsonResponse({'success': True, 'url': url})
+
+    return JsonResponse({'success': False, 'error': form.errors})
+# =============================================================================
 @login_required
 def start_homepage(request):
     if request.user.is_authenticated:
@@ -73,6 +111,7 @@ def my_stream(request, AUTHOR_ID):
     # a list of post, django.db.models.query.QuerySet
     mytimeline = cur_author.profile.timeline
 
+    # Get stream from: node origins, since we have plenty remote server
     for node in Node.objects.all():
         print("Get stream from: ", node.origin)
         print("Username: ", node.username, " password: ", node.password)
@@ -81,13 +120,13 @@ def my_stream(request, AUTHOR_ID):
             data = res.json()
             # print(data['posts'])
             for post in data['posts']:
-                print("Post id: ", post['id'])
+                # print("Post id: ", post['id'])
                 post_id = post['id']
                 try:
                     post_obj = Post.objects.get(id=post_id)
                 except Post.DoesNotExist:
                     author_dict = post['author']
-                    print("Author dict: ", author_dict)
+                    # print("Author dict: ", author_dict)
                     try:
                         author = Profile.objects.get(id=author_dict['id'])
                     except Profile.DoesNotExist:
@@ -97,7 +136,7 @@ def my_stream(request, AUTHOR_ID):
                     comments_dict = post['comments']
                     comments_list = list()
                     for comment in comments_dict:
-                        print("Comment: ", comment)
+                        # print("Comment: ", comment)
                         try:
                             comment_obj = Comment.objects.get(id=comment['id'])
                             comments_list.append(comment_obj)
@@ -116,19 +155,21 @@ def my_stream(request, AUTHOR_ID):
                                 comment_obj = comment_serializer.save(author=comm_author)
                                 print("Created comment obj: ", comment_obj)
                                 comments_list.append(comment_obj)
-                        
+
                     serializer = PostSerializer(data=post)
-                    print("here")
+                    # print("here")
                     # print(serializer)
                     if serializer.is_valid(raise_exception=True):
                         serializer.save(author=author) # comments=comments_list
                         post_obj = Post.objects.get(id=post_id)
                 # add stream post into public channel
                 mytimeline.add(post_obj)
-                print("Post object", post_obj)
+                # print("Post object", post_obj)
         except BaseException as e:
             print(e)
-        
+
+
+
     # a group of author, that i am currently following, django.db.models.query.QuerySet
     followings = cur_author.profile.followings.all()
 
@@ -137,7 +178,6 @@ def my_stream(request, AUTHOR_ID):
 
     for following_profile in followings:
 
-
         public_posts = following_profile.timeline.filter(visibility='public')
         public_channel_posts = public_channel_posts | public_posts
 
@@ -145,23 +185,50 @@ def my_stream(request, AUTHOR_ID):
     author_num_follwers = len(cur_author.profile.followers.items.all())
     friend_request_num = len(cur_author.profile.friend_requests.all())
     # order by date
-    public_channel_posts = public_channel_posts.order_by('published')
+    public_channel_posts = public_channel_posts.order_by('-published')
 
-    
-    
-    
+    # create a paginator
+    paginator_public_channel_posts = Paginator(public_channel_posts, 8) # Show 8 contacts per page.
+
+    # if  page_number == None, we will get first page(can be empty)
+    page_number = request.GET.get('page')
+
+
+    page_obj = paginator_public_channel_posts.get_page(page_number)
+
+
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
-        # 'timeline': mytimeline,
-
         'public_channel_posts': public_channel_posts,
+        'page_obj': page_obj,
         'author_num_follwers': author_num_follwers,
         'friend_request_num': friend_request_num
     }
 
 
-    response = render(request, "chat/stream.html", dynamic_contain)
-    return response
+    if request.method == "GET":
+        response = render(request, "chat/stream.html", dynamic_contain)
+        return response
+
+    elif request.method == "POST":
+
+        request_post = request.POST
+        # Front end need to tell me the type
+        print("_________________________________________________________")
+        print(type(request_post))
+
+
+        # source = request.user.profile.id # Who share it to me
+        # origin = host_server # who origin create
+        # title = request_post.get("title", "")
+        # description = request_post.get("description", "")
+        # content_type = request_post.get("contentType", "")
+        # visibility = request_post.get("visibility", "")
+
+        testing_response = render(request, "chat/stream.html", dynamic_contain)
+        return testing_response
+
+
 
 
 """
@@ -219,7 +286,6 @@ Generate response at feed page ,
 def posts(request, AUTHOR_ID):
     """
     so far, only support text-only post and post with img and caption
-    Prob: 1. createPost return error!
     """
     cur_user_name = None
     if request.user.is_authenticated:
@@ -227,23 +293,35 @@ def posts(request, AUTHOR_ID):
     cur_author = request.user.profile
     alltimeline = cur_author.timeline.all()
     #getTimeline(cur_user_name), by SQL query
-    mytimeline = alltimeline.filter(author=cur_author).order_by('published')
+    mytimeline = alltimeline.filter(author=cur_author).order_by('-published')
+
+    
+    # create a paginator
+    paginator_mytimeline = Paginator(mytimeline, 8) # Show 8 contacts per page.
+
+    # if  page_number == None, we will get first page(can be empty)
+    page_number = request.GET.get('page')
+
+
+    page_obj = paginator_mytimeline.get_page(page_number)
+
 
     author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(cur_author.friend_requests.all())
+
+
 
     dynamic_contain = {
         'fullName':'Ritsu Onodera',
         'author_num_follwers': author_num_follwers,
         'test_name': cur_user_name,
         'myName' : cur_author.displayName,
-        'timeline': mytimeline,
+        'page_obj' : page_obj,
         'friend_request_num': friend_request_num,
 
     }
 
     # Get the current pages' author
-
     if request.method == "GET":
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
@@ -251,7 +329,6 @@ def posts(request, AUTHOR_ID):
     elif request.method == "POST":
 
         request_post = request.POST
-
         source = request.user.profile.id # Who share it to me
         origin = host_server # who origin create
         title = request_post.get("title", "")
@@ -448,12 +525,12 @@ def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 @require_http_methods(["GET"])
 @login_required
 def get_user(request,SERVER,AUTHOR_ID):
-    # get 
+    # get
     print("---------------------------Getting user ---------------")
     try:
         server = User.objects.get(username=SERVER)
         foreign_server = server.last_name
-        user_id = foreign_server + "author/"+ AUTHOR_ID 
+        user_id = foreign_server + "author/"+ AUTHOR_ID
         profile = Profile.objects.get(id=user_id)
         type = profile.type
         id = profile.id
@@ -529,12 +606,8 @@ def search(request, AUTHOR_ID):
         serializer = ProfileSerializer(target)
 
         numberID_target = target_id.split("/")[-1]
-
-        # 127.0.0.1:8000/author/1/my_stream/2
-        # ID
-        #http://127.0.0.1:8000/author/2
         server_name = user.username
-        #response = redirect("../my_stream/" + server_name +"/" + numberID_target + "/")
+
 
         # return response
         redirect_url = "../my_stream/" + server_name +"/" + numberID_target + "/"
@@ -549,11 +622,11 @@ def search(request, AUTHOR_ID):
 
         if response.status_code == 200:
             foreign_author = response.json()
-            # foreign_author = {'type': 'author', 
-            #                 'id': 'http://127.0.0.1:5000/author/10', 
-            #                 'host': 'http://127.0.0.1:5000/author/10', 
-            #                 'displayName': 'Jonathan', 
-            #                 'url': 'http://127.0.0.1:5000/author/10', 
+            # foreign_author = {'type': 'author',
+            #                 'id': 'http://127.0.0.1:5000/author/10',
+            #                 'host': 'http://127.0.0.1:5000/author/10',
+            #                 'displayName': 'Jonathan',
+            #                 'url': 'http://127.0.0.1:5000/author/10',
             #                 'github': 'http://127.0.0.1:5000/author/10'}
             serializer = ProfileSerializer(data=foreign_author)
             if serializer.is_valid(raise_exception=True):
@@ -578,7 +651,7 @@ def following(request, AUTHOR_ID, SERVER, FOREIGN_ID):
     profile = Profile.objects.get(id=AUTHOR_ID)
     profile.followings.add(foreigner)
     profile.save()
-    return JsonResponse({}, status=204) 
+    return JsonResponse({}, status=204)
 
 
 '''

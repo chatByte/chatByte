@@ -356,6 +356,7 @@ def getUser(usr_id):
         return None
 
 def likePost(post_id, author_id):
+
     try:
         user_profile = Profile.objects.get(id=author_id)
         new_like = Like.objects.create(author=user_profile, object=post_id)
@@ -372,5 +373,3 @@ def likePost(post_id, author_id):
         return None 
         
     # TODO: check if remote
-
-    
