@@ -135,7 +135,6 @@ def my_stream(request, AUTHOR_ID):
 
 
 
-
         
     # a group of author, that i am currently following, django.db.models.query.QuerySet
     followings = cur_author.profile.followings.all()
@@ -144,7 +143,6 @@ def my_stream(request, AUTHOR_ID):
     public_channel_posts = mytimeline.all()
 
     for following_profile in followings:
-
 
         public_posts = following_profile.timeline.filter(visibility='public')
         public_channel_posts = public_channel_posts | public_posts
@@ -174,8 +172,29 @@ def my_stream(request, AUTHOR_ID):
     }
 
 
-    response = render(request, "chat/stream.html", dynamic_contain)
-    return response
+    if request.method == "GET":
+        response = render(request, "chat/stream.html", dynamic_contain)
+        return response
+
+    elif request.method == "POST":
+
+        request_post = request.POST
+        # Front end need to tell me the type
+        print("_________________________________________________________")
+        print(type(request_post))
+
+
+        # source = request.user.profile.id # Who share it to me
+        # origin = host_server # who origin create
+        # title = request_post.get("title", "")
+        # description = request_post.get("description", "")
+        # content_type = request_post.get("contentType", "")
+        # visibility = request_post.get("visibility", "")
+
+        testing_response = render(request, "chat/stream.html", dynamic_contain)
+        return testing_response
+
+
 
 
 """
@@ -270,7 +289,6 @@ def posts(request, AUTHOR_ID):
     }
 
     # Get the current pages' author
-
     if request.method == "GET":
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
@@ -278,7 +296,6 @@ def posts(request, AUTHOR_ID):
     elif request.method == "POST":
 
         request_post = request.POST
-
         source = request.user.profile.id # Who share it to me
         origin = host_server # who origin create
         title = request_post.get("title", "")
