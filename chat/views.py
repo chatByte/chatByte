@@ -382,7 +382,7 @@ def posts(request, AUTHOR_ID):
 
         request_post = request.POST
         source = request.user.profile.id # Who share it to me
-        origin = host_server # who origin create
+        origin = request.user.profile.id # who origin create
         title = request_post.get("title", "")
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
@@ -433,8 +433,10 @@ def profile(request, AUTHOR_ID):
     # form.fields['last_name'].initial = profile.displayName
     context = {}
     context['form']= form
+    inbox = request.user.inbox
 
-    friend_request_num = len(profile.friend_requests.all())
+    friend_request_num = len(inbox.friend_requests.all())
+    print(friend_request_num)
 
     context['friend_request_num']=friend_request_num
 
@@ -709,6 +711,80 @@ def following(request, AUTHOR_ID, SERVER, FOREIGN_ID):
     profile.save()
     return JsonResponse({}, status=204)
 
+'''
+decide to accept a friend request or not
+'''
+@login_required
+@require_http_methods(["POST"])
+def make_friend(request, AUTHOR_ID):
+    data = JSONParser().parse(request)
+    request_id = data['request_id']
+    if data['decision'] == "accept":
+        try:
+            friend_request = FriendRequest.objects.get(id=request_id)
+            FriendRequest.objects.get(id=request_id).delete()
+        except:
+            return JsonResponse({}, status=400)
+        new_friend = friend_request.actor
+        request.user.profile.friends.add(new_friend)
+        return JsonResponse({"accept": "true"}, status=200)
+
+    elif data['decision'] == "reject":
+        try:
+            friend_request = FriendRequest.objects.get(id=request_id)
+            FriendRequest.objects.get(id=request_id).delete()
+            return JsonResponse({"reject": "true"}, status=200)
+        except:
+            return JsonResponse({}, status=400)
+
+'''
+delete a friend
+'''
+@login_required
+@require_http_methods(["POST"])
+def unbefriend(request, AUTHOR_ID):
+    data = JSONParser().parse(request)
+    friend_id = data['friend_id']
+    try:
+        old_friend = Profile.objects.get(id=friend_id)
+        user = request.user
+        user.profile.friends.remove(old_friend)
+        user.save()
+        return JsonResponse({"unbefriend": "true"}, status=200)
+    except:
+        return JsonResponse({}, status=400)
+
+
+'''
+reshare a post
+'''
+@login_required
+@require_http_methods(["POST"])
+def reshare(request, AUTHOR_ID):
+    data = JSONParser().parse(request)
+    post_id = data['post_id']
+    #try:
+    post = Post.objects.get(id=post_id)
+
+    source = request.user.profile.id
+    origin = post.origin # who origin create
+    title = post.title
+    description = post.description
+    content_type = post.contentType
+    visibility = post.visibility
+    categories = post.categories
+    content = post.content
+    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
+    if createFlag:
+        response = JsonResponse({"reshare": "true"}, status=200)
+        return response
+    else:
+        response = JsonResponse({"reshare": "false"}, status=400)
+    # response = render(request, "chat/posts.html", dynamic_contain)
+    return response
+    # except:
+    #     return JsonResponse({}, status=400)
+    
 
 '''
 Below is the dead code, or previous version, keep it , incase need that in the future
