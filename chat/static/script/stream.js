@@ -89,47 +89,6 @@ function likePost(post_id, liked) {
   });
 }
 
-function createComment(post_id) {
-  // make a comment
-  console.log("here");
-    
-  var csrftoken = getCookie('csrftoken');
-
-  var description = document.getElementById("description").value;
-  console.log("Comment description: ", description);
-
-  // var post_id = $(this).closest('.post-content').attr('id');
-  console.log("post id: ", post_id)
-
-  var data = {type: "comment",
-              comment: description,
-              post_id: post_id,
-              content_type: contentType
-              }
-  // console.log(window.location.origin+'/author/'+ new_url[5].toString() +'/inbox/')
-  $.ajax({
-    // author/<str:AUTHOR_ID>/inbox/
-    type: "POST", // http method
-    url:window.location.origin+'/author/'+ new_url[4].toString() +'/my_stream/',
-    // header
-    headers: {"X-Server": x_server},
-    beforeSend: function(xhr) {
-      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-    },
-    contentType: 'application/json; charset=utf-8',
-    dataType: "json",
-    headers:{
-                  "X-CSRFToken": csrftoken,
-              },
-    data: JSON.stringify(data),
-    // handle a successful response
-    success : function(data) {
-        console.log(data); // sanity check
-    },
-  });
-
-}
-
 
 jQuery(document).ready(function($) {
   const csrftoken = getCookie('csrftoken');
@@ -193,5 +152,47 @@ jQuery(document).ready(function($) {
       },
     });
 
+  });
+
+  // create a new comment
+  $('.submitComment').click(function(e){
+    console.log("here");
+
+
+    
+    var csrftoken = getCookie('csrftoken');
+
+    var description = document.getElementById("description").value;
+    console.log("Comment description: ", description);
+
+    var post_id = $(this).attr('id');
+    console.log("post id: ", post_id)
+
+    var data = {type: "comment",
+                comment: description,
+                post_id: post_id,
+                content_type: contentType
+                }
+    // console.log(window.location.origin+'/author/'+ new_url[5].toString() +'/inbox/')
+    $.ajax({
+      // author/<str:AUTHOR_ID>/inbox/
+      type: "POST", // http method
+      url:window.location.origin+'/author/'+ new_url[4].toString() +'/my_stream/',
+      // header
+      headers: {"X-Server": x_server},
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      },
+      contentType: 'application/json; charset=utf-8',
+      dataType: "json",
+      headers:{
+                    "X-CSRFToken": csrftoken,
+                },
+      data: JSON.stringify(data),
+      // handle a successful response
+      success : function(data) {
+          console.log(data); // sanity check
+      },
+    });
   });
 });
