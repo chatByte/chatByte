@@ -165,7 +165,7 @@ jQuery(document).ready(function($) {
                 },
       // handle a successful response
       success : function(data) {
-          console.log(data); // sanity check
+          console.log(data); // sanity check\
       },
     });
 
@@ -214,6 +214,7 @@ jQuery(document).ready(function($) {
       // handle a successful response
       success : function(data) {
           console.log(data); // sanity check
+          window.location.reload();
       },
     });
   });
