@@ -10,7 +10,7 @@ var x_server = window.location.origin;
 var url = window.location.href;
 
 var new_url = url.split('/');
-
+var comment_post_id = "";
 
 
 
@@ -41,6 +41,23 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+
+// display selected local image
+function readImg(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+        $('#uploadImg')
+            .attr('src', e.target.result)
+            .width(360)
+            .height(400);
+    };
+
+      reader.readAsDataURL(input.files[0]);
+  }
 }
 
 function likePost(post_id, liked) {
@@ -155,22 +172,27 @@ jQuery(document).ready(function($) {
   });
 
   // create a new comment
+  $('.postBtn').click(function(e){
+    console.log("making comment...");
+    comment_post_id = $(this).attr('id');
+    console.log("current comment post id: ", comment_post_id)
+  });
+
+  // create a new comment
   $('.submitComment').click(function(e){
     console.log("here");
-
-
     
     var csrftoken = getCookie('csrftoken');
 
     var description = document.getElementById("description").value;
     console.log("Comment description: ", description);
 
-    var post_id = $(this).attr('id');
-    console.log("post id: ", post_id)
+    // var post_id = $(this).attr('id');
+    console.log("post id: ", comment_post_id)
 
     var data = {type: "comment",
                 comment: description,
-                post_id: post_id,
+                post_id: comment_post_id,
                 content_type: contentType
                 }
     // console.log(window.location.origin+'/author/'+ new_url[5].toString() +'/inbox/')
