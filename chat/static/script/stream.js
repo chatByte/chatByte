@@ -76,17 +76,15 @@ function editButton(title, description) {
 
 }
 
-
-jQuery(document).ready(function($) {
-  const csrftoken = getCookie('csrftoken');
-
+function likePost(post_id, liked) {
   // like a post
   $('body').on('click', '.like', function(){
     // alert("liked")
     
     var csrftoken = getCookie('csrftoken');
 
-    var post_id = $(this).closest('.post-content').attr('id');
+    // var post_id = $(this).closest('.post-content').attr('id');
+    console.log("post id: ", post_id)
 
     var data = {type: "like",
                 object_type: "post",
@@ -109,15 +107,14 @@ jQuery(document).ready(function($) {
       dataType: "json",
       headers:{
                     "X-CSRFToken": csrftoken,
-                    "Origin": window.location.origin
                 },
       data: JSON.stringify(data),
       // handle a successful response
       success : function(data) {
           console.log(data); // sanity check
           var like_num = $(this).parent('a').text();
-          if(!like_num) {
-            $(this).text(1);
+          if(liked) {
+            $(this).text(parseInt(like_num) - 1);
           } else {
             $(this).text(parseInt(like_num) + 1);
           }
@@ -125,6 +122,13 @@ jQuery(document).ready(function($) {
     });
 
   });
+}
+
+
+jQuery(document).ready(function($) {
+  const csrftoken = getCookie('csrftoken');
+
+  
 
 
   //like a comment
