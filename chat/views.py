@@ -324,39 +324,50 @@ def posts(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
-    cur_author = request.user.profile
-    alltimeline = cur_author.timeline.all()
-    #getTimeline(cur_user_name), by SQL query
-    mytimeline = alltimeline.filter(author=cur_author).order_by('-published')
 
-    
-    # create a paginator
-    paginator_mytimeline = Paginator(mytimeline, 8) # Show 8 contacts per page.
-
-    # if  page_number == None, we will get first page(can be empty)
-    page_number = request.GET.get('page')
-
-
-    page_obj = paginator_mytimeline.get_page(page_number)
-
-
-    author_num_follwers = len(cur_author.followers.items.all())
-    friend_request_num = len(cur_author.friend_requests.all())
-
-
-
-    dynamic_contain = {
-        'fullName':'Ritsu Onodera',
-        'author_num_follwers': author_num_follwers,
-        'test_name': cur_user_name,
-        'myName' : cur_author.displayName,
-        'page_obj' : page_obj,
-        'friend_request_num': friend_request_num,
-
-    }
 
     # Get the current pages' author
     if request.method == "GET":
+
+        cur_author = request.user.profile
+        alltimeline = cur_author.timeline.all()
+        #getTimeline(cur_user_name), by SQL query
+        mytimeline = alltimeline.filter(author=cur_author).order_by('-published')
+
+        
+        # create a paginator
+        paginator_mytimeline = Paginator(mytimeline, 8) # Show 8 contacts per page.
+
+        # if  page_number == None, we will get first page(can be empty)
+        page_number = request.GET.get('page')
+
+
+        page_obj = paginator_mytimeline.get_page(page_number)
+
+
+        author_num_follwers = len(cur_author.followers.items.all())
+        friend_request_num = len(cur_author.friend_requests.all())
+
+
+
+        dynamic_contain = {
+            'fullName':'Ritsu Onodera',
+            'author_num_follwers': author_num_follwers,
+            'test_name': cur_user_name,
+            'myName' : cur_author.displayName,
+            'page_obj' : page_obj,
+            'friend_request_num': friend_request_num,
+
+        }
+
+
+
+
+
+
+
+
+
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
@@ -390,8 +401,9 @@ def posts(request, AUTHOR_ID):
             return response
         else:
             print("server feels sad ", description)
-
-        response = render(request, "chat/posts.html", dynamic_contain)
+            # expect front end redirect
+            response = JsonResponse({}, status=500)
+        # response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
 
