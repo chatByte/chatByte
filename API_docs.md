@@ -830,14 +830,14 @@ Response:
 ```
 
 
-### **Likes API (testing)**
+### **Likes API **
 #### `Like Object format`
 ```
 {
      "@context": "https://www.w3.org/ns/activitystreams",
      "summary": "Lara Croft Likes your post",         
      "type": "Like",
-     "author":{
+     "author": {
          "type":"author",
           "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
          "host":"http://127.0.0.1:8000/",
@@ -847,6 +847,7 @@ Response:
      },
      "object":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/764efa883dda1e11db47671c4a3bbd9e"
 }
+
 ```
 #### `GET`
 <i>Get Likes for a Post</i>
@@ -856,7 +857,8 @@ URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}/likes
 ```
 Response (200):
 {
-    "likes": [
+    "type": "likes",
+    "items": [
         {
             "type": "like",
             "id": "530c2845-8bfb-40d0-bf2f-932698ca19b9",
@@ -932,25 +934,26 @@ Depending on which is sent, a corresponding like will be created.
 
 
 
-### **Liked API (In Progress) **
+### **Liked API **
 #### `Liked Object format`
 ```
 {
-    "type":"liked",
-    "items":[
+    "type": "liked",
+    "items": [
         {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "summary": "Lara Croft Likes your post",         
-            "type": "Like",
-            "author":{
-                "type":"author",
-                   "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-                "host":"http://127.0.0.1:8000/",
-                "displayName":"Lara Croft",
-                "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
-                "github":"http://github.com/laracroft"
+            "type": "like",
+            "id": "f716dbb1-43bb-4bfe-9804-2a68c13cf32e",
+            "summary": "Like",
+            "author": {
+                "type": "author",
+                "id": "https://app-chatbyte.herokuapp.com/author/1",
+                "host": "https://app-chatbyte.herokuapp.com/",
+                "displayName": "test",
+                "url": "https://app-chatbyte.herokuapp.com/author/1",
+                "github": "https://app-chatbyte.herokuapp.com/author/1"
             },
-            "object":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/764efa883dda1e11db47671c4a3bbd9e"
+            "object": "Like",
+            "context": "Like"
         }
     ]
 }
@@ -958,6 +961,6 @@ Depending on which is sent, a corresponding like will be created.
 #### `GET`
 <i>Get Liked for an author</i>
 ```
-URL: //service/author/{AUTHOR_ID}/liked
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/liked
 ```
 
