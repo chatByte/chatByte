@@ -55,9 +55,12 @@
               <li class="dropdown" id="myInbox">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
-                  {% for friend_requests in user.profile.friend_requests.all %}
+                  <!-- {% for friend_requests in user.profile.friend_requests.all %}
                     <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
-                  {% endfor %}
+                  {% endfor %} -->
+                  {% for friend_request in user.inbox.friend_requests.all %}
+                    <li><a >{{friend_request.summary}}</a><button class="accept" onclick="accept_or_reject('accept', '{{friend_request.id}}')">Accept</button><button class="reject" onclick="accept_or_reject('reject', '{{friend_request.id}}')">Reject</button></li>
+                  {% endfor %}  
                 </ul>
               </li>
 
@@ -96,8 +99,7 @@
               </div>
               <div class="col-md-9">
                 <ul class="list-inline profile-menu">
-                  <li><a href="" class="active">Her Timeline</a></li>
-                  <li><a href="">Her Friends</a></li>
+                  <li><a href="" class="active">Her Posts</a></li>
                   {% if isFriend %}
                     <li><button class="btn-primary unfriend" href="../../friends/delete/{{foreignId}}/">Unfriend</button></li>
                   {% else %}
@@ -150,8 +152,10 @@
                   <div class="post-container">
                     <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
+                      <h5>Source: <a href="{{cur_post.source}}">{{cur_post.source}}</a> </h5>
+                      <h5>Origin: <a href="{{cur_post.origin}}">{{cur_post.origin}}</a> </h5>
                       <div class="user-info">
-                        <h5><a href="" class="profile-link" id="fullName">{{cur_post.origin}}</a> </h5>
+                        <h5><a href="" class="profile-link" id="fullName">{{cur_post.author.displayName}}</a> </h5>
                         <p class="text-grey post_date" >{{cur_post.published}} </p>
 
                         <p class="text-muted">{{cur_post.categories}}</p>
@@ -185,7 +189,7 @@
 
                       <div class="reaction-img">
                         <a class="btn text-red"><i class="icon ion-ios-heart"></i>{{ cur_post.likes | length }}</a>
-                        <a class="btn text-green"><i class="icon ion-share"></i></a>
+                        <a class="btn text-green" onclick="reshare('{{cur_post.id}}')"><i class="icon ion-share"></i></a>
                       </div>
 
                       <hr class="solid">
