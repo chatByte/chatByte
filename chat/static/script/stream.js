@@ -11,42 +11,6 @@ var url = window.location.href;
 
 var new_url = url.split('/');
 
-function search(){
-  var input = document.getElementById("search_user_input");
-  var id = input.value;
-  var host = id.split("/");
-  var host_name = host[0]+"//"+host[2]+"/";
-
-
-$.ajax({
-        url : "../search/", // the endpoint
-        type : "POST", // http method
-        dataType: 'json', // what to expect back from the server
-        cache: false,
-        headers: {"X-Server": host_name},
-        contentType: "application/json",
-        processData: false,
-        beforeSend: function(xhr) {
-          console.log("why");
-          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-          xhr.setRequestHeader("X-Request-User", id);
-        },
-        data: JSON.stringify({"url": id}),
-
-
-        // handle a successful response
-        success: function(json) {
-            console.log("success"); // sanity check
-            console.log("haha");
-            console.log(json);
-            var url = json["url"];
-
-
-            window.location.replace(url);
-        },
-      });
-
-}
 
 
 
@@ -79,210 +43,130 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function deletePost(id){
-  console.log(id);
-  var post_id = id.split("posts/")[1]
-  console.log("Post id: ", post_id)
-  var url = "../posts/"+post_id+"/";
-  console.log(url);
-  var csrftoken = getCookie('csrftoken');
-  console.log(csrftoken);
-  var x_server = id.split("author")[0]
 
-  $.ajax({
-        url : url, // the endpoint
-        type : "DELETE", // http method
-        dataType: 'text', // what to expect back from the server
-        cache: false,
-        headers: {"X-Server": x_server},
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-          xhr.setRequestHeader("X-Request-User", id);
-        },
-        contentType: false,
-        processData: false,
+function editButton(title, description) {
+  $('body').on('click', 'a.editBtn', function(e) {
+    e.preventDefault();
 
-        data: {},
+    var content_holder = $(this).closest('.post-detail').find('p')
 
-        // handle a successful response
-        success : function(json) {
-            console.log("success"); // sanity check
-            location.reload();
-        },
-      });
+    content_holder.attr("style", "display: none");
+    // var div_content = $('div .form-group-col').html();
+    var div_content = $('div .form-group-col').clone();
+    var find_element = div_content.find('#title');
+    var find_description = div_content.find('#description');
+    // console.log(find_element);
+    find_element.attr("id", "editTitle");
+    find_element.text(title);
+
+    find_description.attr("id", "editDescription");
+    find_description.text(description);
+
+    // console.log(find_element);
+    var new_div = $(this).closest('.post-detail').find('div .editText')
+    new_div.attr("style", "display: block");
+    new_div.html(div_content.html());
+
+
+    // show submit btn, hide edit btn
+    $(this).attr("style", "display: none");
+    $(this).closest('div .edit').find('.submitBtn').attr("style", "display: block");
+
+  });
+
 }
 
 
+jQuery(document).ready(function($) {
+  const csrftoken = getCookie('csrftoken');
 
-// display selected local image
-function readImg(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
+  // like a post
+  $('body').on('click', '.like', function(){
+    // alert("liked")
+    
+    var csrftoken = getCookie('csrftoken');
 
-      reader.onload = function (e) {
-          $('#uploadImg')
-              .attr('src', e.target.result)
-              .width(360)
-              .height(400);
-      };
+    var post_id = $(this).closest('.post-content').attr('id');
 
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-
-
-    // deal with submit edit button
-    // submit form data
-function editPost(POST_ID) {
-      var id = POST_ID.split('/posts/')[1];
-      console.log('' + POST_ID)
-      title = $('#editTitle').val();
-      description = $('#editDescription').val();
-      console.log("title = ", title);
-      console.log("des = ", description);
-      var x_server = window.location.origin
-      var csrftoken = getCookie('csrftoken');
-
-      // handle file upload
-      // file is stored as form data
-      if (contentType == "image"){
-        var file_data = $('#imageFile').prop('files')[0];
-        form_data.append('file', file_data);
-      }
-
-      form_data.append("contentType", contentType);
-      form_data.append("visibility", visibility);
-      form_data.append("title", title);
-      form_data.append("description", description);
-      form_data.append("csrfmiddlewaretoken", csrftoken);
-
-      $.ajax({
-        // url : ".", // the endpoint
-        url:"./" + id + "/edit/",
-        // header
-        headers: {"X-Server": x_server},
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-        },
-        type : "POST", // http method
-        dataType: 'text', // what to expect back from the server
-        cache: false,
-        contentType: false,
-        processData: false,
-        data: form_data,
-
-        // handle a successful response
-        success : function(json) {
-            console.log("success"); // sanity check
-            window.location.reload();
-        },
-      });
-    }
-
-    function editButton(title, description) {
-      $('body').on('click', 'a.editBtn', function(e) {
-        e.preventDefault();
-
-        var content_holder = $(this).closest('.post-detail').find('p')
-
-        content_holder.attr("style", "display: none");
-        // var div_content = $('div .form-group-col').html();
-        var div_content = $('div .form-group-col').clone();
-        var find_element = div_content.find('#title');
-        var find_description = div_content.find('#description');
-        // console.log(find_element);
-        find_element.attr("id", "editTitle");
-        find_element.text(title);
-
-        find_description.attr("id", "editDescription");
-        find_description.text(description);
-
-        // console.log(find_element);
-        var new_div = $(this).closest('.post-detail').find('div .editText')
-        new_div.attr("style", "display: block");
-        new_div.html(div_content.html());
-
-
-        // show submit btn, hide edit btn
-        $(this).attr("style", "display: none");
-        $(this).closest('div .edit').find('.submitBtn').attr("style", "display: block");
-
-      });
-
-    }
-
-
-
-// ===========================
-
-$( document ).ready(function() {
-
-    // get csrftoken, used in AJAX Request
-    const csrftoken = getCookie('csrftoken');
-    console.log("csrftoken = ", csrftoken);
-
-
-    // deal with 2 dropdown lists: visibility and contentType
-    $('div.dropdown-content a').click(function(e)
-      {
-       var id = $(this).attr("id")
-       var icon = $(this).find("i").attr("class");
-       console.log(icon);
-       if (id == "public" || id == "private" || id == "friend"){
-         $("#visibility").find('i').attr("class", icon);
-         visibility = id;
-       } else {
-         $("#contentType").find('i').attr("class", icon);
-         contentType = id;
-         // handle upload button
-         if (id == "image"){
-           $("#imageFile").attr("style", "display: block");
-         } else {
-           $("#imageFile").attr("style", "display: none");
-
-         }
-       }
+    var data = {type: "like",
+                object_type: "post",
+                object_id: post_id,
+                csrfmiddlewaretoken: csrftoken
+                // summary:"someone liked someone's post"
+                // context:
+                }
+    // console.log(window.location.origin+'/author/'+ new_url[5].toString() +'/inbox/')
+    $.ajax({
+      // author/<str:AUTHOR_ID>/inbox/
+      type: "POST", // http method
+      url:window.location.origin+'/author/'+ new_url[4].toString() +'/my_stream/',
+      // header
+      headers: {"X-Server": x_server},
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      },
+      contentType: 'application/json; charset=utf-8',
+      dataType: "json",
+      headers:{
+                    "X-CSRFToken": csrftoken,
+                    "Origin": window.location.origin
+                },
+      data: JSON.stringify(data),
+      // handle a successful response
+      success : function(data) {
+          console.log(data); // sanity check
+          var like_num = $(this).parent('a').text();
+          if(!like_num) {
+            $(this).text(1);
+          } else {
+            $(this).text(parseInt(like_num) + 1);
+          }
+      },
     });
 
-    // REQUEST POST: make_post
-    // create a new comments
-    $('#submitComment').click(function(e){
-      console.log(e);
+  });
 
-      title = $('#title').val();
-      description = $('#description').val();
-      console.log("title = ", title);
 
-      // handle file upload
-      // file is stored as form data
-      if (contentType == "image"){
-        var file_data = $('#imageFile').prop('files')[0];
-        form_data.append('file', file_data);
-      }
-      form_data.append("type", "comment");
-      form_data.append("contentType", contentType);
-      form_data.append("visibility", visibility);
-      form_data.append("title", title);
-      form_data.append("description", description);
-      form_data.append("csrfmiddlewaretoken", csrftoken);
+  //like a comment
+  $('body').on('click', '.comment-like', function(){
+    var like_num = $(this).parent('a').text();
+    if(!like_num) {
+      $(this).text(1);
+    } else {
+      $(this).text(parseInt(like_num) + 1);
+    }
 
-      console.log( x_server + "/author/" + new_url[4].toString() + '/my_posts/');
-      $.ajax({
-        url : x_server + "/author/" + new_url[4].toString() + '/my_posts/', // the endpoint
-        type : "POST", // http method
-        dataType: 'text', // what to expect back from the server
-        cache: false,
-        contentType: false,
-        processData: false,
-        data: form_data,
+    var comment_id = $(this).closest('.post-comment').attr('id');
 
-        // handle a successful response
-        success : function(json) {
-            console.log("success"); // sanity check
-            window.location.reload();
-        },
-      });
+    var data = {type: "like",
+                object: comment_id,
+                csrfmiddlewaretoken: csrftoken,
+                // summary:"someone liked someone's post"
+                // context:
+                }
+
+    $.ajax({
+      // author/<str:AUTHOR_ID>/inbox/
+      url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
+      type: "POST", // http method
+      // header
+      headers: {"X-SERVER": x_server},
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      },
+      contentType: 'application/json; charset=utf-8',
+      dataType: "json",
+      data: {type: "Like",
+                  object: comment_id,
+                  csrfmiddlewaretoken: csrftoken,
+                  // summary:"someone liked someone's post"
+                  // context:
+                },
+      // handle a successful response
+      success : function(data) {
+          console.log(data); // sanity check
+      },
     });
 
+  });
 });
