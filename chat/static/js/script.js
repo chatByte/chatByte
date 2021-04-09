@@ -45,41 +45,41 @@ $(window).on('load', function() {
 });
 
 // check if new friend request
-function ifFriendRequest(){
-  var x_server = window.location.origin
-  $.ajax({
-    url : url_header + "ifFriendRequest/", // the endpoint
-    // header
-    headers: {"X-Server": x_server},
-    beforeSend: function(xhr) {
-      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-    },
-    type : "GET", // http method
-    contentType: false,
-    processData: false,
-    // handle a successful response
-    success : function(data) {
-        if (data == undefined) {
-          return true
-        } else {
-          // console.log(data); // sanity check
-          // request_id_list.includes(data.id) == false
-          if ($("#"+data.id).length == 0) {
-            $("#myInbox ul").append('<li><a href="" id='+data.id+'>'+data.friend + ' has sent you a friend request!</a><button>Accept</button><button>Reject</button></li>');
-            request_id_list.push(data.id);
+// function ifFriendRequest(){
+//   var x_server = window.location.origin
+//   $.ajax({
+//     url : url_header + "ifFriendRequest/", // the endpoint
+//     // header
+//     headers: {"X-Server": x_server},
+//     beforeSend: function(xhr) {
+//       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+//     },
+//     type : "GET", // http method
+//     contentType: false,
+//     processData: false,
+//     // handle a successful response
+//     success : function(data) {
+//         if (data == undefined) {
+//           return true
+//         } else {
+//           // console.log(data); // sanity check
+//           // request_id_list.includes(data.id) == false
+//           if ($("#"+data.id).length == 0) {
+//             // $("#myInbox ul").append('<li><a href="" id='+data.id+'>'+data.friend + ' has sent you a friend request!</a><button>Accept</button><button>Reject</button></li>');
+//             // request_id_list.push(data.id);
 
-            var inbox_num = $(".badge").text();
-            console.log(inbox_num)
-            if(!inbox_num) {
-              $(".badge").text(1);
-            } else {
-              $(".badge").text(parseInt(inbox_num) + 1);
-            }
-          };
-        }
-    },
-  });
-}
+//             var inbox_num = $(".badge").text();
+//             console.log(inbox_num)
+//             if(!inbox_num) {
+//               $(".badge").text(1);
+//             } else {
+//               $(".badge").text(parseInt(inbox_num) + 1);
+//             }
+//           };
+//         }
+//     },
+//   });
+// }
 
 
 // create a following, add foreigner to be my followings
@@ -605,6 +605,6 @@ jQuery(document).ready(function($) {
 
   // });
 
-  setInterval(ifFriendRequest, 5000);
+  // setInterval(ifFriendRequest, 5000);
 
 });
