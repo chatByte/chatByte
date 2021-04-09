@@ -33,7 +33,7 @@
           <!-- Brand and toggle get grouped for better mobile display -->
           <!-- left most logo -->
           <div class="navbar-header">
-            <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
+            <!-- <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a> -->
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -85,7 +85,7 @@
             <div class="row">
               <div class="col-md-3">
                 <div class="profile-info">
-                  <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="img-responsive profile-photo" />
+                  <img src="{% static 'images/user.png' %}" alt="" class="img-responsive profile-photo" />
 
                   <h3 id="myName"> {{user.profile.displayName}} </h3>
                   <p class="text-muted"> {{author_num_follwers}} people is following him</p>
@@ -148,9 +148,8 @@
                   {% load filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
-                  <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
                   <div class="post-container">
-                    <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
+                    <img src="{% static 'images/user.png' %}" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
                       <h5>Source: <a href="{{cur_post.source}}">{{cur_post.source}}</a> </h5>
                       <h5>Origin: <a href="{{cur_post.origin}}">{{cur_post.origin}}</a> </h5>
@@ -162,7 +161,7 @@
                       </div>
                       <hr class="solid">
                       <div class="post-text">
-                        
+
                         <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">
                           {{ cur_post.title}}
                         </p>
@@ -193,8 +192,8 @@
                   {% for comment in cur_post.comments.all %}
                             <div class="post-comment">
                               <div>
-                              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                              <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a> 
+                              <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
+                              <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a>
                               </div>
 
                               {% if 'plain' in comment.contentType %}
@@ -207,7 +206,7 @@
                               </p>
                               {% endif %}
                             </div>
-                            <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
+<!--                             <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a> -->
                   {% endfor %}
                   <!--                      end -->
 
@@ -216,7 +215,7 @@
                       <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
                     <a href="" class="profile-link">{{user.profile.displayName}} </a>
                     </div> -->
-                    
+
                     <button class="btn btn-primary postBtn" id="{{cur_post.id}}" data-toggle="modal" data-target="#exampleModal">Comment</button>
 
                     <!-- Modal -->
@@ -273,7 +272,7 @@
                 </div>
 
               {% endfor %}
-              
+
               <!-- Pagenation -->
               <div class="pagination">
                 <span class="step-links">

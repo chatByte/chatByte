@@ -251,7 +251,7 @@ function editPost(POST_ID) {
       $('body').on('click', 'a.editBtn', function(e) {
         e.preventDefault();
 
-        var content_holder = $(this).closest('.post-detail').find('p')
+        var content_holder = $(this).closest('.post-detail').find('p');
 
         content_holder.attr("style", "display: none");
         // var div_content = $('div .form-group-col').html();
