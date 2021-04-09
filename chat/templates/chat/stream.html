@@ -168,7 +168,11 @@
                       </div>
 
                       <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart like"></i>{{ cur_post.likes | length }}</a>
+                        {% if cur_post.id in liked_objs %}
+                        <a class="btn text-red" onclick="likePost( '{{ cur_post.id }}', 1 )"><i class="icon ion-ios-heart like"></i>{{ cur_post.likes | length }}</a>
+                        {% else %}
+                        <a class="btn" onclick="likePost( '{{ cur_post.id }}', 0 )"><i class="icon ion-ios-heart like"></i>{{ cur_post.likes | length }}</a>
+                        {% endif %}
                         <a class="btn text-green"><i class="icon ion-share"></i></a>
                       </div>
 

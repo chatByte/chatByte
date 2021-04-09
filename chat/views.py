@@ -196,13 +196,17 @@ def my_stream(request, AUTHOR_ID):
 
     page_obj = paginator_public_channel_posts.get_page(page_number)
 
+    liked_objs = cur_author.profile.liked.items.values_list('object', flat=True)
+    print("Liked objects: ", liked_objs)
+    print(list(public_channel_posts)[0].likes)
 
     dynamic_contain = {
         'myName' : cur_author.profile.displayName,
         'public_channel_posts': public_channel_posts,
         'page_obj': page_obj,
         'author_num_follwers': author_num_follwers,
-        'friend_request_num': friend_request_num
+        'friend_request_num': friend_request_num,
+        'liked_objs': liked_objs
     }
 
 
