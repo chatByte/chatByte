@@ -61,7 +61,7 @@
                 </ul>
               </li>
 
-
+              <li class="dropdown"><a href="/accounts/logout">Logout</a></li>
 
             </ul>
 
@@ -144,7 +144,7 @@
 
                   </div><!--Post Date End-->
                   {% if 'image/' in cur_post.categories  %}
-                  {% load image_filter %}
+                  {% load filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.CONTENT | bin_2_img }}"/>
                   {% endif %}
                   <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
