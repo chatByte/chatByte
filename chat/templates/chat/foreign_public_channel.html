@@ -99,7 +99,7 @@
                   <li><a href="" class="active">Her Timeline</a></li>
                   <li><a href="">Her Friends</a></li>
                   {% if isFriend %}
-                    <li><button class="btn-primary unfriend" href="../../friends/delete/{{foreignId}}/">Unfriend</button></li>
+                    <!-- <li><button class="btn-primary unfriend" href="../../my_friends/delete/{{foreignId}}/">Unfriend</button></li> -->
                   {% else %}
                     <li><button class="btn-primary befriend" value="../../friends/add/{{foreignId}}/"
                         onclick="be_friend( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}', '{{cur_author.url}}', '{{cur_author.github}}')" >Befriend</button></li>
