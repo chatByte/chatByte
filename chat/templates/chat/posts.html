@@ -290,14 +290,24 @@
                     <hr class="solid">
                       <!--            show nested comment  -->
                     {% for comment in cur_post.comments.all %}
-                              <div class="post-comment" id={{comment.id}}>
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                                <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
-                              </div>
+                    <div class="post-comment">
+                      <div>
+                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
+                      <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a> 
+                      </div>
 
-                              <div class="reaction-img">
-                                <a class="btn text-red"><i class="icon ion-ios-heart comment-like">{{ comment.likes | length }}</i></a>
-                              </div>
+                      {% if 'plain' in comment.contentType %}
+                      <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                        {{ comment.comment | linebreaks }}
+                      </p>
+                      {% elif 'markdown' in comment.contentType %}
+                      <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                        {{ comment.comment | markdown | safe }}
+                      </p>
+                      {% endif %}
+                      
+                    </div>
+                    <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
                     {% endfor %}
                                 <!--   show comments -->
 <!-- 
