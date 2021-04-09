@@ -1,7 +1,16 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<p class="signin-text">Sign in now and connect with awesome programming enthusiatics around the world!</p>
+<div style="color:white">
+  <p class="signin-text" >Sign in now and connect with awesome programming enthusiatics around the world!</p>
+
+  {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+  {% endif %}
 
   {% if form.errors %}
     <p>Your username and password didn't match. Please try again.</p>
@@ -15,6 +24,8 @@
       <p>Please login to see this page.</p>
     {% endif %}
   {% endif %}
+</div>
+
 
   <form method="post" action="{% url 'login' %}">
     {% csrf_token %}

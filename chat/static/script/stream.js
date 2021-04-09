@@ -106,6 +106,29 @@ function likePost(post_id, liked) {
   });
 }
 
+function reshare(post_id){
+  console.log(post_id)
+  $.ajax({
+    url:"../reshare/",
+    type: "POST", // http method
+    // header
+    headers: {"X-SERVER": x_server},
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    },
+    contentType: 'application/json; charset=utf-8',
+    dataType: "json",
+    data: JSON.stringify({
+      "post_id": post_id
+    }),
+    // fields = ['type','id', 'host', 'displayName', 'url', 'github']
+    // handle a successful response
+    success : function(data) {
+        console.log(data); // sanity check
+        window.location.reload();
+    },
+  });
+}
 
 jQuery(document).ready(function($) {
   const csrftoken = getCookie('csrftoken');
