@@ -206,26 +206,33 @@ def my_stream(request, AUTHOR_ID):
     }
 
 
+
     if request.method == "GET":
         response = render(request, "chat/stream.html", dynamic_contain)
         return response
 
     elif request.method == "POST":
 
-        request_post = request.POST
+        request_post = JSONParser().parse(request)
         # Front end need to tell me the type
-        print("_________________________________________________________")
-        print(type(request_post))
-
         contentType = request_post.get("type","")
-        cur_author_id = cur_author.id
+        cur_author_id = cur_author.profile.id
+
 
         if contentType == "like":
 
             object_type = request_post.get("object_type","")
             if object_type == "post":
                 object_id = request_post.get("object_id","")
+
+
+                print("object_id", object_id)
+                print("cur_author_id  ", cur_author_id)
+
+
+
                 likePost(object_id, cur_author_id)
+
                 response = render(request, "chat/stream.html", dynamic_contain)
             elif object_type == "comment":
                 # TODO waiting backend

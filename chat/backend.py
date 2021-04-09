@@ -357,6 +357,8 @@ def getUser(usr_id):
 
 def likePost(post_id, author_id):
 
+    print("________post_id__", post_id)
+    print("author_id  ", author_id)
     try:
         user_profile = Profile.objects.get(id=author_id)
         new_like = Like.objects.create(author=user_profile, object=post_id)
