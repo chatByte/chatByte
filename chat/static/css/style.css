@@ -470,6 +470,7 @@ Timeline
 
 .post-content .post-container{
   padding: 20px;
+  min-width: 400px;
 }
 
 .post-content .post-container .post-detail{
@@ -515,7 +516,9 @@ Timeline
 
 
 .post-content .post-container .post-detail .post-comment{
-  display: inline-flex;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   margin: 10px auto;
   width: 100%;
 }

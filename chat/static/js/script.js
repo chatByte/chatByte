@@ -2,7 +2,9 @@
 var url = window.location.href;
 
 var new_url = url.split('/');
-var url_header = "https://"+ new_url[1].toString()  + new_url[2].toString() + '/';
+// var url_header = "https://"+ new_url[1].toString()  + new_url[2].toString() + '/';
+// on local testing
+var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
 console.log(url_header);
 // var x_server = window.location.origin + '/author/'+new_url[4].toString();
 // var x_server = window.location.origin +'/';

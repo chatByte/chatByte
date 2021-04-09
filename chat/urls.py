@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from . import api
+# from pagedown.views import image_upload_view
 # from .views import SignUpView
 
 urlpatterns = [
@@ -11,7 +12,7 @@ urlpatterns = [
 
     path(r"author/<str:AUTHOR_ID>/my_posts/", views.posts, name="make_posts"),
     path(r"author/<str:AUTHOR_ID>/my_posts/<str:POST_ID>/edit/", views.update_post, name="update_posts"),
-    #
+    
     path(r'author/<str:AUTHOR_ID>/posts/',api.posts_obj, name='make_posts_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',api.post_obj, name='make_post_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/',api.comment_list_obj, name='comment_list_obj'),
@@ -57,12 +58,12 @@ urlpatterns = [
 
 
     #follow: following a body, inside view, we need it, since we need to refresh page, or we can do it in AJAX_ js
-    path(r"author/<str:AUTHOR_ID>/following/<str:SERVER>/<str:FOREIGN_ID>/", views.following,name="following_view"), 
+    path(r"author/<str:AUTHOR_ID>/following/<str:SERVER>/<str:FOREIGN_ID>/", views.following,name="following_view"),
 
 
 
     #  Doing----------------------------------------------------------------------------------------------------
- 
+
     # #follow: unfollow a body, inside view
     # ath(r"author/<str:AUTHOR_ID>/unfollow/<str:FOREIGN_AUTHOR_ID>/", views.unfollow,name="unfollow_view"),
 
@@ -80,8 +81,12 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="inbox"),
 
     # # Get likes for a Comment
-    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment"),
 
+    # path(
+    # 'pagedown/image-upload/',
+    # image_upload_view,
+    # name="pagedown-image-upload"),
 
 
 
