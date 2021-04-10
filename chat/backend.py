@@ -364,11 +364,13 @@ def getUser(usr_id):
 
 def likePost(post_id, author_id):
 
-    print("________post_id__", post_id)
-    print("author_id  ", author_id)
+    # print("________post_id__", post_id)
+    # print("author_id  ", author_id)
     try:
+
         user_profile = Profile.objects.get(id=author_id)
-        new_like = Like.objects.create(author=user_profile, object=post_id)
+        summary = user_profile.displayName +" likes your post"
+        new_like = Like.objects.create(author=user_profile, object=post_id, summary= summary)
         user_liked = user_profile.liked
         items_list = user_liked.items
         items_list.add(new_like)
@@ -384,11 +386,12 @@ def likePost(post_id, author_id):
     # TODO: check if remote
 def likeComment(comment_id, author_id):
 
-    print("here, author_id", author_id)
+    # print("here, author_id", author_id)
 
     try:
         user_profile = Profile.objects.get(id=author_id)
-        new_like = Like.objects.create(author=user_profile, object=comment_id)
+        summary = user_profile.displayName +" likes your comment"
+        new_like = Like.objects.create(author=user_profile, object=comment_id, summary= summary)
         user_liked = user_profile.liked
         items_list = user_liked.items
         items_list.add(new_like)

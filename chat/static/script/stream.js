@@ -73,8 +73,8 @@ function likePost(post_id, liked) {
   var data = {type: "like",
               object_type: "post",
               object_id: post_id,
+              // summary: "likes your post",
               csrfmiddlewaretoken: csrftoken
-              // summary:"someone liked someone's post"
               // context:
               }
   // console.log(window.location.origin+'/author/'+ new_url[5].toString() +'/inbox/')
@@ -119,6 +119,7 @@ function likeComment(comment_id, liked) {
   var data = {type: "like",
               object_type: "comment",
               object_id: comment_id,
+              // summary: "likes your post",
               csrfmiddlewaretoken: csrftoken
               // summary:"someone liked someone's post"
               // context:
