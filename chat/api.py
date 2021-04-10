@@ -25,64 +25,29 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
     def enforce_csrf(self, request):
         return  # To not perform the csrf check previously happening
 
-# queryset = Post.objects.all()
-# serializer_class = PostSerializer
 
 
-# @login_required
-# @require_http_methods(["GET", "POST", "PUT", "DELETE"])
-# def post_obj(request, AUTHOR_ID, POST_ID):
-#     cur_user_name = None
-#     if request.user.is_authenticated:
-#         cur_user_name = request.user.username
-#     # post_id = request.build_absolute_uri().split("/")[-2][6:]
 
-#     if request.method == "DELETE":
-#         deletePost(POST_ID)
-#         response = redirect("../posts/")
-#         return response
-#     elif request.method == "GET":
-#         post = getPost(POST_ID)
-#         # TODO return an object or html?
-#         return post
-#     elif request.method == "POST":
-#         # updatePost()
-#         pass
 
 
 
 
 '''
-Testing method
-
-{
-    "type": "post",
-    "id": "3",
-    "title": "fffffffffff",
-    "source": "https://chatbyte.herokuapp.com/",
-    "origin": "https://chatbyte.herokuapp.com/",
-    "description": "asdf",
-    "contentType": "text",
-    "content": "asdf",
-    "author": {
-        "type": "author",
-        "id": "2",
-        "host": null,
-        "displayName": "test",
-        "url": "https://chatbyte.herokuapp.com/chat/author/2/profile/",
-        "github": "https://github.com/Jeremy0818"
-    },
-    "categories": "text/plain",
-    "count": 1,
-    "size": 1,
-    "commentsPage": "1",
-    "comments": [],
-    "published": "2021-03-26T19:04:53Z",
-    "visibility": "public",
-    "unlisted": "false"
-}
-
+Design for giving our brother all posts, since we love each other
 '''
+# No CSRF token
+@csrf_exempt
+# methdo
+@api_view(['GET'])
+# which AUTH using right now
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+# permission, -> auth
+@permission_classes([IsAuthenticated])
+def all_posts_obj(request):
+    
+
+
+
 
 
 # No CSRF token
