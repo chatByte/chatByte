@@ -110,26 +110,27 @@
                 <!--Activity SUmmary-->
                 <div id="sticky-sidebar">
                   <h4 class="blue">My Github Activity</h4>
-                  <div class="feed-item">
-                    <div class="live-activity">
-                      {% for cur_obj in git_activity_obj %}
-                      <p>{{cur_obj.id}}</p>
-                      {% endfor %}
-                      <p class="text-muted"> xxxx mins ago</p>
+                  {% for cur_push in git_activity_obj %}
+                        {% if forloop.counter <= 1 %}
+                          {% for cur_commit in cur_push.payload.commits %}
+                            {% if forloop.counter <= 5 %}
+                            <div class="feed-item">
+                              <div class="live-activity">
+                      
+                                <!-- <p>{{cur_commit.sha}}</p> -->
+                                <!-- <p>{{cur_commit.name}}</p> -->
+                                <!-- <p>{{cur_commit.message}}</p> -->
+                                <p class="text-muted" style="max-width: 250px;">Commit ID: {{cur_commit.sha}}</p>
+                                <!-- <p>{{cur_commit.name}}</p> -->
+                                <p style="max-width: 250px;">{{cur_commit.author.name}} commited with message "{{cur_commit.message}}"</p>
+                      <!-- <p class="text-muted"> xxxx mins ago</p> -->
                     </div>
                   </div>
-                  <div class="feed-item">
-                    <div class="live-activity">
-                      <p>I Has posted text</p>
-                      <p class="text-muted">xxxx days ago</p>
-                    </div>
-                  </div>
-                  <div class="feed-item">
-                    <div class="live-activity">
-                      <p>I Liked her friend's post</p>
-                      <p class="text-muted">1 month ago</p>
-                    </div>
-                  </div>
+                  {% endif %}
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+                
                 </div>
               </div>
             </div>
