@@ -177,6 +177,9 @@ def my_stream(request, AUTHOR_ID):
         # a group of author, that i am currently following, django.db.models.query.QuerySet
         followings = cur_author.profile.followings.all()
 
+        # similar to followings, but a list of Friends
+        myFriends = cur_author.profile.friends
+
         # merging quesryset
         public_channel_posts = mytimeline.all()
 
@@ -210,7 +213,8 @@ def my_stream(request, AUTHOR_ID):
             'page_obj': page_obj,
             'author_num_follwers': author_num_follwers,
             'friend_request_num': friend_request_num,
-            'liked_objs': liked_objs
+            'liked_objs': liked_objs,
+            'friends': myFriends
         }
 
 
@@ -229,7 +233,7 @@ def my_stream(request, AUTHOR_ID):
             object_type = request_post.get("object_type","")
             object_id = request_post.get("object_id","")
             if object_type == "post":
-               
+
                 likePost(object_id, cur_author_id)
 
                 response = JsonResponse({'redirect_url': "current"}, status=200)
@@ -340,7 +344,7 @@ def posts(request, AUTHOR_ID):
         #getTimeline(cur_user_name), by SQL query
         mytimeline = alltimeline.filter(author=cur_author).order_by('-published')
 
-        
+
         # create a paginator
         paginator_mytimeline = Paginator(mytimeline, 8) # Show 8 contacts per page.
 

@@ -33,7 +33,7 @@
           <!-- Brand and toggle get grouped for better mobile display -->
           <!-- left most logo -->
           <div class="navbar-header">
-            <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
+            <!-- <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a> -->
           </div>
 
           <!-- # search bar -->
@@ -94,27 +94,15 @@
             <div class="friend-list">
               <h3 class="">My Friends</h3>
               <hr class="solid">
+              {% for friend in friends %}
               <div class="friend">
-                <img src="https://i1.sndcdn.com/artworks-000633504211-qcdzak-t500x500.jpg" alt="" class="profile-photo-sm pull-left" />
+                <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm pull-left" />
                 <div>
-                  <h5><a href="../friend">Hirose Koichi</a></h5>
-                  <a href="#" class="text-muted">Just Posted</a>
+                  <h5><a href="../friend">friend.profile.displayName</a></h5>
+                  <!-- <a href="#" class="text-muted">Just Posted</a> -->
                 </div>
               </div>
-              <div class="friend">
-                <img src="https://i.pinimg.com/736x/3c/88/c8/3c88c8510028f627cf58792795629ed1.jpg" alt="" class="profile-photo-sm pull-left" />
-                <div>
-                  <h5><a href="../friend">Higashikata Josuke</a></h5>
-                  <a href="#" class="text-muted">Posted 3 days ago</a>
-                </div>
-              </div>
-              <div class="friend">
-                <img src="https://media.comicbook.com/2019/01/jotaro-1154567-1280x0.jpeg" alt="" class="profile-photo-sm pull-left" />
-                <div>
-                  <h5><a href="../friend">Kujo Jotaro</a></h5>
-                  <a href="#" class="text-muted">Posted 3 weeks ago</a>
-                </div>
-              </div>
+              {% endfor %}
             </div>
           </div>
 
@@ -133,38 +121,11 @@
               <div class="row">
                   <div class="col-md-1">
                     <div class="form-group">
-                      <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="profile-photo-lg" />
-                      <!-- <div class="form-group-col">
-                        {% csrf_token %}
-                        <textarea  id="title" cols="45" rows="1" class="form-title-control" placeholder="Title" required></textarea>
-                        <img id="uploadImg">
-
-                        <textarea  id="description" cols="45" rows="4" class="form-control" placeholder="Description: Anything exciting?"></textarea>
-                        <input type='file' id='imageFile' accept="image/*" onchange="readImg(this);">
-
-                          <div class="dropdown">
-                            <div class="publicity"><a id="visibility" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-users"></i><a></div>
-                              <div class="dropdown-content">
-                                <a href="#" id="public"><i class="fas fa-users"></i>&ensp;<span>Allow everyone to see the post</span></a>
-                                <a href="#" id="friend"><i class="fas fa-user-friends"></i>&ensp;<span>Allow only friends to see the post</span></a>
-                                <a href="#" id="private"><i class="fas fa-user"></i>&ensp;<span>Post only to myself</span></a>
-                              </div>
-                            </div>
-                            &thinsp;
-                            <div class="dropdown">
-                               <div class="publicity"><a id="contentType" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-edit"></i><a></div>
-                                <div class="dropdown-content">
-                                  <a href="#" id="text"><i class="fas fa-edit"></i>&ensp;<span>This is simply a text post</span></a>
-                                  <a href="#" id="github"><i class="fab fa-github"></i>&ensp;<span>This is a Github stream</span></a>
-                                  <a href="#" id="image"><i class="ion-images"></i>&ensp;<span>This is an image post</span></a>
-                                  <a href="#" id="markdown"><i class="far fa-file"></i>&ensp;<span>This is a Common Markdown post</span></a>
-                                </div>
-                            </div>
-                      </div> -->
+                      <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-lg" />
                     </div>
                   </div>
 
-                  <div class="col-md-1">
+                  <div class="col-md-7">
                     <div class="tools">
                       <!-- <button class="btn btn-primary" id="publishBtn">Publish</button> -->
                       <button class="btn btn-primary" id="postBtn" data-toggle="modal" data-target="#exampleModal">Make Post</button>
@@ -221,7 +182,6 @@
 
                   </div>
                 </div>
-              </div>
             <!-- Post Create Box End-->
 
 
@@ -229,17 +189,13 @@
           <!--             post content mine =====================================================-->
           {% for cur_post in page_obj %}
                 <div class="post-content" id={{cur_post.id}}>
-                  <!--Post Date-->
-                  <div class="post-date">
 
-
-                  </div><!--Post Date End-->
                   {% if 'image/' in cur_post.contentType  %}
                   {% load filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
                   <div class="post-container">
-                    <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
+                    <img src="{% static 'images/user.png' %}" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
                       <h5>Source: <a href="{{cur_post.source}}">{{cur_post.source}}</a> </h5>
                       <h5>Origin: <a href="{{cur_post.origin}}">{{cur_post.origin}}</a> </h5>
@@ -280,7 +236,9 @@
                           <!-- <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button> -->
                           <button id="submitBtn" class="submitBtn btn-primary-sm" style="display: none" onclick="editPost( '{{ cur_post.id }}' )">Submit</button>
                           <a href="/chat/feed/edit{{ cur_post.id }}/" class="editBtn" onclick="editButton( '{{ cur_post.title }}', ' {{cur_post.description}} ' )">Edit</a>
-                          <button id="{{ cur_post.id }}" class="btn-primary-sm" onclick="deletePost( '{{ cur_post.id }}' )">Delete</button></div>
+                          &thinsp;
+                          <a href='#' id="{{ cur_post.id }}" class="deleteBtn" onclick="deletePost( '{{ cur_post.id }}' )">Delete</a>
+                        </div>
 
                       </div>
 
@@ -289,39 +247,31 @@
                         <a class="btn text-green"><i class="icon ion-share repost"></i></a>
                       </div>
 
-                    <hr class="solid">
+                      <hr class="solid">
                       <!--            show nested comment  -->
-                    {% for comment in cur_post.comments.all %}
-                    <div class="post-comment">
-                      <div>
-                      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                      <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a> 
-                      </div>
+                      {% for comment in cur_post.comments.all %}
+                        <div class="post-comment" id={{comment.id}}>
+                          <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
+                          <p><a href="" class="profile-link">{{comment.author.displayName}} </a>{{comment.comment}}</p>
+                        </div>
 
-                      {% if 'plain' in comment.contentType %}
-                      <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
-                        {{ comment.comment | linebreaks }}
-                      </p>
-                      {% elif 'markdown' in comment.contentType %}
-                      <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
-                        {{ comment.comment | markdown | safe }}
-                      </p>
-                      {% endif %}
-                      
-                    </div>
-                    <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
-                    {% endfor %}
-                                <!--   show comments -->
-<!-- 
-                      <div class="post-comment">
-                        <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
-                        <a href="" class="profile-link">{{user.profile.displayName}} </a>
-                        <input type="text" class="form-control" placeholder="Post a comment">
-                      </div> -->
 
+                        {% if 'plain' in comment.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ comment.comment | linebreaks }}
+                        </p>
+                        {% elif 'markdown' in comment.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ comment.comment | markdown | safe }}
+                        </p>
+                        {% endif %}
+                     {% endfor %} 
                     </div>
+
                   </div>
                 </div>
+
+
 
           {% endfor %}
 

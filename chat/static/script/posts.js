@@ -116,12 +116,10 @@ function getCookie(name) {
 
 function deletePost(id){
   console.log(id);
-  var post_id = id.split("posts/")[1];
-  var X_origin = id.split("author/")[0];
-  var author_id = (id.split("/posts/")[0]).split("/author/")[1];
-  console.log("Post id: ", post_id);
-  var url = X_origin + "api/author/" + author_id +  "/posts/" + post_id + "/";
-  console.log("Delete post url: ", url);
+  var post_id = id.split("posts/")[1]
+  console.log("Post id: ", post_id)
+  var url = "../posts/"+post_id+"/";
+  console.log(url);
   var csrftoken = getCookie('csrftoken');
   console.log(csrftoken);
   var x_server = id.split("author")[0]
@@ -253,7 +251,7 @@ function editPost(POST_ID) {
       $('body').on('click', 'a.editBtn', function(e) {
         e.preventDefault();
 
-        var content_holder = $(this).closest('.post-detail').find('p')
+        var content_holder = $(this).closest('.post-detail').find('p');
 
         content_holder.attr("style", "display: none");
         // var div_content = $('div .form-group-col').html();

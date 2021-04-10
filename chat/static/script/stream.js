@@ -171,7 +171,7 @@ jQuery(document).ready(function($) {
 
     $.ajax({
       // author/<str:AUTHOR_ID>/inbox/
-      url:window.location.origin+'api/author/'+ new_url[4].toString() +'/inbox/',
+      url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
       type: "POST", // http method
       // header
       headers: {"X-SERVER": x_server},
