@@ -383,5 +383,23 @@ def likePost(post_id, author_id):
         
     # TODO: check if remote
 def likeComment(comment_id, author_id):
+
+
+    try:
+        user_profile = Profile.objects.get(id=author_id)
+        new_like = Like.objects.create(author=user_profile, object=comment_id)
+        user_liked = user_profile.liked
+        items_list = user_liked.items
+        items_list.add(new_like)
+        post = Post.objects.get(id=post_id)
+        post.likes.add(new_like)
+        post.save()
+        user_profile.liked.save()
+
+    except BaseException as e:
+        print(e)
+        return None 
+
+    
     # TODO
     pass
