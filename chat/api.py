@@ -357,7 +357,7 @@ def profile_obj(request, AUTHOR_ID):
             return JsonResponse(serializer.data, status=201)
         elif request.method == "POST":
             data = JSONParser().parse(request)
-            serializer = ProfileSerializer(profile, data=data)
+            serializer = ProfileSerializer(profile, data=data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return JsonResponse(serializer.data, status=200)
