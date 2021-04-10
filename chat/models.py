@@ -9,6 +9,16 @@ from django.contrib.postgres.fields import ArrayField
 #     # for authorization only
 #     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
 #     USERNAME = models.CharField(max_length=50, unique=True)
+# class NewPost(models.Model):
+#     name = models.CharField(max_length=128)
+#     description = models.TextField(blank=True)
+#     lyrics = models.TextField(blank=True)
+
+#     def __str__(self):
+#         return self.name
+
+#     def get_absolute_url(self):
+#         return reverse('music:songs:detail', args=[str(self.id)])
 
 
 class Profile(models.Model):
@@ -28,17 +38,17 @@ class Profile(models.Model):
     followings = models.ManyToManyField("Profile", related_name='%(class)s_followings', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
     # the friend request i received
-    friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
+    # friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
     # the friend request i snet
-    friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
+    # friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
     # the iteams, that i currenly liked
     liked = models.OneToOneField('Liked', on_delete=models.CASCADE, null=True, blank=True)
 
     def __unicode__(self): # for Python 2
         return self.user.username
 
-    # class Meta:
-    #     managed = False
+    class Meta:
+        managed = False
 
 class Comment(models.Model):
     type = models.CharField(max_length=200, default="comment")
@@ -68,10 +78,11 @@ class Post(models.Model):
     content = models.TextField()
     # the author has an ID where by authors can be disambiguated
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    categories = ArrayField(
-        models.CharField(max_length=200, blank=True),
-        size=200,
-    )
+    # categories = ArrayField(
+    #     models.CharField(max_length=200, blank=True),
+    #     size=200,
+    # )
+    categories = models.CharField(max_length=200, blank=True)
     count = models.IntegerField(default=0)
     size = models.IntegerField(default=0)
     comment_url = models.CharField(max_length=200, blank=True)
@@ -79,7 +90,7 @@ class Post(models.Model):
     # published date
     published = models.DateTimeField(default=django.utils.timezone.now)
     visibility = models.CharField(max_length=50)
-    unlisted = models.CharField(max_length=50, default='false', editable=False)
+    unlisted = models.BooleanField(default=False)
     likes = models.ManyToManyField('Like', blank=True)
 
 class PostInbox(models.Model):
@@ -117,11 +128,11 @@ class Like(models.Model):
     author = models.ForeignKey('Profile', related_name='%(class)s_author', on_delete=models.CASCADE,)
     # URL of the likes
 
-    context = models.CharField(max_length=200, default="Like")
+    context = models.CharField(max_length=200, default="")
     # likes items title, post title
-    summary = models.CharField(max_length=200, default="Like")
+    summary = models.CharField(max_length=200, default="")
     # Likes obj, ie post
-    object = models.CharField(max_length=200, default="Like")
+    object = models.CharField(max_length=200, default="")
 
 # People's liked items
 class Liked(models.Model):

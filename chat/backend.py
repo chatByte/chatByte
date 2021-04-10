@@ -170,18 +170,19 @@ def getALLFriendRequests(usr_id):
         return None
 
 
-def updateProfile(id, first_name, last_name, email, url, github):
+def updateProfile(id, display_name, email, url, github):
     # Please authenticate before calling this method
     try:
         user = User.objects.get(pk=id)
-        profile = Profile.objects.get(pk=id)
+        profile = user.profile
+        # profile = Profile.objects.get(pk=id)
         # update element here
-        user.first_name = first_name
-        user.last_name = last_name
+        # user.first_name = first_name
+        # user.last_name = last_name
         user.email = email
         profile.url = url
         profile.github = github
-
+        profile.displayName = display_name
         user.save()
         profile.save()
         return True
@@ -189,39 +190,43 @@ def updateProfile(id, first_name, last_name, email, url, github):
         print(e)
         return False
 
-def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
+def createPost(title, source, origin, description, content_type, content, author, categories, visibility, unlisted):
     # Please authenticate before calling this method
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
-            , categories=categories, count=0, size=0, comment_url="", visibility=visibility, author=author)
+            , categories=categories, count=0, size=0, comment_url="", visibility=visibility, author=author, unlisted=(unlisted.lower() in ['true', '1', 't', 'y',]))
         # print(post.author)
+
         post.comment_url = post.id + "/comments/"
+        post.source = post.id
         post.save()
         author.timeline.add(post)
         author.save()
 
-        print("Broadcasting post to friends...")
+        
         # Broadcast to friends
-        for friend_profile in author.friends.all():
-            print(friend_profile.id)
-            author_id = friend_profile.id.split('author/')[1]
-            
-            server_origin = friend_profile.id.split("author/")[0]
-            if server_origin == host:
-                print("doing locally")
-                # send post to inbox
-                friend_profile.user.inbox.post_inbox.items.add(post)
-                # add post into timeline
-                friend_profile.timeline.add(post)
-            else:
-                serializer = PostSerializer(post)
-                post_serialize = serializer.data
-                author_serialize = ProfileSerializer(post.author)
-                post_serialize['author'] = author_serialize.data
-                print(post_serialize)
-                # send post to remote inbox
-                inboxRequest("POST", server_origin, author_id, post_serialize)
-        print("done")
+        if (visibility == 'friend'):
+            print("Broadcasting post to friends...")
+            for friend_profile in author.friends.all():
+                print(friend_profile.id)
+                author_id = friend_profile.id.split('author/')[1]
+                
+                server_origin = friend_profile.id.split("author/")[0]
+                if server_origin == host:
+                    print("doing locally")
+                    # send post to inbox
+                    friend_profile.user.inbox.post_inbox.items.add(post)
+                    # add post into timeline
+                    friend_profile.timeline.add(post)
+                else:
+                    serializer = PostSerializer(post)
+                    post_serialize = serializer.data
+                    author_serialize = ProfileSerializer(post.author)
+                    post_serialize['author'] = author_serialize.data
+                    print(post_serialize)
+                    # send post to remote inbox
+                    inboxRequest("POST", server_origin, author_id, post_serialize)
+            print("done")
         return True
     except BaseException as e:
         print(repr(e))
@@ -273,7 +278,9 @@ def deletePost(id):
         print(e)
         return False
 
-
+'''
+Design for create comment, here author is a profile
+'''
 def createComment(author, post_id, comment, content_type, published=django.utils.timezone.now()):
     try:
         post = Post.objects.get(id=post_id)
@@ -354,3 +361,27 @@ def getUser(usr_id):
     except BaseException as e:
         print(e)
         return None
+
+def likePost(post_id, author_id):
+
+    print("________post_id__", post_id)
+    print("author_id  ", author_id)
+    try:
+        user_profile = Profile.objects.get(id=author_id)
+        new_like = Like.objects.create(author=user_profile, object=post_id)
+        user_liked = user_profile.liked
+        items_list = user_liked.items
+        items_list.add(new_like)
+        post = Post.objects.get(id=post_id)
+        post.likes.add(new_like)
+        post.save()
+        user_profile.liked.save()
+
+    except BaseException as e:
+        print(e)
+        return None 
+        
+    # TODO: check if remote
+def likeComment(comment_id, author_id):
+    # TODO
+    pass

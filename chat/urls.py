@@ -1,17 +1,22 @@
 from django.urls import path
 from . import views
 from . import api
+# from pagedown.views import image_upload_view
 # from .views import SignUpView
 
 urlpatterns = [
     path("", views.start_homepage, name=""),
+
+    #deign for give brother all posts
+    path(r"all_posts/", api.all_posts_obj, name="all_posts_obj"),
+
 
     path("author/<str:AUTHOR_ID>/profile/", views.profile, name="profile"),
     path("author/<str:AUTHOR_ID>/", api.profile_obj, name="profile_obj"),
 
     path(r"author/<str:AUTHOR_ID>/my_posts/", views.posts, name="make_posts"),
     path(r"author/<str:AUTHOR_ID>/my_posts/<str:POST_ID>/edit/", views.update_post, name="update_posts"),
-    #
+    
     path(r'author/<str:AUTHOR_ID>/posts/',api.posts_obj, name='make_posts_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',api.post_obj, name='make_post_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/',api.comment_list_obj, name='comment_list_obj'),
@@ -22,6 +27,8 @@ urlpatterns = [
     path(r"author/<str:AUTHOR_ID>/my_stream/<str:SERVER>/<str:FOREIGN_ID>/", views.foreign_public_channel, name="foreign_public_channel"),
 
     path(r"author/<str:AUTHOR_ID>/stream/", api.stream_obj, name="stream"),
+
+
 
 
     # get search bar
@@ -39,10 +46,13 @@ urlpatterns = [
     # add friend
     path(r"author/<str:AUTHOR_ID>/friends/add/<str:FRIEND_ID>/", views.add_friend, name="friend_add"),
 
-    path(r"author/<str:AUTHOR_ID>/friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
-    path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
+    # path(r"author/<str:AUTHOR_ID>/friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
+    # path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
 
+    path(r"author/<str:AUTHOR_ID>/makefriend/", views.make_friend, name="make_friend"),
+    path(r"author/<str:AUTHOR_ID>/unbefriend/", views.unbefriend, name="unbefriend"),
 
+    path(r"author/<str:AUTHOR_ID>/reshare/", views.reshare, name="reshare"),
 
     # URL: ://service/author/{AUTHOR_ID}/followers/
     path(r"author/<str:AUTHOR_ID>/followers/", api.followers_obj, name="followers_obj"),
@@ -57,12 +67,12 @@ urlpatterns = [
 
 
     #follow: following a body, inside view, we need it, since we need to refresh page, or we can do it in AJAX_ js
-    path(r"author/<str:AUTHOR_ID>/following/<str:SERVER>/<str:FOREIGN_ID>/", views.following,name="following_view"), 
+    path(r"author/<str:AUTHOR_ID>/following/<str:SERVER>/<str:FOREIGN_ID>/", views.following,name="following_view"),
 
 
 
     #  Doing----------------------------------------------------------------------------------------------------
- 
+
     # #follow: unfollow a body, inside view
     # ath(r"author/<str:AUTHOR_ID>/unfollow/<str:FOREIGN_AUTHOR_ID>/", views.unfollow,name="unfollow_view"),
 
@@ -80,9 +90,12 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="inbox"),
 
     # # Get likes for a Comment
-    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment")
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment"),
 
-
+    # path(
+    # 'pagedown/image-upload/',
+    # image_upload_view,
+    # name="pagedown-image-upload"),
 
 
 
@@ -93,12 +106,10 @@ urlpatterns = [
     # # show friend list
     # path("author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", api.delete_friend_obj, name="friend_delete"),
     # delete friend
-
     # # Create a Like for either a Post or a Comment
     # # This also as a side effect, sends to Inbox
 
     ##### path("author/<str:AUTHOR_ID>/likes/", api.likes_obj, name="likes")
-
     # check if new friend request
     # path("ifFriendRequest/", views.if_friend_request, name="if_friend_request"),
 

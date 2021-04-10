@@ -16,7 +16,7 @@ def profileRequest(method, origin, user_id, data=None):
     the author's profile in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/"
-    print("Remote get pofile origin: ", origin)
+    print("Remote get profile origin: ", origin)
     user = User.objects.get(last_name=origin)
     headers = {
         'Origin': host,
@@ -28,6 +28,8 @@ def profileRequest(method, origin, user_id, data=None):
         response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
+
+
 
 def postsRequest(method, origin, user_id, data=None):
     '''
@@ -108,6 +110,7 @@ def inboxRequest(method, origin, user_id, data=None):
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
+        headers['Content-type'] = 'application/json'
         if data['type'] == "post":
             print("Recieved a post inbox!")
             print("Username: ", user.username, "first_name: ", user.first_name)
@@ -245,6 +248,7 @@ def streamRequest(origin, user_id):
     '''
 
     url = str(origin) + "author/" + str(user_id) + "/stream/"
+    print(url)
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 

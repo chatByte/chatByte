@@ -33,7 +33,7 @@
           <!-- Brand and toggle get grouped for better mobile display -->
           <!-- left most logo -->
           <div class="navbar-header">
-            <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
+            <!-- <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a> -->
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -55,13 +55,16 @@
               <li class="dropdown" id="myInbox">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
-                  {% for friend_requests in user.profile.friend_requests.all %}
+                  <!-- {% for friend_requests in user.profile.friend_requests.all %}
                     <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
-                  {% endfor %}
+                  {% endfor %} -->
+                  {% for friend_request in user.inbox.friend_requests.all %}
+                    <li><a >{{friend_request.summary}}</a><button class="accept" onclick="accept_or_reject('accept', '{{friend_request.id}}')">Accept</button><button class="reject" onclick="accept_or_reject('reject', '{{friend_request.id}}')">Reject</button></li>
+                  {% endfor %} 
                 </ul>
               </li>
 
-
+              <li class="dropdown"><a href="/accounts/logout">Logout</a></li>
 
             </ul>
 
@@ -82,9 +85,9 @@
             <div class="row">
               <div class="col-md-3">
                 <div class="profile-info">
-                  <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="" class="img-responsive profile-photo" />
+                  <img src="{% static 'images/user.png' %}" alt="" class="img-responsive profile-photo" />
 
-                  <h3 id="myName"> {{user.username}} </h3>
+                  <h3 id="myName"> {{user.profile.displayName}} </h3>
                   <p class="text-muted"> {{author_num_follwers}} people is following him</p>
                 </div>
               </div>
@@ -131,91 +134,161 @@
             <div class="col-sm-1"></div>
             <div class="col-md-6">
         <div class="posts">
-
-
-        <!--              ?? -->
-
-                {% for cur_post in public_channel_posts reversed %}
-
-                <!-- Post Content
-                ================================================= -->
-
+              {% for cur_post in page_obj %}
+                <!-- Post Content ================================================= -->
                 <div class="post-content">
-                  <!--Post Date-->
-                  <div class="post-date">
-
-                  </div><!--Post Date End-->
-                  {% if 'image/' in cur_post.categories  %}
-                  {% load image_filter %}
+                  {% if 'image/' in cur_post.contentType  %}
+                  
+                  {% load filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
-                  <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
                   <div class="post-container">
-                    <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
+                    <img src="{% static 'images/user.png' %}" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
+                      <h5>Source: <a href="{{cur_post.source}}">{{cur_post.source}}</a> </h5>
+                      <h5>Origin: <a href="{{cur_post.origin}}">{{cur_post.origin}}</a> </h5>
                       <div class="user-info">
-                        <h5><a href="" class="profile-link" id="fullName">{{cur_post.author.id}}</a> </h5>
+                        <h5><a href="" class="profile-link" id="fullName">{{cur_post.author.displayName}}</a> </h5>
 												<p class="text-grey post_date" >{{cur_post.published}} </p>
 
                         <p class="text-muted">{{cur_post.categories}}</p>
                       </div>
                       <hr class="solid">
                       <div class="post-text">
-												<p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">{{ cur_post.title}}</p>
 
-                        {% if 'text/' in cur_post.categories  %}
-                        <p> {{cur_post.content}} </p>
+                        <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">
+                          {{ cur_post.title}}
+                        </p>
+
+                        {% if 'plain' in cur_post.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ cur_post.description | linebreaks }}
+                        </p>
+                        {% elif 'markdown' in cur_post.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ cur_post.description | markdown | safe }}
+                        </p>
                         {% endif %}
-
-	<!-- 											<form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
-                            {% csrf_token %}
-                            <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.content}}</textarea>
-                            <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
-                        </form>
-
-                        <div class="edit"><a href="/chat/home/edit{{ cur_post.ID }}/">Edit</a>&emsp;<a href="/chat/home/delete{{ cur_post.ID }}/"  class="text-red">Delete</a></div> -->
 
                       </div>
 
                       <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart"></i>{{ cur_post.likes | length }}</a>
-                        <a class="btn text-green"><i class="icon ion-share"></i></a>
+                        {% if cur_post.id in liked_objs %}
+                        <a class="btn text-red" onclick="likePost( '{{ cur_post.id }}', 1 )"><i class="icon ion-ios-heart like"></i>{{ cur_post.likes.all | length }}</a>
+                        {% else %}
+                        <a class="btn" onclick="likePost( '{{ cur_post.id }}', 0 )"><i class="icon ion-ios-heart like"></i>{{ cur_post.likes.all | length }}</a>
+                        {% endif %}
+                        <a class="btn text-green" onclick="reshare('{{cur_post.id}}')"><i class="icon ion-share"></i></a>
                       </div>
 
                       <hr class="solid">
-<!--            show nested comment  -->
-            {% for comment in cur_post.comments.all %}
-                      <div class="post-comment">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                        <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
+                  <!--              show nested comment  -->
+                  {% for comment in cur_post.comments.all %}
+                    <div class="post-comment">
+                      <div class="post-commentor">
+                      <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
+                      <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a>
                       </div>
 
-                      <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
+                      <div class="post-comment-contain">
+                        {% if 'plain' in comment.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ comment.comment | linebreaks }}
+                        </p>
+                        {% elif 'markdown' in comment.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ comment.comment | markdown | safe }}
+                        </p>
+                        {% endif %}
                       </div>
-                      {% endfor %}
-<!--                      end -->
-
-<!--                      <div class="post-comment">
-                        <img src="https://i.pinimg.com/736x/68/a1/67/68a1670d2735cb688e9d31658b16800c.jpg" alt="" class="profile-photo-sm" />
-                        <p><a href="" class="profile-link">May</a> Sooooo gooood brooooooooooo </p>
-                      </div> -->
 
 
 
-                      <div class="post-comment">
-                        <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
-                        <a href="" class="profile-link">{{user.profile.displayName}} </a>
-                        <input type="text" class="form-control" placeholder="Post a comment">
+                    </div>
+<!--                             <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a> -->
+                  {% endfor %}
+                  <!--                      end -->
+
+                  <div class="post-comment">
+
+                    <button class="btn btn-primary postBtn" id="{{cur_post.id}}" data-toggle="modal" data-target="#exampleModal">Comment</button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="create-post">
+                            <div class="row">
+                                <div class="col-md-7">
+                                  <div class="form-group">
+                                      <div class="form-group-col">
+                                        {% csrf_token %}
+                                        <!-- <textarea  id="title" cols="45" rows="1" class="form-title-control" placeholder="Title" required></textarea> -->
+                                        <img id="uploadImg">
+
+                                        <textarea  id="description" cols="45" rows="4" class="form-control" placeholder="Description: Anything exciting?"></textarea>
+                                        <input type='file' id='imageFile' accept="image/*" onchange="readImg(this);">
+                                            <!-- &thinsp; -->
+                                            <div class="dropdown">
+                                               <div class="publicity"><a id="contentType" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-edit"></i><a></div>
+                                                <div class="dropdown-content">
+                                                  <a href="#" id="text/plain"><i class="fas fa-edit"></i>&ensp;<span>This is simply a text post</span></a>
+                                                  <!-- <a href="#" id="github"><i class="fab fa-github"></i>&ensp;<span>This is a Github stream</span></a>
+                                                  <a href="#" id="image"><i class="ion-images"></i>&ensp;<span>This is an image post</span></a> -->
+                                                  <a href="#" id="text/markdown"><i class="far fa-file"></i>&ensp;<span>This is a Common Markdown post</span></a>
+                                                </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary submitComment" id="{{ cur_post.id }}">Submit</button>
+                          </div>
+                        </div>
                       </div>
+                      <!-- Modal -->
+
+                  </div>
                     </div>
                   </div>
                 </div>
 
-                {% endfor %}
-                <!-- Post Content
-                ================================================= -->
-            </div>
+              {% endfor %}
+
+              <!-- Pagenation -->
+              <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; first page</a>
+                        <a >&hearts; &hearts; &hearts;  </a>
+                        <a href="?page={{ page_obj.previous_page_number }}">previous page</a>
+                    {% endif %}
+
+                    <span class="current">
+                      </br>
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                      </br>
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">next page</a>
+                        <a >&hearts; &hearts; &hearts;  </a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">last page &raquo;</a>
+                    {% endif %}
+                </span>
+              </div>
+
+        </div>
+
+
+
+
+
+
 
 
 
@@ -239,5 +312,7 @@
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
     <script src="{% static 'script/stream.js' %}"></script>
+    <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
+
   </body>
 </html>
