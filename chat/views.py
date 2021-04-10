@@ -126,7 +126,7 @@ def my_stream(request, AUTHOR_ID):
             res = streamRequest(node.origin, request.user.id)
             try:
                 data = res.json()
-                # print(data['posts'])
+                print(data['posts'])
                 for post in data['posts']:
                     # print("Post id: ", post['id'])
                     post_id = post['id']
