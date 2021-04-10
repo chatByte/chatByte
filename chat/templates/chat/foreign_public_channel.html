@@ -33,7 +33,7 @@
           <!-- Brand and toggle get grouped for better mobile display -->
           <!-- left most logo -->
           <div class="navbar-header">
-            <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
+            <!-- <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a> -->
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -91,7 +91,7 @@
                   {% if isFollowing %}
                     <h4 style="display: block" id="following">Following</h4>
                   {% else %}
-                    <a href="." ><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" id='followBtn' 
+                    <a href="." ><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" id='followBtn'
                             onclick="putFollow( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}', '{{cur_author.url}}', '{{cur_author.github}}', '{{foreignId}}')"/></a>
                   {% endif %}
 
@@ -101,9 +101,9 @@
                 <ul class="list-inline profile-menu">
                   <li><a href="" class="active">Her Posts</a></li>
                   {% if isFriend %}
-                    <li><button class="btn-primary unfriend" href="../../friends/delete/{{foreignId}}/">Unfriend</button></li>
+                    <!-- <li><button class="btn-primary unfriend" href="../../my_friends/delete/{{foreignId}}/">Unfriend</button></li> -->
                   {% else %}
-                    <li><button class="btn-primary befriend" value="../../friends/add/{{foreignId}}/" 
+                    <li><button class="btn-primary befriend" value="../../friends/add/{{foreignId}}/"
                         onclick="be_friend( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}', '{{cur_author.url}}', '{{cur_author.github}}')" >Befriend</button></li>
       						{% endif %}
 
@@ -150,7 +150,7 @@
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
                   <div class="post-container">
-                    <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
+                    <img src="{% static 'images/user.png' %}" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
                       <h5>Source: <a href="{{cur_post.source}}">{{cur_post.source}}</a> </h5>
                       <h5>Origin: <a href="{{cur_post.origin}}">{{cur_post.origin}}</a> </h5>
@@ -197,8 +197,8 @@
                       {% for comment in cur_post.comments.all %}
                       <div class="post-comment">
                         <div>
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                        <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a> 
+                        <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
+                        <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a>
                         </div>
 
                         {% if 'plain' in comment.contentType %}
@@ -212,8 +212,8 @@
                         {% endif %}
                       </div>
 
-                      <!--                             <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
+                      <!-- <div class="reaction-img">
+                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like">{{ comment.likes | length }}</i></a>
                       </div> -->
                       {% endfor %}
 

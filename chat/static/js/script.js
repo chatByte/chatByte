@@ -116,7 +116,7 @@ function create_following() {
 // add myself to be others followers
 function putFollow(type, id, host, displayName, url, github, foreignId){
   create_following();
-  
+
   x_server = foreignId.split("author/")[0];
 
 
@@ -212,14 +212,14 @@ function sendFriendRequest(type, summary, author, object) {
       console.log(author);
       console.log(object);
     },
-    
+
     // handle a successful response
     success : function(data) {
         // sanity check
-        console.log(data); 
+        console.log(data);
     },
   });
-} 
+}
 
 
 
@@ -229,7 +229,7 @@ function be_friend(type, id, host, displayName, url, github) {
 
 
 
-    var actor = 
+    var actor =
     { type: type,
       id: id,
       host: host,
@@ -241,7 +241,7 @@ function be_friend(type, id, host, displayName, url, github) {
     //http://127.0.0.1:8000/author/6/my_stream/david/1/
     url:window.location.origin+'/get_user/'+ new_url[6].toString() +"/"+ new_url[7].toString() +'/',
     type:"GET",
-    
+
     beforeSend: function(xhr) {
       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
     },
@@ -430,23 +430,26 @@ jQuery(document).ready(function($) {
   //     $(".badge").text(parseInt(inbox_num) - 1);
   //   }
 
-  //   $.ajax({
-  //     // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
-  //     url:url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/',
-  //     type: "GET", // http method
-  //     headers: {"X-Server": x_server},
-  //     beforeSend: function(xhr) {
-  //       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-  //     },
-  //     contentType: false,
-  //     processData: false,
-  //     dataType: "json",
-  //     // handle a successful response
-  //     success : function(data) {
-  //         console.log(data); // sanity check
-  //     },
-  //   });
-  // });
+
+    console.log(url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/')
+    $.ajax({
+      // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
+      url:url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/',
+      type: "GET", // http method
+      headers: {"X-Server": x_server},
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      },
+      contentType: false,
+      processData: false,
+      dataType: "json",
+      // handle a successful response
+      success : function(data) {
+          console.log(data); // sanity check
+      },
+    });
+  });
+
 
   // // handle reject of friend request
   // $('body').on('click', '.reject', function(){
@@ -564,4 +567,4 @@ jQuery(document).ready(function($) {
 
   // setInterval(ifFriendRequest, 5000);
 
-});
+// });
