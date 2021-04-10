@@ -7,8 +7,8 @@ from .models import *
 
 
 # host = "https://chatbyte.herokuapp.com/"
-host = "http://127.0.0.1:8000/"
-# host = "https://app-chatbyte.herokuapp.com/"
+# host = "http://127.0.0.1:8000/"
+host = "https://app-chatbyte.herokuapp.com/"
 # host = "https://chatbyte.herokuapp.com/"
 # host = "https://localhost:8000/"
 
