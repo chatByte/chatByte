@@ -91,7 +91,7 @@ function create_following() {
 
     $.ajax({
     // "author/<str:AUTHOR_ID>/following/<str:FOREIGN_AUTHOR_ID>/"
-    url:window.location.origin+'api/author/'+ cur_author_id +'/following/' + new_url[6] + "/" + foreign_id + "/", 
+    url:window.location.origin+'/author/'+ cur_author_id +'/following/' + new_url[6] + "/" + foreign_id + "/", 
     type: "POST", // http method
     // header
     headers: {"X-SERVER": x_server},
@@ -127,7 +127,7 @@ function putFollow(type, id, host, displayName, url, github, foreignId){
 
 
 
-    url:window.location.origin+'api/author/'+ new_url[7].toString() +'/followers/'+new_url[4].toString(),
+    url:window.location.origin+'/author/'+ new_url[7].toString() +'/followers/'+new_url[4].toString(),
     type: "PUT", // http method
     // header
     headers: {"X-SERVER": x_server},
@@ -198,7 +198,7 @@ function sendFriendRequest(type, summary, author, object) {
   console.log("sending Friend Request");
   $.ajax({
     // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
-    url: window.location.origin +'/api/author/'+ new_url[4].toString() +'/inbox/',
+    url: window.location.origin +'/author/'+ new_url[4].toString() +'/inbox/',
     type : 'POST', // http method
     contentType: "application/json",
     processData: false,
@@ -506,7 +506,7 @@ jQuery(document).ready(function($) {
     $.ajax({
       // author/<str:AUTHOR_ID>/inbox/
       type: "POST", // http method
-      url:window.location.origin+'api/author/'+ new_url[4].toString() +'/inbox/',
+      url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
       // header
       headers: {"X-Server": x_server},
       beforeSend: function(xhr) {
