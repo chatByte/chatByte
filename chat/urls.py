@@ -87,7 +87,7 @@ urlpatterns = [
 
     #Get likes for a Post
     path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
-    path("author/<str:AUTHOR_ID>/inbox/", api.inbox, name="inbox"),
+    path("author/<str:AUTHOR_ID>/inbox", api.inbox, name="inbox"),
 
     # # Get likes for a Comment
     path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment"),
