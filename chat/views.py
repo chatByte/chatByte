@@ -132,7 +132,7 @@ def my_stream(request, AUTHOR_ID):
                     post_id = post['id']
                     try:
                         post_obj = Post.objects.get(id=post_id)
-                        serializer = PostSerializer(post_obj, data=post)
+                        serializer = PostSerializer(post_obj, data=post, partial=True)
                         if serializer.is_valid(raise_exception=True):
                             serializer.save()
                     except Post.DoesNotExist:
