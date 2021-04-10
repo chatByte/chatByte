@@ -18,6 +18,13 @@ import os
 import json
 from .remoteProxy import *
 
+from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
+
+import requests
+
+
 
 """
 views.py receive request and create repose to client,
@@ -103,14 +110,17 @@ def my_stream(request, AUTHOR_ID):
         cur_user_name = request.user.username
 
     cur_author = request.user
-
+    # back_json = get_github_activity(request, AUTHOR_ID)
+    # print("github", back_json)
 
     if request.method == "GET":
 
         # a list of post, django.db.models.query.QuerySet
         mytimeline = cur_author.profile.timeline
-        all_public_posts = Post.objects.filter(visibility='public').filter(visibility='false').all()
-        # author_id = host_server + 'author/' + str(AUTHOR_ID)
+        # github_act_json = github_act_obj(cur_author.id)
+
+        back_json = get_github_activity(request, AUTHOR_ID)
+        # print("github", back_json)
 
         # Get stream from: node origins, since we have plenty remote server
         for node in Node.objects.all():
@@ -180,9 +190,6 @@ def my_stream(request, AUTHOR_ID):
         # merging quesryset
         public_channel_posts = mytimeline.all()
 
-
-        public_channel_posts = public_channel_posts | all_public_posts
-
         for following_profile in followings:
 
             public_posts = following_profile.timeline.filter(visibility='public')
@@ -205,7 +212,7 @@ def my_stream(request, AUTHOR_ID):
 
         liked_objs = cur_author.profile.liked.items.values_list('object', flat=True)
         print("Liked objects: ", liked_objs)
-        print(list(public_channel_posts)[0].likes)
+        # print(list(public_channel_posts)[0].likes)
 
         dynamic_contain = {
             'myName' : cur_author.profile.displayName,
@@ -214,7 +221,8 @@ def my_stream(request, AUTHOR_ID):
             'author_num_follwers': author_num_follwers,
             'friend_request_num': friend_request_num,
             'liked_objs': liked_objs,
-            'friends': myFriends
+            'friends': myFriends,
+            'git_activity_obj': back_json
         }
 
 
@@ -366,9 +374,13 @@ def posts(request, AUTHOR_ID):
             'test_name': cur_user_name,
             'myName' : cur_author.displayName,
             'page_obj' : page_obj,
-            'friend_request_num': friend_request_num,
-
+            'friend_request_num': friend_request_num
         }
+
+
+
+
+
 
 
 
@@ -784,7 +796,30 @@ def reshare(request, AUTHOR_ID):
     #     return JsonResponse({}, status=400)
 
 
-
+@login_required
+@require_http_methods(["GET"])
+def get_github_activity(request, AUTHOR_ID):
+    try:
+        token = os.getenv('GITHUB_TOKEN')
+        user = User.objects.get(id=AUTHOR_ID)
+        github_name = user.profile.github.split('/')[-1]
+        # print(token)
+        # owner = "MartinHeinz"
+        # repo = "python-project-blueprint"
+        # query_url = f"https://api.github.com/users/${github_name}/events"
+        query_url = f"https://api.github.com/users/%s/events" %github_name
+        params = {
+            "state": "open",
+        }
+        headers = {'Authorization': f'token {token}'}
+        r = requests.get(query_url)
+        # pprint(r.json())
+        return r.json()
+    except Exception as e:
+        print(e)
+        return None
+    # pprint(r.json())  
+    
 
 '''
 Below is the dead code, or previous version, keep it , incase need that in the future

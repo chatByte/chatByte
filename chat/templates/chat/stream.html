@@ -112,7 +112,9 @@
                   <h4 class="blue"><i class="fab fa-github"></i>&thinsp;My Github Activity</h4>
                   <div class="feed-item">
                     <div class="live-activity">
-                      <p>I Posted on a Photo</p>
+                      {% for cur_obj in git_activity_obj %}
+                      <p>{{cur_obj.id}}</p>
+                      {% endfor %}
                       <p class="text-muted"> xxxx mins ago</p>
                     </div>
                   </div>
