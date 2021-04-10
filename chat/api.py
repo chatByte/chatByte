@@ -131,7 +131,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
             except Post.DoesNotExist:
                 return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
             data = JSONParser().parse(request)
-            serializer = PostSerializer(post, data=data)
+            serializer = PostSerializer(post, data=data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return JsonResponse(serializer.data, status=201)
@@ -201,7 +201,7 @@ def posts_obj(request, AUTHOR_ID):
             serializer = PostSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
                 profile = Profile.objects.get(id=AUTHOR_ID)
-                post = serializer.save(author=profile)
+                post = serializer.save()
                 print(post)
                 profile.timeline.add(post)
                 profile.save()
@@ -363,7 +363,7 @@ def profile_obj(request, AUTHOR_ID):
             return JsonResponse(serializer.data, status=201)
         elif request.method == "POST":
             data = JSONParser().parse(request)
-            serializer = ProfileSerializer(profile, data=data)
+            serializer = ProfileSerializer(profile, data=data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return JsonResponse(serializer.data, status=200)
@@ -905,7 +905,7 @@ def stream_obj(request, AUTHOR_ID):
                     print(profile)
                 except Profile.DoesNotExist:
                     print("profile not found!")
-                posts_result = Post.objects.filter(visibility='public')
+                posts_result = Post.objects.filter(visibility='public').filter(unlisted=False)
                 print(posts_result)
                 # all_author_posts = Post.objects.filter(author=profile)
                 # print(all_author_posts)
