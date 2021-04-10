@@ -260,15 +260,16 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
     # ex. equest.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
+    USER_POST_ID = POST_ID
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+        POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+        POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("author id: ", AUTHOR_ID)
-    USER_POST_ID = POST_ID
-    POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
 
     if server_origin is not None and server_origin != host_server:
