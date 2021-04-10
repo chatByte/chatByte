@@ -44,6 +44,26 @@ Design for giving our brother all posts, since we love each other
 # permission, -> auth
 @permission_classes([IsAuthenticated])
 def all_posts_obj(request):
+    if request.method == 'GET':
+        posts = Post.objects
+        # print(posts.all())
+        posts = posts.order_by('-published')
+
+        # serializer = PostSerializer(posts, many=True)
+        # pagination
+        pagination = PageNumberPagination()
+        paginated_results = pagination.paginate_queryset(posts.all(), request)
+
+        serializer = PostSerializer(paginated_results, many=True)
+
+        data = {
+            'count': pagination.page.paginator.count,
+            'next': pagination.get_next_link(),
+            'previous': pagination.get_previous_link(),
+            'posts': serializer.data,
+        }
+        return JsonResponse(data, safe=False)
+
     
 
 
@@ -153,7 +173,7 @@ def posts_obj(request, AUTHOR_ID):
         if request.method == 'GET':
             profile = Profile.objects.get(id=AUTHOR_ID)
             posts = profile.timeline
-            print(posts.all())
+            # print(posts.all())
             posts = posts.filter(author=profile).order_by('-published')
 
             # serializer = PostSerializer(posts, many=True)

@@ -29,6 +29,8 @@ def profileRequest(method, origin, user_id, data=None):
         print(response.status_code)
     return response
 
+
+
 def postsRequest(method, origin, user_id, data=None):
     '''
     This function send a request to the remote server at:

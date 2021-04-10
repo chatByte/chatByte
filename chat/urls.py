@@ -8,7 +8,7 @@ urlpatterns = [
     path("", views.start_homepage, name=""),
 
     #deign for give brother all posts
-    path(r"api/all_posts/", api.all_posts_obj, name="all_posts_obj"),
+    path(r"all_posts/", api.all_posts_obj, name="all_posts_obj"),
 
 
     path("author/<str:AUTHOR_ID>/profile/", views.profile, name="profile"),
