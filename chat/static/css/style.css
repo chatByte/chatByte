@@ -484,8 +484,17 @@ Timeline
 }
 
 .post-content .post-container .post-title{
-  font-size: 60px;
-  color: #fff000;
+  font-weight:900;
+  font-size:25px;
+  color:#152238;
+  padding-top: 5px;
+}
+
+.post-content .post-container .post-content-text{
+  font-weight:700;
+  font-size:0px;
+  color:#152238;
+  padding-top: -10px;
 }
 
 .post-content .post-container .post-date{
@@ -514,36 +523,21 @@ Timeline
   padding: 0;
 }
 
-
 .post-content .post-container .post-detail .post-comment{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 10px auto;
-  width: 100%;
-}
-
-
-
-.post-content .post-container .post-detail .post-comment{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: inline-flex;
   margin: 10px auto;
   width: 100%;
 }
 
 
 .post-content .post-container .post-detail .post-comment .post-commentor{
-  margin-right: 1px auto;
+  display: block;
+  margin: 1px auto auto 0px;
 }
 
 .post-content .post-container .post-detail .post-comment .post-comment-contain{
-  margin-right: 1px auto;
+  margin: -10px auto auto auto;
 }
-
-
-
 
 .post-content .post-container .post-detail .post-comment img.profile-photo-sm{
   margin-right: 10px;
@@ -573,14 +567,17 @@ Timeline
   background: none;
   width: 1px;
   height: 98%;
-  left: -145px;
+  left: -100px;
   border-left: 2px solid #8dc63f;
   top: 0px;
 }
 
 .timeline .post-content .post-date{
   position: absolute;
-  margin-left: -125px;
+  margin-left: -205px;
+  margin-top: 5px;
+  color: grey;
+  max-width: 130px;
 }
 
 .timeline .post-content .post-date::before{
@@ -590,8 +587,8 @@ Timeline
   width: 20px;
   height: 20px;
   border-radius: 10px;
-  left: -30px;
-  top: 10px;
+  left: 10px;
+  bottom: 40px;
   border: 2px solid #fff;
 }
 
