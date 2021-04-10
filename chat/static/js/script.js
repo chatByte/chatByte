@@ -91,7 +91,7 @@ function create_following() {
 
     $.ajax({
     // "author/<str:AUTHOR_ID>/following/<str:FOREIGN_AUTHOR_ID>/"
-    url:window.location.origin+'/author/'+ cur_author_id +'/following/' + new_url[6] + "/" + foreign_id + "/", 
+    url:window.location.origin+'/author/'+ cur_author_id +'/following/' + new_url[6] + "/" + foreign_id + "/",
     type: "POST", // http method
     // header
     headers: {"X-SERVER": x_server},

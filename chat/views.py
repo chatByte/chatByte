@@ -110,7 +110,7 @@ def my_stream(request, AUTHOR_ID):
         # a list of post, django.db.models.query.QuerySet
         mytimeline = cur_author.profile.timeline
         all_public_posts = Post.objects.filter(visibility='public').filter(visibility='false').all()
-
+        # author_id = host_server + 'author/' + str(AUTHOR_ID)
 
         # Get stream from: node origins, since we have plenty remote server
         for node in Node.objects.all():
@@ -782,6 +782,8 @@ def reshare(request, AUTHOR_ID):
     return response
     # except:
     #     return JsonResponse({}, status=400)
+
+
 
 
 '''

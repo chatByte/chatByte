@@ -63,7 +63,7 @@ function readImg(input) {
 function likePost(post_id, liked) {
   // like a post
   if (liked) return;
-    
+
   var csrftoken = getCookie('csrftoken');
 
   // var post_id = $(this).closest('.post-content').attr('id');
@@ -132,8 +132,9 @@ function reshare(post_id){
 
 jQuery(document).ready(function($) {
   const csrftoken = getCookie('csrftoken');
+  console.log(x_server + '/author/' +new_url[4].toString() + '/github/');
 
-  
+
   // deal with 2 dropdown lists: visibility and contentType
   $('div.dropdown-content a').click(function(e)
   {
@@ -204,7 +205,7 @@ jQuery(document).ready(function($) {
   // create a new comment
   $('.submitComment').click(function(e){
     console.log("here");
-    
+
     var csrftoken = getCookie('csrftoken');
 
     var description = document.getElementById("description").value;
