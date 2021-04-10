@@ -385,7 +385,7 @@ def profile_obj(request, AUTHOR_ID):
     print("Request origin: ", server_origin)
     origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
