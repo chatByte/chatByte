@@ -18,11 +18,6 @@ import os
 import json
 from .remoteProxy import *
 
-from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic.detail import DetailView
-from django.views.generic.list import ListView
-
-
 
 """
 views.py receive request and create repose to client,
@@ -787,7 +782,7 @@ def reshare(request, AUTHOR_ID):
     return response
     # except:
     #     return JsonResponse({}, status=400)
-    
+
 
 '''
 Below is the dead code, or previous version, keep it , incase need that in the future

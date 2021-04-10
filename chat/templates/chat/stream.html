@@ -109,25 +109,14 @@
               <div class="activities">
                 <!--Activity SUmmary-->
                 <div id="sticky-sidebar">
-                  <h4 class="blue">My activity</h4>
+                  <h4 class="blue">My Github Activity</h4>
                   <div class="feed-item">
                     <div class="live-activity">
                       <p>I Posted on a Photo</p>
                       <p class="text-muted"> xxxx mins ago</p>
                     </div>
                   </div>
-                  <div class="feed-item">
-                    <div class="live-activity">
-                      <p>I Has posted text</p>
-                      <p class="text-muted">xxxx days ago</p>
-                    </div>
-                  </div>
-                  <div class="feed-item">
-                    <div class="live-activity">
-                      <p>I Liked her friend's post</p>
-                      <p class="text-muted">1 month ago</p>
-                    </div>
-                  </div>
+
                 </div>
               </div>
             </div>
@@ -138,7 +127,7 @@
                 <!-- Post Content ================================================= -->
                 <div class="post-content">
                   {% if 'image/' in cur_post.contentType  %}
-                  
+
                   {% load filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
