@@ -107,11 +107,11 @@ def my_stream(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
-
+    print(" before gugua ? ")
     cur_author = request.user
     back_json = get_github_activity(request, AUTHOR_ID)
     # print("github", back_json)
-
+    print("after gugua ? ")
     if request.method == "GET":
 
         # a list of post, django.db.models.query.QuerySet
@@ -233,6 +233,8 @@ def my_stream(request, AUTHOR_ID):
         return response
 
     elif request.method == "POST":
+
+
 
         request_post = JSONParser().parse(request)
         # Front end need to tell me the type
@@ -797,6 +799,8 @@ def reshare(request, AUTHOR_ID):
 @login_required
 @require_http_methods(["GET"])
 def get_github_activity(request, AUTHOR_ID):
+    print("miaoamiaoa")
+
     try:
         token = os.getenv('GITHUB_TOKEN')
         user = User.objects.get(id=AUTHOR_ID)
