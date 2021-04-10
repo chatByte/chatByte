@@ -42,10 +42,13 @@ urlpatterns = [
     # add friend
     path(r"author/<str:AUTHOR_ID>/friends/add/<str:FRIEND_ID>/", views.add_friend, name="friend_add"),
 
-    path(r"author/<str:AUTHOR_ID>/friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
-    path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
+    # path(r"author/<str:AUTHOR_ID>/friends/accept/<str:FRIEND_REQUEST_ID>/", views.accept_friend_request, name="accept_friend_request"),
+    # path(r"author/<str:AUTHOR_ID>/friends/reject/<str:FRIEND_REQUEST_ID>/", views.reject_friend_request, name="reject_friend_request"),
 
+    path(r"author/<str:AUTHOR_ID>/makefriend/", views.make_friend, name="make_friend"),
+    path(r"author/<str:AUTHOR_ID>/unbefriend/", views.unbefriend, name="unbefriend"),
 
+    path(r"author/<str:AUTHOR_ID>/reshare/", views.reshare, name="reshare"),
 
     # URL: ://service/author/{AUTHOR_ID}/followers/
     path(r"author/<str:AUTHOR_ID>/followers/", api.followers_obj, name="followers_obj"),
@@ -94,18 +97,15 @@ urlpatterns = [
 
 
 
-
     # TODO ----------------------------------------------------------------------------------------------------
 
     # # show friend list
     # path("author/<str:AUTHOR_ID>/friends/delete/<str:FRIEND_ID>/", api.delete_friend_obj, name="friend_delete"),
     # delete friend
-
     # # Create a Like for either a Post or a Comment
     # # This also as a side effect, sends to Inbox
 
     ##### path("author/<str:AUTHOR_ID>/likes/", api.likes_obj, name="likes")
-
     # check if new friend request
     # path("ifFriendRequest/", views.if_friend_request, name="if_friend_request"),
 

@@ -33,7 +33,7 @@
           <!-- Brand and toggle get grouped for better mobile display -->
           <!-- left most logo -->
           <div class="navbar-header">
-            <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a>
+            <!-- <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a> -->
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -55,13 +55,16 @@
               <li class="dropdown" id="myInbox">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
-                  {% for friend_requests in user.profile.friend_requests.all %}
+                  <!-- {% for friend_requests in user.profile.friend_requests.all %}
                     <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
-                  {% endfor %}
+                  {% endfor %} -->
+                  {% for friend_request in user.inbox.friend_requests.all %}
+                    <li><a >{{friend_request.summary}}</a><button class="accept" onclick="accept_or_reject('accept', '{{friend_request.id}}')">Accept</button><button class="reject" onclick="accept_or_reject('reject', '{{friend_request.id}}')">Reject</button></li>
+                  {% endfor %}  
                 </ul>
               </li>
 
-
+              <li class="dropdown"><a href="/accounts/logout">Logout</a></li>
 
             </ul>
 
@@ -88,7 +91,7 @@
                   {% if isFollowing %}
                     <h4 style="display: block" id="following">Following</h4>
                   {% else %}
-                    <a href="." ><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" id='followBtn' 
+                    <a href="." ><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" id='followBtn'
                             onclick="putFollow( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}', '{{cur_author.url}}', '{{cur_author.github}}', '{{foreignId}}')"/></a>
                   {% endif %}
 
@@ -96,12 +99,11 @@
               </div>
               <div class="col-md-9">
                 <ul class="list-inline profile-menu">
-                  <li><a href="" class="active">Her Timeline</a></li>
-                  <li><a href="">Her Friends</a></li>
+                  <li><a href="" class="active">Her Posts</a></li>
                   {% if isFriend %}
-                    <li><button class="btn-primary unfriend" href="../../friends/delete/{{foreignId}}/">Unfriend</button></li>
+                    <!-- <li><button class="btn-primary unfriend" href="../../my_friends/delete/{{foreignId}}/">Unfriend</button></li> -->
                   {% else %}
-                    <li><button class="btn-primary befriend" value="../../friends/add/{{foreignId}}/" 
+                    <li><button class="btn-primary befriend" value="../../friends/add/{{foreignId}}/"
                         onclick="be_friend( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}', '{{cur_author.url}}', '{{cur_author.github}}')" >Befriend</button></li>
       						{% endif %}
 
@@ -143,14 +145,15 @@
                   <div class="post-date">
 
                   </div><!--Post Date End-->
-                  {% if 'image/' in cur_post.categories  %}
-                  {% load image_filter %}
-                  <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.CONTENT | bin_2_img }}"/>
+                  {% if 'image/' in cur_post.contentType  %}
+                  {% load filter %}
+                  <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
-                  <!-- <img src="https://static.wikia.nocookie.net/jjba/images/a/ad/Spur.jpg/revision/latest?cb=20181031225100" alt="post-image" class="img-responsive post-image" /> -->
                   <div class="post-container">
-                    <img src="https://i.pinimg.com/originals/12/d2/b8/12d2b840a76ddc069cbdbb285100ae3d.png" alt="user" class="profile-photo-md pull-left" />
+                    <img src="{% static 'images/user.png' %}" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
+                      <h5>Source: <a href="{{cur_post.source}}">{{cur_post.source}}</a> </h5>
+                      <h5>Origin: <a href="{{cur_post.origin}}">{{cur_post.origin}}</a> </h5>
                       <div class="user-info">
                         <h5><a href="" class="profile-link" id="fullName">{{cur_post.author.displayName}}</a> </h5>
                         <p class="text-grey post_date" >{{cur_post.published}} </p>
@@ -159,10 +162,19 @@
                       </div>
                       <hr class="solid">
                       <div class="post-text">
-                        <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">{{ cur_post.title}}</p>
 
-                        {% if 'text/' in cur_post.categories  %}
-                        <p> {{cur_post.content}} </p>
+                        <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">
+                          {{ cur_post.title}}
+                        </p>
+
+                        {% if 'plain' in cur_post.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ cur_post.description | linebreaks }}
+                        </p>
+                        {% elif 'markdown' in cur_post.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ cur_post.description | markdown | safe }}
+                        </p>
                         {% endif %}
 
                 <!--         <form action="/chat/feed/edit{{ cur_post.ID }}/" method="post" class="edit-block" style="display: none">
@@ -177,27 +189,39 @@
 
                       <div class="reaction-img">
                         <a class="btn text-red"><i class="icon ion-ios-heart"></i>{{ cur_post.likes | length }}</a>
-                        <a class="btn text-green"><i class="icon ion-share"></i></a>
+                        <a class="btn text-green" onclick="reshare('{{cur_post.id}}')"><i class="icon ion-share"></i></a>
                       </div>
 
                       <hr class="solid">
-<!--            show nested comment  -->
-            {% for comment in cur_post.COMMENTS.all %}
+                      <!--            show nested comment  -->
+                      {% for comment in cur_post.comments.all %}
                       <div class="post-comment">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRORBz8JA-W7NGNWIwUpUiTI4XkICdyLrXFBw&usqp=CAU" alt="" class="profile-photo-sm" />
-                        <p><a href="" class="profile-link">Dad </a> Sooooo goood brooooooooooo </p>
+                        <div>
+                        <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
+                        <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a>
+                        </div>
+
+                        {% if 'plain' in comment.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ comment.comment | linebreaks }}
+                        </p>
+                        {% elif 'markdown' in comment.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ comment.comment | markdown | safe }}
+                        </p>
+                        {% endif %}
                       </div>
 
-                      <div class="reaction-img">
-                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a>
-                      </div>
+                      <!-- <div class="reaction-img">
+                        <a class="btn text-red"><i class="icon ion-ios-heart comment-like">{{ comment.likes | length }}</i></a>
+                      </div> -->
                       {% endfor %}
 
-                      <div class="post-comment">
+                      <!-- <div class="post-comment">
                         <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
                         <a href="" class="profile-link">{{user.profile.displayName}} </a>
                         <input type="text" class="form-control" placeholder="Post a comment">
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>

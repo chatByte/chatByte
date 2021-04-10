@@ -246,6 +246,7 @@ def streamRequest(origin, user_id):
     '''
 
     url = str(origin) + "author/" + str(user_id) + "/stream/"
+    print(url)
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 

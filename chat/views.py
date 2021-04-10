@@ -108,53 +108,58 @@ def my_stream(request, AUTHOR_ID):
         cur_user_name = request.user.username
 
     cur_author = request.user
-    # a list of post, django.db.models.query.QuerySet
-    mytimeline = cur_author.profile.timeline
 
-    # Get stream from: node origins, since we have plenty remote server
-    for node in Node.objects.all():
-        print("Get stream from: ", node.origin)
-        print("Username: ", node.username, " password: ", node.password)
-        res = streamRequest(node.origin, request.user.id)
-        try:
-            data = res.json()
-            # print(data['posts'])
-            for post in data['posts']:
-                # print("Post id: ", post['id'])
-                post_id = post['id']
-                try:
-                    post_obj = Post.objects.get(id=post_id)
-                except Post.DoesNotExist:
-                    author_dict = post['author']
-                    # print("Author dict: ", author_dict)
+
+    if request.method == "GET":
+
+        # a list of post, django.db.models.query.QuerySet
+        mytimeline = cur_author.profile.timeline
+        github_act_json = github_act_obj(cur_author.id)
+
+        # Get stream from: node origins, since we have plenty remote server
+        for node in Node.objects.all():
+            print("Get stream from: ", node.origin)
+            print("Username: ", node.username, " password: ", node.password)
+            res = streamRequest(node.origin, request.user.id)
+            try:
+                data = res.json()
+                # print(data['posts'])
+                for post in data['posts']:
+                    # print("Post id: ", post['id'])
+                    post_id = post['id']
                     try:
-                        author = Profile.objects.get(id=author_dict['id'])
-                    except Profile.DoesNotExist:
-                        author_serializer = ProfileSerializer(data=author_dict)
-                        if author_serializer.is_valid(raise_exception=True):
-                            author = author_serializer.save()
-                    comments_dict = post['comments']
-                    comments_list = list()
-                    for comment in comments_dict:
-                        # print("Comment: ", comment)
+                        post_obj = Post.objects.get(id=post_id)
+                    except Post.DoesNotExist:
+                        author_dict = post['author']
+                        # print("Author dict: ", author_dict)
                         try:
-                            comment_obj = Comment.objects.get(id=comment['id'])
-                            comments_list.append(comment_obj)
-                        except Comment.DoesNotExist:
-                            comm_author_dict = comment['author']
-                            print("Comment author: ", comm_author_dict)
+                            author = Profile.objects.get(id=author_dict['id'])
+                        except Profile.DoesNotExist:
+                            author_serializer = ProfileSerializer(data=author_dict)
+                            if author_serializer.is_valid(raise_exception=True):
+                                author = author_serializer.save()
+                        comments_dict = post['comments']
+                        comments_list = list()
+                        for comment in comments_dict:
+                            # print("Comment: ", comment)
                             try:
-                                comm_author = Profile.objects.get(id=comm_author_dict['id'])
-                            except Profile.DoesNotExist:
-                                author_serializer = ProfileSerializer(data=comm_author_dict)
-                                if author_serializer.is_valid(raise_exception=True):
-                                    comm_author = author_serializer.save()
-                            comment_serializer = CommentSerializer(data=comment)
-                            print(comment_serializer)
-                            if comment_serializer.is_valid(raise_exception=True):
-                                comment_obj = comment_serializer.save(author=comm_author)
-                                print("Created comment obj: ", comment_obj)
+                                comment_obj = Comment.objects.get(id=comment['id'])
                                 comments_list.append(comment_obj)
+                            except Comment.DoesNotExist:
+                                comm_author_dict = comment['author']
+                                print("Comment author: ", comm_author_dict)
+                                try:
+                                    comm_author = Profile.objects.get(id=comm_author_dict['id'])
+                                except Profile.DoesNotExist:
+                                    author_serializer = ProfileSerializer(data=comm_author_dict)
+                                    if author_serializer.is_valid(raise_exception=True):
+                                        comm_author = author_serializer.save()
+                                comment_serializer = CommentSerializer(data=comment)
+                                print(comment_serializer)
+                                if comment_serializer.is_valid(raise_exception=True):
+                                    comment_obj = comment_serializer.save(author=comm_author)
+                                    print("Created comment obj: ", comment_obj)
+                                    comments_list.append(comment_obj)
 
                     serializer = PostSerializer(data=post)
                     # print("here")
@@ -162,75 +167,105 @@ def my_stream(request, AUTHOR_ID):
                     if serializer.is_valid(raise_exception=True):
                         serializer.save(author=author) # comments=comments_list
                         post_obj = Post.objects.get(id=post_id)
-                # add stream post into public channel
-                mytimeline.add(post_obj)
-                # print("Post object", post_obj)
-        except BaseException as e:
-            print(e)
+                    # add stream post into public channel
+                    mytimeline.add(post_obj)
+                    # print("Post object", post_obj)
+            except BaseException as e:
+                print(e)
 
 
 
-    # a group of author, that i am currently following, django.db.models.query.QuerySet
-    followings = cur_author.profile.followings.all()
+        # a group of author, that i am currently following, django.db.models.query.QuerySet
+        followings = cur_author.profile.followings.all()
 
-    # merging quesryset
-    public_channel_posts = mytimeline.all()
+        # similar to followings, but a list of Friends
+        myFriends = cur_author.profile.friends
 
-    for following_profile in followings:
+        # merging quesryset
+        public_channel_posts = mytimeline.all()
 
-        public_posts = following_profile.timeline.filter(visibility='public')
-        public_channel_posts = public_channel_posts | public_posts
+        for following_profile in followings:
 
-
-    author_num_follwers = len(cur_author.profile.followers.items.all())
-    friend_request_num = len(cur_author.profile.friend_requests.all())
-    # order by date
-    public_channel_posts = public_channel_posts.order_by('-published')
-
-    # create a paginator
-    paginator_public_channel_posts = Paginator(public_channel_posts, 8) # Show 8 contacts per page.
-
-    # if  page_number == None, we will get first page(can be empty)
-    page_number = request.GET.get('page')
+            public_posts = following_profile.timeline.filter(visibility='public')
+            public_channel_posts = public_channel_posts | public_posts
 
 
-    page_obj = paginator_public_channel_posts.get_page(page_number)
+        author_num_follwers = len(cur_author.profile.followers.items.all())
+        friend_request_num = len(cur_author.inbox.friend_requests.all())
+        # order by date
+        public_channel_posts = public_channel_posts.order_by('-published')
 
-    liked_objs = cur_author.profile.liked.items.values_list('object', flat=True)
-    print("Liked objects: ", liked_objs)
-    print(list(public_channel_posts)[0].likes)
+        # create a paginator
+        paginator_public_channel_posts = Paginator(public_channel_posts, 8) # Show 8 contacts per page.
 
-    dynamic_contain = {
-        'myName' : cur_author.profile.displayName,
-        'public_channel_posts': public_channel_posts,
-        'page_obj': page_obj,
-        'author_num_follwers': author_num_follwers,
-        'friend_request_num': friend_request_num,
-        'liked_objs': liked_objs
-    }
+        # if  page_number == None, we will get first page(can be empty)
+        page_number = request.GET.get('page')
 
 
-    if request.method == "GET":
+        page_obj = paginator_public_channel_posts.get_page(page_number)
+
+        liked_objs = cur_author.profile.liked.items.values_list('object', flat=True)
+        print("Liked objects: ", liked_objs)
+        # print(list(public_channel_posts)[0].likes)
+
+        dynamic_contain = {
+            'myName' : cur_author.profile.displayName,
+            'public_channel_posts': public_channel_posts,
+            'page_obj': page_obj,
+            'author_num_follwers': author_num_follwers,
+            'friend_request_num': friend_request_num,
+            'liked_objs': liked_objs,
+            'friends': myFriends
+        }
+
+
         response = render(request, "chat/stream.html", dynamic_contain)
+
         return response
 
     elif request.method == "POST":
 
-        request_post = request.POST
+        request_post = JSONParser().parse(request)
         # Front end need to tell me the type
-        print("_________________________________________________________")
-        print(type(request_post))
+        contentType = request_post.get("type","")
+        cur_author_id = cur_author.profile.id
+
+        if contentType == "like":
+            object_type = request_post.get("object_type","")
+            object_id = request_post.get("object_id","")
+            if object_type == "post":
+
+                likePost(object_id, cur_author_id)
+
+                response = JsonResponse({'redirect_url': "current"}, status=200)
+                # response = render(request, "chat/stream.html", dynamic_contain)
+            elif object_type == "comment":
+                # TODO waiting backend
+                # object_id = request_post.get("object_id","")
+                likeComment(object_id, cur_author_id)
+                # response = render(request, "chat/stream.html", dynamic_contain)
+                # pass
+                JsonResponse({'redirect_url': "current"}, status=200)
+            else:
+                response = JsonResponse({}, status=400)
+
+        elif contentType == "comment":
+
+            post_id = request_post.get("post_id","")
+            comment_contain = request_post.get("comment","")
+            comment_content_type = request_post.get("content_type","")
+
+            #if successful create a comment
+            if  createComment(cur_author.profile, post_id, comment_contain, comment_content_type) :
+                response = JsonResponse({'redirect_url': "current"}, status=200)
+            else:
+                response = JsonResponse({}, status=500)
+
+        else:
+            response = JsonResponse({}, status=400)
 
 
-        # source = request.user.profile.id # Who share it to me
-        # origin = host_server # who origin create
-        # title = request_post.get("title", "")
-        # description = request_post.get("description", "")
-        # content_type = request_post.get("contentType", "")
-        # visibility = request_post.get("visibility", "")
-
-        testing_response = render(request, "chat/stream.html", dynamic_contain)
-        return testing_response
+        return response
 
 
 
@@ -260,11 +295,17 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
 
         # a list of post
         #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
-        foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['posts']
-        foreign_timeline = PostSerializer(foreign_timeline, many=True).data
+        # try:
+        res = postsRequest("GET", host, FOREIGN_ID)
+        if res.status_code < 400:
+            foreign_timeline = PostSerializer(res.json()['posts'], many=True).data
+        else:
+            foreign_timeline = []
+        # except:
+        #     foreign_timeline = []
 
         author_num_follwers = len(foreign_author.profile.followers.items.all())
-        friend_request_num = len(foreign_author.profile.friend_requests.all())
+        friend_request_num = len(request.user.inbox.friend_requests.all())
 
         dynamic_contain = {
             'foreignName' : foreign_author.profile.displayName,
@@ -294,39 +335,50 @@ def posts(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
-    cur_author = request.user.profile
-    alltimeline = cur_author.timeline.all()
-    #getTimeline(cur_user_name), by SQL query
-    mytimeline = alltimeline.filter(author=cur_author).order_by('-published')
 
-    
-    # create a paginator
-    paginator_mytimeline = Paginator(mytimeline, 8) # Show 8 contacts per page.
-
-    # if  page_number == None, we will get first page(can be empty)
-    page_number = request.GET.get('page')
-
-
-    page_obj = paginator_mytimeline.get_page(page_number)
-
-
-    author_num_follwers = len(cur_author.followers.items.all())
-    friend_request_num = len(cur_author.friend_requests.all())
-
-
-
-    dynamic_contain = {
-        'fullName':'Ritsu Onodera',
-        'author_num_follwers': author_num_follwers,
-        'test_name': cur_user_name,
-        'myName' : cur_author.displayName,
-        'page_obj' : page_obj,
-        'friend_request_num': friend_request_num,
-
-    }
 
     # Get the current pages' author
     if request.method == "GET":
+
+        cur_author = request.user.profile
+        alltimeline = cur_author.timeline.all()
+        #getTimeline(cur_user_name), by SQL query
+        mytimeline = alltimeline.filter(author=cur_author).order_by('-published')
+
+
+        # create a paginator
+        paginator_mytimeline = Paginator(mytimeline, 8) # Show 8 contacts per page.
+
+        # if  page_number == None, we will get first page(can be empty)
+        page_number = request.GET.get('page')
+
+
+        page_obj = paginator_mytimeline.get_page(page_number)
+
+
+        author_num_follwers = len(cur_author.followers.items.all())
+        friend_request_num = len(request.user.inbox.friend_requests.all())
+
+
+
+        dynamic_contain = {
+            'fullName':'Ritsu Onodera',
+            'author_num_follwers': author_num_follwers,
+            'test_name': cur_user_name,
+            'myName' : cur_author.displayName,
+            'page_obj' : page_obj,
+            'friend_request_num': friend_request_num,
+
+        }
+
+
+
+
+
+
+
+
+
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
@@ -334,7 +386,7 @@ def posts(request, AUTHOR_ID):
 
         request_post = request.POST
         source = request.user.profile.id # Who share it to me
-        origin = host_server # who origin create
+        origin = request.user.profile.id # who origin create
         title = request_post.get("title", "")
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
@@ -360,8 +412,9 @@ def posts(request, AUTHOR_ID):
             return response
         else:
             print("server feels sad ", description)
-
-        response = render(request, "chat/posts.html", dynamic_contain)
+            # expect front end redirect
+            response = JsonResponse({}, status=500)
+        # response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
 
@@ -384,8 +437,10 @@ def profile(request, AUTHOR_ID):
     # form.fields['last_name'].initial = profile.displayName
     context = {}
     context['form']= form
+    inbox = request.user.inbox
 
-    friend_request_num = len(profile.friend_requests.all())
+    friend_request_num = len(inbox.friend_requests.all())
+    print(friend_request_num)
 
     context['friend_request_num']=friend_request_num
 
@@ -425,7 +480,7 @@ def my_friends(request,AUTHOR_ID):
     print(friend_list)
     cur_author = request.user.profile
     author_num_follwers = len(cur_author.followers.items.all())
-    friend_request_num = len(cur_author.friend_requests.all())
+    friend_request_num = len(request.user.inbox.friend_requests.all())
     dynamic_contain = {
         'myName' : cur_author.displayName,
         'friend_list': friend_list,
@@ -660,6 +715,105 @@ def following(request, AUTHOR_ID, SERVER, FOREIGN_ID):
     profile.save()
     return JsonResponse({}, status=204)
 
+'''
+decide to accept a friend request or not
+'''
+@login_required
+@require_http_methods(["POST"])
+def make_friend(request, AUTHOR_ID):
+    data = JSONParser().parse(request)
+    request_id = data['request_id']
+    if data['decision'] == "accept":
+        try:
+            friend_request = FriendRequest.objects.get(id=request_id)
+            FriendRequest.objects.get(id=request_id).delete()
+        except:
+            return JsonResponse({}, status=400)
+        new_friend = friend_request.actor
+        request.user.profile.friends.add(new_friend)
+        return JsonResponse({"accept": "true"}, status=200)
+
+    elif data['decision'] == "reject":
+        try:
+            friend_request = FriendRequest.objects.get(id=request_id)
+            FriendRequest.objects.get(id=request_id).delete()
+            return JsonResponse({"reject": "true"}, status=200)
+        except:
+            return JsonResponse({}, status=400)
+
+'''
+delete a friend
+'''
+@login_required
+@require_http_methods(["POST"])
+def unbefriend(request, AUTHOR_ID):
+    data = JSONParser().parse(request)
+    friend_id = data['friend_id']
+    try:
+        old_friend = Profile.objects.get(id=friend_id)
+        user = request.user
+        user.profile.friends.remove(old_friend)
+        user.save()
+        return JsonResponse({"unbefriend": "true"}, status=200)
+    except:
+        return JsonResponse({}, status=400)
+
+
+'''
+reshare a post
+'''
+@login_required
+@require_http_methods(["POST"])
+def reshare(request, AUTHOR_ID):
+    data = JSONParser().parse(request)
+    post_id = data['post_id']
+    #try:
+    post = Post.objects.get(id=post_id)
+
+    source = request.user.profile.id
+    origin = post.origin # who origin create
+    title = post.title
+    description = post.description
+    content_type = post.contentType
+    visibility = post.visibility
+    categories = post.categories
+    content = post.content
+    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
+    if createFlag:
+        response = JsonResponse({"reshare": "true"}, status=200)
+        return response
+    else:
+        response = JsonResponse({"reshare": "false"}, status=400)
+    # response = render(request, "chat/posts.html", dynamic_contain)
+    return response
+    # except:
+    #     return JsonResponse({}, status=400)
+
+
+@login_required
+@require_http_methods(["GET"])
+def get_github_activity(request, AUTHOR_ID):
+    try:
+        token = os.getenv('GITHUB_TOKEN')
+        user = User.objects.get(id=AUTHOR_ID)
+        github_name = user.profile.github.split('/')[-1]
+        # print(token)
+        # owner = "MartinHeinz"
+        # repo = "python-project-blueprint"
+        # query_url = f"https://api.github.com/users/${github_name}/events"
+        query_url = f"https://api.github.com/users/%s/events" %github_name
+        params = {
+            "state": "open",
+        }
+        headers = {'Authorization': f'token {token}'}
+        r = requests.get(query_url)
+        pprint(r.json())
+        return JsonResponse(r.json(), status=200, safe=False)
+    except Exception as e:
+        print(e)
+        return None
+    # pprint(r.json())  
+    
 
 '''
 Below is the dead code, or previous version, keep it , incase need that in the future

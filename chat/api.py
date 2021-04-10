@@ -195,6 +195,8 @@ def posts_obj(request, AUTHOR_ID):
             profile = Profile.objects.get(id=AUTHOR_ID)
             posts = profile.timeline
             print(posts.all())
+            posts = posts.filter(author=profile).order_by('-published')
+
             # serializer = PostSerializer(posts, many=True)
             # pagination
             pagination = PageNumberPagination()
