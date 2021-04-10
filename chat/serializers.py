@@ -52,13 +52,16 @@ class PostSerializer(serializers.ModelSerializer):
             author = Profile.objects.get(id=author_data['id'])
         except:
             author = Profile.objects.create(**author_data)
+        print("---------******************--------------")
         post = Post.objects.create(author=author, **validated_data)
+        print("---------******************************--------------")
         for comment_data in comments_data:
             author_data = comment_data.pop('author')
             try: 
                 com_author = Profile.objects.get(id=author_data['id'])
             except:
                 com_author = Profile.objects.create(**author_data)
+            print("---------********************************--------------")
             comment = Comment.objects.create(author=com_author, **comment_data)
             post.comments.add(comment)
         post.save()
