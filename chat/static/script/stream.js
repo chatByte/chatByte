@@ -171,7 +171,7 @@ jQuery(document).ready(function($) {
 
     $.ajax({
       // author/<str:AUTHOR_ID>/inbox/
-      url:window.location.origin+'/author/'+ new_url[4].toString() +'/inbox/',
+      url:window.location.origin+'api/author/'+ new_url[4].toString() +'/inbox/',
       type: "POST", // http method
       // header
       headers: {"X-SERVER": x_server},
@@ -213,6 +213,8 @@ jQuery(document).ready(function($) {
     // var post_id = $(this).attr('id');
     console.log("post id: ", comment_post_id)
 
+    var x_server = comment_post_id.split('author/')[0]
+    console.log("X-server header: ", x_server);
     var data = {type: "comment",
                 comment: description,
                 post_id: comment_post_id,
