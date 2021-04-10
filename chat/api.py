@@ -654,7 +654,7 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
         likes = post.likes
         serializer = LikeSerializer(likes, many=True)
         # if serializer.is_valid(raise_exception=True):
-        return JsonResponse({"type": "likes", "items": serializer.data}, status=200, safe=False)
+        return JsonResponse(serializer.data, status=200, safe=False)
 
         # return JsonResponse(serializer.errors, status=400)
 
