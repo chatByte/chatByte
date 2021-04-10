@@ -43,6 +43,26 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'comment_url', 'comments', 'published', 'visibility', 'unlisted'  ]
     
+    def create(self, validated_data):
+        comments_data = validated_data.pop('comments')
+        author_data = validated_data.pop('author')
+        
+        try: 
+            author = Profile.objects.get(id=author_data['id'])
+        except:
+            author = Profile.objects.create(**author_data)
+        post = Post.objects.create(author=author, **validated_data)
+        for comment_data in comments_data:
+            author_data = comment_data.pop('author')
+            try: 
+                com_author = Profile.objects.get(id=author_data['id'])
+            except:
+                com_author = Profile.objects.create(**author_data)
+            comment = Comment.objects.create(author=com_author, **comment_data)
+            post.comments.add(comment)
+        post.save()
+        return post
+    
     def update(self, instance, validated_data):
         print("---------***--------------")
         print(validated_data)

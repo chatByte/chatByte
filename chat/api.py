@@ -195,7 +195,7 @@ def posts_obj(request, AUTHOR_ID):
             serializer = PostSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
                 profile = Profile.objects.get(id=AUTHOR_ID)
-                post = serializer.save(author=profile)
+                post = serializer.save()
                 print(post)
                 profile.timeline.add(post)
                 profile.save()
