@@ -495,7 +495,7 @@ POST a friend: Response(200)
 <i>Get all Posts from our server( to other servers), since we are family </i>
 
 ```
-URL https://app-chatbyte.herokuapp.com/api/all_posts/
+URL https://app-chatbyte.herokuapp.com/all_posts/
 ```
 
 Response (200):
