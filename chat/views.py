@@ -88,7 +88,7 @@ def signup(request):
         username = form.cleaned_data.get('username')
         messages.success(request, f'Your account has been created! You are now able to log in')
         return redirect('login')
-        
+
     return render(request, 'registration/signup.html', {'form': form})
 
 
@@ -779,7 +779,8 @@ def reshare(request, AUTHOR_ID):
     visibility = post.visibility
     categories = post.categories
     content = post.content
-    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
+    unlisted = str(post.unlisted)
+    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted)
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response
