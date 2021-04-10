@@ -20,6 +20,12 @@ from .remoteProxy import *
 from .signals import host as host_server
 import json
 
+import requests
+import os
+from pprint import pprint
+
+
+
 class CsrfExemptSessionAuthentication(SessionAuthentication):
 
     def enforce_csrf(self, request):
@@ -942,3 +948,30 @@ def stream_obj(request, AUTHOR_ID):
                 'posts': serializer.data,
             }
             return JsonResponse(data, safe=False)
+
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def github_act_obj(request, AUTHOR_ID):
+    try:
+        token = os.getenv('GITHUB_TOKEN')
+        user = User.objects.get(id=AUTHOR_ID)
+        github_name = user.profile.github.split('/')[-1]
+        # print(token)
+        # owner = "MartinHeinz"
+        # repo = "python-project-blueprint"
+        # query_url = f"https://api.github.com/users/${github_name}/events"
+        query_url = f"https://api.github.com/users/%s/events" %github_name
+        params = {
+            "state": "open",
+        }
+        headers = {'Authorization': f'token {token}'}
+        r = requests.get(query_url)
+        pprint(r.json())
+        return JsonResponse(r.json(), status=200, safe=False)
+    except Exception as e:
+        print(e)
+        return None
+    # pprint(r.json())    
