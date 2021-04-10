@@ -323,7 +323,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
                 res = profileRequest("GET", origin_server, author_id)
                 print("Profile from comment: ", res)
                 print("Content: ", res.json())
-                author_ser = ProfileSerializer(res.json())
+                author_ser = ProfileSerializer(data=res.json())
                 if author_ser.is_valid():
                     author = author_ser.save()
             
