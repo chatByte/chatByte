@@ -799,8 +799,6 @@ def reshare(request, AUTHOR_ID):
 @login_required
 @require_http_methods(["GET"])
 def get_github_activity(request, AUTHOR_ID):
-    print("miaoamiaoa")
-
     try:
         token = os.getenv('GITHUB_TOKEN')
         user = User.objects.get(id=AUTHOR_ID)
