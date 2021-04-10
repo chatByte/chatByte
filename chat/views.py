@@ -116,8 +116,9 @@ def my_stream(request, AUTHOR_ID):
     if request.method == "GET":
 
         # a list of post, django.db.models.query.QuerySet
-        mytimeline = cur_author.profile.timeline
-        # github_act_json = github_act_obj(cur_author.id)
+        # mytimeline = cur_author.profile.timeline
+        mytimeline = cur_author.profile.timeline.filter(unlisted='false')
+        all_public_posts = Post.objects.filter(visibility='public').filter(unlisted='false').all()
 
         back_json = get_github_activity(request, AUTHOR_ID)
         print("github", back_json)
@@ -211,7 +212,7 @@ def my_stream(request, AUTHOR_ID):
         page_obj = paginator_public_channel_posts.get_page(page_number)
 
         liked_objs = cur_author.profile.liked.items.values_list('object', flat=True)
-        print("Liked objects: ", liked_objs)
+        # print("Liked objects: ", liked_objs)
         # print(list(public_channel_posts)[0].likes)
 
         dynamic_contain = {
@@ -397,6 +398,7 @@ def posts(request, AUTHOR_ID):
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
         visibility = request_post.get("visibility", "")
+        unlisted = request_post.get("unlisted","")
 
         f = request.FILES.get("file", "")
         categories = ["web"] # web, tutorial, can be delete  # ?? dropdown
@@ -409,7 +411,7 @@ def posts(request, AUTHOR_ID):
         else:
             content = description
 
-        createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
+        createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility,unlisted)
         if createFlag:
             print("haha, successful create post, info: ", description)
 
