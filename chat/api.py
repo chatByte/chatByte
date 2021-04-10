@@ -314,6 +314,19 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             # cretate comment
             data = JSONParser().parse(request)
 
+            profile_url = request.META.get("HTTP_X_REQUEST_USER")
+            
+            author_id = profile_url.split('author/')[1]
+            try:
+                author = Profile.objects.get(id=profile_url)
+            except:
+                res = profileRequest("GET", origin_server, author_id)
+                print("Profile from comment: ", res)
+                print("Content: ", res.json())
+                author = ProfileSerializer(res.json())
+            
+            print(author)
+            
             serializer = CommentSerializer(data=data)
             if serializer.is_valid():
 
