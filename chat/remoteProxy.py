@@ -58,7 +58,7 @@ def postRequest(method, origin, user_id, post_id, data=None):
     The body of the request is empty if it is a GET/DELETE request, otherwise, the body is
     the post in json format.
     '''
-    url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/"
+    url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id)
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
