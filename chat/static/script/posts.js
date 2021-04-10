@@ -2,6 +2,7 @@
 var contentType = 'text/plain';
 var visibility = 'public';
 var description = "";
+var unlisted = "false";
 var title = "";
 var form_data = new FormData();
 var edit_form_data = new FormData();
@@ -301,6 +302,10 @@ $( document ).ready(function() {
        if (id == "public" || id == "private" || id == "friend"){
          $("#visibility").find('i').attr("class", icon);
          visibility = id;
+       } else if (id == "true" || id == "false") {
+          $("#unlisted_status").find('i').attr("class", icon);
+          unlisted = id;
+
        } else {
          $("#contentType").find('i').attr("class", icon);
          contentType = id;
@@ -337,6 +342,7 @@ $( document ).ready(function() {
       form_data.append("contentType", contentType);
       form_data.append("visibility", visibility);
       form_data.append("title", title);
+      form_data.append("unlisted", unlisted);
       form_data.append("description", description);
       form_data.append("csrfmiddlewaretoken", csrftoken);
 
