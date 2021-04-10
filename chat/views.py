@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator
-
+from django.contrib import messages
 from .signals import host as host_server
 from rest_framework.parsers import JSONParser
 
@@ -81,15 +81,14 @@ def signup(request):
 
     if form.is_valid():
         print("is valid")
-        form.save()
+        user = form.save(commit=False)
+        # sets the field to False
+        user.is_active=False
+        user.save()
         username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password1')
-        print("authenticating...")
-        user = authenticate(username=username, password=password)
-        print("logging in...")
-        login(request, user)
+        messages.success(request, f'Your account has been created! You are now able to log in')
+        return redirect('login')
 
-        return redirect('/author/' + str(user.id) + "/profile/")
     return render(request, 'registration/signup.html', {'form': form})
 
 
