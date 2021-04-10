@@ -15,7 +15,7 @@ def profileRequest(method, origin, user_id, data=None):
     The body of the request is empty if it is a GET request, otherwise, the body is
     the author's profile in json format.
     '''
-    url = str(origin) + "api/author/" + str(user_id) + "/"
+    url = str(origin) + "author/" + str(user_id) + "/"
     print("Remote get profile origin: ", origin)
     user = User.objects.get(last_name=origin)
     headers = {
@@ -39,7 +39,7 @@ def postsRequest(method, origin, user_id, data=None):
     The body of the request is empty if it is a GET request, otherwise, the body is
     the post to be created in json format.
     '''
-    url = str(origin) + "api/author/" + str(user_id) + "/posts/"
+    url = str(origin) + "author/" + str(user_id) + "/posts/"
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
@@ -58,7 +58,7 @@ def postRequest(method, origin, user_id, post_id, data=None):
     The body of the request is empty if it is a GET/DELETE request, otherwise, the body is
     the post in json format.
     '''
-    url = str(origin) + "api/author/" + str(user_id) + "/posts/" + str(post_id) + "/"
+    url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/"
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
@@ -84,7 +84,7 @@ def commentRequest(method, origin, user_id, post_id, data=None):
     The body of the request is empty if it is a GET request, otherwise, the body is
     the comment in json format.
     '''
-    url = str(origin) + "api/author/" + str(user_id) + "/posts/" + str(post_id) + "/comments/"
+    url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/comments/"
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
@@ -103,7 +103,7 @@ def inboxRequest(method, origin, user_id, data=None):
     The body of the request is empty if it is a GET/DELETE request, otherwise, the body is
     the inbox in json format.
     '''
-    url = str(origin) + "api/author/" + str(user_id) + "/inbox/"
+    url = str(origin) + "author/" + str(user_id) + "/inbox/"
     print("remote URL: ", url)
     print("remote origin: ", origin)
     user = User.objects.get(last_name=origin)
@@ -142,7 +142,7 @@ def followersRequest(method, origin, user_id, data=None):
     with the corresponding method. Headers are included to ensure secure connections.
     The body of the request is empty.
     '''
-    url = str(origin) + "api/author/" + str(user_id) + "/followers/"
+    url = str(origin) + "author/" + str(user_id) + "/followers/"
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
@@ -158,7 +158,7 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
     with the corresponding method. Headers are included to ensure secure connections.
     The body of the request is empty.
     '''
-    url = str(origin) + "api/author/" + str(user_id) + "/" + str(foreign_author_id) + "/"
+    url = str(origin) + "author/" + str(user_id) + "/" + str(foreign_author_id) + "/"
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
@@ -179,7 +179,7 @@ def likedRequest(method, origin, user_id, data=None):
     The body of the request is empty.
     '''
 
-    url = str(origin) + "api/author/" + str(user_id) + "/liked/"
+    url = str(origin) + "author/" + str(user_id) + "/liked/"
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
@@ -196,7 +196,7 @@ def likesRequest(method, origin, user_id, post_id, data=None):
     The body of the request is empty.
     '''
 
-    url = str(origin) + "api/author/" + str(user_id) + "/posts/" + post_id + "/likes/"
+    url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/likes/"
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
@@ -213,7 +213,7 @@ def commentLikesRequest(method, origin, user_id, post_id, comment_id, data=None)
     The body of the request is empty.
     '''
 
-    url = str(origin) + "api/author/" + str(user_id) + "/posts/" + post_id + "/comments/" + comment_id + "/likes/"
+    url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/comments/" + comment_id + "/likes/"
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
@@ -230,7 +230,7 @@ def friendsRequest(method, origin, user_id, post_id, comment_id, data=None):
     The body of the request is empty.
     '''
 
-    url = str(origin) + "api/author/" + str(user_id) + "/friends/"
+    url = str(origin) + "author/" + str(user_id) + "/friends/"
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
@@ -247,7 +247,8 @@ def streamRequest(origin, user_id):
     The body of the request is empty.
     '''
 
-    url = str(origin) + "api/author/" + str(user_id) + "/stream/"
+    url = str(origin) + "author/" + str(user_id) + "/stream/"
+    print(url)
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
