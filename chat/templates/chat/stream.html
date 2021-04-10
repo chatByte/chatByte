@@ -206,6 +206,17 @@
                       </div>
 
 
+                      <div >
+
+                        {% if comment.id in liked_objs %}
+                        <a class="btn text-red" onclick="likeComment( '{{ comment.id }}', 1 )"><i class="icon ion-ios-heart like"></i>{{ comment.likes.all | length }}</a>
+                        {% else %}
+                        <a class="btn" onclick="likePost( '{{ comment.id }}', 0 )"><i class="icon ion-ios-heart like"></i>{{ comment.likes.all | length }}</a>
+                        {% endif %}
+                        <a class="btn text-green" onclick="reshare('{{comment.id}}')"><i class="icon ion-share"></i></a>
+                      </div>
+
+
 
                     </div>
 <!--                             <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a> -->
