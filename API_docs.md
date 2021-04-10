@@ -12,14 +12,14 @@
     
 ### **Author Profile API**
 ```
-URL: https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/
 GET: retrieve their profile
 POST: update profile
 ```
 #### `Author Object format` 
 <i>retrieve their profile</i>
 ```
-URL:https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/
+URL:https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/
 GET: response(200) 
 retrieve user profile
 POST: response(200)
@@ -293,7 +293,7 @@ URL: https://app-chatbyte.herokuapp.com/author/<str:AUTHOR_ID>/stream/
 ### **Inbox API**
 <i>GET USER notifications in Inbox</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/api/author/author/<str:AUTHOR_ID>/inbox/
+URL: https://app-chatbyte.herokuapp.com/author/<str:AUTHOR_ID>/inbox/
 ```
 ### `GET`
 
@@ -534,7 +534,7 @@ Response (200):
 <i>Get Post Using PostId</i>
 
 ```
-URL:https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/posts/{POST_ID}
+URL:https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}
 Response (200):
 {
     "type": "post",
@@ -569,7 +569,7 @@ Response (200):
 ```
 #### `POST`
 ```
-URL://service/api/author/{AUTHOR_ID}/posts/{POST_ID}
+URL://service/author/{AUTHOR_ID}/posts/{POST_ID}
 ```
 Response (200): updated post JSON object
 ```
@@ -612,7 +612,7 @@ Response (200): updated post JSON object
 <i>Get all posts from one author Using AuthorId</i>
 
 ```
-URL https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/posts
+URL https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts
 ```
 
 Response (200):
@@ -632,7 +632,7 @@ Response (200):
 #### `DELETE`
 <i>Delete A Post By PostId</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/posts/{POST_ID}
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}
 ```
 
 #### `PUT`
@@ -709,7 +709,7 @@ Response:
 ### `GET`
 <i>GET a specific follower</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 ```
 Response:
 ```
@@ -742,7 +742,7 @@ Response (200):
 ### `DELETE`
 <i>remove a follower</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 ```
 Response:
 ```
@@ -756,7 +756,7 @@ Response (200):
 ### `GET`
 <i>get all friends of author</i>
 ```
-URL: "https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/friends/
+URL: "https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/friends/
 ```
 Response:
 ```
@@ -790,7 +790,7 @@ Response (200):
 ### **Comments API**
 ### `GET` 
 ```
-URL: https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/posts/{POST_ID}/comments
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}/comments
 
 Response(200):
 {
@@ -824,7 +824,7 @@ Response(200):
 #### `POST`
 <i>Create Comment on a Post</i>
 ```
-URL://service/api/author/{AUTHOR_ID}/posts/{POST_ID}/comments
+URL://service/author/{AUTHOR_ID}/posts/{POST_ID}/comments
 ```
 Body of Request:
 ```
@@ -880,7 +880,7 @@ Response:
 #### `GET`
 <i>Get Likes for a Post</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/posts/{POST_ID}/likes
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}/likes
 ```
 ```
 Response (200):
@@ -907,7 +907,7 @@ Response (200):
 ```
 <i>Get Likes for a Comment</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/posts/{POST_ID}/comments/{COMMENT_ID}/likes
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}/comments/{COMMENT_ID}/likes
 ```
 ```
 Response (200):
@@ -951,7 +951,7 @@ Response (200):
 <br>
 <i>Side Effect: Sends To Inbox</i>
 ```
-URL: //service/api/author/{AUTHOR_ID}/likes
+URL: //service/author/{AUTHOR_ID}/likes
 ```
 ```
 Request Body:
@@ -989,6 +989,6 @@ Depending on which is sent, a corresponding like will be created.
 #### `GET`
 <i>Get Liked for an author</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/liked
+URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/liked
 ```
 
