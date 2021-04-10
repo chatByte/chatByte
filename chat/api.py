@@ -632,6 +632,7 @@ Response Object Structure: [list of Like objects]
 @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def likes_post_obj(request, AUTHOR_ID, POST_ID):
+    USER_ID = (AUTHOR_ID + '.')[:-1]
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
