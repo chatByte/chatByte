@@ -109,7 +109,7 @@ def my_stream(request, AUTHOR_ID):
         cur_user_name = request.user.username
 
     cur_author = request.user
-    # back_json = get_github_activity(request, AUTHOR_ID)
+    back_json = get_github_activity(request, AUTHOR_ID)
     # print("github", back_json)
 
     if request.method == "GET":
