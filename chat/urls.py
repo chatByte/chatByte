@@ -19,7 +19,7 @@ urlpatterns = [
     
     path(r'author/<str:AUTHOR_ID>/posts/',api.posts_obj, name='make_posts_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/',api.post_obj, name='make_post_obj'),
-    path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/',api.comment_list_obj, name='comment_list_obj'),
+    path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments',api.comment_list_obj, name='comment_list_obj'),
 
 
     # show info => get request, views.public_channel originally called feed, and able to comment
