@@ -90,7 +90,7 @@ class PostSerializer(serializers.ModelSerializer):
             comment_ser = CommentSerializer(data=comment_data)
             if comment_ser.is_valid():
                 comment = comment_ser.save()
-                instance.comments.add()
+                instance.comments.add(comment)
         instance.published = validated_data.get('published', instance.published)
         instance.visibility = validated_data.get('visibility', instance.visibility)
         instance.unlisted = validated_data.get('unlisted', instance.unlisted)
