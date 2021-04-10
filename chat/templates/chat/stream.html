@@ -117,11 +117,8 @@
                             <div class="feed-item">
                               <div class="live-activity">
 
-                                <!-- <p>{{cur_commit.sha}}</p> -->
-                                <!-- <p>{{cur_commit.name}}</p> -->
-                                <!-- <p>{{cur_commit.message}}</p> -->
+                                <p class="text-muted" style="max-width: 250px;">Repository: {{cur_push.repo.name}}</p>
                                 <p class="text-muted" style="max-width: 250px;">Commit ID: {{cur_commit.sha}}</p>
-                                <!-- <p>{{cur_commit.name}}</p> -->
                                 <p style="max-width: 250px;">{{cur_commit.author.name}} commited with message "{{cur_commit.message}}"</p>
                       <!-- <p class="text-muted"> xxxx mins ago</p> -->
                     </div>
@@ -191,27 +188,24 @@
                   <!--              show nested comment  -->
                   {% for comment in cur_post.comments.all %}
                     <div class="post-comment">
-                      <div class="post-commentor">
                       <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
-                      <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a>
+
+                      <div class="post-commentor">
+                        <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a>
+                        <div class="post-comment-contain">
+                          {% if 'plain' in comment.contentType %}
+                          <p style="font-weight:700; font-size:14px; color:#152238; padding-top: 5px;">
+                            {{ comment.comment | linebreaks }}
+                          </p>
+                          {% elif 'markdown' in comment.contentType %}
+                          <p style="font-weight:700; font-size:14px; color:#152238; padding-top: 5px;">
+                            {{ comment.comment | markdown | safe }}
+                          </p>
+                          {% endif %}
+                        </div>
                       </div>
-
-                      <div class="post-comment-contain">
-                        {% if 'plain' in comment.contentType %}
-                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
-                          {{ comment.comment | linebreaks }}
-                        </p>
-                        {% elif 'markdown' in comment.contentType %}
-                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
-                          {{ comment.comment | markdown | safe }}
-                        </p>
-                        {% endif %}
-                      </div>
-
-
-
                     </div>
-<!--                             <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a> -->
+                    <hr class="solid">
                   {% endfor %}
                   <!--                      end -->
 
