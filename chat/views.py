@@ -114,6 +114,8 @@ def my_stream(request, AUTHOR_ID):
 
         # a list of post, django.db.models.query.QuerySet
         mytimeline = cur_author.profile.timeline
+        all_public_posts = Post.objects.filter(visibility='public').filter(visibility='false').all()
+
 
         # Get stream from: node origins, since we have plenty remote server
         for node in Node.objects.all():
@@ -160,12 +162,12 @@ def my_stream(request, AUTHOR_ID):
                                     print("Created comment obj: ", comment_obj)
                                     comments_list.append(comment_obj)
 
-                        serializer = PostSerializer(data=post)
-                        # print("here")
-                        # print(serializer)
-                        if serializer.is_valid(raise_exception=True):
-                            serializer.save(author=author) # comments=comments_list
-                            post_obj = Post.objects.get(id=post_id)
+                    serializer = PostSerializer(data=post)
+                    # print("here")
+                    # print(serializer)
+                    if serializer.is_valid(raise_exception=True):
+                        serializer.save(author=author) # comments=comments_list
+                        post_obj = Post.objects.get(id=post_id)
                     # add stream post into public channel
                     mytimeline.add(post_obj)
                     # print("Post object", post_obj)
@@ -182,6 +184,9 @@ def my_stream(request, AUTHOR_ID):
 
         # merging quesryset
         public_channel_posts = mytimeline.all()
+
+
+        public_channel_posts = public_channel_posts | all_public_posts
 
         for following_profile in followings:
 
@@ -294,8 +299,14 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
 
         # a list of post
         #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
-        foreign_timeline = postsRequest("GET", host, FOREIGN_ID).json()['posts']
-        foreign_timeline = PostSerializer(foreign_timeline, many=True).data
+        # try:
+        res = postsRequest("GET", host, FOREIGN_ID)
+        if res.status_code < 400:
+            foreign_timeline = PostSerializer(res.json()['posts'], many=True).data
+        else:
+            foreign_timeline = []
+        # except:
+        #     foreign_timeline = []
 
         author_num_follwers = len(foreign_author.profile.followers.items.all())
         friend_request_num = len(request.user.inbox.friend_requests.all())
@@ -363,11 +374,6 @@ def posts(request, AUTHOR_ID):
             'friend_request_num': friend_request_num,
 
         }
-
-
-
-
-
 
 
 

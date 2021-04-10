@@ -196,6 +196,7 @@ def createPost(title, source, origin, description, content_type, content, author
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
             , categories=categories, count=0, size=0, comment_url="", visibility=visibility, author=author)
         # print(post.author)
+
         post.comment_url = post.id + "/comments/"
         post.save()
         author.timeline.add(post)
