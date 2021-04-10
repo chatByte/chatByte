@@ -21,6 +21,19 @@ class CommentSerializer(serializers.ModelSerializer):
             'id': {'validators': []},
         }
     
+    def create(self, validated_data):
+        print("---------***********--------------")
+        author_data = validated_data.pop('author')
+        print(author_data)
+        try: 
+            author = Profile.objects.get(id=author_data['id'])
+        except:
+            author = Profile.objects.create(**author_data)
+        print("---------******************--------------")
+        comment = Comment.objects.create(author=author, **validated_data)
+        print("---------******************************--------------")
+        return comment
+    
     def update(self, instance, validated_data):
         print("---------***--------------")
         print(validated_data)
@@ -44,20 +57,24 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'comment_url', 'comments', 'published', 'visibility', 'unlisted'  ]
     
     def create(self, validated_data):
+        print("---------***********--------------")
         comments_data = validated_data.pop('comments')
-        author_data = validated_data.pop('author')
-        
-        try: 
-            author = Profile.objects.get(id=author_data['id'])
-        except:
-            author = Profile.objects.create(**author_data)
+        author = validated_data.pop('author')
+        print(author)
+        # try: 
+        #     author = Profile.objects.get(id=author_data['id'])
+        # except:
+        #     author = Profile.objects.create(**author_data)
+        print("---------******************--------------")
         post = Post.objects.create(author=author, **validated_data)
+        print("---------******************************--------------")
         for comment_data in comments_data:
             author_data = comment_data.pop('author')
             try: 
                 com_author = Profile.objects.get(id=author_data['id'])
             except:
                 com_author = Profile.objects.create(**author_data)
+            print("---------********************************--------------")
             comment = Comment.objects.create(author=com_author, **comment_data)
             post.comments.add(comment)
         post.save()
@@ -82,13 +99,11 @@ class PostSerializer(serializers.ModelSerializer):
         instance.size = validated_data.get('size', instance.size)
         instance.comment_url = validated_data.get('comment_url', instance.comment_url)
         comments_data = validated_data.get('comments')
-        comments = (instance.comments).all()
-        comments = list(comments)
         for comment_data in comments_data:
-            comment = comments.pop(0)
-            comment_ser = CommentSerializer(comment, data=comment_data)
+            comment_ser = CommentSerializer(data=comment_data)
             if comment_ser.is_valid():
-                comment_ser.save()
+                comment = comment_ser.save()
+                instance.comments.add(comment)
         instance.published = validated_data.get('published', instance.published)
         instance.visibility = validated_data.get('visibility', instance.visibility)
         instance.unlisted = validated_data.get('unlisted', instance.unlisted)

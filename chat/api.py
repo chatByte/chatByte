@@ -125,8 +125,6 @@ def post_obj(request, AUTHOR_ID, POST_ID):
             except Post.DoesNotExist:
                 return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
             data = JSONParser().parse(request)
-            print("--------------------------")
-            print(data)
             serializer = PostSerializer(post, data=data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
