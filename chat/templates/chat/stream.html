@@ -134,14 +134,11 @@
             <div class="col-sm-1"></div>
             <div class="col-md-6">
         <div class="posts">
-
               {% for cur_post in page_obj %}
-
                 <!-- Post Content ================================================= -->
-
                 <div class="post-content">
-
                   {% if 'image/' in cur_post.contentType  %}
+                  
                   {% load filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
