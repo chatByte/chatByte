@@ -289,7 +289,7 @@ def createComment(author, post_id, comment, content_type, published=django.utils
         print("post_count:", post.count)
         post.count += 1
         post.save()
-        return True
+        return commentObj
     except BaseException as e:
         print(repr(e))
         traceback.print_exc()
