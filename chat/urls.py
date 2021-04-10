@@ -7,6 +7,10 @@ from . import api
 urlpatterns = [
     path("", views.start_homepage, name=""),
 
+    #deign for give brother all posts
+    path(r"all_posts/", api.all_posts_obj, name="all_posts_obj"),
+
+
     path("author/<str:AUTHOR_ID>/profile/", views.profile, name="profile"),
     path("author/<str:AUTHOR_ID>/", api.profile_obj, name="profile_obj"),
 
@@ -25,6 +29,8 @@ urlpatterns = [
     path(r"author/<str:AUTHOR_ID>/my_stream/<str:SERVER>/<str:FOREIGN_ID>/", views.foreign_public_channel, name="foreign_public_channel"),
 
     path(r"author/<str:AUTHOR_ID>/stream/", api.stream_obj, name="stream"),
+
+
 
 
     # get search bar

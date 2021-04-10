@@ -190,13 +190,15 @@ def updateProfile(id, display_name, email, url, github):
         print(e)
         return False
 
-def createPost(title, source, origin, description, content_type, content, author, categories, visibility):
+def createPost(title, source, origin, description, content_type, content, author, categories, visibility, unlisted):
     # Please authenticate before calling this method
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
-            , categories=categories, count=0, size=0, comment_url="", visibility=visibility, author=author)
+            , categories=categories, count=0, size=0, comment_url="", visibility=visibility, author=author, unlisted=(unlisted.lower() in ['true', '1', 't', 'y',]))
         # print(post.author)
+
         post.comment_url = post.id + "/comments/"
+        post.source = post.id
         post.save()
         author.timeline.add(post)
         author.save()

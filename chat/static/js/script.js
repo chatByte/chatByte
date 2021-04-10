@@ -4,11 +4,11 @@ var url = window.location.href;
 var new_url = url.split('/');
 // var url_header = "https://"+ new_url[1].toString()  + new_url[2].toString() + '/';
 // on local testing
-var url_header = "http://"+ new_url[1].toString()  + new_url[2].toString() + '/';
+var url_header = "https://"+ new_url[1].toString()  + new_url[2].toString() + '/';
 console.log(url_header);
 // var x_server = window.location.origin + '/author/'+new_url[4].toString();
-// var x_server = window.location.origin +'/';
-var x_server = "http://127.0.0.1:8000/";
+var x_server = window.location.origin +'/';
+// var x_server = "http://127.0.0.1:8000/";
 var request_id_list = [];
 var inbox_num;
 
@@ -431,23 +431,23 @@ jQuery(document).ready(function($) {
   //   }
 
 
-    console.log(url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/')
-    $.ajax({
-      // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
-      url:url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/',
-      type: "GET", // http method
-      headers: {"X-Server": x_server},
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-      },
-      contentType: false,
-      processData: false,
-      dataType: "json",
-      // handle a successful response
-      success : function(data) {
-          console.log(data); // sanity check
-      },
-    });
+    // console.log(url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/')
+    // $.ajax({
+    //   // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
+    //   url:url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/',
+    //   type: "GET", // http method
+    //   headers: {"X-Server": x_server},
+    //   beforeSend: function(xhr) {
+    //     xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    //   },
+    //   contentType: false,
+    //   processData: false,
+    //   dataType: "json",
+    //   // handle a successful response
+    //   success : function(data) {
+    //       console.log(data); // sanity check
+    //   },
+    // });
   });
 
 

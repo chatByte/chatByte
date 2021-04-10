@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator
-
+from django.contrib import messages
 from .signals import host as host_server
 from rest_framework.parsers import JSONParser
 
@@ -83,15 +83,14 @@ def signup(request):
 
     if form.is_valid():
         print("is valid")
-        form.save()
+        user = form.save(commit=False)
+        # sets the field to False
+        user.is_active=False
+        user.save()
         username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password1')
-        print("authenticating...")
-        user = authenticate(username=username, password=password)
-        print("logging in...")
-        login(request, user)
+        messages.success(request, f'Your account has been created! You are now able to log in')
+        return redirect('login')
 
-        return redirect('/author/' + str(user.id) + "/profile/")
     return render(request, 'registration/signup.html', {'form': form})
 
 
@@ -116,11 +115,10 @@ def my_stream(request, AUTHOR_ID):
     if request.method == "GET":
 
         # a list of post, django.db.models.query.QuerySet
-        mytimeline = cur_author.profile.timeline
-        # github_act_json = github_act_obj(cur_author.id)
+        # mytimeline = cur_author.profile.timeline
+        mytimeline = cur_author.profile.timeline.filter(unlisted=False)
+        all_public_posts = Post.objects.filter(visibility='public').filter(unlisted=False).all()
 
-        back_json = get_github_activity(request, AUTHOR_ID)
-        # print("github", back_json)
 
         # Get stream from: node origins, since we have plenty remote server
         for node in Node.objects.all():
@@ -129,12 +127,15 @@ def my_stream(request, AUTHOR_ID):
             res = streamRequest(node.origin, request.user.id)
             try:
                 data = res.json()
-                # print(data['posts'])
+                print(data['posts'])
                 for post in data['posts']:
                     # print("Post id: ", post['id'])
                     post_id = post['id']
                     try:
                         post_obj = Post.objects.get(id=post_id)
+                        serializer = PostSerializer(post_obj, data=post, partial=True)
+                        if serializer.is_valid(raise_exception=True):
+                            serializer.save()
                     except Post.DoesNotExist:
                         author_dict = post['author']
                         # print("Author dict: ", author_dict)
@@ -144,35 +145,35 @@ def my_stream(request, AUTHOR_ID):
                             author_serializer = ProfileSerializer(data=author_dict)
                             if author_serializer.is_valid(raise_exception=True):
                                 author = author_serializer.save()
-                        comments_dict = post['comments']
-                        comments_list = list()
-                        for comment in comments_dict:
-                            # print("Comment: ", comment)
-                            try:
-                                comment_obj = Comment.objects.get(id=comment['id'])
-                                comments_list.append(comment_obj)
-                            except Comment.DoesNotExist:
-                                comm_author_dict = comment['author']
-                                print("Comment author: ", comm_author_dict)
-                                try:
-                                    comm_author = Profile.objects.get(id=comm_author_dict['id'])
-                                except Profile.DoesNotExist:
-                                    author_serializer = ProfileSerializer(data=comm_author_dict)
-                                    if author_serializer.is_valid(raise_exception=True):
-                                        comm_author = author_serializer.save()
-                                comment_serializer = CommentSerializer(data=comment)
-                                print(comment_serializer)
-                                if comment_serializer.is_valid(raise_exception=True):
-                                    comment_obj = comment_serializer.save(author=comm_author)
-                                    print("Created comment obj: ", comment_obj)
-                                    comments_list.append(comment_obj)
+                        # comments_dict = post['comments']
+                        # comments_list = list()
+                        # for comment in comments_dict:
+                        #     # print("Comment: ", comment)
+                        #     try:
+                        #         comment_obj = Comment.objects.get(id=comment['id'])
+                        #         comments_list.append(comment_obj)
+                        #     except Comment.DoesNotExist:
+                        #         comm_author_dict = comment['author']
+                        #         print("Comment author: ", comm_author_dict)
+                        #         try:
+                        #             comm_author = Profile.objects.get(id=comm_author_dict['id'])
+                        #         except Profile.DoesNotExist:
+                        #             author_serializer = ProfileSerializer(data=comm_author_dict)
+                        #             if author_serializer.is_valid(raise_exception=True):
+                        #                 comm_author = author_serializer.save()
+                        #         comment_serializer = CommentSerializer(data=comment)
+                        #         print(comment_serializer)
+                        #         if comment_serializer.is_valid(raise_exception=True):
+                        #             comment_obj = comment_serializer.save(author=comm_author)
+                        #             print("Created comment obj: ", comment_obj)
+                        #             comments_list.append(comment_obj)
 
-                    serializer = PostSerializer(data=post)
-                    # print("here")
-                    # print(serializer)
-                    if serializer.is_valid(raise_exception=True):
-                        serializer.save(author=author) # comments=comments_list
-                        post_obj = Post.objects.get(id=post_id)
+                        serializer = PostSerializer(data=post)
+                        # print("here")
+                        # print(serializer)
+                        if serializer.is_valid(raise_exception=True):
+                            serializer.save(author=author) # comments=comments_list
+                            post_obj = Post.objects.get(id=post_id)
                     # add stream post into public channel
                     mytimeline.add(post_obj)
                     # print("Post object", post_obj)
@@ -189,6 +190,9 @@ def my_stream(request, AUTHOR_ID):
 
         # merging quesryset
         public_channel_posts = mytimeline.all()
+
+
+        public_channel_posts = public_channel_posts | all_public_posts
 
         for following_profile in followings:
 
@@ -211,8 +215,6 @@ def my_stream(request, AUTHOR_ID):
         page_obj = paginator_public_channel_posts.get_page(page_number)
 
         liked_objs = cur_author.profile.liked.items.values_list('object', flat=True)
-        print("Liked objects: ", liked_objs)
-        # print(list(public_channel_posts)[0].likes)
 
         dynamic_contain = {
             'myName' : cur_author.profile.displayName,
@@ -380,11 +382,6 @@ def posts(request, AUTHOR_ID):
 
 
 
-
-
-
-
-
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
@@ -397,6 +394,7 @@ def posts(request, AUTHOR_ID):
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
         visibility = request_post.get("visibility", "")
+        unlisted = request_post.get("unlisted","")
 
         f = request.FILES.get("file", "")
         categories = ["web"] # web, tutorial, can be delete  # ?? dropdown
@@ -409,7 +407,7 @@ def posts(request, AUTHOR_ID):
         else:
             content = description
 
-        createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
+        createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility,unlisted)
         if createFlag:
             print("haha, successful create post, info: ", description)
 
@@ -784,7 +782,8 @@ def reshare(request, AUTHOR_ID):
     visibility = post.visibility
     categories = post.categories
     content = post.content
-    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
+    unlisted = str(post.unlisted)
+    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted)
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response

@@ -31,64 +31,49 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
     def enforce_csrf(self, request):
         return  # To not perform the csrf check previously happening
 
-# queryset = Post.objects.all()
-# serializer_class = PostSerializer
 
 
-# @login_required
-# @require_http_methods(["GET", "POST", "PUT", "DELETE"])
-# def post_obj(request, AUTHOR_ID, POST_ID):
-#     cur_user_name = None
-#     if request.user.is_authenticated:
-#         cur_user_name = request.user.username
-#     # post_id = request.build_absolute_uri().split("/")[-2][6:]
 
-#     if request.method == "DELETE":
-#         deletePost(POST_ID)
-#         response = redirect("../posts/")
-#         return response
-#     elif request.method == "GET":
-#         post = getPost(POST_ID)
-#         # TODO return an object or html?
-#         return post
-#     elif request.method == "POST":
-#         # updatePost()
-#         pass
 
 
 
 
 '''
-Testing method
-
-{
-    "type": "post",
-    "id": "3",
-    "title": "fffffffffff",
-    "source": "https://chatbyte.herokuapp.com/",
-    "origin": "https://chatbyte.herokuapp.com/",
-    "description": "asdf",
-    "contentType": "text",
-    "content": "asdf",
-    "author": {
-        "type": "author",
-        "id": "2",
-        "host": null,
-        "displayName": "test",
-        "url": "https://chatbyte.herokuapp.com/chat/author/2/profile/",
-        "github": "https://github.com/Jeremy0818"
-    },
-    "categories": "text/plain",
-    "count": 1,
-    "size": 1,
-    "commentsPage": "1",
-    "comments": [],
-    "published": "2021-03-26T19:04:53Z",
-    "visibility": "public",
-    "unlisted": "false"
-}
-
+Design for giving our brother all posts, since we love each other
 '''
+# No CSRF token
+@csrf_exempt
+# methdo
+@api_view(['GET'])
+# which AUTH using right now
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+# permission, -> auth
+@permission_classes([IsAuthenticated])
+def all_posts_obj(request):
+    if request.method == 'GET':
+        posts = Post.objects
+        # print(posts.all())
+        posts = posts.order_by('-published')
+
+        # serializer = PostSerializer(posts, many=True)
+        # pagination
+        pagination = PageNumberPagination()
+        paginated_results = pagination.paginate_queryset(posts.all(), request)
+
+        serializer = PostSerializer(paginated_results, many=True)
+
+        data = {
+            'count': pagination.page.paginator.count,
+            'next': pagination.get_next_link(),
+            'previous': pagination.get_previous_link(),
+            'posts': serializer.data,
+        }
+        return JsonResponse(data, safe=False)
+
+    
+
+
+
 
 
 # No CSRF token
@@ -146,7 +131,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
             except Post.DoesNotExist:
                 return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
             data = JSONParser().parse(request)
-            serializer = PostSerializer(post, data=data)
+            serializer = PostSerializer(post, data=data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return JsonResponse(serializer.data, status=201)
@@ -194,7 +179,7 @@ def posts_obj(request, AUTHOR_ID):
         if request.method == 'GET':
             profile = Profile.objects.get(id=AUTHOR_ID)
             posts = profile.timeline
-            print(posts.all())
+            # print(posts.all())
             posts = posts.filter(author=profile).order_by('-published')
 
             # serializer = PostSerializer(posts, many=True)
@@ -216,7 +201,7 @@ def posts_obj(request, AUTHOR_ID):
             serializer = PostSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
                 profile = Profile.objects.get(id=AUTHOR_ID)
-                post = serializer.save(author=profile)
+                post = serializer.save()
                 print(post)
                 profile.timeline.add(post)
                 profile.save()
@@ -378,7 +363,7 @@ def profile_obj(request, AUTHOR_ID):
             return JsonResponse(serializer.data, status=201)
         elif request.method == "POST":
             data = JSONParser().parse(request)
-            serializer = ProfileSerializer(profile, data=data)
+            serializer = ProfileSerializer(profile, data=data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return JsonResponse(serializer.data, status=200)
@@ -920,7 +905,7 @@ def stream_obj(request, AUTHOR_ID):
                     print(profile)
                 except Profile.DoesNotExist:
                     print("profile not found!")
-                posts_result = Post.objects.filter(visibility='public')
+                posts_result = Post.objects.filter(visibility='public').filter(unlisted=False)
                 print(posts_result)
                 # all_author_posts = Post.objects.filter(author=profile)
                 # print(all_author_posts)
