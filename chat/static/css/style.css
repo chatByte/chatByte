@@ -523,6 +523,28 @@ Timeline
   width: 100%;
 }
 
+
+
+.post-content .post-container .post-detail .post-comment{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px auto;
+  width: 100%;
+}
+
+
+.post-content .post-container .post-detail .post-comment .post-commentor{
+  margin-right: 1px auto;
+}
+
+.post-content .post-container .post-detail .post-comment .post-comment-contain{
+  margin-right: 1px auto;
+}
+
+
+
+
 .post-content .post-container .post-detail .post-comment img.profile-photo-sm{
   margin-right: 10px;
 }
