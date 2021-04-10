@@ -50,16 +50,26 @@ def all_posts_obj(request):
         posts = posts.order_by('-published')
 
         # serializer = PostSerializer(posts, many=True)
+        
         # pagination
         pagination = PageNumberPagination()
         paginated_results = pagination.paginate_queryset(posts.all(), request)
 
         serializer = PostSerializer(paginated_results, many=True)
 
+        next_link = pagination.get_next_link()
+        if next_link == None:
+            next_link = ""
+        
+        prev_link = pagination.get_previous_link()
+
+        if prev_link == None:
+            prev_link = ""
+
         data = {
             'count': pagination.page.paginator.count,
-            'next': pagination.get_next_link(),
-            'previous': pagination.get_previous_link(),
+            'next': next_link,
+            'previous': prev_link,
             'posts': serializer.data,
         }
         return JsonResponse(data, safe=False)
@@ -183,10 +193,19 @@ def posts_obj(request, AUTHOR_ID):
 
             serializer = PostSerializer(paginated_results, many=True)
 
+            next_link = pagination.get_next_link()
+            if next_link == None:
+                next_link = ""
+            
+            prev_link = pagination.get_previous_link()
+
+            if prev_link == None:
+                prev_link = ""
+
             data = {
                 'count': pagination.page.paginator.count,
-                'next': pagination.get_next_link(),
-                'previous': pagination.get_previous_link(),
+                'next': next_link,
+                'previous': prev_link,
                 'posts': serializer.data,
             }
             return JsonResponse(data, safe=False)
@@ -273,10 +292,19 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 
             serializer = CommentSerializer(paginated_results, many=True)
 
+            next_link = pagination.get_next_link()
+            if next_link == None:
+                next_link = ""
+            
+            prev_link = pagination.get_previous_link()
+
+            if prev_link == None:
+                prev_link = ""
+
             data = {
                 'count': pagination.page.paginator.count,
-                'next': pagination.get_next_link(),
-                'previous': pagination.get_previous_link(),
+                'next': next_link,
+                'previous': prev_link,
                 'results': serializer.data,
             }
             return JsonResponse(data, safe=False)
@@ -920,10 +948,19 @@ def stream_obj(request, AUTHOR_ID):
 
             serializer = PostSerializer(paginated_results, many=True)
 
+            next_link = pagination.get_next_link()
+            if next_link == None:
+                next_link = ""
+            
+            prev_link = pagination.get_previous_link()
+
+            if prev_link == None:
+                prev_link = ""
+
             data = {
                 'count': pagination.page.paginator.count,
-                'next': "", # pagination.get_next_link(),
-                'previous': "", # pagination.get_previous_link(),
+                'next': next_link,
+                'previous': prev_link,
                 'posts': serializer.data,
             }
             return JsonResponse(data, safe=False)
