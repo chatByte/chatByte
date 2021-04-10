@@ -86,13 +86,11 @@ class PostSerializer(serializers.ModelSerializer):
         instance.size = validated_data.get('size', instance.size)
         instance.comment_url = validated_data.get('comment_url', instance.comment_url)
         comments_data = validated_data.get('comments')
-        comments = (instance.comments).all()
-        comments = list(comments)
         for comment_data in comments_data:
-            comment = comments.pop(0)
             comment_ser = CommentSerializer(comment, data=comment_data)
             if comment_ser.is_valid():
-                comment_ser.save()
+                comment = comment_ser.save()
+                instance.comments.add()
         instance.published = validated_data.get('published', instance.published)
         instance.visibility = validated_data.get('visibility', instance.visibility)
         instance.unlisted = validated_data.get('unlisted', instance.unlisted)
