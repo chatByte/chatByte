@@ -801,7 +801,7 @@ def inbox(request, AUTHOR_ID):
                 else:
                     print("here")
                     return JsonResponse(serializer.errors, status=400)
-            elif data['type'] == 'like':
+            elif data['type'].lower() == 'like':
                 print("Recieved a like inbox!")
                 post_url = data['object'].split("/")
                 # like post
@@ -852,7 +852,7 @@ def inbox(request, AUTHOR_ID):
                         return JsonResponse(data, status=200)
                     return JsonResponse(serializer.errors, status=400)
 
-            elif data['type'] == 'follow':
+            elif data['type'].lower() == 'follow':
                 print("Recieved a friend request!")
                 print(data['actor'])
                 print(data['object'])
