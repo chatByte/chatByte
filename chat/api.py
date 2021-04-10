@@ -332,8 +332,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             print(comment)
             if comment:
                 serializer = CommentSerializer(comment)
-                if serializer.is_valid():
-                    return JsonResponse(serializer.data, status=201)
+                return JsonResponse(serializer.data, status=201)
             else:
                 return JsonResponse({"Error": "can't create comment properly"}, status=400)
 
