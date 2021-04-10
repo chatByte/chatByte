@@ -306,7 +306,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
                 'count': pagination.page.paginator.count,
                 'next': next_link,
                 'previous': prev_link,
-                'results': serializer.data,
+                'comments': serializer.data,
             }
             return JsonResponse(data, safe=False)
 
