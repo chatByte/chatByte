@@ -95,6 +95,12 @@ class Migration(migrations.Migration):
                 ('published', models.DateTimeField(default=django.utils.timezone.now)),
                 ('visibility', models.CharField(max_length=50)),
                 ('unlisted', models.CharField(default='false', max_length=50)),
+<<<<<<< HEAD
+=======
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='chat.Profile')),
+                ('comments', models.ManyToManyField(blank=True, to='chat.Comment')),
+                ('likes', models.ManyToManyField(blank=True, to='chat.Like')),
+>>>>>>> youwei1-sudo
             ],
         ),
         migrations.CreateModel(

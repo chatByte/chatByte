@@ -113,10 +113,9 @@ def my_stream(request, AUTHOR_ID):
     if request.method == "GET":
 
         # a list of post, django.db.models.query.QuerySet
-        mytimeline = cur_author.profile.timeline
-
-
-        all_public_posts = Post.objects.filter(visibility='public').all()
+        # mytimeline = cur_author.profile.timeline
+        mytimeline = cur_author.profile.timeline.filter(unlisted='false')
+        all_public_posts = Post.objects.filter(visibility='public').filter(unlisted='false').all()
 
 
         # Get stream from: node origins, since we have plenty remote server
@@ -381,11 +380,6 @@ def posts(request, AUTHOR_ID):
 
 
 
-
-
-
-
-
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
@@ -398,6 +392,7 @@ def posts(request, AUTHOR_ID):
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
         visibility = request_post.get("visibility", "")
+        unlisted = request_post.get("unlisted","")
 
         f = request.FILES.get("file", "")
         categories = ["web"] # web, tutorial, can be delete  # ?? dropdown
@@ -410,7 +405,7 @@ def posts(request, AUTHOR_ID):
         else:
             content = description
 
-        createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
+        createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility,unlisted)
         if createFlag:
             print("haha, successful create post, info: ", description)
 
