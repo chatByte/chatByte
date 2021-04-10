@@ -55,7 +55,7 @@ update user profile (with pagination)
 ### `GET`
 <i>GET USER Stream with Pagination</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/followers
+URL: https://app-chatbyte.herokuapp.com/author/<str:AUTHOR_ID>/stream/
 ```
 ```
 {
