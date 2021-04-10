@@ -489,10 +489,10 @@ POST a friend: Response(200)
 }
 ```
 
-### ** ALL POSTS API**
+### ALL POSTS API
 
 #### `GET`
-<i>Get all Posts from our server( to other servers), since we love each others</i>
+<i>Get all Posts from our server( to other servers), since we are family </i>
 
 ```
 URL https://app-chatbyte.herokuapp.com/api/all_posts/
