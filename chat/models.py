@@ -47,8 +47,8 @@ class Profile(models.Model):
     def __unicode__(self): # for Python 2
         return self.user.username
 
-    # class Meta:
-    #     managed = False
+    class Meta:
+        managed = False
 
 class Comment(models.Model):
     type = models.CharField(max_length=200, default="comment")
@@ -78,11 +78,11 @@ class Post(models.Model):
     content = models.TextField()
     # the author has an ID where by authors can be disambiguated
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    categories = ArrayField(
-        models.CharField(max_length=200, blank=True),
-        size=200,
-    )
-    # categories = models.CharField(max_length=200, blank=True)
+    # categories = ArrayField(
+    #     models.CharField(max_length=200, blank=True),
+    #     size=200,
+    # )
+    categories = models.CharField(max_length=200, blank=True)
     count = models.IntegerField(default=0)
     size = models.IntegerField(default=0)
     comment_url = models.CharField(max_length=200, blank=True)
