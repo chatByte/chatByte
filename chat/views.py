@@ -115,6 +115,10 @@ def my_stream(request, AUTHOR_ID):
         # a list of post, django.db.models.query.QuerySet
         mytimeline = cur_author.profile.timeline
 
+
+        all_public_posts = Post.objects.filter(visibility='public').all()
+
+
         # Get stream from: node origins, since we have plenty remote server
         for node in Node.objects.all():
             print("Get stream from: ", node.origin)
@@ -182,6 +186,9 @@ def my_stream(request, AUTHOR_ID):
 
         # merging quesryset
         public_channel_posts = mytimeline.all()
+
+
+        public_channel_posts = public_channel_posts | all_public_posts
 
         for following_profile in followings:
 
