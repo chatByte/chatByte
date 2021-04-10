@@ -134,14 +134,11 @@
             <div class="col-sm-1"></div>
             <div class="col-md-6">
         <div class="posts">
-
               {% for cur_post in page_obj %}
-
                 <!-- Post Content ================================================= -->
-
                 <div class="post-content">
-
                   {% if 'image/' in cur_post.contentType  %}
+                  
                   {% load filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
@@ -213,10 +210,6 @@
                   <!--                      end -->
 
                   <div class="post-comment">
-                    <!-- <div>
-                      <img src="https://i.pinimg.com/736x/85/48/95/85489588a43e9403a3dd5072609b94f4.jpg" alt="" class="profile-photo-sm" />
-                    <a href="" class="profile-link">{{user.profile.displayName}} </a>
-                    </div> -->
 
                     <button class="btn btn-primary postBtn" id="{{cur_post.id}}" data-toggle="modal" data-target="#exampleModal">Comment</button>
 
@@ -235,15 +228,6 @@
 
                                         <textarea  id="description" cols="45" rows="4" class="form-control" placeholder="Description: Anything exciting?"></textarea>
                                         <input type='file' id='imageFile' accept="image/*" onchange="readImg(this);">
-
-                                            <!-- <div class="dropdown">
-                                              <div class="publicity"><a id="visibility" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-users"></i><a></div>
-                                              <div class="dropdown-content">
-                                                <a href="#" id="public"><i class="fas fa-users"></i>&ensp;<span>Allow everyone to see the post</span></a>
-                                                <a href="#" id="friend"><i class="fas fa-user-friends"></i>&ensp;<span>Allow only friends to see the post</span></a>
-                                                <a href="#" id="private"><i class="fas fa-user"></i>&ensp;<span>Post only to myself</span></a>
-                                              </div>
-                                            </div> -->
                                             <!-- &thinsp; -->
                                             <div class="dropdown">
                                                <div class="publicity"><a id="contentType" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-edit"></i><a></div>

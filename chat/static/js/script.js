@@ -431,23 +431,23 @@ jQuery(document).ready(function($) {
   //   }
 
 
-    console.log(url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/')
-    $.ajax({
-      // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
-      url:url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/',
-      type: "GET", // http method
-      headers: {"X-Server": x_server},
-      beforeSend: function(xhr) {
-        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-      },
-      contentType: false,
-      processData: false,
-      dataType: "json",
-      // handle a successful response
-      success : function(data) {
-          console.log(data); // sanity check
-      },
-    });
+    // console.log(url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/')
+    // $.ajax({
+    //   // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
+    //   url:url_header + 'author/' + new_url[5].toString() + "/friends/accept/" + request_id + '/',
+    //   type: "GET", // http method
+    //   headers: {"X-Server": x_server},
+    //   beforeSend: function(xhr) {
+    //     xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    //   },
+    //   contentType: false,
+    //   processData: false,
+    //   dataType: "json",
+    //   // handle a successful response
+    //   success : function(data) {
+    //       console.log(data); // sanity check
+    //   },
+    // });
   });
 
 

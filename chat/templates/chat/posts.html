@@ -166,6 +166,28 @@
                                                 <a href="#" id="text/markdown"><i class="far fa-file"></i>&ensp;<span>This is a Common Markdown post</span></a>
                                               </div>
                                           </div>
+                                          &thinsp;
+                                          <!-- 
+                                          <div>
+                                           <label class="container"> unlisted
+                                            <input type="checkbox" checked="checked">
+                                            <span class="checkmark"></span>
+                                          </label>
+ 
+                                          </div> -->
+
+
+                                          <div class="dropdown">
+                                             <div class="publicity"><a id="unlisted_status" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-list"></i><a></div>
+                                              <div class="dropdown-content">
+                                                <a href="#" id="true"><i class="fas fa-eye-slash"></i>&ensp;<span>Unlisted</span></a>
+                                                <a href="#" id="false"><i class="fas fa-eye"></i>&ensp;<span>listed</span></a>
+                                              </div>
+                                          </div>
+
+
+
+
                                         </div>
                                       </div>
                                     </div>
@@ -242,10 +264,10 @@
 
                       </div>
 
-                      <div class="reaction-img">
+<!--                       <div class="reaction-img">
                         <a class="btn text-red "><i class="icon ion-ios-heart like">{{ cur_post.likes.all | length }}</i></a>
                         <a class="btn text-green"><i class="icon ion-share repost"></i></a>
-                      </div>
+                      </div> -->
 
                       <hr class="solid">
                       <!--            show nested comment  -->
