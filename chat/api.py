@@ -899,7 +899,7 @@ def stream_obj(request, AUTHOR_ID):
                     print(profile)
                 except Profile.DoesNotExist:
                     print("profile not found!")
-                posts_result = Post.objects.filter(visibility='public')
+                posts_result = Post.objects.filter(visibility='public').filter(unlisted="false")
                 print(posts_result)
                 # all_author_posts = Post.objects.filter(author=profile)
                 # print(all_author_posts)
