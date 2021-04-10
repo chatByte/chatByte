@@ -21,6 +21,19 @@ class CommentSerializer(serializers.ModelSerializer):
             'id': {'validators': []},
         }
     
+    def create(self, validated_data):
+        print("---------***********--------------")
+        author = validated_data.pop('author')
+        print(author)
+        # try: 
+        #     author = Profile.objects.get(id=author_data['id'])
+        # except:
+        #     author = Profile.objects.create(**author_data)
+        print("---------******************--------------")
+        comment = Comment.objects.create(author=author, **validated_data)
+        print("---------******************************--------------")
+        return comment
+    
     def update(self, instance, validated_data):
         print("---------***--------------")
         print(validated_data)
