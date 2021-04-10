@@ -110,14 +110,18 @@
                 <!--Activity SUmmary-->
                 <div id="sticky-sidebar">
                   <h4 class="blue"><i class="fab fa-github"></i>&thinsp;My Github Activity</h4>
-                  <div class="feed-item">
-                    <div class="live-activity">
-                      {% for cur_obj in git_activity_obj %}
-                      <p>{{cur_obj.id}}</p>
-                      {% endfor %}
-                      <p class="text-muted"> xxxx mins ago</p>
-                    </div>
-                  </div>
+                  {% for cur_push in git_activity_obj %}
+                    {% for cur_commit in cur_push.payload.commits%}
+                      {% if forloop.counter <= 5 %}
+                        <div class="feed-item">
+                          <div class="live-activity">
+                            <p class="text-muted">Commit ID: {{cur_commit.sha}}</p>
+                            <p style="max-width: 250px;">{{cur_commit.author.name}} commited with message "{{cur_commit.message}}"</p>
+                          </div>
+                        </div>
+                     {% endif %}
+                   {% endfor %}
+                  {% endfor %}
 
                 </div>
               </div>

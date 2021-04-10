@@ -120,7 +120,7 @@ def my_stream(request, AUTHOR_ID):
         # github_act_json = github_act_obj(cur_author.id)
 
         back_json = get_github_activity(request, AUTHOR_ID)
-        # print("github", back_json)
+        print("github", back_json)
 
         # Get stream from: node origins, since we have plenty remote server
         for node in Node.objects.all():
@@ -818,8 +818,8 @@ def get_github_activity(request, AUTHOR_ID):
     except Exception as e:
         print(e)
         return None
-    # pprint(r.json())  
-    
+    # pprint(r.json())
+
 
 '''
 Below is the dead code, or previous version, keep it , incase need that in the future
