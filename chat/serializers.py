@@ -44,6 +44,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'comment_url', 'comments', 'published', 'visibility', 'unlisted'  ]
     
     def create(self, validated_data):
+        print("---------***********--------------")
         comments_data = validated_data.pop('comments')
         author_data = validated_data.pop('author')
         
