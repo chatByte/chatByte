@@ -779,7 +779,8 @@ def reshare(request, AUTHOR_ID):
     visibility = post.visibility
     categories = post.categories
     content = post.content
-    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility)
+    unlisted = str(post.unlisted)
+    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted)
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response
