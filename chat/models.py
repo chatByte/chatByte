@@ -90,7 +90,7 @@ class Post(models.Model):
     # published date
     published = models.DateTimeField(default=django.utils.timezone.now)
     visibility = models.CharField(max_length=50)
-    unlisted = models.CharField(max_length=50, default='false')
+    unlisted = models.BooleanField(default=False)
     likes = models.ManyToManyField('Like', blank=True)
 
 class PostInbox(models.Model):

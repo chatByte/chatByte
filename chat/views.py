@@ -114,8 +114,8 @@ def my_stream(request, AUTHOR_ID):
 
         # a list of post, django.db.models.query.QuerySet
         # mytimeline = cur_author.profile.timeline
-        mytimeline = cur_author.profile.timeline.filter(unlisted='false')
-        all_public_posts = Post.objects.filter(visibility='public').filter(unlisted='false').all()
+        mytimeline = cur_author.profile.timeline.filter(unlisted=False)
+        all_public_posts = Post.objects.filter(visibility='public').filter(unlisted=False).all()
 
 
         # Get stream from: node origins, since we have plenty remote server
