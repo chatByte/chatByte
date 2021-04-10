@@ -56,16 +56,26 @@ def all_posts_obj(request):
         posts = posts.order_by('-published')
 
         # serializer = PostSerializer(posts, many=True)
+        
         # pagination
         pagination = PageNumberPagination()
         paginated_results = pagination.paginate_queryset(posts.all(), request)
 
         serializer = PostSerializer(paginated_results, many=True)
 
+        next_link = pagination.get_next_link()
+        if next_link == None:
+            next_link = ""
+        
+        prev_link = pagination.get_previous_link()
+
+        if prev_link == None:
+            prev_link = ""
+
         data = {
             'count': pagination.page.paginator.count,
-            'next': pagination.get_next_link(),
-            'previous': pagination.get_previous_link(),
+            'next': next_link,
+            'previous': prev_link,
             'posts': serializer.data,
         }
         return JsonResponse(data, safe=False)
@@ -90,7 +100,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
     USER_ID = (AUTHOR_ID + '.')[:-1]
     origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
@@ -189,10 +199,19 @@ def posts_obj(request, AUTHOR_ID):
 
             serializer = PostSerializer(paginated_results, many=True)
 
+            next_link = pagination.get_next_link()
+            if next_link == None:
+                next_link = ""
+            
+            prev_link = pagination.get_previous_link()
+
+            if prev_link == None:
+                prev_link = ""
+
             data = {
                 'count': pagination.page.paginator.count,
-                'next': pagination.get_next_link(),
-                'previous': pagination.get_previous_link(),
+                'next': next_link,
+                'previous': prev_link,
                 'posts': serializer.data,
             }
             return JsonResponse(data, safe=False)
@@ -247,15 +266,16 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
     # ex. equest.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
+    USER_POST_ID = POST_ID
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+        POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+        POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("author id: ", AUTHOR_ID)
-    USER_POST_ID = POST_ID
-    POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
 
     if server_origin is not None and server_origin != host_server:
@@ -279,11 +299,20 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 
             serializer = CommentSerializer(paginated_results, many=True)
 
+            next_link = pagination.get_next_link()
+            if next_link == None:
+                next_link = ""
+            
+            prev_link = pagination.get_previous_link()
+
+            if prev_link == None:
+                prev_link = ""
+
             data = {
                 'count': pagination.page.paginator.count,
-                'next': pagination.get_next_link(),
-                'previous': pagination.get_previous_link(),
-                'results': serializer.data,
+                'next': next_link,
+                'previous': prev_link,
+                'comments': serializer.data,
             }
             return JsonResponse(data, safe=False)
 
@@ -291,8 +320,27 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             # cretate comment
             data = JSONParser().parse(request)
 
-            serializer = CommentSerializer(data=data)
-            if serializer.is_valid():
+            profile_url = request.META.get("HTTP_X_REQUEST_USER")
+            
+            author_id = profile_url.split('author/')[1]
+            try:
+                author = Profile.objects.get(id=profile_url)
+            except:
+                res = profileRequest("GET", origin_server, author_id)
+                print("Profile from comment: ", res)
+                print("Content: ", res.json())
+                author_ser = ProfileSerializer(data=res.json())
+                if author_ser.is_valid():
+                    author = author_ser.save()
+            
+            print(author)
+            comment = createComment(author, POST_ID, data['content'], data['contentType'])
+            print(comment)
+            if comment:
+                serializer = CommentSerializer(comment)
+                return JsonResponse(serializer.data, status=201)
+            else:
+                return JsonResponse({"Error": "can't create comment properly"}, status=400)
 
                 # save comments to post obj, update
                 # post.comments.add
@@ -301,19 +349,19 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
                 #     post_serializer.save()
                 # may be we should user seralzier to test profile obj, and post obj
                 # ex: post_serializer.errors?
-                profile = Profile.objects.get(id=AUTHOR_ID)
+                # profile = Profile.objects.get(id=AUTHOR_ID)
 
-                if (createComment(profile, POST_ID, data["comment"], data["contentType"], data["published"])):
+                # if (createComment(profile, POST_ID, data["comment"], data["contentType"], data["published"])):
 
-                    return JsonResponse(serializer.data, status=201)
-                else:
-                    return JsonResponse(serializer.data, status=403)
+                #     return JsonResponse(serializer.data, status=201)
+                # else:
+                #     return JsonResponse(serializer.data, status=403)
 
         # elif request.method == "DELETE":
         #     # TODO
         #     pass
 
-        return JsonResponse(serializer.errors, status=400)
+        # return JsonResponse(serializer.errors, status=400)
 
 '''
 Tetsing format:
@@ -343,7 +391,7 @@ def profile_obj(request, AUTHOR_ID):
     print("Request origin: ", server_origin)
     origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
@@ -590,15 +638,17 @@ Response Object Structure: [list of Like objects]
 @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def likes_post_obj(request, AUTHOR_ID, POST_ID):
+    USER_ID = (AUTHOR_ID + '.')[:-1]
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server not in host_server:
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+        POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+        POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("author id: ", AUTHOR_ID)
-    POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
 
     if server_origin is not None and server_origin != host_server:
@@ -612,7 +662,7 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
         likes = post.likes
         serializer = LikeSerializer(likes, many=True)
         # if serializer.is_valid(raise_exception=True):
-        return JsonResponse({"type": "likes", "items": serializer.data}, status=200, safe=False)
+        return JsonResponse(serializer.data, status=200, safe=False)
 
         # return JsonResponse(serializer.errors, status=400)
 
@@ -757,7 +807,7 @@ def inbox(request, AUTHOR_ID):
                 else:
                     print("here")
                     return JsonResponse(serializer.errors, status=400)
-            elif data['type'] == 'like':
+            elif data['type'].lower() == 'like':
                 print("Recieved a like inbox!")
                 post_url = data['object'].split("/")
                 # like post
@@ -808,7 +858,7 @@ def inbox(request, AUTHOR_ID):
                         return JsonResponse(data, status=200)
                     return JsonResponse(serializer.errors, status=400)
 
-            elif data['type'] == 'follow':
+            elif data['type'].lower() == 'follow':
                 print("Recieved a friend request!")
                 print(data['actor'])
                 print(data['object'])
@@ -899,13 +949,26 @@ def stream_obj(request, AUTHOR_ID):
     else:
         if request.method == 'GET':
             try:
-                print("here")
+                # print("here")
+                posts_result = Post.objects.filter(visibility='public').filter(unlisted=False)
+                result = []
                 try:
                     profile = Profile.objects.get(id=AUTHOR_ID)
                     print(profile)
+
+                    for user in User.objects.all():
+                        user_friends = list(user.profile.friends.all())
+                        if profile in user_friends:
+                            friend_posts = user.profile.timeline.filter(visibility='friend')
+                            posts_result = posts_result | friend_posts
+
                 except Profile.DoesNotExist:
                     print("profile not found!")
-                posts_result = Post.objects.filter(visibility='public').filter(unlisted=False)
+                
+                
+                
+
+
                 print(posts_result)
                 # all_author_posts = Post.objects.filter(author=profile)
                 # print(all_author_posts)
@@ -926,10 +989,19 @@ def stream_obj(request, AUTHOR_ID):
 
             serializer = PostSerializer(paginated_results, many=True)
 
+            next_link = pagination.get_next_link()
+            if next_link == None:
+                next_link = ""
+            
+            prev_link = pagination.get_previous_link()
+
+            if prev_link == None:
+                prev_link = ""
+
             data = {
                 'count': pagination.page.paginator.count,
-                'next': "", # pagination.get_next_link(),
-                'previous': "", # pagination.get_previous_link(),
+                'next': next_link,
+                'previous': prev_link,
                 'posts': serializer.data,
             }
             return JsonResponse(data, safe=False)
