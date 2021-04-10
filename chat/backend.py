@@ -384,6 +384,7 @@ def likePost(post_id, author_id):
     # TODO: check if remote
 def likeComment(comment_id, author_id):
 
+    print("here, author_id", author_id)
 
     try:
         user_profile = Profile.objects.get(id=author_id)
@@ -391,15 +392,15 @@ def likeComment(comment_id, author_id):
         user_liked = user_profile.liked
         items_list = user_liked.items
         items_list.add(new_like)
-        post = Post.objects.get(id=post_id)
-        post.likes.add(new_like)
-        post.save()
+        comment = Comment.objects.get(id=comment_id)
+        comment.likes.add(new_like)
+        comment.save()
         user_profile.liked.save()
 
     except BaseException as e:
         print(e)
         return None 
 
-    
+
     # TODO
     pass

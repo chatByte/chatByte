@@ -60,6 +60,7 @@ function readImg(input) {
   }
 }
 
+// design for like post
 function likePost(post_id, liked) {
   // like a post
   if (liked) return;
@@ -105,6 +106,53 @@ function likePost(post_id, liked) {
     },
   });
 }
+
+function likeComment(comment_id, liked) {
+  // like a post
+  if (liked) return;
+    
+  var csrftoken = getCookie('csrftoken');
+
+  // var post_id = $(this).closest('.post-content').attr('id');
+  console.log("comment_id : ", comment_id)
+
+  var data = {type: "like",
+              object_type: "comment",
+              object_id: comment_id,
+              csrfmiddlewaretoken: csrftoken
+              // summary:"someone liked someone's post"
+              // context:
+              }
+  // console.log(window.location.origin+'/author/'+ new_url[5].toString() +'/inbox/')
+  $.ajax({
+    // author/<str:AUTHOR_ID>/inbox/
+    type: "POST", // http method
+    url:window.location.origin+'/author/'+ new_url[4].toString() +'/my_stream/',
+    // header
+    headers: {"X-Server": x_server},
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    },
+    contentType: 'application/json; charset=utf-8',
+    dataType: "json",
+    headers:{
+                  "X-CSRFToken": csrftoken,
+              },
+    data: JSON.stringify(data),
+    // handle a successful response
+    success : function(data) {
+        console.log(data); // sanity check
+        var like_num = $(this).parent('a').text();
+        if(liked) {
+          $(this).text(parseInt(like_num) - 1);
+        } else {
+          $(this).text(parseInt(like_num) + 1);
+        }
+        window.location.reload();
+    },
+  });
+}
+
 
 function reshare(post_id){
   console.log(post_id)

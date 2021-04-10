@@ -249,12 +249,12 @@ def my_stream(request, AUTHOR_ID):
                 response = JsonResponse({'redirect_url': "current"}, status=200)
                 # response = render(request, "chat/stream.html", dynamic_contain)
             elif object_type == "comment":
-                # TODO waiting backend
+
                 # object_id = request_post.get("object_id","")
                 likeComment(object_id, cur_author_id)
                 # response = render(request, "chat/stream.html", dynamic_contain)
                 # pass
-                JsonResponse({'redirect_url': "current"}, status=200)
+                response = JsonResponse({'redirect_url': "current"}, status=200)
             else:
                 response = JsonResponse({}, status=400)
 
@@ -272,7 +272,6 @@ def my_stream(request, AUTHOR_ID):
 
         else:
             response = JsonResponse({}, status=400)
-
 
         return response
 
