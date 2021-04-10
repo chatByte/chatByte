@@ -323,12 +323,17 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
                 res = profileRequest("GET", origin_server, author_id)
                 print("Profile from comment: ", res)
                 print("Content: ", res.json())
-                author = ProfileSerializer(res.json())
+                author = ProfileSerializer(res.json()).save()
             
             print(author)
-            
-            serializer = CommentSerializer(data=data)
-            if serializer.is_valid():
+            comment = createComment(author, POST_ID, data['content'], data['contentType'])
+            print(comment)
+            if comment:
+                serializer = CommentSerializer(comment)
+                if serializer.is_valid():
+                    return JsonResponse(serializer.data, status=201)
+            else:
+                return JsonResponse({"Error": "can't create comment properly"}, status=400)
 
                 # save comments to post obj, update
                 # post.comments.add
@@ -337,19 +342,19 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
                 #     post_serializer.save()
                 # may be we should user seralzier to test profile obj, and post obj
                 # ex: post_serializer.errors?
-                profile = Profile.objects.get(id=AUTHOR_ID)
+                # profile = Profile.objects.get(id=AUTHOR_ID)
 
-                if (createComment(profile, POST_ID, data["comment"], data["contentType"], data["published"])):
+                # if (createComment(profile, POST_ID, data["comment"], data["contentType"], data["published"])):
 
-                    return JsonResponse(serializer.data, status=201)
-                else:
-                    return JsonResponse(serializer.data, status=403)
+                #     return JsonResponse(serializer.data, status=201)
+                # else:
+                #     return JsonResponse(serializer.data, status=403)
 
         # elif request.method == "DELETE":
         #     # TODO
         #     pass
 
-        return JsonResponse(serializer.errors, status=400)
+        # return JsonResponse(serializer.errors, status=400)
 
 '''
 Tetsing format:
