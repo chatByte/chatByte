@@ -22,6 +22,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
+import requests
+
 
 
 """
@@ -108,13 +110,17 @@ def my_stream(request, AUTHOR_ID):
         cur_user_name = request.user.username
 
     cur_author = request.user
-
+    # back_json = get_github_activity(request, AUTHOR_ID)
+    # print("github", back_json)
 
     if request.method == "GET":
 
         # a list of post, django.db.models.query.QuerySet
         mytimeline = cur_author.profile.timeline
-        github_act_json = github_act_obj(cur_author.id)
+        # github_act_json = github_act_obj(cur_author.id)
+
+        back_json = get_github_activity(request, AUTHOR_ID)
+        # print("github", back_json)
 
         # Get stream from: node origins, since we have plenty remote server
         for node in Node.objects.all():
@@ -215,7 +221,8 @@ def my_stream(request, AUTHOR_ID):
             'author_num_follwers': author_num_follwers,
             'friend_request_num': friend_request_num,
             'liked_objs': liked_objs,
-            'friends': myFriends
+            'friends': myFriends,
+            'git_activity_obj': back_json
         }
 
 
@@ -367,8 +374,7 @@ def posts(request, AUTHOR_ID):
             'test_name': cur_user_name,
             'myName' : cur_author.displayName,
             'page_obj' : page_obj,
-            'friend_request_num': friend_request_num,
-
+            'friend_request_num': friend_request_num
         }
 
 
@@ -807,8 +813,8 @@ def get_github_activity(request, AUTHOR_ID):
         }
         headers = {'Authorization': f'token {token}'}
         r = requests.get(query_url)
-        pprint(r.json())
-        return JsonResponse(r.json(), status=200, safe=False)
+        # pprint(r.json())
+        return r.json()
     except Exception as e:
         print(e)
         return None
