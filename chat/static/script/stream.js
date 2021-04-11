@@ -156,7 +156,7 @@ function likeComment(comment_id, liked) {
 
 
 function reshare(post){
-  console.log(post)
+  console.log("post: ", post)
   $.ajax({
     url:"../reshare/",
     type: "POST", // http method
