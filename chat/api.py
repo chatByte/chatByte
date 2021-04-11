@@ -414,13 +414,14 @@ def profile_obj(request, AUTHOR_ID):
         # query to database
         if request.method == "GET":
             serializer = ProfileSerializer(profile)
-            return JsonResponse(serializer.data, status=201)
+            print(serializer.data)
+            return JsonResponse(serializer.data, status=200)
         elif request.method == "POST":
             data = JSONParser().parse(request)
             serializer = ProfileSerializer(profile, data=data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                return JsonResponse(serializer.data, status=200)
+                return JsonResponse(serializer.data, status=201)
             return JsonResponse(serializer.errors, status=400)
             # post_obj = json.loads(request.body)
             # url = post_obj["url"]
@@ -471,7 +472,6 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
         FOREIGN_AUTHOR_ID = server_origin + "author/" + FOREIGN_AUTHOR_ID
     except:
         FOREIGN_AUTHOR_ID = host_server + "author/" + FOREIGN_AUTHOR_ID
-    print("post id: ", FOREIGN_AUTHOR_ID)
     print("server_origin", server_origin)
     print("host_server", host_server)
 
@@ -834,19 +834,26 @@ def inbox(request, AUTHOR_ID):
                     if user_id != USER_ID:
                     # if user_id != AUTHOR_ID: # Now AUTHOR_ID is http://our-host-name/USER_ID
                         return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
-                    serializer = LikeSerializer(data=data)
-                    if serializer.is_valid(raise_exception=True):
-                        try:
-                            post = Post.objects.get(id=post_id)
-                        except:
-                            return JsonResponse({"Error": "Post does not exist"}, status=404)
-                        like = serializer.save()
+                    try:
+                        like = Like.objects.get(id=data['id'])
+                    except:
+                        serializer = LikeSerializer(data=data)
+                        if serializer.is_valid(raise_exception=True):
+                            like = serializer.save()
+                        else:
+                            print("serializer invalid error")
+                            print(serializer.errors)
+                            return JsonResponse(serializer.errors, status=400)
+                    try:
+                        post = Post.objects.get(id=post_id)
                         post.likes.add(like)
                         post.save()
                         user.inbox.like_inbox.add(like)
                         user.save()
                         return JsonResponse(data, status=200)
-                    return JsonResponse(serializer.errors, status=400)
+                    except:
+                        return JsonResponse({"Error": "Post does not exist"}, status=404)
+                    
                 #like comment
                 elif len(post_url) == 9:
                     user_id = post_url[4]
@@ -860,21 +867,27 @@ def inbox(request, AUTHOR_ID):
                     # if user_id != AUTHOR_ID:
                     if user_id != USER_ID:
                         return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
-                    serializer = LikeSerializer(data=data)
-                    if serializer.is_valid(raise_exception=True):
-                        try:
-                            comment = Comment.objects.get(id=comment_id)
-                        except:
-                            return JsonResponse({"Error": "comment does not exist"}, status=404)
-                        print("Serializer is valid")
-                        like = serializer.save()
+                    try:
+                        like = Like.objects.get(id=data['id'])
+                    except:
+                        serializer = LikeSerializer(data=data)
+                        if serializer.is_valid(raise_exception=True):
+                            like = serializer.save()
+                        else:
+                            print("serializer invalid error")
+                            print(serializer.errors)
+                            return JsonResponse(serializer.errors, status=400)
+                    try:
+                        comment = Comment.objects.get(id=comment_id)
                         print(like)
                         comment.likes.add(like)
                         comment.save()
                         print(comment)
                         return JsonResponse(data, status=200)
-                    print("serializer in valid error")
-                    return JsonResponse(serializer.errors, status=400)
+                    except:
+                        return JsonResponse({"Error": "comment does not exist"}, status=404)
+                    
+                    
 
             elif data['type'].lower() == 'follow':
                 print("Recieved a friend request!")
@@ -1050,3 +1063,52 @@ def github_act_obj(request, AUTHOR_ID):
         print(e)
         return None
     # pprint(r.json())    
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['POST'])
+def inbox_likes(request, AUTHOR_ID):
+    data = request.data
+    print("Inbox likes data: ", data)
+    
+    if data['type'] == 'like':
+        # from our own server
+        # send the like object to remote server
+        return inbox(request, AUTHOR_ID)
+    elif data['type'] == 'comment':
+        original_author_id = data['id'].split('author/')[1].split('/posts')[0]
+        print("original author id for the liked object: ", original_author_id)
+        # create a like object for comment
+        try:
+            author = Profile.objects.get(id=data['author']['id'])
+        except:
+            author_ser = ProfileSerializer(data=data['author'])
+            if author_ser.is_valid():
+                author = author_ser.save()
+        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a comment")
+        # send the like to inbox directly
+        data = LikeSerializer(like).data
+        url = str(host_server) + "author/" + str(original_author_id) + "/inbox"
+        headers = {'Content-type': 'application/json'}
+        response = requests.post(url, headers=headers, data=json.dumps(data), auth=HTTPBasicAuth(request.user.username, request.user.first_name))
+        return JsonResponse({}, safe=False, status=response.status_code)
+    elif data['type'] == 'post':
+        original_author_id = data['id'].split('author/')[1].split('/posts')[0]
+        print("original author id for the liked object: ", original_author_id)
+        # create a like object for post
+        try:
+            author = Profile.objects.get(id=data['author']['id'])
+        except:
+            author_ser = ProfileSerializer(data=data['author'])
+            if author_ser.is_valid():
+                author = author_ser.save()
+        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a post")
+        # send the like to inbox directly
+        data = LikeSerializer(like).data
+        url = str(host_server) + "author/" + str(original_author_id) + "/inbox"
+        headers = {'Content-type': 'application/json'}
+        response = requests.post(url, headers=headers, data=json.dumps(data), auth=HTTPBasicAuth(request.user.username, request.user.first_name))
+        return JsonResponse({}, safe=False, status=response.status_code)
+    else:
+        return JsonResponse({"Detail": "Invalid like type"}, safe=False, status=400)
