@@ -34,6 +34,7 @@ def update_profile_signal(sender, instance, created, **kwargs):
             Token.objects.create(user=instance)
 
             instance.profile.displayName = instance.username
+            instance.profile.host = host
             instance.profile.save()
             instance.inbox.post_inbox.author = instance.id
             instance.inbox.post_inbox.save()
