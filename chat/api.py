@@ -1070,11 +1070,14 @@ def github_act_obj(request, AUTHOR_ID):
 def inbox_likes(request, AUTHOR_ID):
     data = request.data
     print("Inbox likes data: ", data)
+    
     if data['type'] == 'like':
         # from our own server
         # send the like object to remote server
         return inbox(request, AUTHOR_ID)
     elif data['type'] == 'comment':
+        original_author_id = data['id'].split('author/')[1].split('/posts')[0]
+        print("original author id for the liked object: ", original_author_id)
         # create a like object for comment
         try:
             author = Profile.objects.get(id=data['author']['id'])
@@ -1085,11 +1088,13 @@ def inbox_likes(request, AUTHOR_ID):
         like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a comment")
         # send the like to inbox directly
         data = LikeSerializer(like).data
-        url = str(host_server) + "author/" + str(AUTHOR_ID) + "/inbox"
+        url = str(host_server) + "author/" + str(original_author_id) + "/inbox"
         headers = {'Content-type': 'application/json'}
         response = requests.post(url, headers=headers, data=json.dumps(data), auth=HTTPBasicAuth(request.user.username, request.user.first_name))
         return JsonResponse({}, safe=False, status=response.status_code)
     elif data['type'] == 'post':
+        original_author_id = data['id'].split('author/')[1].split('/posts')[0]
+        print("original author id for the liked object: ", original_author_id)
         # create a like object for post
         try:
             author = Profile.objects.get(id=data['author']['id'])
@@ -1100,7 +1105,7 @@ def inbox_likes(request, AUTHOR_ID):
         like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a post")
         # send the like to inbox directly
         data = LikeSerializer(like).data
-        url = str(host_server) + "author/" + str(AUTHOR_ID) + "/inbox"
+        url = str(host_server) + "author/" + str(original_author_id) + "/inbox"
         headers = {'Content-type': 'application/json'}
         response = requests.post(url, headers=headers, data=json.dumps(data), auth=HTTPBasicAuth(request.user.username, request.user.first_name))
         return JsonResponse({}, safe=False, status=response.status_code)
