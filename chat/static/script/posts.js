@@ -79,7 +79,7 @@ function deletePost(id){
   console.log(id);
   var post_id = id.split("posts/")[1]
   console.log("Post id: ", post_id)
-  var url = "../posts/"+post_id+"/";
+  var url = "../posts/"+post_id;
   console.log(url);
   var csrftoken = getCookie('csrftoken');
   console.log(csrftoken);
