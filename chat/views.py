@@ -717,8 +717,10 @@ def search(request, AUTHOR_ID):
     except Profile.DoesNotExist:
         response = profileRequest("GET", author_origin, target_id.split("/")[-1])
         #print(author_origin)
+        print(response.status_code)
+        print(response.json())
 
-        if response.status_code == 200:
+        if response.status_code < 400:
             foreign_author = response.json()
             # foreign_author = {'type': 'author',
             #                 'id': 'http://127.0.0.1:5000/author/10',
