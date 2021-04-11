@@ -271,9 +271,9 @@ def my_stream(request, AUTHOR_ID):
             if server_origin not in host_server:
                 print("Sending like to remote server...")
                 if object_type == "post":
-                    like = Like.objects.create(author=request.user.profile, object=object_id, summary= request.user.profile.displayName + " likes your post")
+                    like = Like.objects.create(author=request.user.profile, object=object_id, summary= request.user.profile.displayName + " likes a post")
                 else:
-                    like = Like.objects.create(author=request.user.profile, object=object_id, summary= request.user.profile.displayName + " likes your comment")
+                    like = Like.objects.create(author=request.user.profile, object=object_id, summary= request.user.profile.displayName + " likes a comment")
                 # send the like object to remote server
                 res = inboxRequest("POST", server_origin, AUTHOR_ID, LikeSerializer(like).data)
                 if res.status_code < 400:

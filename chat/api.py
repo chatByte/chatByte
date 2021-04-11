@@ -1049,3 +1049,39 @@ def github_act_obj(request, AUTHOR_ID):
         print(e)
         return None
     # pprint(r.json())    
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['POST'])
+def inbox_likes(request, AUTHOR_ID):
+    data = request.data
+    if data['type'] == 'like':
+        # from our own server
+        # send the like object to remote server
+        res = inboxRequest("POST", host_server, AUTHOR_ID, data)
+        return JsonResponse({}, safe=False, status=res.status_code)
+    elif data['type'] == 'comment':
+        # create a like object for comment
+        try:
+            author = Profile.objects.get(id=data['author']['id'])
+        except:
+            author_ser = ProfileSerializer(data=data['author'])
+            if author_ser.is_valid():
+                author = author_ser.save()
+        like = Like.objects.create(author=author, object=data['id'], summary= request.user.profile.displayName + " likes a comment")
+        res = inboxRequest("POST", host_server, AUTHOR_ID, LikeSerializer(like).data)
+        return JsonResponse({}, safe=False, status=res.status_code)
+    elif data['type'] == 'post':
+        # create a like object for post
+        try:
+            author = Profile.objects.get(id=data['author']['id'])
+        except:
+            author_ser = ProfileSerializer(data=data['author'])
+            if author_ser.is_valid():
+                author = author_ser.save()
+        like = Like.objects.create(author=author, object=data['id'], summary= request.user.profile.displayName + " likes a post")
+        res = inboxRequest("POST", host_server, AUTHOR_ID, LikeSerializer(like).data)
+        return JsonResponse({}, safe=False, status=res.status_code)
+    else:
+        return JsonResponse({"Detail": "Invalid like type"}, safe=False, status=400)
