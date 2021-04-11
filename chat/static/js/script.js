@@ -198,7 +198,7 @@ function sendFriendRequest(type, summary, author, object) {
   console.log("sending Friend Request");
   $.ajax({
     // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
-    url: window.location.origin +'/author/'+ new_url[4].toString() +'/inbox/',
+    url: window.location.origin +'/author/'+ new_url[4].toString() +'/inbox',
     type : 'POST', // http method
     contentType: "application/json",
     processData: false,
