@@ -1069,7 +1069,7 @@ def inbox_likes(request, AUTHOR_ID):
             author_ser = ProfileSerializer(data=data['author'])
             if author_ser.is_valid():
                 author = author_ser.save()
-        like = Like.objects.create(author=author, object=data['id'], summary= request.user.profile.displayName + " likes a comment")
+        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a comment")
         res = inboxRequest("POST", host_server, AUTHOR_ID, LikeSerializer(like).data)
         return JsonResponse({}, safe=False, status=res.status_code)
     elif data['type'] == 'post':
@@ -1080,7 +1080,7 @@ def inbox_likes(request, AUTHOR_ID):
             author_ser = ProfileSerializer(data=data['author'])
             if author_ser.is_valid():
                 author = author_ser.save()
-        like = Like.objects.create(author=author, object=data['id'], summary= request.user.profile.displayName + " likes a post")
+        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a post")
         res = inboxRequest("POST", host_server, AUTHOR_ID, LikeSerializer(like).data)
         return JsonResponse({}, safe=False, status=res.status_code)
     else:
