@@ -119,6 +119,11 @@ def my_stream(request, AUTHOR_ID):
         mytimeline = cur_author.profile.timeline.filter(unlisted=False)
         all_public_posts = Post.objects.filter(visibility='public').filter(unlisted=False).all()
 
+        # print(",,,,,,,,,,,,,,,")
+        # print(all_public_posts)
+
+
+
         back_json = get_github_activity(request, AUTHOR_ID)
 
         # Get stream from: node origins, since we have plenty remote server
@@ -133,9 +138,22 @@ def my_stream(request, AUTHOR_ID):
             res = streamRequest(node.origin, request.user.id)
             try:
                 data = res.json()
-                remote_posts += data['posts']
+                # remote_posts += data['posts']
                 # print(data['posts'])
-                # for post in data['posts']:
+                for post in data['posts']:
+                    remote_post_id = post['id']
+                    remote_origin = remote_post_id.split('autho/')[0]
+                    remote_user_id = remote_post_id.split('autho/')[1].split('posts/')[0]
+                    remote_post_id = remote_post_id.split('autho/')[1].split('posts/')[1]
+                    res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
+                    print("stream get post's likes: ", res.json())
+                    print("Number of likes: ", len(res.json()))
+                    post['num_likes'] =  len(res.json())
+                    for comment in post['comments']:
+                        com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment['id'])
+                        comment['num_likes'] = len(com_res.json())
+                    remote_posts.append(post)
+
                 #     # print("Post id: ", post['id'])
                 #     post_id = post['id']
                 #     try:
@@ -152,7 +170,7 @@ def my_stream(request, AUTHOR_ID):
                 #             author_serializer = ProfileSerializer(data=author_dict)
                 #             if author_serializer.is_valid(raise_exception=True):
                 #                 author = author_serializer.save()
-                    
+
                 #         serializer = PostSerializer(data=post)
 
                 #         if serializer.is_valid(raise_exception=True):
@@ -180,30 +198,41 @@ def my_stream(request, AUTHOR_ID):
 
             public_posts = following_profile.timeline.filter(visibility='public')
             public_channel_posts = public_channel_posts | public_posts
-        
+        public_channel_posts = public_channel_posts | all_public_posts
 
-        before_jsonfy_public_channel_posts = public_channel_posts
 
+        jsonify_public_channel_posts = []
+        for post in public_channel_posts:
+            post_num_likes = len(post.likes.all())
+            comment_like_list = []
+            for comment in post.comments.all():
+                comment_num_likes = len(comment.likes.all())
+                comment_like_list.append(comment_num_likes)
+            json_post = json.loads(json.dumps(PostSerializer(post).data))
+            for i in range(len(json_post['comments'])):
+                json_post['comments'][i]['num_likes'] = comment_like_list[i]
+            json_post['num_likes'] = post_num_likes
+            jsonify_public_channel_posts.append(json_post)
 
         # PostSerializer(public_channel_posts, many=True).data
         # print("PostSerializaer:\n", json.dumps(PostSerializer(public_channel_posts, many=True).data))
-        public_channel_posts = json.loads(json.dumps(PostSerializer(public_channel_posts, many=True).data)) + remote_posts # a list
+        # public_channel_posts = json.loads(json.dumps(PostSerializer(public_channel_posts, many=True).data)) + remote_posts # a list
         # print("public_channel_posts:\n", public_channel_posts)
-
+        jsonify_public_channel_posts += remote_posts
 
         author_num_follwers = len(cur_author.profile.followers.items.all())
         friend_request_num = len(cur_author.inbox.friend_requests.all())
         # order by date
         # public_channel_posts = public_channel_posts.order_by('-published')
-       
-        public_channel_posts = sorted(public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
-        for post in public_channel_posts:
+
+        jsonify_public_channel_posts = sorted(jsonify_public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
+        for post in jsonify_public_channel_posts:
             print("post:\n", post)
             post['comments'] = sorted(post['comments'], key=lambda k: k.get('published', 0), reverse=True)
 
 
         # create a paginator
-        paginator_public_channel_posts = Paginator(public_channel_posts, 8) # Show 8 contacts per page.
+        paginator_public_channel_posts = Paginator(jsonify_public_channel_posts, 8) # Show 8 contacts per page.
 
         # if  page_number == None, we will get first page(can be empty)
         page_number = request.GET.get('page')
@@ -274,7 +303,7 @@ def my_stream(request, AUTHOR_ID):
             # response = request.post(post_id + "/comments", data=json.dumps(send_data), head)
             response = commentRequest("POST", post_id.split('author/')[0], post_id.split('author/')[1].split('/posts/')[0] \
                 , post_id.split('author/')[1].split('/posts/')[1], send_data)
-            
+
             print("response json:", response.json())
             return JsonResponse(response.json(), status=response.status_code)
             # else:
@@ -387,8 +416,6 @@ def posts(request, AUTHOR_ID):
             'page_obj' : page_obj,
             'friend_request_num': friend_request_num
         }
-
-
 
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
@@ -698,8 +725,12 @@ def search(request, AUTHOR_ID):
     except Profile.DoesNotExist:
         response = profileRequest("GET", author_origin, target_id.split("/")[-1])
         #print(author_origin)
+        print(response.status_code)
+        print(response.json())
+        numberID_target = target_id.split("/")[-1]
+        server_name = user.username
 
-        if response.status_code == 200:
+        if response.status_code < 400:
             foreign_author = response.json()
             # foreign_author = {'type': 'author',
             #                 'id': 'http://127.0.0.1:5000/author/10',
@@ -710,7 +741,9 @@ def search(request, AUTHOR_ID):
             serializer = ProfileSerializer(data=foreign_author)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                return JsonResponse({"url": "../mystream/2/"}, status=200)
+                redirect_url = "../my_stream/" + server_name +"/" + numberID_target + "/"
+                json_dict = {"url": redirect_url}
+                return JsonResponse(json_dict, status=200)
         else:
             return JsonResponse(response.json(), status=response.status_code)
 

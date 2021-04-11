@@ -204,13 +204,16 @@ def createPost(title, source, origin, description, content_type, content, author
 
         post.comment_url = post.id + "/comments/"
 
+        print(".................reshareID")
+        print(reshareID)
+
         # if it is not, means not None, and it is the original posting
         if not reshareID:
             post.origin = post.id
             post.source = post.id
         else:
             post.origin = origin
-            post.source = reshare
+            post.source = reshareID
         post.save()
         author.timeline.add(post)
         author.save()
