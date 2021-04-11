@@ -243,7 +243,7 @@ $( document ).ready(function() {
           case "award":
           case "kiss":
           case "web":
-          case "empty":
+          case "nonsense":
             $("#categories").find('i').attr("class", icon);
             categories = id;
             break;
