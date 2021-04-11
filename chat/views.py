@@ -341,7 +341,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
     host = server.last_name
     # foreign_author = getUser(FOREIGN_ID)
     foreign_author = Profile.objects.get(id=host + "author/" + FOREIGN_ID)
-    author_id = host + "author/" + AUTHOR_ID
+    author_id = host_server + "author/" + AUTHOR_ID
     print(author_id)
     cur_author = Profile.objects.get(id=author_id)
     # if foreign_author != None:
