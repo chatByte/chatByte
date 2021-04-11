@@ -1059,8 +1059,7 @@ def inbox_likes(request, AUTHOR_ID):
     if data['type'] == 'like':
         # from our own server
         # send the like object to remote server
-        inbox(request, AUTHOR_ID)
-        return JsonResponse({}, safe=False, status=res.status_code)
+        return inbox(request, AUTHOR_ID)
     elif data['type'] == 'comment':
         # create a like object for comment
         try:
@@ -1070,8 +1069,10 @@ def inbox_likes(request, AUTHOR_ID):
             if author_ser.is_valid():
                 author = author_ser.save()
         like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a comment")
-        res = inboxRequest("POST", host_server, AUTHOR_ID, LikeSerializer(like).data)
-        return JsonResponse({}, safe=False, status=res.status_code)
+        data = LikeSerializer(like).data
+        url = str(host_server) + "author/" + str(AUTHOR_ID) + "/inbox"
+        response = requests.post(url, data=json.dumps(data), auth=HTTPBasicAuth(request.user.username, request.user.first_name))
+        return JsonResponse({}, safe=False, status=response.status_code)
     elif data['type'] == 'post':
         # create a like object for post
         try:
@@ -1081,7 +1082,9 @@ def inbox_likes(request, AUTHOR_ID):
             if author_ser.is_valid():
                 author = author_ser.save()
         like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a post")
-        res = inboxRequest("POST", host_server, AUTHOR_ID, LikeSerializer(like).data)
-        return JsonResponse({}, safe=False, status=res.status_code)
+        data = LikeSerializer(like).data
+        url = str(host_server) + "author/" + str(AUTHOR_ID) + "/inbox"
+        response = requests.post(url, data=json.dumps(data), auth=HTTPBasicAuth(request.user.username, request.user.first_name))
+        return JsonResponse({}, safe=False, status=response.status_code)
     else:
         return JsonResponse({"Detail": "Invalid like type"}, safe=False, status=400)
