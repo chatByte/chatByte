@@ -120,10 +120,10 @@ def inboxRequest(method, origin, user_id, data=None):
             print(json.dumps(data))
             response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
-        elif data['type'] == 'like':
+        elif data['type'].lower() == 'like':
             response = requests.post(like_url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
-        elif data['type'] == 'follow':
+        elif data['type'].lower() == 'follow':
             print("Recieved a friend request!")
             response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
