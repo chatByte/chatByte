@@ -447,9 +447,9 @@ def update_post(request, AUTHOR_ID, POST_ID):
 
     request_post = request.POST
     title = request_post.get("title", "")
+    print("title ", title)
     description = request_post.get("description", "")
     content_type = request_post.get("contentType", "")
-
 
 
     f = request.FILES.get("file", "")

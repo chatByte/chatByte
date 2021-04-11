@@ -163,6 +163,7 @@ function editPost(POST_ID) {
         type : "POST", // http method
         dataType: 'text', // what to expect back from the server
         cache: false,
+        contentType: false,
         processData: false,
         data: form_data,
 

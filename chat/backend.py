@@ -209,14 +209,14 @@ def createPost(title, source, origin, description, content_type, content, author
         author.timeline.add(post)
         author.save()
 
-        
+
         # Broadcast to friends
         if (visibility == 'friend'):
             print("Broadcasting post to friends...")
             for friend_profile in author.friends.all():
                 print(friend_profile.id)
                 author_id = friend_profile.id.split('author/')[1]
-                
+
                 server_origin = friend_profile.id.split("author/")[0]
                 if server_origin == host:
                     print("doing locally")
@@ -251,8 +251,6 @@ def updatePost(id, title, description, content_type, content):
         post.description = description
         post.contentType = content_type
         post.content = content
-        # post.author = author
-        post.categories = categories
         post.save()
         return True
     except BaseException as e:
@@ -384,8 +382,8 @@ def likePost(post_id, author_id):
 
     except BaseException as e:
         print(e)
-        return None 
-        
+        return None
+
     # TODO: check if remote
 def likeComment(comment_id, author_id):
 
@@ -405,7 +403,7 @@ def likeComment(comment_id, author_id):
 
     except BaseException as e:
         print(e)
-        return None 
+        return None
 
 
     # TODO
