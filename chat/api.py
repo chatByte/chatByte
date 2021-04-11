@@ -415,13 +415,13 @@ def profile_obj(request, AUTHOR_ID):
         if request.method == "GET":
             serializer = ProfileSerializer(profile)
             print(serializer.data)
-            return JsonResponse(serializer.data, status=201)
+            return JsonResponse(serializer.data, status=200)
         elif request.method == "POST":
             data = JSONParser().parse(request)
             serializer = ProfileSerializer(profile, data=data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                return JsonResponse(serializer.data, status=200)
+                return JsonResponse(serializer.data, status=201)
             return JsonResponse(serializer.errors, status=400)
             # post_obj = json.loads(request.body)
             # url = post_obj["url"]
