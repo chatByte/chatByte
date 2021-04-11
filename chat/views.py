@@ -339,49 +339,51 @@ Generate response at friend_profile page , Now is deafault friend Zoe, need to b
 def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
     server = User.objects.get(username=SERVER)
     host = server.last_name
-    foreign_author = getUser(FOREIGN_ID)
+    # foreign_author = getUser(FOREIGN_ID)
+    foreign_author = Profile.objects.get(id=server + "author/" + FOREIGN_ID)
     author_id = host + "author/" + AUTHOR_ID
+    print(author_id)
     cur_author = Profile.objects.get(id=author_id)
-    if foreign_author != None:
-        foreign_user_name = foreign_author.username
+    # if foreign_author != None:
+    #     foreign_user_name = foreign_author.username
 
-        if getFriend(request.user.id, foreign_author.id):
-            isFriend = True;
-        else:
-            isFriend = False;
+    #     if getFriend(request.user.id, foreign_author.id):
+    #         isFriend = True;
+    #     else:
+    #         isFriend = False;
 
-        if getFollowing(request.user.id, foreign_author.id):
-            isFollowing = True;
-        else:
-            isFollowing = False;
+    #     if getFollowing(request.user.id, foreign_author.id):
+    #         isFollowing = True;
+    #     else:
+    #         isFollowing = False;
 
         # a list of post
         #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
         # try:
-        res = postsRequest("GET", host, FOREIGN_ID)
-        if res.status_code < 400:
-            foreign_timeline = PostSerializer(res.json()['posts'], many=True).data
-        else:
-            foreign_timeline = []
+        # res = postsRequest("GET", host, FOREIGN_ID)
+        # if res.status_code < 400:
+        #     foreign_timeline = PostSerializer(res.json()['posts'], many=True).data
+        # else:
+        #     foreign_timeline = []
         # except:
         #     foreign_timeline = []
 
-        author_num_follwers = len(foreign_author.profile.followers.items.all())
-        friend_request_num = len(request.user.inbox.friend_requests.all())
+        # author_num_follwers = len(foreign_author.profile.followers.items.all())
+        # friend_request_num = len(request.user.inbox.friend_requests.all())
 
-        dynamic_contain = {
-            'foreignName' : foreign_author.profile.displayName,
-            'timeline': foreign_timeline,
-            'author_num_follwers': author_num_follwers,
-            'isFriend': isFriend,
-            'isFollowing': isFollowing,
-            'foreignId':foreign_author.profile.id,
-            'friend_request_num': friend_request_num,
-            'cur_author': cur_author,
-        }
-        response = render(request, "chat/foreign_public_channel.html", dynamic_contain)
-        return response
-    return HttpResponse(404)
+    dynamic_contain = {
+        'foreignName' : foreign_author.displayName,
+        'timeline': [],
+        'author_num_follwers': 0,
+        'isFriend': False,
+        'isFollowing': False,
+        'foreignId':foreign_author.id,
+        'friend_request_num': 0,
+        'cur_author': cur_author,
+    }
+    response = render(request, "chat/foreign_public_channel.html", dynamic_contain)
+    return response
+    # return HttpResponse(404)
 
 
 
