@@ -20,6 +20,12 @@ from .remoteProxy import *
 from .signals import host as host_server
 import json
 
+import requests
+import os
+from pprint import pprint
+
+
+
 class CsrfExemptSessionAuthentication(SessionAuthentication):
 
     def enforce_csrf(self, request):
@@ -317,6 +323,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             profile_url = request.META.get("HTTP_X_REQUEST_USER")
             
             author_id = profile_url.split('author/')[1]
+            print("author id:", author_id)
             try:
                 author = Profile.objects.get(id=profile_url)
             except:
@@ -943,14 +950,31 @@ def stream_obj(request, AUTHOR_ID):
     else:
         if request.method == 'GET':
             try:
-                print("here")
+                # print("here")
+                posts_result = Post.objects.filter(visibility='public').filter(unlisted=False)
+                result = []
                 try:
                     profile = Profile.objects.get(id=AUTHOR_ID)
                     print(profile)
-                except Profile.DoesNotExist:
-                    print("profile not found!")
-                posts_result = Post.objects.filter(visibility='public').filter(unlisted=False)
-                print(posts_result)
+
+                    for user in User.objects.all():
+                        try:
+                            user_friends = list(user.profile.friends.all())
+                            if profile in user_friends:
+                                friend_posts = user.profile.timeline.filter(visibility='friend')
+                                posts_result = posts_result | friend_posts
+
+                        except BaseException as e:
+                            print(e)
+                            print("profile not found!")
+                
+                except BaseException as e:
+                    print(e)
+                
+                
+
+
+                # print(posts_result)
                 # all_author_posts = Post.objects.filter(author=profile)
                 # print(all_author_posts)
                 # all_following = Follower.objects.filter(items__id=profile)
@@ -986,3 +1010,30 @@ def stream_obj(request, AUTHOR_ID):
                 'posts': serializer.data,
             }
             return JsonResponse(data, safe=False)
+
+
+@csrf_exempt
+@authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def github_act_obj(request, AUTHOR_ID):
+    try:
+        token = os.getenv('GITHUB_TOKEN')
+        user = User.objects.get(id=AUTHOR_ID)
+        github_name = user.profile.github.split('/')[-1]
+        # print(token)
+        # owner = "MartinHeinz"
+        # repo = "python-project-blueprint"
+        # query_url = f"https://api.github.com/users/${github_name}/events"
+        query_url = f"https://api.github.com/users/%s/events" %github_name
+        params = {
+            "state": "open",
+        }
+        headers = {'Authorization': f'token {token}'}
+        r = requests.get(query_url)
+        pprint(r.json())
+        return JsonResponse(r.json(), status=200, safe=False)
+    except Exception as e:
+        print(e)
+        return None
+    # pprint(r.json())    

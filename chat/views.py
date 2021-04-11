@@ -22,6 +22,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
+import requests
+
 
 
 """
@@ -107,7 +109,8 @@ def my_stream(request, AUTHOR_ID):
         cur_user_name = request.user.username
 
     cur_author = request.user
-
+    back_json = get_github_activity(request, AUTHOR_ID)
+    # print("github", back_json)
 
     if request.method == "GET":
 
@@ -116,64 +119,49 @@ def my_stream(request, AUTHOR_ID):
         mytimeline = cur_author.profile.timeline.filter(unlisted=False)
         all_public_posts = Post.objects.filter(visibility='public').filter(unlisted=False).all()
 
+        back_json = get_github_activity(request, AUTHOR_ID)
 
         # Get stream from: node origins, since we have plenty remote server
+        remote_posts = []
         for node in Node.objects.all():
-            print("Get stream from: ", node.origin)
-            print("Username: ", node.username, " password: ", node.password)
+            # print("Get stream from: ", node.origin)
+            # print("Username: ", node.username, " password: ", node.password)
+
+            if node.origin == host_server:
+                continue
+
             res = streamRequest(node.origin, request.user.id)
             try:
                 data = res.json()
-                print(data['posts'])
-                for post in data['posts']:
-                    # print("Post id: ", post['id'])
-                    post_id = post['id']
-                    try:
-                        post_obj = Post.objects.get(id=post_id)
-                        serializer = PostSerializer(post_obj, data=post, partial=True)
-                        if serializer.is_valid(raise_exception=True):
-                            serializer.save()
-                    except Post.DoesNotExist:
-                        author_dict = post['author']
-                        # print("Author dict: ", author_dict)
-                        try:
-                            author = Profile.objects.get(id=author_dict['id'])
-                        except Profile.DoesNotExist:
-                            author_serializer = ProfileSerializer(data=author_dict)
-                            if author_serializer.is_valid(raise_exception=True):
-                                author = author_serializer.save()
-                        # comments_dict = post['comments']
-                        # comments_list = list()
-                        # for comment in comments_dict:
-                        #     # print("Comment: ", comment)
-                        #     try:
-                        #         comment_obj = Comment.objects.get(id=comment['id'])
-                        #         comments_list.append(comment_obj)
-                        #     except Comment.DoesNotExist:
-                        #         comm_author_dict = comment['author']
-                        #         print("Comment author: ", comm_author_dict)
-                        #         try:
-                        #             comm_author = Profile.objects.get(id=comm_author_dict['id'])
-                        #         except Profile.DoesNotExist:
-                        #             author_serializer = ProfileSerializer(data=comm_author_dict)
-                        #             if author_serializer.is_valid(raise_exception=True):
-                        #                 comm_author = author_serializer.save()
-                        #         comment_serializer = CommentSerializer(data=comment)
-                        #         print(comment_serializer)
-                        #         if comment_serializer.is_valid(raise_exception=True):
-                        #             comment_obj = comment_serializer.save(author=comm_author)
-                        #             print("Created comment obj: ", comment_obj)
-                        #             comments_list.append(comment_obj)
+                remote_posts += data['posts']
+                # print(data['posts'])
+                # for post in data['posts']:
+                #     # print("Post id: ", post['id'])
+                #     post_id = post['id']
+                #     try:
+                #         post_obj = Post.objects.get(id=post_id)
+                #         serializer = PostSerializer(post_obj, data=post, partial=True)
+                #         if serializer.is_valid(raise_exception=True):
+                #             serializer.save()
+                #     except Post.DoesNotExist:
+                #         author_dict = post['author']
+                #         # print("Author dict: ", author_dict)
+                #         try:
+                #             author = Profile.objects.get(id=author_dict['id'])
+                #         except Profile.DoesNotExist:
+                #             author_serializer = ProfileSerializer(data=author_dict)
+                #             if author_serializer.is_valid(raise_exception=True):
+                #                 author = author_serializer.save()
+                    
+                #         serializer = PostSerializer(data=post)
 
-                        serializer = PostSerializer(data=post)
-                        # print("here")
-                        # print(serializer)
-                        if serializer.is_valid(raise_exception=True):
-                            serializer.save(author=author) # comments=comments_list
-                            post_obj = Post.objects.get(id=post_id)
-                    # add stream post into public channel
-                    mytimeline.add(post_obj)
-                    # print("Post object", post_obj)
+                #         if serializer.is_valid(raise_exception=True):
+                #             serializer.save(author=author) # comments=comments_list
+                #             post_obj = Post.objects.get(id=post_id)
+                #     # add stream post into public channel
+                #     mytimeline.add(post_obj)
+                #     # print("Post object", post_obj)
+
             except BaseException as e:
                 print(e)
 
@@ -188,19 +176,27 @@ def my_stream(request, AUTHOR_ID):
         # merging quesryset
         public_channel_posts = mytimeline.all()
 
-
-        public_channel_posts = public_channel_posts | all_public_posts
-
         for following_profile in followings:
 
             public_posts = following_profile.timeline.filter(visibility='public')
             public_channel_posts = public_channel_posts | public_posts
+        
+        # PostSerializer(public_channel_posts, many=True).data
+        # print("PostSerializaer:\n", json.dumps(PostSerializer(public_channel_posts, many=True).data))
+        public_channel_posts = json.loads(json.dumps(PostSerializer(public_channel_posts, many=True).data)) + remote_posts # a list
+        # print("public_channel_posts:\n", public_channel_posts)
 
 
         author_num_follwers = len(cur_author.profile.followers.items.all())
         friend_request_num = len(cur_author.inbox.friend_requests.all())
         # order by date
-        public_channel_posts = public_channel_posts.order_by('-published')
+        # public_channel_posts = public_channel_posts.order_by('-published')
+       
+        public_channel_posts = sorted(public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
+        for post in public_channel_posts:
+            print("post:\n", post)
+            post['comments'] = sorted(post['comments'], key=lambda k: k.get('published', 0), reverse=True)
+
 
         # create a paginator
         paginator_public_channel_posts = Paginator(public_channel_posts, 8) # Show 8 contacts per page.
@@ -212,6 +208,8 @@ def my_stream(request, AUTHOR_ID):
         page_obj = paginator_public_channel_posts.get_page(page_number)
 
         liked_objs = cur_author.profile.liked.items.values_list('object', flat=True)
+        # print("Liked objects: ", liked_objs)
+        # print(list(public_channel_posts)[0].likes)
 
         dynamic_contain = {
             'myName' : cur_author.profile.displayName,
@@ -220,7 +218,9 @@ def my_stream(request, AUTHOR_ID):
             'author_num_follwers': author_num_follwers,
             'friend_request_num': friend_request_num,
             'liked_objs': liked_objs,
-            'friends': myFriends
+            'friends': myFriends,
+            'git_activity_obj': back_json,
+            'remote_post': remote_posts
         }
 
 
@@ -245,12 +245,12 @@ def my_stream(request, AUTHOR_ID):
                 response = JsonResponse({'redirect_url': "current"}, status=200)
                 # response = render(request, "chat/stream.html", dynamic_contain)
             elif object_type == "comment":
-                # TODO waiting backend
+
                 # object_id = request_post.get("object_id","")
                 likeComment(object_id, cur_author_id)
                 # response = render(request, "chat/stream.html", dynamic_contain)
                 # pass
-                JsonResponse({'redirect_url': "current"}, status=200)
+                response = JsonResponse({'redirect_url': "current"}, status=200)
             else:
                 response = JsonResponse({}, status=400)
 
@@ -261,14 +261,23 @@ def my_stream(request, AUTHOR_ID):
             comment_content_type = request_post.get("content_type","")
 
             #if successful create a comment
-            if  createComment(cur_author.profile, post_id, comment_contain, comment_content_type) :
-                response = JsonResponse({'redirect_url': "current"}, status=200)
-            else:
-                response = JsonResponse({}, status=500)
+            # if  createComment(cur_author.profile, post_id, comment_contain, comment_content_type) :
+            #     response = JsonResponse({'redirect_url': "current"}, status=200)
+            send_data = {
+                'content': comment_contain,
+                'contentType': comment_content_type
+            }
+            # response = request.post(post_id + "/comments", data=json.dumps(send_data), head)
+            response = commentRequest("POST", post_id.split('author/')[0], post_id.split('author/')[1].split('/posts/')[0] \
+                , post_id.split('author/')[1].split('/posts/')[1], send_data)
+            
+            print("response json:", response.json())
+            return JsonResponse(response.json(), status=response.status_code)
+            # else:
+            #     response = JsonResponse({}, status=500)
 
         else:
             response = JsonResponse({}, status=400)
-
 
         return response
 
@@ -372,10 +381,8 @@ def posts(request, AUTHOR_ID):
             'test_name': cur_user_name,
             'myName' : cur_author.displayName,
             'page_obj' : page_obj,
-            'friend_request_num': friend_request_num,
-
+            'friend_request_num': friend_request_num
         }
-
 
 
 
@@ -385,8 +392,8 @@ def posts(request, AUTHOR_ID):
     elif request.method == "POST":
 
         request_post = request.POST
-        source = request.user.profile.id # Who share it to me
-        origin = request.user.profile.id # who origin create
+        source = "handled by backend" # Who share it to me
+        origin = "handled by backend"  # who origin create
         title = request_post.get("title", "")
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
@@ -394,7 +401,7 @@ def posts(request, AUTHOR_ID):
         unlisted = request_post.get("unlisted","")
 
         f = request.FILES.get("file", "")
-        categories = ["web"] # web, tutorial, can be delete  # ?? dropdown
+        categories = request_post.get("categories","")
 
 
         if len(f) > 0:
@@ -406,7 +413,7 @@ def posts(request, AUTHOR_ID):
 
         createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility,unlisted)
         if createFlag:
-            print("haha, successful create post, info: ", description)
+            # print("haha, successful create post, info: ", description)
 
             # response = redirect("/author/"+ str(AUTHOR_ID) + "/public_channel/")
             response = HttpResponse(status=200)
@@ -418,6 +425,49 @@ def posts(request, AUTHOR_ID):
         # response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
+
+
+'''
+Design for edit post
+'''
+@login_required
+@require_http_methods(["POST"])
+def update_post(request, AUTHOR_ID, POST_ID):
+    # print('edited arguemnt POST_ID', str(POST_ID))
+    id = host_server + 'author/' + str(AUTHOR_ID) + '/posts/' + str(POST_ID)
+    # print("edited post id:", id)
+    user = None
+    username=""
+    if request.user.is_authenticated:
+        user = request.user
+        username = request.user.profile.displayName
+
+    request_post = request.POST
+    title = request_post.get("title", "")
+    print("title ", title)
+    description = request_post.get("description", "")
+    content_type = request_post.get("contentType", "")
+
+
+
+    f = request.FILES.get("file", "")
+    print(f)
+    if len(f) > 0:
+        content_type = "image/" + os.path.splitext(f.name)[-1][1:]
+        with f.open("rb") as image_file:
+            content = base64.b64encode(image_file.read())
+    else:
+        content = description
+    updateFlag = updatePost(id, title, description, content_type, content)
+    if updateFlag:
+        # print("Successful edited post, info: ", description)
+        response = HttpResponse(status=200)
+        return response
+    else:
+        print("failed to edit the post!!", description)
+
+    response = redirect("/author/" + str(user.id) + "/my_posts/")
+    return response
 
 
 """
@@ -441,7 +491,7 @@ def profile(request, AUTHOR_ID):
     inbox = request.user.inbox
 
     friend_request_num = len(inbox.friend_requests.all())
-    print(friend_request_num)
+    # print(friend_request_num)
 
     context['friend_request_num']=friend_request_num
 
@@ -456,11 +506,11 @@ def profile(request, AUTHOR_ID):
         url = post_obj["URL"]
         email = post_obj["email"]
         github = post_obj["GITHUB"]
-        print("new url:", url)
+        # print("new url:", url)
         display_name = post_obj["display_name"]
-        print("new name:", display_name)
+        # print("new name:", display_name)
         updateProfile(user.id, display_name, email, url, github)
-        print("profile id:",  str(request.user.profile.id))
+        # print("profile id:",  str(request.user.profile.id))
         # response = redirect("author/"+ str(request.user.profile.id).split('/')[-1] + "/profile/")
         response = redirect("")
         return response
@@ -475,10 +525,10 @@ def my_friends(request,AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
-    print(cur_user_name)
+    # print(cur_user_name)
     friend_list = getFriends(request.user.id)
 
-    print(friend_list)
+    # print(friend_list)
     cur_author = request.user.profile
     author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(request.user.inbox.friend_requests.all())
@@ -513,7 +563,7 @@ def delete_friend(request, AUTHOR_ID, FRIEND_ID):
 # Method that generate a friend request
 @login_required
 def add_friend(request, AUTHOR_ID, FRIEND_ID):
-    print(AUTHOR_ID, FRIEND_ID)
+    # print(AUTHOR_ID, FRIEND_ID)
     try:
         cur_user_name = None
         if request.user.is_authenticated:
@@ -589,7 +639,7 @@ def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 @login_required
 def get_user(request,SERVER,AUTHOR_ID):
     # get
-    print("---------------------------Getting user ---------------")
+    # print("---------------------------Getting user ---------------")
     try:
         server = User.objects.get(username=SERVER)
         foreign_server = server.last_name
@@ -606,44 +656,6 @@ def get_user(request,SERVER,AUTHOR_ID):
         print(e)
         return HttpResponse(status=400)
 
-@login_required
-@require_http_methods(["POST"])
-def update_post(request, AUTHOR_ID, POST_ID):
-    print('edited arguemnt POST_ID', str(POST_ID))
-    id = host_server + 'author/' + str(AUTHOR_ID) + '/posts/' + str(POST_ID)
-    print("edited post id:", id)
-    user = None
-    username=""
-    if request.user.is_authenticated:
-        user = request.user
-        username = request.user.profile.displayName
-
-    request_post = request.POST
-    source = username # Who share it to me
-    origin = username # who origin create
-    title = request_post.get("title", "")
-    description = request_post.get("description", "")
-    content_type = request_post.get("contentType", "")
-    visibility = request_post.get("visibility", "")
-    f = request.FILES.get("file", "")
-    categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
-    if len(f) > 0:
-        categories = "image/" + os.path.splitext(f.name)[-1][1:]
-        with f.open("rb") as image_file:
-            content = base64.b64encode(image_file.read())
-    else:
-        content = description
-
-    updateFlag = updatePost(id, title, source, origin, description, content_type, content, categories, visibility)
-    if updateFlag:
-        print("Successful edited post, info: ", description)
-        response = HttpResponse(status=200)
-        return response
-    else:
-        print("failed to edit the post!!", description)
-
-    response = redirect("/author/" + str(user.id) + "/my_posts/")
-    return response
 
 
 
@@ -780,7 +792,7 @@ def reshare(request, AUTHOR_ID):
     categories = post.categories
     content = post.content
     unlisted = str(post.unlisted)
-    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted)
+    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted, True)
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response
@@ -790,7 +802,32 @@ def reshare(request, AUTHOR_ID):
     return response
     # except:
     #     return JsonResponse({}, status=400)
-    
+
+
+@login_required
+@require_http_methods(["GET"])
+def get_github_activity(request, AUTHOR_ID):
+    try:
+        token = os.getenv('GITHUB_TOKEN')
+        user = User.objects.get(id=AUTHOR_ID)
+        github_name = user.profile.github.split('/')[-1]
+        # print(token)
+        # owner = "MartinHeinz"
+        # repo = "python-project-blueprint"
+        # query_url = f"https://api.github.com/users/${github_name}/events"
+        query_url = f"https://api.github.com/users/%s/events" %github_name
+        params = {
+            "state": "open",
+        }
+        headers = {'Authorization': f'token {token}'}
+        r = requests.get(query_url)
+        # pprint(r.json())
+        return r.json()
+    except Exception as e:
+        print(e)
+        return None
+    # pprint(r.json())
+
 
 '''
 Below is the dead code, or previous version, keep it , incase need that in the future

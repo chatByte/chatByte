@@ -55,7 +55,7 @@ update user profile (with pagination)
 ### `GET`
 <i>GET USER Stream with Pagination</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/followers
+URL: https://app-chatbyte.herokuapp.com/author/<str:AUTHOR_ID>/stream/
 ```
 ```
 {
@@ -293,7 +293,7 @@ URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/followers
 ### **Inbox API**
 <i>GET USER notifications in Inbox</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/author/author/<str:AUTHOR_ID>/inbox/
+URL: https://app-chatbyte.herokuapp.com/author/<str:AUTHOR_ID>/inbox/
 ```
 ### `GET`
 
@@ -489,6 +489,34 @@ POST a friend: Response(200)
 }
 ```
 
+### ALL POSTS API
+
+#### `GET`
+<i>Get all Posts from our server( to other servers), since we are family </i>
+
+```
+URL https://app-chatbyte.herokuapp.com/all_posts/
+```
+
+Response (200):
+```
+{
+    count: 0, # Number of comments for post
+    posts: [List of Post Objects],
+    next: url to the next page if exists else "",
+    prev: url to the prev page if exists, else "",
+}
+```
+- Supports Pagination through **query parameters**
+    - page -> Default value is set to 1 if not provided
+    - size -> Default value is set to 5 if not provided
+
+
+
+
+
+
+
 
 ### **Post API**
 #### `Post Object format`
@@ -650,7 +678,7 @@ Allowed visibility: (public, friend, private)
 ### `GET`
 <i>get a list of authors who are their followers</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/followers
+URL: https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/followers
 GET: Response (200)
 ```
 Response:
@@ -701,7 +729,7 @@ Response (200):
 ### `POST`
 <i>Add a follower</i>
 ```
-URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
+URL: https://app-chatbyte.herokuapp.com/api/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 ```
 Response:
 ```
@@ -796,7 +824,7 @@ Response(200):
 #### `POST`
 <i>Create Comment on a Post</i>
 ```
-://service/author/{AUTHOR_ID}/posts/{POST_ID}/comments
+URL://service/author/{AUTHOR_ID}/posts/{POST_ID}/comments
 ```
 Body of Request:
 ```
