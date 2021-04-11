@@ -186,6 +186,8 @@ function sendFriendRequest(type, summary, author, object) {
   var foreign_id = object["id"];
   var fi = foreign_id.split("/");
   var x_server_header = fi[0]+"//"+fi[2]+"/";
+  console.log("object author id: ", foreign_id);
+  console.log("x_server_header: ", x_server_header);
 
   var data = {
     'type': 'follow',
@@ -198,7 +200,7 @@ function sendFriendRequest(type, summary, author, object) {
   console.log("sending Friend Request");
   $.ajax({
     // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
-    url: window.location.origin +'/author/'+ new_url[4].toString() +'/inbox/',
+    url: window.location.origin +'/author/'+ new_url[4].toString() +'/inbox',
     type : 'POST', // http method
     contentType: "application/json",
     processData: false,
