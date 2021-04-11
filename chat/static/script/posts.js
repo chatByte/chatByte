@@ -3,7 +3,7 @@ var contentType = 'text/plain';
 var visibility = 'public';
 var description = "";
 var unlisted = "false";
-var categories = "empty";
+var categories = "nonsense";
 var title = "";
 var form_data = new FormData();
 
