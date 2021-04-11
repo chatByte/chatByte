@@ -728,7 +728,7 @@ def search(request, AUTHOR_ID):
         serializer = ProfileSerializer(target)
 
         numberID_target = target_id.split("/")[-1]
-        server_name = user.username
+        server_name = user.last_name
 
 
         # return response
