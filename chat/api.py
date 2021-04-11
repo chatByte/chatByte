@@ -1094,7 +1094,7 @@ def inbox_likes(request, AUTHOR_ID):
         url = str(host_server) + "author/" + str(original_author_id) + "/inbox"
         headers = {'Content-type': 'application/json'}
         response = requests.post(url, headers=headers, data=json.dumps(data), auth=HTTPBasicAuth(request.user.username, request.user.first_name))
-        return JsonResponse({}, safe=False, status=response.status_code)
+        return JsonResponse(data, safe=False, status=response.status_code)
     elif data['type'] == 'post':
         original_author_id = data['id'].split('author/')[1].split('/posts')[0]
         print("original author id for the liked object: ", original_author_id)
@@ -1111,6 +1111,6 @@ def inbox_likes(request, AUTHOR_ID):
         url = str(host_server) + "author/" + str(original_author_id) + "/inbox"
         headers = {'Content-type': 'application/json'}
         response = requests.post(url, headers=headers, data=json.dumps(data), auth=HTTPBasicAuth(request.user.username, request.user.first_name))
-        return JsonResponse({}, safe=False, status=response.status_code)
+        return JsonResponse(data, safe=False, status=response.status_code)
     else:
         return JsonResponse({"Detail": "Invalid like type"}, safe=False, status=400)
