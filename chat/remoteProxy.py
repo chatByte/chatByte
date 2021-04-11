@@ -91,6 +91,7 @@ def commentRequest(method, origin, user_id, post_id, data=None):
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
+        print("commentRequest():", url)
         response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
         # print(response.body)
