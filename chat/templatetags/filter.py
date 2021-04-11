@@ -7,6 +7,7 @@ register = template.Library()
 @register.filter(name='bin_2_img')
 @stringfilter
 def bin_2_img(img):
+    print(img)
     if img is not None: return img #[2:-1]
 
 @register.filter(name='markdown')
