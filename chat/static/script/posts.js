@@ -80,7 +80,7 @@ function deletePost(id){
   console.log(id);
   var post_id = id.split("posts/")[1]
   console.log("Post id: ", post_id)
-  var url = "../posts/"+post_id+"/";
+  var url = "../posts/"+post_id;
   console.log(url);
   var csrftoken = getCookie('csrftoken');
   console.log(csrftoken);
@@ -146,9 +146,10 @@ function editPost(POST_ID) {
 
       // handle file upload
       // file is stored as form data
-      if (contentType == "image"){
-        var file_data = $('#imageFile').prop('files')[0];
+      if (contentType == "image1"){
+        var file_data = $('#imageFile1').prop('files')[0];
         edit_form_data.append('file', file_data);
+
       }
 
       edit_form_data.append("contentType", contentType);
@@ -167,6 +168,7 @@ function editPost(POST_ID) {
         type : "POST", // http method
         dataType: 'text', // what to expect back from the server
         cache: false,
+        contentType: false,
         processData: false,
         data: edit_form_data,
 
