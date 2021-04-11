@@ -119,6 +119,8 @@ def my_stream(request, AUTHOR_ID):
         mytimeline = cur_author.profile.timeline.filter(unlisted=False)
         all_public_posts = Post.objects.filter(visibility='public').filter(unlisted=False).all()
 
+        back_json = get_github_activity(request, AUTHOR_ID)
+        print("github", back_json)
 
         # Get stream from: node origins, since we have plenty remote server
         for node in Node.objects.all():
@@ -191,9 +193,6 @@ def my_stream(request, AUTHOR_ID):
         # merging quesryset
         public_channel_posts = mytimeline.all()
 
-
-        public_channel_posts = public_channel_posts | all_public_posts
-
         for following_profile in followings:
 
             public_posts = following_profile.timeline.filter(visibility='public')
@@ -215,6 +214,8 @@ def my_stream(request, AUTHOR_ID):
         page_obj = paginator_public_channel_posts.get_page(page_number)
 
         liked_objs = cur_author.profile.liked.items.values_list('object', flat=True)
+        # print("Liked objects: ", liked_objs)
+        # print(list(public_channel_posts)[0].likes)
 
         dynamic_contain = {
             'myName' : cur_author.profile.displayName,
@@ -379,6 +380,11 @@ def posts(request, AUTHOR_ID):
             'page_obj' : page_obj,
             'friend_request_num': friend_request_num
         }
+
+
+
+
+
 
 
 
@@ -823,8 +829,8 @@ def get_github_activity(request, AUTHOR_ID):
     except Exception as e:
         print(e)
         return None
-    # pprint(r.json())  
-    
+    # pprint(r.json())
+
 
 '''
 Below is the dead code, or previous version, keep it , incase need that in the future

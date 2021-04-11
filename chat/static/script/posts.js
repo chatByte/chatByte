@@ -45,7 +45,7 @@ $.ajax({
       });
 
 }
-     
+
 
 //Preloader
 var preloader = $('#spinner-wrapper');
@@ -132,9 +132,9 @@ function readImg(input) {
     // submit form data
 function editPost(POST_ID) {
       var id = POST_ID.split('/posts/')[1];
-      console.log('' + POST_ID)
-      title = $('#editTitle').val();
-      description = $('#editDescription').val();
+      console.log('aaa' + POST_ID)
+      title = $("#title1").val();
+      description = $("#description1").val();
       console.log("title = ", title);
       console.log("des = ", description);
       var x_server = window.location.origin
@@ -174,37 +174,35 @@ function editPost(POST_ID) {
       });
     }
 
-    function editButton(title, description) {
-      $('body').on('click', 'a.editBtn', function(e) {
-        e.preventDefault();
-
-        var content_holder = $(this).closest('.post-detail').find('p');
-
-        content_holder.attr("style", "display: none");
-        // var div_content = $('div .form-group-col').html();
-        var div_content = $('div .form-group-col').clone();
-        var find_element = div_content.find('#title');
-        var find_description = div_content.find('#description');
-        // console.log(find_element);
-        find_element.attr("id", "editTitle");
-        find_element.text(title);
-
-        find_description.attr("id", "editDescription");
-        find_description.text(description);
-
-        // console.log(find_element);
-        var new_div = $(this).closest('.post-detail').find('div .editText')
-        new_div.attr("style", "display: block");
-        new_div.html(div_content.html());
-
-
-        // show submit btn, hide edit btn
-        $(this).attr("style", "display: none");
-        $(this).closest('div .edit').find('.submitBtn').attr("style", "display: block");
-
-      });
-
-    }
+    // function editButton(title, description) {
+    //   $('body').on('click', 'a.editBtn', function(e) {
+    //     e.preventDefault();
+    //
+    //     var content_holder = $(this).closest('.post-detail').find('p');
+    //
+    //     content_holder.attr("style", "display: none");
+    //     var div_content = $('div .form-group-col').clone();
+    //     var find_element = div_content.find('#title');
+    //     var find_description = div_content.find('#description');
+    //     find_element.attr("id", "editTitle");
+    //     find_element.text(title);
+    //
+    //     find_description.attr("id", "editDescription");
+    //     find_description.text(description);
+    //
+    //     // console.log(find_element);
+    //     var new_div = $(this).closest('.post-detail').find('div .editText')
+    //     new_div.attr("style", "display: block");
+    //     new_div.html(div_content.html());
+    //
+    //
+    //     // show submit btn, hide edit btn
+    //     $(this).attr("style", "display: none");
+    //     $(this).closest('div .edit').find('.submitBtn').attr("style", "display: block");
+    //
+    //   });
+    //
+    // }
 
 
 
@@ -236,9 +234,9 @@ $( document ).ready(function() {
             unlisted = id;
             break;
           case "ad":
-          case "award": 
-          case "kiss": 
-          case "web": 
+          case "award":
+          case "kiss":
+          case "web":
           case "empty":
             $("#categories").find('i').attr("class", icon);
             categories = id;
