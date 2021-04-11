@@ -6,6 +6,7 @@ var unlisted = "false";
 var categories = "empty";
 var title = "";
 var form_data = new FormData();
+
 var edit_form_data = new FormData();
 var x_server = window.location.origin;
 
@@ -131,6 +132,9 @@ function readImg(input) {
     // deal with submit edit button
     // submit form data
 function editPost(POST_ID) {
+
+
+
       var id = POST_ID.split('/posts/')[1];
       console.log('aaa' + POST_ID)
       title = $("#title1").val();
@@ -144,13 +148,14 @@ function editPost(POST_ID) {
       // file is stored as form data
       if (contentType == "image1"){
         var file_data = $('#imageFile1').prop('files')[0];
-        form_data.append('file', file_data);
+        edit_form_data.append('file', file_data);
+
       }
 
-      form_data.append("contentType", contentType);
-      form_data.append("title", title);
-      form_data.append("description", description);
-      form_data.append("csrfmiddlewaretoken", csrftoken);
+      edit_form_data.append("contentType", contentType);
+      edit_form_data.append("title", title);
+      edit_form_data.append("description", description);
+      edit_form_data.append("csrfmiddlewaretoken", csrftoken);
 
       $.ajax({
         // url : ".", // the endpoint
@@ -165,7 +170,7 @@ function editPost(POST_ID) {
         cache: false,
         contentType: false,
         processData: false,
-        data: form_data,
+        data: edit_form_data,
 
         // handle a successful response
         success : function(json) {
@@ -258,11 +263,11 @@ $( document ).ready(function() {
             $("#contentType").find('i').attr("class", icon);
             contentType = id;
             // handle upload button
+            console.log("hererrer")
             if (id == "image"){
                $("#imageFile").attr("style", "display: block");
             } else {
               $("#imageFile").attr("style", "display: none");
-
             }
         }
 
@@ -270,7 +275,28 @@ $( document ).ready(function() {
 
     });
 
+        // deal with 2 dropdown lists: visibility and contentType
+    $('div.dropdown-content-edit a').click(function(e)
+      {
+       var id = $(this).attr("id")
+       var icon = $(this).find("i").attr("class");
 
+       switch (id) {
+          case "text/plain" :
+          case "image":
+          case "text/markdown":
+            $("#contentType").find('i').attr("class", icon);
+            contentType = id;
+            // handle upload button
+            console.log("hererrer")
+            if (id == "image"){
+               $("#imageFile").attr("style", "display: block");
+            } else {
+              $("#imageFile").attr("style", "display: none");
+            }
+        }
+
+    });
 
 
     // REQUEST POST: make_post
@@ -317,3 +343,4 @@ $( document ).ready(function() {
     });
 
 });
+
