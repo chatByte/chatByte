@@ -252,7 +252,7 @@ def streamRequest(origin, user_id):
     The body of the request is empty.
     '''
 
-    url = str(origin) + "author/" + str(user_id) + "/stream/?page=1&size=10"
+    url = str(origin) + "author/" + str(user_id) + "/stream/?page=1&size=1000"
     print(url)
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
