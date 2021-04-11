@@ -186,6 +186,8 @@ function sendFriendRequest(type, summary, author, object) {
   var foreign_id = object["id"];
   var fi = foreign_id.split("/");
   var x_server_header = fi[0]+"//"+fi[2]+"/";
+  console.log("object author id: ", foreign_id);
+  console.log("x_server_header: ", x_server_header);
 
   var data = {
     'type': 'follow',
