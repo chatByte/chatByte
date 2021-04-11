@@ -783,7 +783,7 @@ def inbox(request, AUTHOR_ID):
     if server_origin is not None and server_origin != host_server:
         print("------ Remote request body: ", request.data)
         res = inboxRequest(request.method,server_origin, USER_ID, request.data)
-        return res
+        return JsonResponse(res.json(), status=res.status_code)
     else:
         if request.method == "POST":
             print("Using post method")
