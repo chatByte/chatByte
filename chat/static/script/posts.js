@@ -142,8 +142,8 @@ function editPost(POST_ID) {
 
       // handle file upload
       // file is stored as form data
-      if (contentType == "image"){
-        var file_data = $('#imageFile').prop('files')[0];
+      if (contentType == "image1"){
+        var file_data = $('#imageFile1').prop('files')[0];
         form_data.append('file', file_data);
       }
 

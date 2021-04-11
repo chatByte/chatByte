@@ -453,11 +453,13 @@ def update_post(request, AUTHOR_ID, POST_ID):
 
 
     f = request.FILES.get("file", "")
-
+    print(f)
     if len(f) > 0:
+        print("haha")
         content_type = "image/" + os.path.splitext(f.name)[-1][1:]
         with f.open("rb") as image_file:
             content = base64.b64encode(image_file.read())
+            print("content ", content)
     else:
         content = description
 
