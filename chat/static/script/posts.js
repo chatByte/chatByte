@@ -226,28 +226,6 @@ $( document ).ready(function() {
       {
        var id = $(this).attr("id")
        var icon = $(this).find("i").attr("class");
-       // console.log(icon);
-       // if (id == "public" || id == "private" || id == "friend"){
-       //   $("#visibility").find('i').attr("class", icon);
-       //   visibility = id;
-       // } else if (id == "true" || id == "false") {
-       //    $("#unlisted_status").find('i').attr("class", icon);
-       //    unlisted = id;
-
-       // } else if (id == "ad" || id == "award" || id = "kiss" || id ="web" || id ="empty") {
-       //    $("#categories").find('i').attr("class", icon);
-       //    categories = id;
-       // } else {
-       //   $("#contentType").find('i').attr("class", icon);
-       //   contentType = id;
-       //   // handle upload button
-       //   if (id == "image"){
-       //     $("#imageFile").attr("style", "display: block");
-       //   } else {
-       //     $("#imageFile").attr("style", "display: none");
-
-       //   }
-       // }
 
        switch (id) {
           case "public":

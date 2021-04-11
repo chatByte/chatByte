@@ -240,22 +240,19 @@ def createPost(title, source, origin, description, content_type, content, author
         print(e)
         return False
 
-def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
+'''
+Design for update post, which do not allowed change other attr
+'''
+def updatePost(id, title, description, content_type, content):
     # Please authenticate before calling this method
     try:
-        print("here")
         post = Post.objects.get(id=id)
-        print("old id:", id)
         post.title = title
-
-        post.source = source
-        post.origin = origin
         post.description = description
         post.contentType = content_type
         post.content = content
         # post.author = author
         post.categories = categories
-        post.visibility = visibility
         post.save()
         return True
     except BaseException as e:
