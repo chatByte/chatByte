@@ -414,6 +414,7 @@ def profile_obj(request, AUTHOR_ID):
         # query to database
         if request.method == "GET":
             serializer = ProfileSerializer(profile)
+            print(serializer.data)
             return JsonResponse(serializer.data, status=201)
         elif request.method == "POST":
             data = JSONParser().parse(request)
