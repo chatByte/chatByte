@@ -274,7 +274,7 @@ def my_stream(request, AUTHOR_ID):
                 else:
                     like = Like.objects.create(author=request.user.profile, object=object_id, summary= request.user.profile.displayName + " likes your comment")
                 # send the like object to remote server
-                res = inboxRequest("POST", server_origin, AUTHOR_ID, LikedSerializer(like).data)
+                res = inboxRequest("POST", server_origin, AUTHOR_ID, LikeSerializer(like).data)
                 if res.status_code < 400:
                     print("liked object successfully")
                     # store liked object in current author
