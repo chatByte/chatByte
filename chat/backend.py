@@ -192,9 +192,15 @@ def updateProfile(id, display_name, email, url, github):
 
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility, unlisted):
     # Please authenticate before calling this method
+    categories_array = []
+    categories_array.append(categories)
+
+    print("here______-------------------------------------")
+    print(categories_array)
+
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
-            , categories=categories, count=0, size=0, comment_url="", visibility=visibility, author=author, unlisted=(unlisted.lower() in ['true', '1', 't', 'y',]))
+            , categories=categories_array, count=0, size=0, comment_url="", visibility=visibility, author=author, unlisted=(unlisted.lower() in ['true', '1', 't', 'y',]))
         # print(post.author)
 
         post.comment_url = post.id + "/comments/"
@@ -234,22 +240,19 @@ def createPost(title, source, origin, description, content_type, content, author
         print(e)
         return False
 
-def updatePost(id, title, source, origin, description, content_type, content, categories, visibility):
+'''
+Design for update post, which do not allowed change other attr
+'''
+def updatePost(id, title, description, content_type, content):
     # Please authenticate before calling this method
     try:
-        print("here")
         post = Post.objects.get(id=id)
-        print("old id:", id)
         post.title = title
-
-        post.source = source
-        post.origin = origin
         post.description = description
         post.contentType = content_type
         post.content = content
         # post.author = author
         post.categories = categories
-        post.visibility = visibility
         post.save()
         return True
     except BaseException as e:
@@ -364,11 +367,13 @@ def getUser(usr_id):
 
 def likePost(post_id, author_id):
 
-    print("________post_id__", post_id)
-    print("author_id  ", author_id)
+    # print("________post_id__", post_id)
+    # print("author_id  ", author_id)
     try:
+
         user_profile = Profile.objects.get(id=author_id)
-        new_like = Like.objects.create(author=user_profile, object=post_id)
+        summary = user_profile.displayName +" likes your post"
+        new_like = Like.objects.create(author=user_profile, object=post_id, summary= summary)
         user_liked = user_profile.liked
         items_list = user_liked.items
         items_list.add(new_like)
@@ -383,5 +388,25 @@ def likePost(post_id, author_id):
         
     # TODO: check if remote
 def likeComment(comment_id, author_id):
+
+    # print("here, author_id", author_id)
+
+    try:
+        user_profile = Profile.objects.get(id=author_id)
+        summary = user_profile.displayName +" likes your comment"
+        new_like = Like.objects.create(author=user_profile, object=comment_id, summary= summary)
+        user_liked = user_profile.liked
+        items_list = user_liked.items
+        items_list.add(new_like)
+        comment = Comment.objects.get(id=comment_id)
+        comment.likes.add(new_like)
+        comment.save()
+        user_profile.liked.save()
+
+    except BaseException as e:
+        print(e)
+        return None 
+
+
     # TODO
     pass
