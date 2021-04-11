@@ -210,7 +210,6 @@ def createPost(title, source, origin, description, content_type, content, author
             post.origin = origin
 
         post.source = post.id
-
         post.save()
         author.timeline.add(post)
         author.save()
@@ -222,7 +221,6 @@ def createPost(title, source, origin, description, content_type, content, author
             for friend_profile in author.friends.all():
                 print(friend_profile.id)
                 author_id = friend_profile.id.split('author/')[1]
-                
                 server_origin = friend_profile.id.split("author/")[0]
                 if server_origin == host:
                     print("doing locally")

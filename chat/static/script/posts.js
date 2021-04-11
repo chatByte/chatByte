@@ -245,11 +245,11 @@ $( document ).ready(function() {
             $("#contentType").find('i').attr("class", icon);
             contentType = id;
             // handle upload button
+            console.log("hererrer")
             if (id == "image"){
                $("#imageFile").attr("style", "display: block");
             } else {
               $("#imageFile").attr("style", "display: none");
-
             }
         }
 
@@ -257,7 +257,28 @@ $( document ).ready(function() {
 
     });
 
+        // deal with 2 dropdown lists: visibility and contentType
+    $('div.dropdown-content-edit a').click(function(e)
+      {
+       var id = $(this).attr("id")
+       var icon = $(this).find("i").attr("class");
 
+       switch (id) {
+          case "text/plain" :
+          case "image":
+          case "text/markdown":
+            $("#contentType").find('i').attr("class", icon);
+            contentType = id;
+            // handle upload button
+            console.log("hererrer")
+            if (id == "image"){
+               $("#imageFile").attr("style", "display: block");
+            } else {
+              $("#imageFile").attr("style", "display: none");
+            }
+        }
+
+    });
 
 
     // REQUEST POST: make_post
@@ -304,3 +325,4 @@ $( document ).ready(function() {
     });
 
 });
+
