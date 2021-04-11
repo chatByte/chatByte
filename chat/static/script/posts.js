@@ -241,6 +241,18 @@ $( document ).ready(function() {
             $("#categories").find('i').attr("class", icon);
             categories = id;
             break;
+          case "text/plain1":
+          case "image1":
+          case "text/markdown1":
+            $("#contentType1").find('i').attr("class", icon);
+            contentType = id;
+            // handle upload button
+            if (id == "image1"){
+               $("#imageFile1").attr("style", "display: block");
+            } else {
+              $("#imageFile1").attr("style", "display: none");
+
+            }
           default:
             $("#contentType").find('i').attr("class", icon);
             contentType = id;
