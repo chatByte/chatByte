@@ -3,6 +3,7 @@ var contentType = 'text/plain';
 var visibility = 'public';
 var description = "";
 var unlisted = "false";
+var categories = "empty";
 var title = "";
 var form_data = new FormData();
 var edit_form_data = new FormData();
@@ -44,48 +45,7 @@ $.ajax({
       });
 
 }
-      // title = $('#title').val();
-      // description = $('#description').val();
-      // console.log("title = ", title);
-
-      // // handle file upload
-      // // file is stored as form data
-      // if (contentType == "image"){
-      //   var file_data = $('#imageFile').prop('files')[0];
-      //   form_data.append('file', file_data);
-      // }
-
-      // form_data.append("contentType", contentType);
-      // form_data.append("visibility", visibility);
-      // form_data.append("title", title);
-      // form_data.append("description", description);
-      // form_data.append("csrfmiddlewaretoken", csrftoken);
-      // var x_server = window.location.origin
-
-      // console.log("description");
-      // $.ajax({
-      //   url : ".", // the endpoint
-      //   // header
-      //   headers: {"X-Server": x_server},
-      //   beforeSend: function(xhr) {
-      //     xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-      //   },
-      //   type : "POST", // http method
-      //   dataType: 'text', // what to expect back from the server
-      //   cache: false,
-      //   contentType: false,
-      //   processData: false,
-      //   data: form_data,
-
-      //   // handle a successful response
-      //   success : function(json) {
-      //       console.log("success"); // sanity check
-      //       window.location.reload();
-      //   },
-      // });
-
-
-
+     
 
 //Preloader
 var preloader = $('#spinner-wrapper');
@@ -148,38 +108,6 @@ function deletePost(id){
       });
 }
 
-// function search(){
-//   var input = document.getElementById("search_user_input");
-//   var id = input.value;
-//   console.log(id);
-
-//   $.ajax({
-//         url : "../search/", // the endpoint
-//         type : "POST", // http method
-//         dataType: 'text', // what to expect back from the server
-//         cache: false,
-//         headers: {"X-Server": window.location.origin},
-//         contentType: false,
-//         processData: false,
-//         beforeSend: function(xhr) {
-//           console.log("why");
-//           xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-//           xhr.setRequestHeader("X-Request-User", id);
-//         },
-
-//         data: {"url": id},
-
-//         // handle a successful response
-//         success: function(json) {
-//             console.log("success"); // sanity check
-
-//             var url = json["url"];
-//             console.log(url);
-
-//             window.location.replace(url);
-//         },
-//       });
-// }
 
 
 // display selected local image
@@ -223,6 +151,8 @@ function editPost(POST_ID) {
       form_data.append("visibility", visibility);
       form_data.append("title", title);
       form_data.append("description", description);
+      form_data.append("unlisted", unlisted);
+      form_data.append("categories", categories);
       form_data.append("csrfmiddlewaretoken", csrftoken);
 
       $.ajax({
@@ -296,25 +226,63 @@ $( document ).ready(function() {
       {
        var id = $(this).attr("id")
        var icon = $(this).find("i").attr("class");
-       console.log(icon);
-       if (id == "public" || id == "private" || id == "friend"){
-         $("#visibility").find('i').attr("class", icon);
-         visibility = id;
-       } else if (id == "true" || id == "false") {
-          $("#unlisted_status").find('i').attr("class", icon);
-          unlisted = id;
+       // console.log(icon);
+       // if (id == "public" || id == "private" || id == "friend"){
+       //   $("#visibility").find('i').attr("class", icon);
+       //   visibility = id;
+       // } else if (id == "true" || id == "false") {
+       //    $("#unlisted_status").find('i').attr("class", icon);
+       //    unlisted = id;
 
-       } else {
-         $("#contentType").find('i').attr("class", icon);
-         contentType = id;
-         // handle upload button
-         if (id == "image"){
-           $("#imageFile").attr("style", "display: block");
-         } else {
-           $("#imageFile").attr("style", "display: none");
+       // } else if (id == "ad" || id == "award" || id = "kiss" || id ="web" || id ="empty") {
+       //    $("#categories").find('i').attr("class", icon);
+       //    categories = id;
+       // } else {
+       //   $("#contentType").find('i').attr("class", icon);
+       //   contentType = id;
+       //   // handle upload button
+       //   if (id == "image"){
+       //     $("#imageFile").attr("style", "display: block");
+       //   } else {
+       //     $("#imageFile").attr("style", "display: none");
 
-         }
-       }
+       //   }
+       // }
+
+       switch (id) {
+          case "public":
+          case "private":
+          case "friend":
+            $("#visibility").find('i').attr("class", icon);
+            visibility = id;
+            break;
+          case "true":
+          case "false":
+            $("#unlisted_status").find('i').attr("class", icon);
+            unlisted = id;
+            break;
+          case "ad":
+          case "award": 
+          case "kiss": 
+          case "web": 
+          case "empty":
+            $("#categories").find('i').attr("class", icon);
+            categories = id;
+            break;
+          default:
+            $("#contentType").find('i').attr("class", icon);
+            contentType = id;
+            // handle upload button
+            if (id == "image"){
+               $("#imageFile").attr("style", "display: block");
+            } else {
+              $("#imageFile").attr("style", "display: none");
+
+            }
+        }
+
+
+
     });
 
 
@@ -342,6 +310,7 @@ $( document ).ready(function() {
       form_data.append("title", title);
       form_data.append("unlisted", unlisted);
       form_data.append("description", description);
+      form_data.append("categories", categories);
       form_data.append("csrfmiddlewaretoken", csrftoken);
 
       console.log("description");

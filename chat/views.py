@@ -398,7 +398,7 @@ def posts(request, AUTHOR_ID):
         unlisted = request_post.get("unlisted","")
 
         f = request.FILES.get("file", "")
-        categories = ["web"] # web, tutorial, can be delete  # ?? dropdown
+        categories = request_post.get("categories","")
 
 
         if len(f) > 0:
