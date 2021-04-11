@@ -163,7 +163,7 @@
                           {{ cur_post.title}}
                         </p>
 
-                        {% if 'plain' in cur_post.contentType %}
+                        {% if 'plain' in cur_post.contentType or 'image' in cur_post.contentType %}
                         <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
                           {{ cur_post.description | linebreaks }}
                         </p>

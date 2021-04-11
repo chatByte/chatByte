@@ -510,7 +510,7 @@ Timeline
 .post-content .post-container .post-detail .reaction-img{
   position: absolute;
   right: 0;
-  top: 0;
+  top: 80px;
 }
 
 .post-content .post-container .post-detail .reaction-text{
