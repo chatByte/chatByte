@@ -1035,4 +1035,14 @@ def github_act_obj(request, AUTHOR_ID):
     except Exception as e:
         print(e)
         return None
-    # pprint(r.json())    
+    # pprint(r.json())  
+    # 
+
+
+
+# @csrf_exempt
+# @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
+# @permission_classes([IsAuthenticated])
+# @api_view(['GET']) 
+# def author_likes(request, AUTHOR_ID):
+
