@@ -860,7 +860,7 @@ def inbox(request, AUTHOR_ID):
                     if user_id != USER_ID:
                         return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
                     serializer = LikeSerializer(data=data)
-                    if serializer.is_valid(raise_exception=True):
+                    if serializer.is_valid():
                         try:
                             comment = Comment.objects.get(id=comment_id)
                         except:
