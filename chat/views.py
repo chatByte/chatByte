@@ -144,6 +144,9 @@ def my_stream(request, AUTHOR_ID):
                     print("stream get post's likes: ", res.json())
                     print("Number of likes: ", len(res.json()))
                     post['num_likes'] =  len(res.json())
+                    for comment in post['comments']:
+                        com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment['id'])
+                        comment['num_likes'] = len(com_res.json())
                     remote_posts.append(post)
 
                 #     # print("Post id: ", post['id'])
@@ -193,9 +196,15 @@ def my_stream(request, AUTHOR_ID):
 
         jsonify_public_channel_posts = []
         for post in public_channel_posts:
-            num_likes = len(post.likes.all())
+            post_num_likes = len(post.likes.all())
+            comment_like_list = []
+            for comment in post.comments.all():
+                comment_num_likes = len(comment.likes.all())
+                comment_like_list.append(comment_num_likes)
             json_post = json.loads(json.dumps(PostSerializer(post).data))
-            json_post['num_likes'] = num_likes
+            for i in range(len(json_post['comments'])):
+                json_post['comments'][i]['num_likes'] = comment_like_list[i]
+            json_post['num_likes'] = post_num_likes
             jsonify_public_channel_posts.append(json_post)
         # PostSerializer(public_channel_posts, many=True).data
         # print("PostSerializaer:\n", json.dumps(PostSerializer(public_channel_posts, many=True).data))
