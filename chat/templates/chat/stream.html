@@ -60,7 +60,7 @@
                   {% endfor %} -->
                   {% for friend_request in user.inbox.friend_requests.all %}
                     <li><a >{{friend_request.summary}}</a><button class="accept" onclick="accept_or_reject('accept', '{{friend_request.id}}')">Accept</button><button class="reject" onclick="accept_or_reject('reject', '{{friend_request.id}}')">Reject</button></li>
-                  {% endfor %} 
+                  {% endfor %}
                 </ul>
               </li>
 
@@ -109,47 +109,50 @@
               <div class="activities">
                 <!--Activity SUmmary-->
                 <div id="sticky-sidebar">
-                  <h4 class="blue">My activity</h4>
-                  <div class="feed-item">
-                    <div class="live-activity">
-                      <p>I Posted on a Photo</p>
-                      <p class="text-muted"> xxxx mins ago</p>
+                  <h4 class="blue"><i class="fab fa-github"></i>&thinsp;My Github Activity</h4>
+                  {% for cur_push in git_activity_obj %}
+                        {% if forloop.counter <= 1 %}
+                          {% for cur_commit in cur_push.payload.commits %}
+                            {% if forloop.counter <= 5 %}
+                            <div class="feed-item">
+                              <div class="live-activity">
+
+                                <p class="text-muted" style="max-width: 250px;">Repository: {{cur_push.repo.name}}</p>
+                                <p class="text-muted" style="max-width: 250px;">Commit ID: {{cur_commit.sha}}</p>
+                                <p style="max-width: 250px;">{{cur_commit.author.name}} commited with message "{{cur_commit.message}}"</p>
+                      <!-- <p class="text-muted"> xxxx mins ago</p> -->
                     </div>
                   </div>
-                  <div class="feed-item">
-                    <div class="live-activity">
-                      <p>I Has posted text</p>
-                      <p class="text-muted">xxxx days ago</p>
-                    </div>
-                  </div>
-                  <div class="feed-item">
-                    <div class="live-activity">
-                      <p>I Liked her friend's post</p>
-                      <p class="text-muted">1 month ago</p>
-                    </div>
-                  </div>
+                  {% endif %}
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+
                 </div>
               </div>
             </div>
             <div class="col-sm-1"></div>
             <div class="col-md-6">
         <div class="posts">
+
               {% for cur_post in page_obj %}
+
                 <!-- Post Content ================================================= -->
+
                 <div class="post-content">
+
                   {% if 'image/' in cur_post.contentType  %}
-                  
                   {% load filter %}
                   <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ cur_post.content | bin_2_img }}"/>
                   {% endif %}
                   <div class="post-container">
                     <img src="{% static 'images/user.png' %}" alt="user" class="profile-photo-md pull-left" />
                     <div class="post-detail">
-                      <h5>Source: <a href="{{cur_post.source}}">{{cur_post.source}}</a> </h5>
+                      <h5>Source: <a href="{{cur_post.source}}" style="max-width:100px;">{{cur_post.source}}</a> </h5>
                       <h5>Origin: <a href="{{cur_post.origin}}">{{cur_post.origin}}</a> </h5>
                       <div class="user-info">
                         <h5><a href="" class="profile-link" id="fullName">{{cur_post.author.displayName}}</a> </h5>
-												<p class="text-grey post_date" >{{cur_post.published}} </p>
+												<p class="text-grey post-date" >{{cur_post.published}} </p>
 
                         <p class="text-muted">{{cur_post.categories}}</p>
                       </div>
@@ -160,7 +163,7 @@
                           {{ cur_post.title}}
                         </p>
 
-                        {% if 'plain' in cur_post.contentType %}
+                        {% if 'plain' in cur_post.contentType or 'image' in cur_post.contentType %}
                         <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
                           {{ cur_post.description | linebreaks }}
                         </p>
@@ -174,38 +177,48 @@
 
                       <div class="reaction-img">
                         {% if cur_post.id in liked_objs %}
-                        <a class="btn text-red" onclick="likePost( '{{ cur_post.id }}', 1 )"><i class="icon ion-ios-heart like"></i>{{ cur_post.likes.all | length }}</a>
+                        <a class="btn text-red" onclick="likePost( '{{ cur_post.id }}', 1 )"><i class="icon ion-ios-heart like"></i>{{ cur_post.num_likes }}</a>
                         {% else %}
-                        <a class="btn" onclick="likePost( '{{ cur_post.id }}', 0 )"><i class="icon ion-ios-heart like"></i>{{ cur_post.likes.all | length }}</a>
+                        <a class="btn" onclick="likePost( '{{ cur_post.id }}', 0 )"><i class="icon ion-ios-heart like"></i>{{ cur_post.num_likes }}</a>
                         {% endif %}
                         <a class="btn text-green" onclick="reshare('{{cur_post.id}}')"><i class="icon ion-share"></i></a>
                       </div>
 
                       <hr class="solid">
                   <!--              show nested comment  -->
-                  {% for comment in cur_post.comments.all %}
+                  {% for comment in cur_post.comments %}
                     <div class="post-comment">
-                      <div class="post-commentor">
                       <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
-                      <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a>
+
+                      <div class="post-commentor">
+                        <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a>
+                        <div class="post-comment-contain">
+                          {% if 'plain' in comment.contentType %}
+                          <p style="font-weight:700; font-size:14px; color:#152238; padding-top: 5px;">
+                            {{ comment.comment | linebreaks }}
+                          </p>
+                          {% elif 'markdown' in comment.contentType %}
+                          <p style="font-weight:700; font-size:14px; color:#152238; padding-top: 5px;">
+                            {{ comment.comment | markdown | safe }}
+                          </p>
+                          {% endif %}
+                        </div>
                       </div>
 
-                      <div class="post-comment-contain">
-                        {% if 'plain' in comment.contentType %}
-                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
-                          {{ comment.comment | linebreaks }}
-                        </p>
-                        {% elif 'markdown' in comment.contentType %}
-                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
-                          {{ comment.comment | markdown | safe }}
-                        </p>
+
+                      <div >
+
+                        {% if comment.id in liked_objs %}
+                        <a class="btn text-red" onclick="likeComment( '{{ comment.id }}', 1 )"><i class="icon ion-ios-heart like"></i>{{ comment.num_likes }}</a>
+                        {% else %}
+                        <a class="btn" onclick="likeComment( '{{ comment.id }}', 0 )"><i class="icon ion-ios-heart like"></i>{{ comment.num_likes }}</a>
                         {% endif %}
                       </div>
 
 
 
                     </div>
-<!--                             <a class="btn text-red"><i class="icon ion-ios-heart comment-like"></i>{{ comment.likes | length }}</a> -->
+                    <hr class="solid">
                   {% endfor %}
                   <!--                      end -->
 
