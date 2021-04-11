@@ -253,7 +253,7 @@ function be_friend(type, id, host, displayName, url, github) {
       console.log("---------------------befriend, data");
       console.log(data);
       object = data;
-      sendFriendRequest("follow",summary, actor, object);
+      sendFriendRequest("Follow",summary, actor, object);
     }
   });
 
