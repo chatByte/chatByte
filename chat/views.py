@@ -235,8 +235,6 @@ def my_stream(request, AUTHOR_ID):
 
     elif request.method == "POST":
 
-
-
         request_post = JSONParser().parse(request)
         # Front end need to tell me the type
         contentType = request_post.get("type","")
@@ -383,12 +381,6 @@ def posts(request, AUTHOR_ID):
 
 
 
-
-
-
-
-
-
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
@@ -452,6 +444,12 @@ def update_post(request, AUTHOR_ID, POST_ID):
 
 
 
+    print("------title---")
+    print(title)
+
+    print("----------")
+    print(description)
+
     f = request.FILES.get("file", "")
 
     if len(f) > 0:
@@ -460,7 +458,6 @@ def update_post(request, AUTHOR_ID, POST_ID):
             content = base64.b64encode(image_file.read())
     else:
         content = description
-
     updateFlag = updatePost(id, title, description, content_type, content)
     if updateFlag:
         print("Successful edited post, info: ", description)

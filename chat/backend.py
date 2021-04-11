@@ -256,7 +256,7 @@ def updatePost(id, title, description, content_type, content):
         post.contentType = content_type
         post.content = content
         # post.author = author
-        post.categories = categories
+        # post.categories = categories
         post.save()
         return True
     except BaseException as e:

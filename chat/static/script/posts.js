@@ -6,6 +6,7 @@ var unlisted = "false";
 var categories = "empty";
 var title = "";
 var form_data = new FormData();
+
 var edit_form_data = new FormData();
 var x_server = window.location.origin;
 
@@ -131,6 +132,9 @@ function readImg(input) {
     // deal with submit edit button
     // submit form data
 function editPost(POST_ID) {
+
+
+
       var id = POST_ID.split('/posts/')[1];
       console.log('aaa' + POST_ID)
       title = $("#title1").val();
@@ -144,13 +148,13 @@ function editPost(POST_ID) {
       // file is stored as form data
       if (contentType == "image"){
         var file_data = $('#imageFile').prop('files')[0];
-        form_data.append('file', file_data);
+        edit_form_data.append('file', file_data);
       }
 
-      form_data.append("contentType", contentType);
-      form_data.append("title", title);
-      form_data.append("description", description);
-      form_data.append("csrfmiddlewaretoken", csrftoken);
+      edit_form_data.append("contentType", contentType);
+      edit_form_data.append("title", title);
+      edit_form_data.append("description", description);
+      edit_form_data.append("csrfmiddlewaretoken", csrftoken);
 
       $.ajax({
         // url : ".", // the endpoint
@@ -164,7 +168,7 @@ function editPost(POST_ID) {
         dataType: 'text', // what to expect back from the server
         cache: false,
         processData: false,
-        data: form_data,
+        data: edit_form_data,
 
         // handle a successful response
         success : function(json) {
