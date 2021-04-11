@@ -198,7 +198,8 @@ def likesRequest(method, origin, user_id, post_id, data=None):
     The body of the request is empty.
     '''
 
-    url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/likes/"
+    url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/likes"
+    print("get post likes url: ", url)
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
@@ -215,7 +216,8 @@ def commentLikesRequest(method, origin, user_id, post_id, comment_id, data=None)
     The body of the request is empty.
     '''
 
-    url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/comments/" + comment_id + "/likes/"
+    url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/comments/" + comment_id + "/likes"
+    print("get comment likes url: ", url)
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
