@@ -1059,7 +1059,7 @@ def inbox_likes(request, AUTHOR_ID):
     if data['type'] == 'like':
         # from our own server
         # send the like object to remote server
-        res = inboxRequest("POST", host_server, AUTHOR_ID, data)
+        inbox(request, AUTHOR_ID)
         return JsonResponse({}, safe=False, status=res.status_code)
     elif data['type'] == 'comment':
         # create a like object for comment
