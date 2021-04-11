@@ -58,7 +58,7 @@ def postRequest(method, origin, user_id, post_id, data=None):
     The body of the request is empty if it is a GET/DELETE request, otherwise, the body is
     the post in json format.
     '''
-    url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/"
+    url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id)
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
@@ -84,15 +84,17 @@ def commentRequest(method, origin, user_id, post_id, data=None):
     The body of the request is empty if it is a GET request, otherwise, the body is
     the comment in json format.
     '''
-    url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/comments/"
+    url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/comments"
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id) + "/"}
+    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     elif method == "POST":
+        print("commentRequest():", url)
         response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
+        # print(response.body)
     return response
 
 def inboxRequest(method, origin, user_id, data=None):
@@ -103,7 +105,7 @@ def inboxRequest(method, origin, user_id, data=None):
     The body of the request is empty if it is a GET/DELETE request, otherwise, the body is
     the inbox in json format.
     '''
-    url = str(origin) + "author/" + str(user_id) + "/inbox/"
+    url = str(origin) + "author/" + str(user_id) + "/inbox"
     print("remote URL: ", url)
     print("remote origin: ", origin)
     user = User.objects.get(last_name=origin)

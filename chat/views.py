@@ -123,62 +123,46 @@ def my_stream(request, AUTHOR_ID):
         print("github", back_json)
 
         # Get stream from: node origins, since we have plenty remote server
+        remote_posts = []
         for node in Node.objects.all():
             print("Get stream from: ", node.origin)
             print("Username: ", node.username, " password: ", node.password)
+
+            if node.origin == host_server:
+                continue
+
             res = streamRequest(node.origin, request.user.id)
             try:
                 data = res.json()
-                print(data['posts'])
-                for post in data['posts']:
-                    # print("Post id: ", post['id'])
-                    post_id = post['id']
-                    try:
-                        post_obj = Post.objects.get(id=post_id)
-                        serializer = PostSerializer(post_obj, data=post, partial=True)
-                        if serializer.is_valid(raise_exception=True):
-                            serializer.save()
-                    except Post.DoesNotExist:
-                        author_dict = post['author']
-                        # print("Author dict: ", author_dict)
-                        try:
-                            author = Profile.objects.get(id=author_dict['id'])
-                        except Profile.DoesNotExist:
-                            author_serializer = ProfileSerializer(data=author_dict)
-                            if author_serializer.is_valid(raise_exception=True):
-                                author = author_serializer.save()
-                        # comments_dict = post['comments']
-                        # comments_list = list()
-                        # for comment in comments_dict:
-                        #     # print("Comment: ", comment)
-                        #     try:
-                        #         comment_obj = Comment.objects.get(id=comment['id'])
-                        #         comments_list.append(comment_obj)
-                        #     except Comment.DoesNotExist:
-                        #         comm_author_dict = comment['author']
-                        #         print("Comment author: ", comm_author_dict)
-                        #         try:
-                        #             comm_author = Profile.objects.get(id=comm_author_dict['id'])
-                        #         except Profile.DoesNotExist:
-                        #             author_serializer = ProfileSerializer(data=comm_author_dict)
-                        #             if author_serializer.is_valid(raise_exception=True):
-                        #                 comm_author = author_serializer.save()
-                        #         comment_serializer = CommentSerializer(data=comment)
-                        #         print(comment_serializer)
-                        #         if comment_serializer.is_valid(raise_exception=True):
-                        #             comment_obj = comment_serializer.save(author=comm_author)
-                        #             print("Created comment obj: ", comment_obj)
-                        #             comments_list.append(comment_obj)
+                remote_posts += data['posts']
+                # print(data['posts'])
+                # for post in data['posts']:
+                #     # print("Post id: ", post['id'])
+                #     post_id = post['id']
+                #     try:
+                #         post_obj = Post.objects.get(id=post_id)
+                #         serializer = PostSerializer(post_obj, data=post, partial=True)
+                #         if serializer.is_valid(raise_exception=True):
+                #             serializer.save()
+                #     except Post.DoesNotExist:
+                #         author_dict = post['author']
+                #         # print("Author dict: ", author_dict)
+                #         try:
+                #             author = Profile.objects.get(id=author_dict['id'])
+                #         except Profile.DoesNotExist:
+                #             author_serializer = ProfileSerializer(data=author_dict)
+                #             if author_serializer.is_valid(raise_exception=True):
+                #                 author = author_serializer.save()
+                    
+                #         serializer = PostSerializer(data=post)
 
-                        serializer = PostSerializer(data=post)
-                        # print("here")
-                        # print(serializer)
-                        if serializer.is_valid(raise_exception=True):
-                            serializer.save(author=author) # comments=comments_list
-                            post_obj = Post.objects.get(id=post_id)
-                    # add stream post into public channel
-                    mytimeline.add(post_obj)
-                    # print("Post object", post_obj)
+                #         if serializer.is_valid(raise_exception=True):
+                #             serializer.save(author=author) # comments=comments_list
+                #             post_obj = Post.objects.get(id=post_id)
+                #     # add stream post into public channel
+                #     mytimeline.add(post_obj)
+                #     # print("Post object", post_obj)
+
             except BaseException as e:
                 print(e)
 
@@ -197,12 +181,23 @@ def my_stream(request, AUTHOR_ID):
 
             public_posts = following_profile.timeline.filter(visibility='public')
             public_channel_posts = public_channel_posts | public_posts
+        
+        # PostSerializer(public_channel_posts, many=True).data
+        # print("PostSerializaer:\n", json.dumps(PostSerializer(public_channel_posts, many=True).data))
+        public_channel_posts = json.loads(json.dumps(PostSerializer(public_channel_posts, many=True).data)) + remote_posts # a list
+        # print("public_channel_posts:\n", public_channel_posts)
 
 
         author_num_follwers = len(cur_author.profile.followers.items.all())
         friend_request_num = len(cur_author.inbox.friend_requests.all())
         # order by date
-        public_channel_posts = public_channel_posts.order_by('-published')
+        # public_channel_posts = public_channel_posts.order_by('-published')
+       
+        public_channel_posts = sorted(public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
+        for post in public_channel_posts:
+            print("post:\n", post)
+            post['comments'] = sorted(post['comments'], key=lambda k: k.get('published', 0), reverse=True)
+
 
         # create a paginator
         paginator_public_channel_posts = Paginator(public_channel_posts, 8) # Show 8 contacts per page.
@@ -225,7 +220,8 @@ def my_stream(request, AUTHOR_ID):
             'friend_request_num': friend_request_num,
             'liked_objs': liked_objs,
             'friends': myFriends,
-            'git_activity_obj': back_json
+            'git_activity_obj': back_json,
+            'remote_post': remote_posts
         }
 
 
@@ -266,10 +262,20 @@ def my_stream(request, AUTHOR_ID):
             comment_content_type = request_post.get("content_type","")
 
             #if successful create a comment
-            if  createComment(cur_author.profile, post_id, comment_contain, comment_content_type) :
-                response = JsonResponse({'redirect_url': "current"}, status=200)
-            else:
-                response = JsonResponse({}, status=500)
+            # if  createComment(cur_author.profile, post_id, comment_contain, comment_content_type) :
+            #     response = JsonResponse({'redirect_url': "current"}, status=200)
+            send_data = {
+                'content': comment_contain,
+                'contentType': comment_content_type
+            }
+            # response = request.post(post_id + "/comments", data=json.dumps(send_data), head)
+            response = commentRequest("POST", post_id.split('author/')[0], post_id.split('author/')[1].split('/posts/')[0] \
+                , post_id.split('author/')[1].split('/posts/')[1], send_data)
+            
+            print("response json:", response.json())
+            return JsonResponse(response.json(), status=response.status_code)
+            # else:
+            #     response = JsonResponse({}, status=500)
 
         else:
             response = JsonResponse({}, status=400)
