@@ -255,11 +255,9 @@ function editPost(POST_ID) {
         var content_holder = $(this).closest('.post-detail').find('p');
 
         content_holder.attr("style", "display: none");
-        // var div_content = $('div .form-group-col').html();
         var div_content = $('div .form-group-col').clone();
         var find_element = div_content.find('#title');
         var find_description = div_content.find('#description');
-        // console.log(find_element);
         find_element.attr("id", "editTitle");
         find_element.text(title);
 
