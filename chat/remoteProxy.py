@@ -110,7 +110,7 @@ def inboxRequest(method, origin, user_id, data=None):
     print("remote URL: ", url)
     print("remote origin: ", origin)
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
         headers['Content-type'] = 'application/json'
