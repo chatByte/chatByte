@@ -723,6 +723,7 @@ def search(request, AUTHOR_ID):
     except:
         return JsonResponse({}, status=409)
     try:
+        print("Search for profile locally...")
         target = Profile.objects.get(id=target_id)
         serializer = ProfileSerializer(target)
 
@@ -738,6 +739,7 @@ def search(request, AUTHOR_ID):
 
         return JsonResponse(json_dict, status=200)
     except Profile.DoesNotExist:
+        print("Trying you get foreign profile...")
         response = profileRequest("GET", author_origin, target_id.split("/")[-1])
         #print(author_origin)
         print(response.status_code)
