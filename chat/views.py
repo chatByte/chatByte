@@ -375,7 +375,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
             'author_num_follwers': author_num_follwers,
             'isFriend': isFriend,
             'isFollowing': isFollowing,
-            'foreignId':foreign_author.id,
+            'foreignId':foreign_author.profile.id,
             'friend_request_num': friend_request_num,
             'cur_author': cur_author,
         }

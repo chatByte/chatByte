@@ -471,7 +471,6 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
         FOREIGN_AUTHOR_ID = server_origin + "author/" + FOREIGN_AUTHOR_ID
     except:
         FOREIGN_AUTHOR_ID = host_server + "author/" + FOREIGN_AUTHOR_ID
-    print("post id: ", FOREIGN_AUTHOR_ID)
     print("server_origin", server_origin)
     print("host_server", host_server)
 
