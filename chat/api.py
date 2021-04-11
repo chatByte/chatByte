@@ -832,7 +832,7 @@ def inbox(request, AUTHOR_ID):
                     print("Post id: ", post_id)
                     if user_id != USER_ID:
                     # if user_id != AUTHOR_ID: # Now AUTHOR_ID is http://our-host-name/USER_ID
-                        return JsonResponse({"Error": "Author id is inconsistent"}, status=404)]
+                        return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
                     try:
                         like = Like.objects.get(id=data['id'])
                     except:
