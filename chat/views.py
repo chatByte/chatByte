@@ -281,9 +281,10 @@ def my_stream(request, AUTHOR_ID):
                     # store liked object in current author
                     request.user.profile.liked.items.add(like)
                     request.user.profile.liked.save()
+                    
                 else:
                     like.delete()
-                return res
+                return JsonResponse(res.json(), status=res.status_code)
             else:
                 if object_type == "post":
 
