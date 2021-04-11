@@ -145,8 +145,11 @@ def my_stream(request, AUTHOR_ID):
                     print("Number of likes: ", len(res.json()))
                     post['num_likes'] =  len(res.json())
                     for comment in post['comments']:
-                        com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment['id'])
+                        print(comment['id'])
+                        comment_id = comment['id'].split('comments/')[1]
+                        com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
                         comment['num_likes'] = len(com_res.json())
+                        print(comment['num_likes'])
                     remote_posts.append(post)
 
                 #     # print("Post id: ", post['id'])
@@ -220,7 +223,7 @@ def my_stream(request, AUTHOR_ID):
         jsonify_public_channel_posts = sorted(jsonify_public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
         for post in jsonify_public_channel_posts:
             print("post:\n", post)
-            post['comments'] = sorted(post['comments'], key=lambda k: k.get('published', 0), reverse=True)
+            post['comments'] = sorted(post['comments'], key=lambda k: k.get('published', 0))
 
 
         # create a paginator
@@ -263,21 +266,41 @@ def my_stream(request, AUTHOR_ID):
         if contentType == "like":
             object_type = request_post.get("object_type","")
             object_id = request_post.get("object_id","")
-            if object_type == "post":
-
-                likePost(object_id, cur_author_id)
-
-                response = JsonResponse({'redirect_url': "current"}, status=200)
-                # response = render(request, "chat/stream.html", dynamic_contain)
-            elif object_type == "comment":
-
-                # object_id = request_post.get("object_id","")
-                likeComment(object_id, cur_author_id)
-                # response = render(request, "chat/stream.html", dynamic_contain)
-                # pass
-                response = JsonResponse({'redirect_url': "current"}, status=200)
+            # Determine if the liked object is remote or local
+            server_origin = object_id.split('author/')[0]
+            if server_origin not in host_server:
+                print("Sending like to remote server...")
+                if object_type == "post":
+                    like = Like.objects.create(author=request.user.profile, object=object_id, summary= request.user.profile.displayName + " likes your post")
+                else:
+                    like = Like.objects.create(author=request.user.profile, object=object_id, summary= request.user.profile.displayName + " likes your comment")
+                # send the like object to remote server
+                res = inboxRequest("POST", server_origin, AUTHOR_ID, LikeSerializer(like).data)
+                if res.status_code < 400:
+                    print("liked object successfully")
+                    # store liked object in current author
+                    request.user.profile.liked.items.add(like)
+                    request.user.profile.liked.save()
+                    
+                else:
+                    like.delete()
+                return JsonResponse(res.json(), status=res.status_code)
             else:
-                response = JsonResponse({}, status=400)
+                if object_type == "post":
+
+                    likePost(object_id, cur_author_id)
+
+                    response = JsonResponse({'redirect_url': "current"}, status=200)
+                    # response = render(request, "chat/stream.html", dynamic_contain)
+                elif object_type == "comment":
+
+                    # object_id = request_post.get("object_id","")
+                    likeComment(object_id, cur_author_id)
+                    # response = render(request, "chat/stream.html", dynamic_contain)
+                    # pass
+                    response = JsonResponse({'redirect_url': "current"}, status=200)
+                else:
+                    response = JsonResponse({"Details", "Invalid like object type"}, status=400)
 
         elif contentType == "comment":
 

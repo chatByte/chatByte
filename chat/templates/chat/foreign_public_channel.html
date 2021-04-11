@@ -104,7 +104,7 @@
                     <!-- <li><button class="btn-primary unfriend" href="../../my_friends/delete/{{foreignId}}/">Unfriend</button></li> -->
                   {% else %}
                     <li><button class="btn-primary befriend" value="../../friends/add/{{foreignId}}/"
-                        onclick="be_friend( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}', '{{cur_author.url}}', '{{cur_author.github}}')" >Befriend</button></li>
+                        onclick="be_friend( '{{ request.user.profile.type}}', '{{ request.user.profile.id}}', '{{ request.user.profile.host}}', '{{ request.user.profile.displayName}}', '{{request.user.profile.url}}', '{{request.user.profile.github}}')" >Befriend</button></li>
       						{% endif %}
 
                 </ul>
