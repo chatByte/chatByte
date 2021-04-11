@@ -832,20 +832,27 @@ def inbox(request, AUTHOR_ID):
                     print("Post id: ", post_id)
                     if user_id != USER_ID:
                     # if user_id != AUTHOR_ID: # Now AUTHOR_ID is http://our-host-name/USER_ID
-                        return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
-                    serializer = LikeSerializer(data=data)
-                    if serializer.is_valid(raise_exception=True):
-                        try:
-                            post = Post.objects.get(id=post_id)
-                        except:
-                            return JsonResponse({"Error": "Post does not exist"}, status=404)
-                        like = serializer.save()
+                        return JsonResponse({"Error": "Author id is inconsistent"}, status=404)]
+                    try:
+                        like = Like.objects.get(id=data['id'])
+                    except:
+                        serializer = LikeSerializer(data=data)
+                        if serializer.is_valid(raise_exception=True):
+                            like = serializer.save()
+                        else:
+                            print("serializer invalid error")
+                            print(serializer.errors)
+                            return JsonResponse(serializer.errors, status=400)
+                    try:
+                        post = Post.objects.get(id=post_id)
                         post.likes.add(like)
                         post.save()
                         user.inbox.like_inbox.add(like)
                         user.save()
                         return JsonResponse(data, status=200)
-                    return JsonResponse(serializer.errors, status=400)
+                    except:
+                        return JsonResponse({"Error": "Post does not exist"}, status=404)
+                    
                 #like comment
                 elif len(post_url) == 9:
                     user_id = post_url[4]
@@ -859,23 +866,29 @@ def inbox(request, AUTHOR_ID):
                     # if user_id != AUTHOR_ID:
                     if user_id != USER_ID:
                         return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
-                    serializer = LikeSerializer(data=data)
-                    print(serializer)
-                    if serializer.is_valid():
-                        try:
-                            comment = Comment.objects.get(id=comment_id)
-                        except:
-                            return JsonResponse({"Error": "comment does not exist"}, status=404)
-                        print("Serializer is valid")
-                        like = serializer.save()
-                        print(like)
-                        comment.likes.add(like)
-                        comment.save()
-                        print(comment)
-                        return JsonResponse(data, status=200)
-                    print("serializer invalid error")
-                    print(serializer.errors)
-                    return JsonResponse(serializer.errors, status=400)
+                    try:
+                        like = Like.objects.get(id=data['id'])
+                    except:
+                        serializer = LikeSerializer(data=data)
+                        if serializer.is_valid(raise_exception=True):
+                            like = serializer.save()
+                        else:
+                            print("serializer invalid error")
+                            print(serializer.errors)
+                            return JsonResponse(serializer.errors, status=400)
+                    try:
+                        comment = Comment.objects.get(id=comment_id)
+                    except:
+                        return JsonResponse({"Error": "comment does not exist"}, status=404)
+                    print("Serializer is valid")
+                    like = serializer.save()
+                    print(like)
+                    comment.likes.add(like)
+                    comment.save()
+                    print(comment)
+                    return JsonResponse(data, status=200)
+                    
+                    
 
             elif data['type'].lower() == 'follow':
                 print("Recieved a friend request!")
