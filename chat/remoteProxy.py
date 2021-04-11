@@ -106,6 +106,7 @@ def inboxRequest(method, origin, user_id, data=None):
     the inbox in json format.
     '''
     url = str(origin) + "author/" + str(user_id) + "/inbox"
+    like_url = str(origin) + "author/" + str(user_id) + "/likes"
     print("remote URL: ", url)
     print("remote origin: ", origin)
     user = User.objects.get(last_name=origin)
@@ -120,7 +121,7 @@ def inboxRequest(method, origin, user_id, data=None):
             response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
         elif data['type'] == 'like':
-            response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+            response = requests.post(like_url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
             print(response.status_code)
         elif data['type'] == 'follow':
             print("Recieved a friend request!")

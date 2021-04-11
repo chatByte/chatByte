@@ -1,0 +1,27 @@
+URL to our publicly available API endpoint:
+https://github.com/chatByte/chatByte/blob/main/API_publicEndPoints.md
+
+Valid account credentials to use our application:
+username: test
+password: test
+
+
+Example CURL or HTTPIE command for authenticated get POSTS:
+    (authentication scheme + valid credentials can be provided here)
+    http --auth username:password GET https://somecmput404.herokuapp.com/api/posts/
+    curl -u name:password -i -H "Accept:application/json" https://somecmput404.herokuapp.com/api/posts/
+
+    ie. in our first herokuapp case:
+    http --auth test:test GET https://app-chatbyte.herokuapp.com/author/1/posts/ 
+    curl -u chatbyte:jeremychoo -i -H 'Accept:application/json' https://app-chatbyte.herokuapp.com/author/1/posts/ 
+   
+
+Authentication: Basic Authentication
+http --auth chatbyte:jeremychoo GET https://app-chatbyte.herokuapp.com/author/1/posts/ 
+
+URL to our web service API & documentation:
+https://github.com/chatByte/chatByte/blob/main/API_docs.md
+
+
+The team(s) that we have coordinated with and their endpoints:
+two way communication with Group 5 and one way communication with 14 (currently)
