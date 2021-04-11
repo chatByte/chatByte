@@ -717,8 +717,12 @@ def search(request, AUTHOR_ID):
     except Profile.DoesNotExist:
         response = profileRequest("GET", author_origin, target_id.split("/")[-1])
         #print(author_origin)
+        print(response.status_code)
+        print(response.json())
+        numberID_target = target_id.split("/")[-1]
+        server_name = user.username
 
-        if response.status_code == 200:
+        if response.status_code < 400:
             foreign_author = response.json()
             # foreign_author = {'type': 'author',
             #                 'id': 'http://127.0.0.1:5000/author/10',
@@ -729,7 +733,9 @@ def search(request, AUTHOR_ID):
             serializer = ProfileSerializer(data=foreign_author)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                return JsonResponse({"url": "../mystream/2/"}, status=200)
+                redirect_url = "../my_stream/" + server_name +"/" + numberID_target + "/"
+                json_dict = {"url": redirect_url}
+                return JsonResponse(json_dict, status=200)
         else:
             return JsonResponse(response.json(), status=response.status_code)
 
