@@ -37,7 +37,6 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
 
 
 
-
 '''
 Design for giving our brother all posts, since we love each other
 '''
@@ -781,33 +780,33 @@ def inbox(request, AUTHOR_ID):
             print("Data: ", data)
             if data['type'] == "post":
                 print("Recieved a post inbox...!")
-                serializer = PostSerializer(data=data)
-                # print(serializer)
-                if serializer.is_valid(raise_exception=True):
-                    print("Post id: ", data['id'])
-                    post_id = data['id']
-                    try:
-                        post = Post.objects.get(id=post_id)
-                    except Post.DoesNotExist:
-                        author_dict = data['author']
-                        print("Author dict: ", author_dict)
-                        try:
-                            author = Profile.objects.get(id=author_dict['id'])
-                        except Profile.DoesNotExist:
-                            author_serializer = ProfileSerializer(data=author_dict)
-                            if author_serializer.is_valid(raise_exception=True):
-                                author = author_serializer.save()
-                        post = serializer.save(author=author)
-                    print("Post: ", post)
-                    post = Post.objects.get(id=post_id)
-                    user.inbox.post_inbox.items.add(post)
-                    user.inbox.post_inbox.save()
-                    user.profile.timeline.add(post)
-                    user.profile.save()
-                    return JsonResponse(data, status=200)
-                else:
-                    print("here")
-                    return JsonResponse(serializer.errors, status=400)
+                # serializer = PostSerializer(data=data)
+                # # print(serializer)
+                # if serializer.is_valid(raise_exception=True):
+                #     print("Post id: ", data['id'])
+                #     post_id = data['id']
+                #     try:
+                #         post = Post.objects.get(id=post_id)
+                #     except Post.DoesNotExist:
+                author_dict = data['author']
+                print("Author dict: ", author_dict)
+                try:
+                    author = Profile.objects.get(id=author_dict['id'])
+                except Profile.DoesNotExist:
+                    author_serializer = ProfileSerializer(data=author_dict)
+                    if author_serializer.is_valid(raise_exception=True):
+                        author = author_serializer.save()
+                #         post = serializer.save(author=author)
+                #     print("Post: ", post)
+                #     post = Post.objects.get(id=post_id)
+                #     user.inbox.post_inbox.items.add(post)
+                    # user.inbox.post_inbox.save()
+                    # user.profile.timeline.add(post)
+                    # user.profile.save()
+                return JsonResponse(data, status=200)
+                # else:
+                #     print("here")
+                #     return JsonResponse(serializer.errors, status=400)
             elif data['type'].lower() == 'like':
                 print("Recieved a like inbox!")
                 post_url = data['object'].split("/")

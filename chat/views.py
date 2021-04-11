@@ -274,8 +274,10 @@ def my_stream(request, AUTHOR_ID):
             response = commentRequest("POST", post_id.split('author/')[0], post_id.split('author/')[1].split('/posts/')[0] \
                 , post_id.split('author/')[1].split('/posts/')[1], send_data)
             
-            print("response json:", response.json())
-            return JsonResponse(response.json(), status=response.status_code)
+           
+            if response.status_code < 400:
+                 print("response json:", response.json())
+            return JsonResponse({'details': "finish comment post"}, status=response.status_code)
             # else:
             #     response = JsonResponse({}, status=500)
 
