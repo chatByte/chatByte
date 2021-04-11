@@ -245,66 +245,77 @@
                         </p>
                         {% endif %}
 
-                        <form action="." method="post" class="edit-block" style="display: none">
-
-                            {% csrf_token %}
-                            <textarea name="editText" id="editText" cols="80" rows="4" class="form-control" val="">{{cur_post.description}}</textarea>
-                            <button  type="submit" id="submitEdit" class="btn btn-seconday btn-on-top">Submit</button>
-
-                        </form>
                         <div class="editText" style="display: none">
                         </div>
 
                         <div class="edit">
-                          <!-- <button id="{{cur_post.ID}}" class="submitBtn btn-primary-sm" style="display: none">Submit</button> -->
-                          <button id="submitBtn" class="submitBtn btn-primary-sm" style="display: none" onclick="editPost( '{{ cur_post.id }}' )">Submit</button>
-                          <a href="/chat/feed/edit{{ cur_post.id }}/" class="editBtn" onclick="editButton( '{{ cur_post.title }}', ' {{cur_post.description}} ' )">Edit</a>
+                          <!-- <button id="submitBtn" class="submitBtn btn-primary-sm" style="display: none" onclick="editPost( '{{ cur_post.id }}' )">Submit</button> -->
+                          <a href="#" class="editBtn" data-toggle="modal" data-target="#editModal">Edit</a>
                           &thinsp;
                           <a href='#' id="{{ cur_post.id }}" class="deleteBtn" onclick="deletePost( '{{ cur_post.id }}' )">Delete</a>
                         </div>
 
-                      </div>
+                        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="create-post">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                      <div class="form-group">
+                                          <div class="form-group-col">
+                                            {% csrf_token %}
+                                            <textarea  id="title1" cols="45" rows="1" class="form-title-control" required>{{cur_post.title}}</textarea>
+                                            <img id="uploadImg">
+                                            {% if 'plain' in cur_post.contentType %}
+                                            <textarea  id="description1" cols="45" rows="4" class="form-control">{{cur_post.description }}</textarea>
+                                            {% elif 'markdown' in cur_post.contentType %}
+                                            <textarea  id="description1" cols="45" rows="4" class="form-control">{{cur_post.description | markdown | safe}}</textarea>
+                                            {% endif %}
 
-<!--                       <div class="reaction-img">
-                        <a class="btn text-red "><i class="icon ion-ios-heart like">{{ cur_post.likes.all | length }}</i></a>
-                        <a class="btn text-green"><i class="icon ion-share repost"></i></a>
-                      </div> -->
+                                            <input type='file' id='imageFile' accept="image/*" onchange="readImg(this);">
+
+                                            <div class="dropdown">
+                                               <div class="publicity"><a id="contentType" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-edit"></i><a></div>
+                                                <div class="dropdown-content">
+                                                  <a href="#" id="text/plain"><i class="fas fa-edit"></i>&ensp;<span>This is simply a text post</span></a>
+                                                  <a href="#" id="image"><i class="ion-images"></i>&ensp;<span>This is an image post</span></a>
+                                                  <a href="#" id="text/markdown"><i class="far fa-file"></i>&ensp;<span>This is a Common Markdown post</span></a>
+                                                </div>
+                                            </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="editPost( '{{ cur_post.id }}')">Save Change</button>
+                              </div>
+                            </div>
+                          </div>
+
+                      </div>
 
                       <hr class="solid">
                       <!--              show nested comment  -->
                       {% for comment in cur_post.comments.all %}
-                        <!-- <div class="post-comment" id={{comment.id}}>
-                          <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
-                          <a href="" class="profile-link">{{comment.author.displayName}} </a>
+
+                      <div class="post-comment" id={{comment.id}}>
+                        <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
+
+                        <div class="post-commentor">
+                        <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a>
+                        <div class="post-comment-contain">
+                          {% if 'plain' in comment.contentType %}
+                          <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                            {{ comment.comment | linebreaks }}
+                          </p>
+                          {% elif 'markdown' in comment.contentType %}
+                          <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                            {{ comment.comment | markdown | safe }}
+                          </p>
+                          {% endif %}
                         </div>
-
-                        {% if 'plain' in comment.contentType %}
-                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
-                          {{ comment.comment | linebreaks }}
-                        </p>
-                        {% elif 'markdown' in comment.contentType %}
-                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
-                          {{ comment.comment | markdown | safe }}
-                        </p>
-                        {% endif %} -->
-
-
-                      <div class="post-comment">
-                      <div class="post-commentor">
-                      <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
-                      <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a>
-                      </div>
-
-                      <div class="post-comment-contain">
-                        {% if 'plain' in comment.contentType %}
-                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
-                          {{ comment.comment | linebreaks }}
-                        </p>
-                        {% elif 'markdown' in comment.contentType %}
-                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
-                          {{ comment.comment | markdown | safe }}
-                        </p>
-                        {% endif %}
                       </div>
 
                       <div >
@@ -317,13 +328,7 @@
                       </div>
 
                     </div>
-
-
-
-
-
-
-
+                    <hr class="solid">
                      {% endfor %}
                     </div>
 
