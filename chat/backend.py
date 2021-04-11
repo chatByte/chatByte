@@ -376,7 +376,7 @@ def likePost(post_id, author_id):
     try:
 
         user_profile = Profile.objects.get(id=author_id)
-        summary = user_profile.displayName +" likes your post"
+        summary = user_profile.displayName +" Likes your post"
         new_like = Like.objects.create(author=user_profile, object=post_id, summary= summary)
         user_liked = user_profile.liked
         items_list = user_liked.items

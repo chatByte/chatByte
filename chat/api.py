@@ -1078,17 +1078,23 @@ def inbox_likes(request, AUTHOR_ID):
         # from our own server
         # send the like object to remote server
         return inbox(request, AUTHOR_ID)
-    elif data['type'] == 'comment':
+    foreign_author = request.META.get("HTTP_X_REQUEST_USER")
+    try:
+        author = Profile.objects.get(id=foreign_author)
+    except:
+        foreign_server = foreign_author.split('author/')[0]
+        foreign_id = foreign_author.split('author/')[1]
+        headers = {"X-Server": foreign_server}
+        url = str(host_server) + "author/" + str(foreign_id)
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(request.user.username, request.user.first_name))
+        profile_ser = ProfileSerializer(data=response.data)
+        if profile_ser.is_valid():
+            author = profile_ser.save()
+    if data['type'] == 'comment':
         original_author_id = data['id'].split('author/')[1].split('/posts')[0]
         print("original author id for the liked object: ", original_author_id)
         # create a like object for comment
-        try:
-            author = Profile.objects.get(id=data['author']['id'])
-        except:
-            author_ser = ProfileSerializer(data=data['author'])
-            if author_ser.is_valid():
-                author = author_ser.save()
-        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a comment")
+        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " Likes a comment")
         # send the like to inbox directly
         data = LikeSerializer(like).data
         url = str(host_server) + "author/" + str(original_author_id) + "/inbox"
@@ -1101,13 +1107,7 @@ def inbox_likes(request, AUTHOR_ID):
         original_author_id = data['id'].split('author/')[1].split('/posts')[0]
         print("original author id for the liked object: ", original_author_id)
         # create a like object for post
-        try:
-            author = Profile.objects.get(id=data['author']['id'])
-        except:
-            author_ser = ProfileSerializer(data=data['author'])
-            if author_ser.is_valid():
-                author = author_ser.save()
-        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a post")
+        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " Likes a post")
         # send the like to inbox directly
         data = LikeSerializer(like).data
         url = str(host_server) + "author/" + str(original_author_id) + "/inbox"
