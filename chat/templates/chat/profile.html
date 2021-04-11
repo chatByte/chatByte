@@ -60,12 +60,11 @@
                   {% endfor %}-->
                   {% for friend_request in user.inbox.friend_requests.all %}
                     <li><a >{{friend_request.summary}}</a><button class="accept" onclick="accept_or_reject('accept', '{{friend_request.id}}')">Accept</button><button class="reject" onclick="accept_or_reject('reject', '{{friend_request.id}}')">Reject</button></li>
-                  {% endfor %}              
+                  {% endfor %}
                 </ul>
               </li>
 
               <li class="dropdown"><a href="/accounts/logout">Logout</a></li>
-
             </ul>
 
           </div><!-- /.navbar-collapse -->

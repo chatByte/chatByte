@@ -152,7 +152,7 @@ def my_stream(request, AUTHOR_ID):
                 #             author_serializer = ProfileSerializer(data=author_dict)
                 #             if author_serializer.is_valid(raise_exception=True):
                 #                 author = author_serializer.save()
-                    
+
                 #         serializer = PostSerializer(data=post)
 
                 #         if serializer.is_valid(raise_exception=True):
@@ -180,7 +180,7 @@ def my_stream(request, AUTHOR_ID):
 
             public_posts = following_profile.timeline.filter(visibility='public')
             public_channel_posts = public_channel_posts | public_posts
-        
+
         # PostSerializer(public_channel_posts, many=True).data
         # print("PostSerializaer:\n", json.dumps(PostSerializer(public_channel_posts, many=True).data))
         public_channel_posts = json.loads(json.dumps(PostSerializer(public_channel_posts, many=True).data)) + remote_posts # a list
@@ -191,7 +191,7 @@ def my_stream(request, AUTHOR_ID):
         friend_request_num = len(cur_author.inbox.friend_requests.all())
         # order by date
         # public_channel_posts = public_channel_posts.order_by('-published')
-       
+
         public_channel_posts = sorted(public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
         for post in public_channel_posts:
             print("post:\n", post)
@@ -270,7 +270,7 @@ def my_stream(request, AUTHOR_ID):
             # response = request.post(post_id + "/comments", data=json.dumps(send_data), head)
             response = commentRequest("POST", post_id.split('author/')[0], post_id.split('author/')[1].split('/posts/')[0] \
                 , post_id.split('author/')[1].split('/posts/')[1], send_data)
-            
+
             print("response json:", response.json())
             return JsonResponse(response.json(), status=response.status_code)
             # else:
@@ -383,8 +383,6 @@ def posts(request, AUTHOR_ID):
             'page_obj' : page_obj,
             'friend_request_num': friend_request_num
         }
-
-
 
         response = render(request, "chat/posts.html", dynamic_contain)
         return response
