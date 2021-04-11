@@ -878,15 +878,13 @@ def inbox(request, AUTHOR_ID):
                             return JsonResponse(serializer.errors, status=400)
                     try:
                         comment = Comment.objects.get(id=comment_id)
+                        print(like)
+                        comment.likes.add(like)
+                        comment.save()
+                        print(comment)
+                        return JsonResponse(data, status=200)
                     except:
                         return JsonResponse({"Error": "comment does not exist"}, status=404)
-                    print("Serializer is valid")
-                    like = serializer.save()
-                    print(like)
-                    comment.likes.add(like)
-                    comment.save()
-                    print(comment)
-                    return JsonResponse(data, status=200)
                     
                     
 
