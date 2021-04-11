@@ -190,13 +190,12 @@ def updateProfile(id, display_name, email, url, github):
         print(e)
         return False
 
-def createPost(title, source, origin, description, content_type, content, author, categories, visibility, unlisted):
+# the flag design for reshare, if it is reshare, i need post.origin to be passed, 
+def createPost(title, source, origin, description, content_type, content, author, categories, visibility, unlisted, reshare=False):
     # Please authenticate before calling this method
     categories_array = []
     categories_array.append(categories)
 
-    print("here______-------------------------------------")
-    print(categories_array)
 
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
@@ -204,7 +203,14 @@ def createPost(title, source, origin, description, content_type, content, author
         # print(post.author)
 
         post.comment_url = post.id + "/comments/"
+
+        if not reshare:
+            post.origin = post.id
+        else:
+            post.origin = origin
+
         post.source = post.id
+
         post.save()
         author.timeline.add(post)
         author.save()

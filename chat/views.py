@@ -389,8 +389,8 @@ def posts(request, AUTHOR_ID):
     elif request.method == "POST":
 
         request_post = request.POST
-        source = request.user.profile.id # Who share it to me
-        origin = request.user.profile.id # who origin create
+        source = "handled by backend" # Who share it to me
+        origin = "handled by backend"  # who origin create
         title = request_post.get("title", "")
         description = request_post.get("description", "")
         content_type = request_post.get("contentType", "")
@@ -789,7 +789,7 @@ def reshare(request, AUTHOR_ID):
     categories = post.categories
     content = post.content
     unlisted = str(post.unlisted)
-    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted)
+    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted, True)
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response
