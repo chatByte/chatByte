@@ -107,11 +107,11 @@ def my_stream(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
-    print(" before gugua ? ")
+
     cur_author = request.user
     back_json = get_github_activity(request, AUTHOR_ID)
     # print("github", back_json)
-    print("after gugua ? ")
+
     if request.method == "GET":
 
         # a list of post, django.db.models.query.QuerySet
@@ -120,13 +120,12 @@ def my_stream(request, AUTHOR_ID):
         all_public_posts = Post.objects.filter(visibility='public').filter(unlisted=False).all()
 
         back_json = get_github_activity(request, AUTHOR_ID)
-        print("github", back_json)
 
         # Get stream from: node origins, since we have plenty remote server
         remote_posts = []
         for node in Node.objects.all():
-            print("Get stream from: ", node.origin)
-            print("Username: ", node.username, " password: ", node.password)
+            # print("Get stream from: ", node.origin)
+            # print("Username: ", node.username, " password: ", node.password)
 
             if node.origin == host_server:
                 continue
@@ -414,7 +413,7 @@ def posts(request, AUTHOR_ID):
 
         createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility,unlisted)
         if createFlag:
-            print("haha, successful create post, info: ", description)
+            # print("haha, successful create post, info: ", description)
 
             # response = redirect("/author/"+ str(AUTHOR_ID) + "/public_channel/")
             response = HttpResponse(status=200)
@@ -434,9 +433,9 @@ Design for edit post
 @login_required
 @require_http_methods(["POST"])
 def update_post(request, AUTHOR_ID, POST_ID):
-    print('edited arguemnt POST_ID', str(POST_ID))
+    # print('edited arguemnt POST_ID', str(POST_ID))
     id = host_server + 'author/' + str(AUTHOR_ID) + '/posts/' + str(POST_ID)
-    print("edited post id:", id)
+    # print("edited post id:", id)
     user = None
     username=""
     if request.user.is_authenticated:
@@ -450,11 +449,11 @@ def update_post(request, AUTHOR_ID, POST_ID):
 
 
 
-    print("------title---")
-    print(title)
+    # print("------title---")
+    # print(title)
 
-    print("----------")
-    print(description)
+    # print("----------")
+    # print(description)
 
     f = request.FILES.get("file", "")
 
@@ -466,7 +465,7 @@ def update_post(request, AUTHOR_ID, POST_ID):
         content = description
     updateFlag = updatePost(id, title, description, content_type, content)
     if updateFlag:
-        print("Successful edited post, info: ", description)
+        # print("Successful edited post, info: ", description)
         response = HttpResponse(status=200)
         return response
     else:
@@ -497,7 +496,7 @@ def profile(request, AUTHOR_ID):
     inbox = request.user.inbox
 
     friend_request_num = len(inbox.friend_requests.all())
-    print(friend_request_num)
+    # print(friend_request_num)
 
     context['friend_request_num']=friend_request_num
 
@@ -512,11 +511,11 @@ def profile(request, AUTHOR_ID):
         url = post_obj["URL"]
         email = post_obj["email"]
         github = post_obj["GITHUB"]
-        print("new url:", url)
+        # print("new url:", url)
         display_name = post_obj["display_name"]
-        print("new name:", display_name)
+        # print("new name:", display_name)
         updateProfile(user.id, display_name, email, url, github)
-        print("profile id:",  str(request.user.profile.id))
+        # print("profile id:",  str(request.user.profile.id))
         # response = redirect("author/"+ str(request.user.profile.id).split('/')[-1] + "/profile/")
         response = redirect("")
         return response
@@ -531,10 +530,10 @@ def my_friends(request,AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
-    print(cur_user_name)
+    # print(cur_user_name)
     friend_list = getFriends(request.user.id)
 
-    print(friend_list)
+    # print(friend_list)
     cur_author = request.user.profile
     author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(request.user.inbox.friend_requests.all())
@@ -569,7 +568,7 @@ def delete_friend(request, AUTHOR_ID, FRIEND_ID):
 # Method that generate a friend request
 @login_required
 def add_friend(request, AUTHOR_ID, FRIEND_ID):
-    print(AUTHOR_ID, FRIEND_ID)
+    # print(AUTHOR_ID, FRIEND_ID)
     try:
         cur_user_name = None
         if request.user.is_authenticated:
@@ -645,7 +644,7 @@ def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 @login_required
 def get_user(request,SERVER,AUTHOR_ID):
     # get
-    print("---------------------------Getting user ---------------")
+    # print("---------------------------Getting user ---------------")
     try:
         server = User.objects.get(username=SERVER)
         foreign_server = server.last_name
