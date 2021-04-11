@@ -190,7 +190,7 @@ function sendFriendRequest(type, summary, author, object) {
   console.log("x_server_header: ", x_server_header);
 
   var data = {
-    'type': 'follow',
+    'type': type,
     'summary': summary,
     'actor': author,
     'object': object
