@@ -440,14 +440,9 @@ def update_post(request, AUTHOR_ID, POST_ID):
         username = request.user.profile.displayName
 
     request_post = request.POST
-    source = username # Who share it to me
-    origin = username # who origin create
     title = request_post.get("title", "")
     description = request_post.get("description", "")
     content_type = request_post.get("contentType", "")
-    visibility = request_post.get("visibility", "")
-    categories = request_post.get("categories","")
-    unlisted = request_post.get("unlisted","")
 
 
 
@@ -460,7 +455,7 @@ def update_post(request, AUTHOR_ID, POST_ID):
     else:
         content = description
 
-    updateFlag = updatePost(id, title, source, origin, description, content_type, content, categories, visibility, unlisted)
+    updateFlag = updatePost(id, title, description, content_type, content)
     if updateFlag:
         print("Successful edited post, info: ", description)
         response = HttpResponse(status=200)

@@ -148,11 +148,8 @@ function editPost(POST_ID) {
       }
 
       form_data.append("contentType", contentType);
-      form_data.append("visibility", visibility);
       form_data.append("title", title);
       form_data.append("description", description);
-      form_data.append("unlisted", unlisted);
-      form_data.append("categories", categories);
       form_data.append("csrfmiddlewaretoken", csrftoken);
 
       $.ajax({
@@ -166,7 +163,6 @@ function editPost(POST_ID) {
         type : "POST", // http method
         dataType: 'text', // what to expect back from the server
         cache: false,
-        contentType: false,
         processData: false,
         data: form_data,
 
