@@ -107,11 +107,11 @@ def my_stream(request, AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
-
+    print(" before gugua ? ")
     cur_author = request.user
     back_json = get_github_activity(request, AUTHOR_ID)
     # print("github", back_json)
-
+    print("after gugua ? ")
     if request.method == "GET":
 
         # a list of post, django.db.models.query.QuerySet
@@ -235,6 +235,8 @@ def my_stream(request, AUTHOR_ID):
 
     elif request.method == "POST":
 
+
+
         request_post = JSONParser().parse(request)
         # Front end need to tell me the type
         contentType = request_post.get("type","")
@@ -250,12 +252,12 @@ def my_stream(request, AUTHOR_ID):
                 response = JsonResponse({'redirect_url': "current"}, status=200)
                 # response = render(request, "chat/stream.html", dynamic_contain)
             elif object_type == "comment":
-                # TODO waiting backend
+
                 # object_id = request_post.get("object_id","")
                 likeComment(object_id, cur_author_id)
                 # response = render(request, "chat/stream.html", dynamic_contain)
                 # pass
-                JsonResponse({'redirect_url': "current"}, status=200)
+                response = JsonResponse({'redirect_url': "current"}, status=200)
             else:
                 response = JsonResponse({}, status=400)
 
@@ -273,7 +275,6 @@ def my_stream(request, AUTHOR_ID):
 
         else:
             response = JsonResponse({}, status=400)
-
 
         return response
 
@@ -403,7 +404,7 @@ def posts(request, AUTHOR_ID):
         unlisted = request_post.get("unlisted","")
 
         f = request.FILES.get("file", "")
-        categories = ["web"] # web, tutorial, can be delete  # ?? dropdown
+        categories = request_post.get("categories","")
 
 
         if len(f) > 0:
@@ -427,6 +428,54 @@ def posts(request, AUTHOR_ID):
         # response = render(request, "chat/posts.html", dynamic_contain)
         return response
 
+
+
+'''
+Design for edit post
+'''
+@login_required
+@require_http_methods(["POST"])
+def update_post(request, AUTHOR_ID, POST_ID):
+    print('edited arguemnt POST_ID', str(POST_ID))
+    id = host_server + 'author/' + str(AUTHOR_ID) + '/posts/' + str(POST_ID)
+    print("edited post id:", id)
+    user = None
+    username=""
+    if request.user.is_authenticated:
+        user = request.user
+        username = request.user.profile.displayName
+
+    request_post = request.POST
+    source = username # Who share it to me
+    origin = username # who origin create
+    title = request_post.get("title", "")
+    description = request_post.get("description", "")
+    content_type = request_post.get("contentType", "")
+    visibility = request_post.get("visibility", "")
+    categories = request_post.get("categories","")
+    unlisted = request_post.get("unlisted","")
+
+
+
+    f = request.FILES.get("file", "")
+
+    if len(f) > 0:
+        content_type = "image/" + os.path.splitext(f.name)[-1][1:]
+        with f.open("rb") as image_file:
+            content = base64.b64encode(image_file.read())
+    else:
+        content = description
+
+    updateFlag = updatePost(id, title, source, origin, description, content_type, content, categories, visibility, unlisted)
+    if updateFlag:
+        print("Successful edited post, info: ", description)
+        response = HttpResponse(status=200)
+        return response
+    else:
+        print("failed to edit the post!!", description)
+
+    response = redirect("/author/" + str(user.id) + "/my_posts/")
+    return response
 
 
 """
@@ -615,44 +664,6 @@ def get_user(request,SERVER,AUTHOR_ID):
         print(e)
         return HttpResponse(status=400)
 
-@login_required
-@require_http_methods(["POST"])
-def update_post(request, AUTHOR_ID, POST_ID):
-    print('edited arguemnt POST_ID', str(POST_ID))
-    id = host_server + 'author/' + str(AUTHOR_ID) + '/posts/' + str(POST_ID)
-    print("edited post id:", id)
-    user = None
-    username=""
-    if request.user.is_authenticated:
-        user = request.user
-        username = request.user.profile.displayName
-
-    request_post = request.POST
-    source = username # Who share it to me
-    origin = username # who origin create
-    title = request_post.get("title", "")
-    description = request_post.get("description", "")
-    content_type = request_post.get("contentType", "")
-    visibility = request_post.get("visibility", "")
-    f = request.FILES.get("file", "")
-    categories = "text/plain" # web, tutorial, can be delete  # ?? dropdown
-    if len(f) > 0:
-        categories = "image/" + os.path.splitext(f.name)[-1][1:]
-        with f.open("rb") as image_file:
-            content = base64.b64encode(image_file.read())
-    else:
-        content = description
-
-    updateFlag = updatePost(id, title, source, origin, description, content_type, content, categories, visibility)
-    if updateFlag:
-        print("Successful edited post, info: ", description)
-        response = HttpResponse(status=200)
-        return response
-    else:
-        print("failed to edit the post!!", description)
-
-    response = redirect("/author/" + str(user.id) + "/my_posts/")
-    return response
 
 
 

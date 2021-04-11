@@ -204,6 +204,19 @@
                           {% endif %}
                         </div>
                       </div>
+
+
+                      <div >
+
+                        {% if comment.id in liked_objs %}
+                        <a class="btn text-red" onclick="likeComment( '{{ comment.id }}', 1 )"><i class="icon ion-ios-heart like"></i>{{ comment.likes.all | length }}</a>
+                        {% else %}
+                        <a class="btn" onclick="likeComment( '{{ comment.id }}', 0 )"><i class="icon ion-ios-heart like"></i>{{ comment.likes.all | length }}</a>
+                        {% endif %}
+                      </div>
+
+
+
                     </div>
                     <hr class="solid">
                   {% endfor %}
