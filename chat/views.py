@@ -133,9 +133,19 @@ def my_stream(request, AUTHOR_ID):
             res = streamRequest(node.origin, request.user.id)
             try:
                 data = res.json()
-                remote_posts += data['posts']
+                # remote_posts += data['posts']
                 # print(data['posts'])
-                # for post in data['posts']:
+                for post in data['posts']:
+                    remote_post_id = post['id']
+                    remote_origin = remote_post_id.split('autho/')[0]
+                    remote_user_id = remote_post_id.split('autho/')[1].split('posts/')[0]
+                    remote_post_id = remote_post_id.split('autho/')[1].split('posts/')[1]
+                    res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
+                    print("stream get post's likes: ", res.json())
+                    print("Number of likes: ", len(res.json()))
+                    post['num_likes'] =  len(res.json())
+                    remote_posts.append(post)
+
                 #     # print("Post id: ", post['id'])
                 #     post_id = post['id']
                 #     try:
@@ -181,25 +191,31 @@ def my_stream(request, AUTHOR_ID):
             public_posts = following_profile.timeline.filter(visibility='public')
             public_channel_posts = public_channel_posts | public_posts
 
+        jsonify_public_channel_posts = []
+        for post in public_channel_posts:
+            num_likes = len(post.likes.all())
+            json_post = json.loads(json.dumps(PostSerializer(post).data))
+            json_post['num_likes'] = num_likes
+            jsonify_public_channel_posts.append(json_post)
         # PostSerializer(public_channel_posts, many=True).data
         # print("PostSerializaer:\n", json.dumps(PostSerializer(public_channel_posts, many=True).data))
-        public_channel_posts = json.loads(json.dumps(PostSerializer(public_channel_posts, many=True).data)) + remote_posts # a list
+        # public_channel_posts = json.loads(json.dumps(PostSerializer(public_channel_posts, many=True).data)) + remote_posts # a list
         # print("public_channel_posts:\n", public_channel_posts)
-
+        jsonify_public_channel_posts += remote_posts
 
         author_num_follwers = len(cur_author.profile.followers.items.all())
         friend_request_num = len(cur_author.inbox.friend_requests.all())
         # order by date
         # public_channel_posts = public_channel_posts.order_by('-published')
 
-        public_channel_posts = sorted(public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
-        for post in public_channel_posts:
+        jsonify_public_channel_posts = sorted(jsonify_public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
+        for post in jsonify_public_channel_posts:
             print("post:\n", post)
             post['comments'] = sorted(post['comments'], key=lambda k: k.get('published', 0), reverse=True)
 
 
         # create a paginator
-        paginator_public_channel_posts = Paginator(public_channel_posts, 8) # Show 8 contacts per page.
+        paginator_public_channel_posts = Paginator(jsonify_public_channel_posts, 8) # Show 8 contacts per page.
 
         # if  page_number == None, we will get first page(can be empty)
         page_number = request.GET.get('page')
