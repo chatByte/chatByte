@@ -87,7 +87,7 @@ def create_comment_signal(sender, instance, created, **kwargs):
             old_instance.delete()
 
 @receiver(post_save, sender=Node)
-def create_comment_signal(sender, instance, created, **kwargs):
+def create_node_signal(sender, instance, created, **kwargs):
     # instance is a Node object
     if created:
         # when create a Node object

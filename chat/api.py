@@ -687,6 +687,7 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
     USER_POST_ID = (POST_ID + '.')[:-1]
+    USER_COMMENT_ID = (COMMENT_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
     # origin_server = request.META.get("HTTP_ORIGIN")
     # if origin_server is not None and origin_server not in host_server:
@@ -697,13 +698,14 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     #     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
+    COMMENT_ID = POST_ID + "/comments/" + COMMENT_ID
     print("author id: ", AUTHOR_ID)
     print("post id: ", POST_ID)
     print("comment id: ", COMMENT_ID)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
-        return commentLikesRequest(request.method, server_origin, USER_ID, USER_POST_ID, COMMENT_ID, request.data)
+        return commentLikesRequest(request.method, server_origin, USER_ID, USER_POST_ID, USER_COMMENT_ID, request.data)
     else:
         try:
             comment = Comment.objects.get(pk=COMMENT_ID)
