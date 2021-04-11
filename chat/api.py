@@ -712,7 +712,7 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
         likes = comment.likes
         serializer = LikeSerializer(likes, many=True)
         # if serializer.is_valid(raise_exception=True):
-        return JsonResponse({"type": "likes", "items": serializer.data}, status=200)
+        return JsonResponse(serializer.data, status=200, safe=False)
 
         # return JsonResponse(serializer.errors, status=400)
 
