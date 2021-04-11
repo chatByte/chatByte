@@ -98,11 +98,12 @@ def post_obj(request, AUTHOR_ID, POST_ID):
     # ex. equest.META[Origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
-    origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    else:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # origin_server = request.META.get("HTTP_ORIGIN")
+    # if origin_server is not None and origin_server not in host_server:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # else:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     USER_POST_ID = POST_ID
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
@@ -175,11 +176,12 @@ def posts_obj(request, AUTHOR_ID):
     # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    else:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # origin_server = request.META.get("HTTP_ORIGIN")
+    # if origin_server is not None and origin_server not in host_server:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # else:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
@@ -266,15 +268,17 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
     # ex. equest.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
-    USER_POST_ID = POST_ID
+    USER_POST_ID = (POST_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-        POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
-    else:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-        POST_ID = AUTHOR_ID + "/posts/" + POST_ID
+    # origin_server = request.META.get("HTTP_ORIGIN")
+    # if origin_server is not None and origin_server not in host_server:
+    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+    #     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
+    # else:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    #     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
     print("author id: ", AUTHOR_ID)
     print("post id: ", POST_ID)
 
@@ -390,11 +394,12 @@ def profile_obj(request, AUTHOR_ID):
     server_origin = request.META.get("HTTP_X_SERVER")
     print("Origin: ", host_server)
     print("Request origin: ", server_origin)
-    origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    else:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # origin_server = request.META.get("HTTP_ORIGIN")
+    # if origin_server is not None and origin_server not in host_server:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # else:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
@@ -451,13 +456,14 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 # =======
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    else:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # origin_server = request.META.get("HTTP_ORIGIN")
+    # if origin_server is not None and origin_server not in host_server:
+    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+    # else:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
-    FOREIGN_USER_ID = FOREIGN_AUTHOR_ID
+    FOREIGN_USER_ID = (FOREIGN_AUTHOR_ID + '.')[:-1]
     print("follower's id: ", FOREIGN_AUTHOR_ID)
 
 
@@ -536,18 +542,19 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 @api_view(['GET'])
 def followers_obj(request, AUTHOR_ID):
     # ex. equest.META[origin] == ("https:\\chatbyte"):
-    # req_origin = request.META["Origin"]
+    USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    else:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # origin_server = request.META.get("HTTP_ORIGIN")
+    # if origin_server is not None and origin_server not in host_server:
+    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+    # else:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
-        return followersRequest(request.method,server_origin, AUTHOR_ID, request.data)
+        return followersRequest(request.method,server_origin, USER_ID, request.data)
     else:
         try:
             profile = Profile.objects.get(id=AUTHOR_ID)
@@ -580,17 +587,19 @@ def followers_obj(request, AUTHOR_ID):
 @api_view(['GET'])
 def get_friends_obj(request, AUTHOR_ID):
     # req_origin = request.META["Origin"]
+    USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    else:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # origin_server = request.META.get("HTTP_ORIGIN")
+    # if origin_server is not None and origin_server not in host_server:
+    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+    # else:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
-        return friendsRequest(request.method,server_origin, AUTHOR_ID, request.data)
+        return friendsRequest(request.method,server_origin, USER_ID, request.data)
     else:
         try:
             profile = Profile.objects.get(id=AUTHOR_ID)
@@ -640,21 +649,24 @@ Response Object Structure: [list of Like objects]
 @api_view(['GET'])
 def likes_post_obj(request, AUTHOR_ID, POST_ID):
     USER_ID = (AUTHOR_ID + '.')[:-1]
+    USER_POST_ID = (POST_ID + '.')[:-1]
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-        POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
-    else:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-        POST_ID = AUTHOR_ID + "/posts/" + POST_ID
+    # origin_server = request.META.get("HTTP_ORIGIN")
+    # if origin_server is not None and origin_server not in host_server:
+    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+    #     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
+    # else:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    #     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
     print("author id: ", AUTHOR_ID)
     print("post id: ", POST_ID)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
-        return likesRequest(request.method, server_origin, AUTHOR_ID, POST_ID, request.data)
+        return likesRequest(request.method, server_origin, USER_ID, USER_POST_ID, request.data)
     else:
         try:
             post = Post.objects.get(pk=POST_ID)
@@ -673,21 +685,25 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
 @api_view(['GET'])
 def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     # req_origin = request.META["Origin"]
+    USER_ID = (AUTHOR_ID + '.')[:-1]
+    USER_POST_ID = (POST_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    else:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # origin_server = request.META.get("HTTP_ORIGIN")
+    # if origin_server is not None and origin_server not in host_server:
+    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+    #     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
+    # else:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    #     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
     print("author id: ", AUTHOR_ID)
-    POST_ID = AUTHOR_ID + "/posts/" + POST_ID
     print("post id: ", POST_ID)
-    COMMENT_ID = POST_ID + "/comments/" + COMMENT_ID
     print("comment id: ", COMMENT_ID)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
-        return likesRequest(request.method, server_origin, AUTHOR_ID, POST_ID, COMMENT_ID, request.data)
+        return commentLikesRequest(request.method, server_origin, USER_ID, USER_POST_ID, COMMENT_ID, request.data)
     else:
         try:
             comment = Comment.objects.get(pk=COMMENT_ID)
@@ -709,16 +725,17 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
 def liked_post_obj(request, AUTHOR_ID):
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    else:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    # origin_server = request.META.get("HTTP_ORIGIN")
+    # if origin_server is not None and origin_server not in host_server:
+    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+    # else:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
-        return likedRequest(request.method,server_origin, AUTHOR_ID, request.data)
+        return likedRequest(request.method,server_origin, USER_ID, request.data)
     else:
         # can be optimized
         try:
@@ -750,20 +767,14 @@ DELETE: clear the inbox
 def inbox(request, AUTHOR_ID):
     # print("inbox: ", request)
     USER_ID = (AUTHOR_ID + '.')[:-1]
-
-    # add for test purpose
-    if not request.META.get("HTTP_X_SERVER"):
-        server_origin = host_server
-    #
-    else:
-        # req_origin = request.META["Origin"]
-        server_origin = request.META.get("HTTP_X_SERVER")
     # Profile/AUTHOR ID is the full url
-    origin_server = request.META.get("HTTP_ORIGIN")
-    if origin_server is not None and origin_server not in host_server:
-        AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    else:
-        AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    server_origin = request.META.get("HTTP_X_SERVER")
+    # origin_server = request.META.get("HTTP_ORIGIN")
+    # if origin_server is not None and origin_server not in host_server:
+    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
+    # else:
+    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+    AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("Origin header: ", origin_server)
     print("author id: ", AUTHOR_ID)
     print("user id: ", USER_ID)
@@ -933,8 +944,6 @@ def inbox(request, AUTHOR_ID):
 @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def stream_obj(request, AUTHOR_ID):
-
-    # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
     origin_server = request.META.get("HTTP_ORIGIN")
     if origin_server is not None and origin_server not in host_server:
@@ -950,9 +959,7 @@ def stream_obj(request, AUTHOR_ID):
     else:
         if request.method == 'GET':
             try:
-                # print("here")
                 posts_result = Post.objects.filter(visibility='public').filter(unlisted=False)
-                result = []
                 try:
                     profile = Profile.objects.get(id=AUTHOR_ID)
                     print(profile)

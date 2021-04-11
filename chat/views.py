@@ -220,7 +220,7 @@ def my_stream(request, AUTHOR_ID):
         jsonify_public_channel_posts = sorted(jsonify_public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
         for post in jsonify_public_channel_posts:
             print("post:\n", post)
-            post['comments'] = sorted(post['comments'], key=lambda k: k.get('published', 0), reverse=True)
+            post['comments'] = sorted(post['comments'], key=lambda k: k.get('published', 0))
 
 
         # create a paginator
