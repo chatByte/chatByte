@@ -377,7 +377,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
     dynamic_contain = {
         'foreignName' : foreign_author.displayName,
         'timeline': [],
-        'author_num_follwers': 0,
+        'author_num_followers': 0,
         'isFriend': False,
         'isFollowing': False,
         'foreignId':foreign_author.id,

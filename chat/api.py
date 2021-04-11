@@ -505,9 +505,11 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
                 return JsonResponse({'status':'false','message':'FOREIGN_AUTHOR_ID: ' + FOREIGN_AUTHOR_ID + ' does not exists'}, status=404)
 
         elif (request.method == "PUT"):
+            print("Putting to followers: ", FOREIGN_AUTHOR_ID)
             #add a follower , with FOREIGN_AUTHOR_ID
             data = JSONParser().parse(request)
             serializer = ProfileSerializer(data=data)
+            print("profile serializer: ", serializer)
             try:
                 follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
                 profile.followers.items.add(follower)

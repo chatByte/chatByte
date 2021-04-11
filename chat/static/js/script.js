@@ -117,8 +117,9 @@ function create_following() {
 function putFollow(type, id, host, displayName, url, github, foreignId){
   create_following();
 
+  console.log("After create following...");
   x_server = foreignId.split("author/")[0];
-
+  console.log("x-server", x_server);
 
   $.ajax({
     // first author id is who I want to follow
@@ -148,7 +149,8 @@ function putFollow(type, id, host, displayName, url, github, foreignId){
     // fields = ['type','id', 'host', 'displayName', 'url', 'github']
     // handle a successful response
     success : function(data) {
-        console.log(data); // sanity check
+      console.log("Successfully put as follower")
+      console.log(data); // sanity check
     },
   });
 }
