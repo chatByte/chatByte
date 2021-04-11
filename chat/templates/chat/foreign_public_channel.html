@@ -92,7 +92,7 @@
                     <h4 style="display: block" id="following">Following</h4>
                   {% else %}
                     <a href="." ><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" id='followBtn'
-                            onclick="putFollow( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}', '{{cur_author.url}}', '{{cur_author.github}}', '{{foreignId}}')"/></a>
+                            onclick="putFollow( '{{ request.user.profile.type}}', '{{ request.user.profile.id}}', '{{ request.user.profile.host}}', '{{ request.user.profile.displayName}}', '{{request.user.profile.url}}', '{{request.user.profile.github}}', '{{foreignId}}')"/></a>
                   {% endif %}
 
                 </div>
@@ -104,7 +104,7 @@
                     <!-- <li><button class="btn-primary unfriend" href="../../my_friends/delete/{{foreignId}}/">Unfriend</button></li> -->
                   {% else %}
                     <li><button class="btn-primary befriend" value="../../friends/add/{{foreignId}}/"
-                        onclick="be_friend( '{{ request.user.profile.type}}', '{{ request.user.profile.id}}', '{{ request.user.profile.host}}', '{{ request.user.profile.displayName}}', '{{request.user.profile.url}}', '{{request.user.profile.github}}')" >Befriend</button></li>
+                        onclick="be_friend( '{{ request.user.profile.type}}', '{{ request.user.profile.id}}', '{{ request.user.profile.host}}', '{{ request.user.profile.displayName}}', '{{request.user.profile.url}}', '{{request.user.profile.github}}', '{{foreignId}}')" >Befriend</button></li>
       						{% endif %}
 
                 </ul>
