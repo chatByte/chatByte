@@ -229,6 +229,9 @@ def my_stream(request, AUTHOR_ID):
         # create a paginator
         paginator_public_channel_posts = Paginator(jsonify_public_channel_posts, 8) # Show 8 contacts per page.
 
+        print("--------------------")
+        print(paginator_public_channel_posts)
+
         # if  page_number == None, we will get first page(can be empty)
         page_number = request.GET.get('page')
 
