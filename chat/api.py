@@ -860,6 +860,7 @@ def inbox(request, AUTHOR_ID):
                     if user_id != USER_ID:
                         return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
                     serializer = LikeSerializer(data=data)
+                    print(serializer)
                     if serializer.is_valid():
                         try:
                             comment = Comment.objects.get(id=comment_id)
@@ -872,7 +873,8 @@ def inbox(request, AUTHOR_ID):
                         comment.save()
                         print(comment)
                         return JsonResponse(data, status=200)
-                    print("serializer in valid error")
+                    print("serializer invalid error")
+                    print(serializer.errors)
                     return JsonResponse(serializer.errors, status=400)
 
             elif data['type'].lower() == 'follow':
