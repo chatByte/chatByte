@@ -855,7 +855,8 @@ def inbox(request, AUTHOR_ID):
 
                     # comment_id = post_url[8]
                     comment_id = host_server + 'author/' + user_id + '/posts/' + post_url[6] + '/comments/' + post_url[8]
-
+                    print("post id: ", post_id)
+                    print("comment id: ", comment_id)
                     # if user_id != AUTHOR_ID:
                     if user_id != USER_ID:
                         return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
@@ -865,10 +866,14 @@ def inbox(request, AUTHOR_ID):
                             comment = Comment.objects.get(id=comment_id)
                         except:
                             return JsonResponse({"Error": "comment does not exist"}, status=404)
+                        print("Serializer is valid")
                         like = serializer.save()
+                        print(like)
                         comment.likes.add(like)
                         comment.save()
+                        print(comment)
                         return JsonResponse(data, status=200)
+                    print("serializer in valid error")
                     return JsonResponse(serializer.errors, status=400)
 
             elif data['type'].lower() == 'follow':

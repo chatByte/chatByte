@@ -130,10 +130,23 @@ class FriendReuqestSerializer(serializers.ModelSerializer):
 
 
 class LikeSerializer(serializers.ModelSerializer):
-    author = ProfileSerializer(read_only=True)
+    author = ProfileSerializer(True)
     class Meta:
         model = Like
         fields = ['type','id', 'summary', 'author', 'object', 'context']
+    
+    def create(self, validated_data):
+        print("---------***********--------------")
+        author_data = validated_data.pop('author')
+        print(author_data)
+        try: 
+            author = Profile.objects.get(id=author_data['id'])
+        except:
+            author = Profile.objects.create(**author_data)
+        print("---------******************--------------")
+        like = Like.objects.create(author=author, **validated_data)
+        print("---------******************************--------------")
+        return like
 
 class FollowerSerializer(serializers.ModelSerializer):
     items = ProfileSerializer(many=True)
