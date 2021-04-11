@@ -459,7 +459,7 @@ def posts(request, AUTHOR_ID):
             content_type = "image/" + os.path.splitext(f.name)[-1][1:]
             with f.open("rb") as image_file:
                 content = base64.b64encode(image_file.read())
-                content = str(content).decode('ascii')
+                content = content.decode()
                 print(content)
         else:
             content = description
