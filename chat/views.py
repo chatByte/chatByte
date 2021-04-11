@@ -265,10 +265,20 @@ def my_stream(request, AUTHOR_ID):
             comment_content_type = request_post.get("content_type","")
 
             #if successful create a comment
-            if  createComment(cur_author.profile, post_id, comment_contain, comment_content_type) :
-                response = JsonResponse({'redirect_url': "current"}, status=200)
-            else:
-                response = JsonResponse({}, status=500)
+            # if  createComment(cur_author.profile, post_id, comment_contain, comment_content_type) :
+            #     response = JsonResponse({'redirect_url': "current"}, status=200)
+            send_data = {
+                'content': comment_contain,
+                'contentType': comment_content_type
+            }
+            # response = request.post(post_id + "/comments", data=json.dumps(send_data), head)
+            response = commentRequest("POST", post_id.split('author/')[0], post_id.split('author/')[1].split('/posts/')[0] \
+                , post_id.split('author/')[1].split('/posts/')[1], send_data)
+            
+            print("response json:", response.json())
+            return JsonResponse(response.json(), status=response.status_code)
+            # else:
+            #     response = JsonResponse({}, status=500)
 
         else:
             response = JsonResponse({}, status=400)

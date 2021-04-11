@@ -323,6 +323,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             profile_url = request.META.get("HTTP_X_REQUEST_USER")
             
             author_id = profile_url.split('author/')[1]
+            print("author id:", author_id)
             try:
                 author = Profile.objects.get(id=profile_url)
             except:
@@ -957,19 +958,23 @@ def stream_obj(request, AUTHOR_ID):
                     print(profile)
 
                     for user in User.objects.all():
-                        user_friends = list(user.profile.friends.all())
-                        if profile in user_friends:
-                            friend_posts = user.profile.timeline.filter(visibility='friend')
-                            posts_result = posts_result | friend_posts
+                        try:
+                            user_friends = list(user.profile.friends.all())
+                            if profile in user_friends:
+                                friend_posts = user.profile.timeline.filter(visibility='friend')
+                                posts_result = posts_result | friend_posts
 
-                except Profile.DoesNotExist:
-                    print("profile not found!")
+                        except BaseException as e:
+                            print(e)
+                            print("profile not found!")
+                
+                except BaseException as e:
+                    print(e)
                 
                 
-                
 
 
-                print(posts_result)
+                # print(posts_result)
                 # all_author_posts = Post.objects.filter(author=profile)
                 # print(all_author_posts)
                 # all_following = Follower.objects.filter(items__id=profile)
