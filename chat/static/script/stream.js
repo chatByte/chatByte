@@ -155,8 +155,8 @@ function likeComment(comment_id, liked) {
 }
 
 
-function reshare(post_id){
-  console.log(post_id)
+function reshare(post){
+  console.log(post)
   $.ajax({
     url:"../reshare/",
     type: "POST", // http method
@@ -168,7 +168,7 @@ function reshare(post_id){
     contentType: 'application/json; charset=utf-8',
     dataType: "json",
     data: JSON.stringify({
-      "post_id": post_id
+      "post": post
     }),
     // fields = ['type','id', 'host', 'displayName', 'url', 'github']
     // handle a successful response

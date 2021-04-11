@@ -831,9 +831,10 @@ reshare a post
 @require_http_methods(["POST"])
 def reshare(request, AUTHOR_ID):
     data = JSONParser().parse(request)
-    post_id = data['post_id']
+    print(data)
+    post_id = data['post']
     #try:
-    post = Post.objects.get(id=post_id)
+    # post = Post.objects.get(id=post_id)
 
     source = request.user.profile.id
     origin = post.origin # who origin create
