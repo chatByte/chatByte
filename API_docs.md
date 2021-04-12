@@ -873,9 +873,7 @@ URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}/likes
 ```
 ```
 Response (200):
-{
-    "type": "likes",
-    "items": [
+ [
         {
             "type": "like",
             "id": "530c2845-8bfb-40d0-bf2f-932698ca19b9",
@@ -892,7 +890,7 @@ Response (200):
             "context": "Like"
         }
     ]
-}
+
 ```
 <i>Get Likes for a Comment</i>
 ```
