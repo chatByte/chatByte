@@ -119,6 +119,11 @@ def my_stream(request, AUTHOR_ID):
         mytimeline = cur_author.profile.timeline.filter(unlisted=False)
         all_public_posts = Post.objects.filter(visibility='public').filter(unlisted=False).all()
 
+        # print(",,,,,,,,,,,,,,,")
+        # print(all_public_posts)
+
+
+
         back_json = get_github_activity(request, AUTHOR_ID)
 
         # Get stream from: node origins, since we have plenty remote server
@@ -193,6 +198,8 @@ def my_stream(request, AUTHOR_ID):
 
             public_posts = following_profile.timeline.filter(visibility='public')
             public_channel_posts = public_channel_posts | public_posts
+        public_channel_posts = public_channel_posts | all_public_posts
+
 
         jsonify_public_channel_posts = []
         for post in public_channel_posts:
@@ -206,6 +213,7 @@ def my_stream(request, AUTHOR_ID):
                 json_post['comments'][i]['num_likes'] = comment_like_list[i]
             json_post['num_likes'] = post_num_likes
             jsonify_public_channel_posts.append(json_post)
+
         # PostSerializer(public_channel_posts, many=True).data
         # print("PostSerializaer:\n", json.dumps(PostSerializer(public_channel_posts, many=True).data))
         # public_channel_posts = json.loads(json.dumps(PostSerializer(public_channel_posts, many=True).data)) + remote_posts # a list
@@ -821,7 +829,7 @@ def reshare(request, AUTHOR_ID):
     categories = post.categories
     content = post.content
     unlisted = str(post.unlisted)
-    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted, True)
+    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted, post_id)
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response
