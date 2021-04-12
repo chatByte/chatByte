@@ -332,6 +332,8 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
                 author = Profile.objects.get(id=profile_url)
             except:
                 res = profileRequest("GET", origin_server, author_id)
+                if res.status_code >= 400:
+                    return JsonResponse({"Error": "Profile get failed"}, status=404)
                 print("Profile from comment: ", res)
                 print("Content: ", res.json())
                 author_ser = ProfileSerializer(data=res.json())
