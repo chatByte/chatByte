@@ -41,7 +41,7 @@ def postsRequest(method, origin, user_id, data=None):
     '''
     url = str(origin) + "author/" + str(user_id) + "/posts/"
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
@@ -60,7 +60,7 @@ def postRequest(method, origin, user_id, post_id, data=None):
     '''
     url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id)
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "POST":
         response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
@@ -86,7 +86,7 @@ def commentRequest(method, origin, user_id, post_id, data=None):
     '''
     url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/comments"
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
@@ -147,7 +147,7 @@ def followersRequest(method, origin, user_id, data=None):
     '''
     url = str(origin) + "author/" + str(user_id) + "/followers/"
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
@@ -189,7 +189,7 @@ def likedRequest(method, origin, user_id, data=None):
 
     url = str(origin) + "author/" + str(user_id) + "/liked/"
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
@@ -225,7 +225,7 @@ def commentLikesRequest(method, origin, user_id, post_id, comment_id, data=None)
     url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/comments/" + comment_id + "/likes"
     print("get comment likes url: ", url)
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
@@ -242,7 +242,7 @@ def friendsRequest(method, origin, user_id, post_id, comment_id, data=None):
 
     url = str(origin) + "author/" + str(user_id) + "/friends/"
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
@@ -260,7 +260,7 @@ def streamRequest(origin, user_id):
     url = str(origin) + "author/" + str(user_id) + "/stream/?page=1&size=1000"
     print(url)
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
     print(response.status_code)
