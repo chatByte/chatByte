@@ -478,7 +478,8 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
-        return followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID, request.data)
+        res = followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID, request.data)
+        return JsonResponse(res.json(), status=res.status_code)
     else:
         # can be optimized
         try:
@@ -505,22 +506,22 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
                 return JsonResponse({'status':'false','message':'FOREIGN_AUTHOR_ID: ' + FOREIGN_AUTHOR_ID + ' does not exists'}, status=404)
 
         elif (request.method == "PUT"):
+            print("Putting to followers: ", FOREIGN_AUTHOR_ID)
             #add a follower , with FOREIGN_AUTHOR_ID
-            data = JSONParser().parse(request)
-            serializer = ProfileSerializer(data=data)
+            foreign_author = request.META.get("HTTP_X_REQUEST_USER")
             try:
-                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
-                profile.followers.items.add(follower)
-                return JsonResponse({'detail': 'true'}, status=201)
-
-            except Profile.DoesNotExist:
-                if serializer.is_valid(raise_exception=True):
-                    follower_profile = serializer.save()
-                    profile = Profile.objects.get(id=AUTHOR_ID)
-                    # follower = serializer.data
-                    profile.followers.items.add(follower_profile)
-                    profile.save()
-                return JsonResponse(serializer.data, status=201)
+                follower = Profile.objects.get(id=foreign_author)
+            except:
+                foreign_server = foreign_author.split('author/')[0]
+                foreign_id = foreign_author.split('author/')[1]
+                headers = {"X-Server": foreign_server}
+                url = str(host_server) + "author/" + str(foreign_id)
+                response = requests.get(url, headers=headers, auth=HTTPBasicAuth(request.user.username, request.user.first_name))
+                profile_ser = ProfileSerializer(data=response.data)
+                if profile_ser.is_valid():
+                    follower = profile_ser.save()
+            profile.followers.items.add(follower)
+            return JsonResponse({'detail': 'true'}, status=201)
             # return JsonResponse(serializer.errors, status=400)
 
         elif request.method == "DELETE":
@@ -1076,39 +1077,43 @@ def inbox_likes(request, AUTHOR_ID):
         # from our own server
         # send the like object to remote server
         return inbox(request, AUTHOR_ID)
-    elif data['type'] == 'comment':
+    foreign_author = request.META.get("HTTP_X_REQUEST_USER")
+    try:
+        author = Profile.objects.get(id=foreign_author)
+    except:
+        foreign_server = foreign_author.split('author/')[0]
+        foreign_id = foreign_author.split('author/')[1]
+        headers = {"X-Server": foreign_server}
+        url = str(host_server) + "author/" + str(foreign_id)
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(request.user.username, request.user.first_name))
+        profile_ser = ProfileSerializer(data=response.data)
+        if profile_ser.is_valid():
+            author = profile_ser.save()
+    if data['type'] == 'comment':
         original_author_id = data['id'].split('author/')[1].split('/posts')[0]
         print("original author id for the liked object: ", original_author_id)
         # create a like object for comment
-        try:
-            author = Profile.objects.get(id=data['author']['id'])
-        except:
-            author_ser = ProfileSerializer(data=data['author'])
-            if author_ser.is_valid():
-                author = author_ser.save()
-        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a comment")
+        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " Likes a comment")
         # send the like to inbox directly
         data = LikeSerializer(like).data
         url = str(host_server) + "author/" + str(original_author_id) + "/inbox"
         headers = {'Content-type': 'application/json'}
         response = requests.post(url, headers=headers, data=json.dumps(data), auth=HTTPBasicAuth(request.user.username, request.user.first_name))
-        return JsonResponse({}, safe=False, status=response.status_code)
+        if response.status_code == 200:
+            return JsonResponse(data, safe=False, status=201)
+        return JsonResponse(data, safe=False, status=response.status_code)
     elif data['type'] == 'post':
         original_author_id = data['id'].split('author/')[1].split('/posts')[0]
         print("original author id for the liked object: ", original_author_id)
         # create a like object for post
-        try:
-            author = Profile.objects.get(id=data['author']['id'])
-        except:
-            author_ser = ProfileSerializer(data=data['author'])
-            if author_ser.is_valid():
-                author = author_ser.save()
-        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " likes a post")
+        like = Like.objects.create(author=author, object=data['id'], summary= author.displayName + " Likes a post")
         # send the like to inbox directly
         data = LikeSerializer(like).data
         url = str(host_server) + "author/" + str(original_author_id) + "/inbox"
         headers = {'Content-type': 'application/json'}
         response = requests.post(url, headers=headers, data=json.dumps(data), auth=HTTPBasicAuth(request.user.username, request.user.first_name))
-        return JsonResponse({}, safe=False, status=response.status_code)
+        if response.status_code == 200:
+            return JsonResponse(data, safe=False, status=201)
+        return JsonResponse(data, safe=False, status=response.status_code)
     else:
         return JsonResponse({"Detail": "Invalid like type"}, safe=False, status=400)

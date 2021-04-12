@@ -377,7 +377,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
     dynamic_contain = {
         'foreignName' : foreign_author.displayName,
         'timeline': [],
-        'author_num_follwers': 0,
+        'author_num_followers': 0,
         'isFriend': False,
         'isFollowing': False,
         'foreignId':foreign_author.id,
@@ -456,7 +456,7 @@ def posts(request, AUTHOR_ID):
 
 
         if len(f) > 0:
-            content_type = "image/" + os.path.splitext(f.name)[-1][1:]
+            content_type = "image/" + os.path.splitext(f.name)[-1][1:] + ";base64"
             with f.open("rb") as image_file:
                 content = base64.b64encode(image_file.read())
                 content = content.decode()

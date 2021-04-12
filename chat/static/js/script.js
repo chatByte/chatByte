@@ -117,8 +117,9 @@ function create_following() {
 function putFollow(type, id, host, displayName, url, github, foreignId){
   create_following();
 
+  console.log("After create following...");
   x_server = foreignId.split("author/")[0];
-
+  console.log("x-server", x_server);
 
   $.ajax({
     // first author id is who I want to follow
@@ -148,7 +149,8 @@ function putFollow(type, id, host, displayName, url, github, foreignId){
     // fields = ['type','id', 'host', 'displayName', 'url', 'github']
     // handle a successful response
     success : function(data) {
-        console.log(data); // sanity check
+      console.log("Successfully put as follower")
+      console.log(data); // sanity check
     },
   });
 }
@@ -227,7 +229,7 @@ function sendFriendRequest(type, summary, author, object) {
 
 
 // be friend , to send friend request
-function be_friend(type, id, host, displayName, url, github) {
+function be_friend(type, id, host, displayName, url, github, foreignId) {
     var summary = displayName + " want to be friend with you";
 
 
@@ -254,6 +256,7 @@ function be_friend(type, id, host, displayName, url, github) {
       console.log("---------------------befriend, data");
       console.log(data);
       object = data;
+      putFollow(type, id, host, displayName, url, github, foreignId);
       sendFriendRequest("Follow",summary, actor, object);
     }
   });
