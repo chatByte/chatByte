@@ -356,7 +356,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
 
         dynamic_contain = {
             'foreignName' : foreign_author.profile.displayName,
-            'timeline': foreign_timeline,
+            # 'timeline': foreign_timeline,
             'author_num_follwers': author_num_follwers,
             'isFriend': isFriend,
             'isFollowing': isFollowing,
@@ -525,7 +525,6 @@ def profile(request, AUTHOR_ID):
     # print(friend_request_num)
 
     context['friend_request_num']=friend_request_num
-
     # query to database
     if request.method == "GET":
         # check if this is my profile or other's profile

@@ -33,22 +33,16 @@
           <!-- Brand and toggle get grouped for better mobile display -->
           <!-- left most logo -->
           <div class="navbar-header">
-            <!-- <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a> -->
+            <a class="navbar-brand" href=""><img src="{% static 'images/logo.png' %}" alt="logo" width="60" height="30" /></a>
           </div>
 
           <!-- # search bar -->
           <!-- Load icon library -->
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-          <!-- The form -->
-<!--           <form class="search_user" action=""> -->
-            <!-- <input type="text" placeholder="Search.." name="search" id="search_user_input">
-            <button  id="search_user_button" onclick="search()"><i class="fa fa-search"></i></button> -->
-<!--           </form>  -->
             <div class="navbar-form navbar-left hidden-sm">
               <div class="form-group">
-                <input type="text" class="form-control" name="search" id="search_user_input" placeholder="Search for new friends">
-                <button  id="search_user_button" onclick="search()"><i class="fa fa-search"></i></button>
+                <input type="text" class="form-control" name="search" id="search_user_input" placeholder="Search for new friends" onkeypress="search()">
               </div>
             </div>
 
@@ -97,7 +91,7 @@
           <!-- Feed Page Side Bar Left
           ================================================= -->
           <div class="col-md-3">
-            <div class="friend-list">
+            <!-- <div class="friend-list">
               <h3 class="">My Friends</h3>
               <hr class="solid">
               {% for friend in friends %}
@@ -105,11 +99,10 @@
                 <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm pull-left" />
                 <div>
                   <h5><a href="../friend">friend.profile.displayName</a></h5>
-                  <!-- <a href="#" class="text-muted">Just Posted</a> -->
                 </div>
               </div>
               {% endfor %}
-            </div>
+            </div> -->
           </div>
 
           <div class="col-md-7">
@@ -343,6 +336,7 @@
                   </div>
                 </div>
                </br>
+             </div>
           {% endfor %}
 
           <div class="pagination">
