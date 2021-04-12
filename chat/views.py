@@ -419,7 +419,8 @@ def posts(request, AUTHOR_ID):
         alltimeline = cur_author.timeline.all()
         #getTimeline(cur_user_name), by SQL query
         mytimeline = alltimeline.filter(author=cur_author).order_by('-published')
-
+        print("my timeline: ", mytimeline)
+        print("length: ", len(mytimeline))
 
         # create a paginator
         paginator_mytimeline = Paginator(mytimeline, 8) # Show 8 contacts per page.
