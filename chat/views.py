@@ -948,3 +948,16 @@ def edit_in_feed(request, ID):
 BOT<==================================================================
 
 '''
+
+@require_http_methods(["GET"])
+def unlisted(request, AUTHOR_ID, POST_ID):
+    post_id = host_server + "author/" + AUTHOR_ID + "/posts/" + POST_ID + "/unlisted/"
+    try:
+        post = Post.objects.get(id=post_id)
+        if post.unlisted:
+            return render(request, "chat/unlisted.html", {"unlisted_post": post})
+        else:
+            return render(request, "chat/unlisted.html", {})
+    except:
+        return render(request, "chat/unlisted.html", {})
+    
