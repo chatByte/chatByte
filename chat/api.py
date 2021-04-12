@@ -284,7 +284,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
-        return commentRequest(request.method,server_origin, USER_ID, USER_POST_ID, request.data)
+        return commentRequest(request.method,server_origin, request.user.id, USER_POST_ID, request.data)
     else:
         # checking, comments' father exist or not
         try:
