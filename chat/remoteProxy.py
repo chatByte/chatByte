@@ -207,7 +207,7 @@ def likesRequest(method, origin, user_id, post_id, data=None):
     url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/likes"
     print("get post likes url: ", url)
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
