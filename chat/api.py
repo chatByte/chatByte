@@ -1092,7 +1092,7 @@ def inbox_likes(request, AUTHOR_ID):
         headers = {"X-Server": foreign_server}
         url = str(foreign_server) + "author/" + str(foreign_id)
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(request.user.username, request.user.first_name))
-        profile_ser = ProfileSerializer(data=response.data)
+        profile_ser = ProfileSerializer(data=response.json())
         if profile_ser.is_valid():
             author = profile_ser.save()
     if data['type'] == 'comment':
