@@ -1,50 +1,133 @@
-{% extends "base_generic.html" %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>ChatByte | The Coolest Social Network</title>
+		<!-- Stylesheets
+    ================================================= -->
+    	{% load static %}
+		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
 
-{% block content %}
-<div style="color:white">
-  <p class="signin-text" >Sign in now and connect with awesome programming enthusiatics around the world!</p>
+    <!--Google Font-->
+    <link href="https://fonts.googleapis.com/css?family=Titillium Web" rel="stylesheet">
 
-  {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-  {% endif %}
+		<style media="screen">
+			body{
+				overflow: hidden;
+			}
+		</style>
+</head>
+<body>
 
-  {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
-  {% endif %}
+  <!-- Landing Page Contents
+  ================================================= -->
+  <div id="sign-up-page">
+    <div class="container wrapper">
+      <div class="row">
+        <div class="col-sm-5">
+          <div class="intro-texts">
+            <h1 class="">Meet Awesome Programming Enthusiatics Here!</h1>
+            <p>Chaybyte is a social network service developed by Team 13 <br />
+              in CMPUT 404. As a user, you may use this is a tech blog to <br />
+              connect with people who share the same interest!</p>
+          </div>
+        </div>
+        <div class="col-sm-6 col-sm-offset-1">
+          <div class="reg-form-container">
 
-  {% if next %}
-    {% if user.is_authenticated %}
-      <p>Your account doesn't have access to this page. To proceed,
-      please login with an account that has access.</p>
-    {% else %}
-      <p>Please login to see this page.</p>
-    {% endif %}
-  {% endif %}
-</div>
+            <!-- Register/Login Tabs-->
+            <div class="reg-options">
+              <ul class="nav nav-tabs">
+                <li><a href="../signup/">Sign Up</a></li>
+								<li class="active"><a href="#login" data-toggle="tab">Login</a></li>
+              </ul><!--Tabs End-->
+            </div>
+
+            <!--Login In Form Contents-->
+            <div class="tab-content">
+              <div id="login">
+                <h1>Welcom Back!</h1>
+                <p class="text-muted">Login in to your account and connect with programming enthusiatics!</p>
+
+                {% if messages %}
+                  <ul class="messages">
+                      {% for message in messages %}
+                      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                      {% endfor %}
+                  </ul>
+                {% endif %}
+
+                {% if form.errors %}
+                  <p class="text-red">Your username and password didn't match. Please try again.</p>
+                {% endif %}
+
+                {% if next %}
+                  {% if user.is_authenticated %}
+                    <p class="text-red">Your account doesn't have access to this page. To proceed,
+                    please login with an account that has access.</p>
+                  {% else %}
+                    <p>Please login to see this page.</p>
+                  {% endif %}
+                {% endif %}
+
+                <form class="registration_form" method="post" action="{% url 'login' %}" class="form-inline">
+                  {% csrf_token %}
+                  <!-- <table>
+                    <tr>
+                      <td>{{ form.username.label_tag }}</td>
+                      <td>{{ form.username }}</td>
+                    </tr>
+                    <tr>
+                      <td>{{ form.password.label_tag }}</td>
+                      <td>{{ form.password }}</td>
+                    </tr>
+                  </table> -->
+                  {{ form.as_p }}
+									<!-- <div class="row">
+										<div class="form-group col-xs-7">
+											<label for="username" class="sr-only">User Name</label>
+											<input id="username" class="form-control input-group-lg" type="text" value="{{ form.password }}" placeholder="User Name"/>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col-xs-7">
+											<label for="password" class="sr-only">Password</label>
+											<input id="password" class="form-control input-group-lg" type="text" name="password" placeholder="Password"/>
+										</div>
+									</div> -->
+	                  <input class="btn btn-primary" type="submit" value="login" />
+	                  <input type="hidden" name="next" value="{{ next }}" />
+                </form>
+                <!--Sign in  Form Ends-->
+
+                {# Assumes you setup the password_reset view in your URLconf #}
+                <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+                <a href="{% url 'signup' %}">Do not have an account?</a>
 
 
-  <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table>
-      <tr>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-      </tr>
-    </table>
-    <input type="submit" value="login" />
-    <input type="hidden" name="next" value="{{ next }}" />
-  </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  {# Assumes you setup the password_reset view in your URLconf #}
-  <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-  <a href="{% url 'signup' %}">Do not have an account?</a>
+    </div>
+  </div>
 
-{% endblock %}
+  <!--preloader-->
+  <div id="spinner-wrapper">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Scripts
+  ================================================= -->
+  <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
+  <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+  <script src="{% static 'js/script.js' %}"></script>
+</body>

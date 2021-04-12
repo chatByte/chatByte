@@ -48,6 +48,8 @@ h1.grey, h2.grey, h3.grey, h4.grey, h5.grey, h6.grey{
 
 .profile-link{font-weight: 600;}
 
+.text-white{color: #fff;}
+
 .text-green{color: #8dc63f;}
 
 .text-green:hover{color: #39b54a;}
@@ -210,9 +212,10 @@ img .logo{
 .sign-in-form{
   background: linear-gradient(to bottom, rgba(0, 90, 167, .6), rgba(0, 12, 64, 0.8) 100%);
   position: absolute;
-  width: 500px;
+  margin-left: 100px;
+  width: 50%;
   min-height: 600px;
-  top: 0;
+  top: 50;
   padding: 100px 30px;
   text-align: center;
   /* color: #fff; */
@@ -220,7 +223,7 @@ img .logo{
   z-index: 1000;
 }
 
-.sign-in-form:after{
+/* .sign-in-form:after{
   content: "";
   border-color: rgba(0, 12, 64, 0.8) transparent transparent;
   border-style: solid;
@@ -230,7 +233,7 @@ img .logo{
   left: 0;
   position: absolute;
   width: 0;
-}
+} */
 
 .sign-in-form h1{
   font-family:'Titillium Web';
@@ -248,7 +251,7 @@ img .logo{
 }
 
 .sign-in-form .form-wrapper .signin-text{
-  font-size: 15px;
+  font-size: 25px;
 }
 
 
@@ -323,6 +326,97 @@ Sign up Page
   position: relative;
   min-height: 550px;
   z-index: 10;
+}
+
+.reg-form-container::before{
+  content: "";
+  background: rgba(255,255,255, .1);
+  width: 95%;
+  height: 70%;
+  border-radius: 6px;
+  position: absolute;
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: -2;
+}
+
+.reg-form-container::after{
+  content: "";
+  background: rgba(255,255,255, .1);
+  width: 90%;
+  height: 65%;
+  border-radius: 6px;
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: -1;
+}
+
+.reg-form-container .reg-options::before{
+  content: "";
+  background: linear-gradient(to right, rgba(255,255,255, 0.2) , rgba(255,255,255, 0.05));
+  height: 70%;
+  width: 50px;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateX(-100%) translateY(-50%);
+  border-radius: 6px 0 0 6px;
+  z-index: -1;
+}
+
+
+/*Registration Login/Register Tabs*/
+
+.reg-form-container .reg-options .nav-tabs{
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(-60%) rotate(270deg);
+  border: none;
+}
+
+.reg-form-container .reg-options .nav-tabs > li{
+  margin-left: 10px;
+  margin-right: 10px;
+  position: relative;
+}
+
+.reg-form-container .reg-options .nav-tabs > li::after{
+  content: "";
+  background: rgba(255,255,255, 0.1);
+  height: 25px;
+  width: 1px;
+  position: absolute;
+  right: -10px;
+  top: 5px;
+}
+
+.reg-form-container .reg-options .nav-tabs > li:last-child::after{
+  content: none;
+}
+
+.reg-form-container .reg-options .nav-tabs > li > a{
+  background: transparent;
+  color: #696969;
+  padding: 5px 30px;
+  min-width: 120px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+}
+
+.reg-form-container .nav-tabs > li.active > a,
+.reg-form-container .nav-tabs > li.active > a:focus,
+.reg-form-container .nav-tabs > li.active > a:hover{
+  background: transparent;
+  color: #fff;
+  font-weight: 700;
+  border: none;
 }
 
 /*Sign Up Form*/
