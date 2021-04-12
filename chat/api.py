@@ -1084,6 +1084,7 @@ def inbox_likes(request, AUTHOR_ID):
         # send the like object to remote server
         return inbox(request, AUTHOR_ID)
     foreign_author = request.META.get("HTTP_X_REQUEST_USER")
+    print("X-request-user: ", foreign_author)
     try:
         author = Profile.objects.get(id=foreign_author)
     except:
