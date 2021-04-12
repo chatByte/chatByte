@@ -38,6 +38,14 @@ https://app-chatbyte.herokuapp.com/
 
 https://chatbyte.herokuapp.com/
 
+## Connected distribute server:
+* Group 5 (fully connected)
+https://github.com/CMPUT404-wi21-project/CMPUT404-project-socialdistribution
+* Group 14 (basic connection)
+https://github.com/CMPUT404ProjectTeam2021W/Jan28-group-cmput404-project
+
+
+
 ## Local host:
 inside chatByte/mysite
 python3 manage.py runserver
