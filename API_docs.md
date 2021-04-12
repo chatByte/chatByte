@@ -466,9 +466,10 @@ POST a post: Response (200)
 ```
 
 ```
-POST a friend: Response(200)
+POST a friend Request: Response(200)
+Request Body:
 {
-    "type": "follow",
+    "type": "Follow",
     "summary": "Greg wants to follow Lara",
     "actor": {
         "type": "author",
@@ -488,6 +489,26 @@ POST a friend: Response(200)
     }
 }
 ```
+
+```
+POST a Likes Request: Response(200)
+Request Body:
+{
+     "@context": "https://www.w3.org/ns/activitystreams",
+     "summary": "Lara Croft Likes your post",         
+     "type": "Like",
+     "author": {
+         "type":"author",
+          "id":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+         "host":"http://127.0.0.1:8000/",
+         "displayName":"Lara Croft",
+         "url":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+         "github":"http://github.com/laracroft"
+     },
+     "object":"http://127.0.0.1:8000/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/764efa883dda1e11db47671c4a3bbd9e"
+}
+```
+
 
 ### ALL POSTS API
 
@@ -800,7 +821,7 @@ Response(200):
     "results": [
         {
             "type": "comment",
-            "id": "55e4258c-cbdc-49e6-a4ae-a84a024189b9",
+            "id": "http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments/f6255bb01c648fe967714d52a89e8e9c",
             "author": {
                 "type": "author",
                 "id": "https://app-chatbyte.herokuapp.com/author/1",
@@ -826,22 +847,11 @@ Response(200):
 ```
 URL://service/author/{AUTHOR_ID}/posts/{POST_ID}/comments
 ```
-Body of Request:
+For remote Body of Request:
 ```
 {
-    "type":"comment",
-      "author":{
-        "type":"author",
-        "id":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
-        "url":"http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
-          "host":"http://127.0.0.1:5454/",
-          "displayName":"Greg Johnson",
-          "github": "http://github.com/gjohnson"
-    },
-    "comment":"Sick Olde English",
+    "content":"Sick Olde English",
     "contentType":"text/markdown",
-    "published":"2015-03-09T13:07:04+00:00",
-    "id":"http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments/f6255bb01c648fe967714d52a89e8e9c"
 }
 ```
 Allowed Content Types: (text/plain,text/markdown, application/base64,image/png;base64,image/jpeg;base64)
@@ -884,9 +894,7 @@ URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}/likes
 ```
 ```
 Response (200):
-{
-    "type": "likes",
-    "items": [
+ [
         {
             "type": "like",
             "id": "530c2845-8bfb-40d0-bf2f-932698ca19b9",
@@ -903,7 +911,7 @@ Response (200):
             "context": "Like"
         }
     ]
-}
+
 ```
 <i>Get Likes for a Comment</i>
 ```
@@ -911,8 +919,7 @@ URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}/comme
 ```
 ```
 Response (200):
-{
-    "likes": [
+       [
         {
             "type": "like",
             "id": "530c2845-8bfb-40d0-bf2f-932698ca19b9",
@@ -944,7 +951,6 @@ Response (200):
             "context": "Like"
         }
     ]
-}
 ```
 #### `POST`
 <i>Create a Like for either a Post or a Comment</i>
