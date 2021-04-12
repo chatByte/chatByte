@@ -2,7 +2,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ChatByte</title>
+    <title>ChatByte | My Posts</title>
 
     <!-- Stylesheets
     ================================================= -->
@@ -210,6 +210,9 @@
 
           <!--             post content mine =====================================================-->
           {% for cur_post in page_obj %}
+                {% if cur_post.unlisted %}
+                <!-- continue -->
+                {% else %}
                 <div class="post-content" id={{cur_post.id}}>
 
                   {% if 'image/' in cur_post.contentType  %}
@@ -224,7 +227,6 @@
                       <div class="user-info">
                         <h5><a href="" class="profile-link" id="fullName">{{cur_post.author.displayName}}</a> </h5>
                         <p class="text-grey post_date" >{{cur_post.published}} </p>
-
                         <div style="display:inline-flex;">
                           <!-- deal with displaying category -->
                           <!-- <p class="text-muted">categories {{cur_post.categories}}</p> &ensp; -->
@@ -360,6 +362,8 @@
                 </div>
                </br>
              </div>
+                {% endif %}
+
           {% endfor %}
 
           <div class="pagination">
