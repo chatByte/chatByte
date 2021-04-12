@@ -284,17 +284,6 @@ img .logo{
 }
 
 /*=============================
-Log out Page
-====================================*/
-.logout-texts {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  margin-top: -50px;
-  margin-left: -50px;
-  height: 100px;
-}
-/*=============================
 Sign up Page
 ====================================*/
 #sign-up-page{
