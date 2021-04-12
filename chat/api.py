@@ -1094,6 +1094,7 @@ def inbox_likes(request, AUTHOR_ID):
         url = str(foreign_server) + "author/" + str(foreign_id)
         node = User.objects.get(last_name=foreign_server)
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(node.username, node.first_name))
+        print("Profile data from remote server: ", response.json())
         profile_ser = ProfileSerializer(data=response.json())
         if profile_ser.is_valid():
             author = profile_ser.save()
