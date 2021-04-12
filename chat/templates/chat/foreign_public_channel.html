@@ -2,7 +2,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ChatByte</title>
+    <title>ChatByte | Stream</title>
 
     <!-- Stylesheets
     ================================================= -->
@@ -60,7 +60,7 @@
                   {% endfor %} -->
                   {% for friend_request in user.inbox.friend_requests.all %}
                     <li><a >{{friend_request.summary}}</a><button class="accept" onclick="accept_or_reject('accept', '{{friend_request.id}}')">Accept</button><button class="reject" onclick="accept_or_reject('reject', '{{friend_request.id}}')">Reject</button></li>
-                  {% endfor %}  
+                  {% endfor %}
                 </ul>
               </li>
 
@@ -85,14 +85,14 @@
             <div class="row">
               <div class="col-md-3">
                 <div class="profile-info">
-                  <img src="{% static 'images/snow-mount.jpg' %}" alt="" class="img-responsive profile-photo" />
+                  <img src="{% static 'images/user.png' %}" alt="" class="img-responsive profile-photo" />
                   <h3 id="fullName">{{foreignName}}</h3>
-                  <p class="text-muted"> {{author_num_follwers}} people is following her</p>
+                  <p class="text-muted"> {{author_num_followers}} people is following her</p>
                   {% if isFollowing %}
                     <h4 style="display: block" id="following">Following</h4>
                   {% else %}
                     <a href="." ><img src="{% static 'images/follower.png' %}" style="max-height: 20px;"alt="" id='followBtn'
-                            onclick="putFollow( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}', '{{cur_author.url}}', '{{cur_author.github}}', '{{foreignId}}')"/></a>
+                            onclick="putFollow( '{{ request.user.profile.type}}', '{{ request.user.profile.id}}', '{{ request.user.profile.host}}', '{{ request.user.profile.displayName}}', '{{request.user.profile.url}}', '{{request.user.profile.github}}', '{{foreignId}}')"/></a>
                   {% endif %}
 
                 </div>
@@ -104,7 +104,7 @@
                     <!-- <li><button class="btn-primary unfriend" href="../../my_friends/delete/{{foreignId}}/">Unfriend</button></li> -->
                   {% else %}
                     <li><button class="btn-primary befriend" value="../../friends/add/{{foreignId}}/"
-                        onclick="be_friend( '{{ cur_author.type}}', '{{ cur_author.id}}', '{{ cur_author.host}}', '{{ cur_author.displayName}}', '{{cur_author.url}}', '{{cur_author.github}}')" >Befriend</button></li>
+                        onclick="be_friend( '{{ request.user.profile.type}}', '{{ request.user.profile.id}}', '{{ request.user.profile.host}}', '{{ request.user.profile.displayName}}', '{{request.user.profile.url}}', '{{request.user.profile.github}}', '{{foreignId}}')" >Befriend</button></li>
       						{% endif %}
 
                 </ul>
@@ -118,7 +118,7 @@
             <div class="col-md-3">
               <div class="activities">
                 <!--Activity SUmmary-->
-                <div id="sticky-sidebar">
+                <!-- <div id="sticky-sidebar">
                   <h4 class="grey"><a href="" class="profile-link" id="name">{{foreignName}}</a>'s activity</h4>
                   <div class="feed-item">
                     <div class="live-activity">
@@ -126,13 +126,21 @@
                       <p class="text-muted"> xxxx mins ago</p>
                     </div>
                   </div>
-
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="col-sm-1"></div>
             <div class="col-md-6">
               <div class="posts">
+
+                <!-- if nothing is posted -->
+                  <div class="error-page">
+                    <div class="error-content">
+                      <div class="container">
+                        <img src="{% static 'images/preview.png' %}" alt="" class="img-responsive" width="750px" />
+                      </div>
+                    </div>
+                  </div>
 
 
                 {% for cur_post in timeline reversed %}

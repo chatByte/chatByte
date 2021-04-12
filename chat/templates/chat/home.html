@@ -2,7 +2,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ChatByte</title>
+    <title>ChatByte | Stream</title>
 
     <!-- Stylesheets
     ================================================= -->
@@ -33,7 +33,7 @@
           <!-- Brand and toggle get grouped for better mobile display -->
           <!-- left most logo -->
           <div class="navbar-header">
-            <!-- <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a> -->
+            <a class="navbar-brand" href=""><img src="{% static 'images/logo.png' %}" alt="logo" width="60" height="30" /></a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -57,7 +57,7 @@
                 <ul class="dropdown-menu">
                   {% for friend_request in user.inbox.friend_requests.all %}
                     <li><a >{{friend_request.summary}}</a><button class="accept" onclick="accept_or_reject('accept', '{{friend_request.id}}')">Accept</button><button class="reject" onclick="accept_or_reject('reject', '{{friend_request.id}}')">Reject</button></li>
-                  {% endfor %} 
+                  {% endfor %}
                 </ul>
               </li>
 

@@ -33,6 +33,8 @@ function getCookie(name) {
     return cookieValue;
 }
 
+
+
 //Preloader
 var preloader = $('#spinner-wrapper');
 $(window).on('load', function() {
@@ -117,8 +119,9 @@ function create_following() {
 function putFollow(type, id, host, displayName, url, github, foreignId){
   create_following();
 
+  console.log("After create following...");
   x_server = foreignId.split("author/")[0];
-
+  console.log("x-server", x_server);
 
   $.ajax({
     // first author id is who I want to follow
@@ -148,7 +151,8 @@ function putFollow(type, id, host, displayName, url, github, foreignId){
     // fields = ['type','id', 'host', 'displayName', 'url', 'github']
     // handle a successful response
     success : function(data) {
-        console.log(data); // sanity check
+      console.log("Successfully put as follower")
+      console.log(data); // sanity check
     },
   });
 }
@@ -184,11 +188,14 @@ function putFollow(type, id, host, displayName, url, github, foreignId){
 
 function sendFriendRequest(type, summary, author, object) {
   var foreign_id = object["id"];
+  var just_id = foreign_id.split('author/')[1];
   var fi = foreign_id.split("/");
   var x_server_header = fi[0]+"//"+fi[2]+"/";
+  console.log("object author id: ", foreign_id);
+  console.log("x_server_header: ", x_server_header);
 
   var data = {
-    'type': 'follow',
+    'type': type,
     'summary': summary,
     'actor': author,
     'object': object
@@ -198,7 +205,7 @@ function sendFriendRequest(type, summary, author, object) {
   console.log("sending Friend Request");
   $.ajax({
     // url : url_header + "author/" +  new_url[4].toString() +"/friends/add/{{myId}}/", // the endpoint
-    url: window.location.origin +'/author/'+ new_url[4].toString() +'/inbox/',
+    url: window.location.origin +'/author/'+ just_id +'/inbox',
     type : 'POST', // http method
     contentType: "application/json",
     processData: false,
@@ -224,7 +231,7 @@ function sendFriendRequest(type, summary, author, object) {
 
 
 // be friend , to send friend request
-function be_friend(type, id, host, displayName, url, github) {
+function be_friend(type, id, host, displayName, url, github, foreignId) {
     var summary = displayName + " want to be friend with you";
 
 
@@ -251,7 +258,8 @@ function be_friend(type, id, host, displayName, url, github) {
       console.log("---------------------befriend, data");
       console.log(data);
       object = data;
-      sendFriendRequest("follow",summary, actor, object);
+      putFollow(type, id, host, displayName, url, github, foreignId);
+      sendFriendRequest("Follow",summary, actor, object);
     }
   });
 

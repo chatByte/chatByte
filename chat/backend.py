@@ -190,13 +190,12 @@ def updateProfile(id, display_name, email, url, github):
         print(e)
         return False
 
-def createPost(title, source, origin, description, content_type, content, author, categories, visibility, unlisted):
+# the flag design for reshare, if it is reshare, i need post.origin to be passed, 
+def createPost(title, source, origin, description, content_type, content, author, categories, visibility, unlisted, reshareID=None):
     # Please authenticate before calling this method
     categories_array = []
     categories_array.append(categories)
 
-    print("here______-------------------------------------")
-    print(categories_array)
 
     try:
         post = Post.objects.create(title=title, source=source, origin=origin, description=description, contentType=content_type, content=content \
@@ -204,19 +203,28 @@ def createPost(title, source, origin, description, content_type, content, author
         # print(post.author)
 
         post.comment_url = post.id + "/comments/"
-        post.source = post.id
+
+
+        # if it is not, means not None, and it is the original posting
+        if not reshareID:
+            post.origin = post.id
+            post.source = post.id
+        else:
+            post.categories = categories
+            post.origin = origin
+            post.source = reshareID
         post.save()
         author.timeline.add(post)
         author.save()
 
-        
+
         # Broadcast to friends
         if (visibility == 'friend'):
             print("Broadcasting post to friends...")
             for friend_profile in author.friends.all():
                 print(friend_profile.id)
                 author_id = friend_profile.id.split('author/')[1]
-                
+
                 server_origin = friend_profile.id.split("author/")[0]
                 if server_origin == host:
                     print("doing locally")
@@ -251,8 +259,7 @@ def updatePost(id, title, description, content_type, content):
         post.description = description
         post.contentType = content_type
         post.content = content
-        # post.author = author
-        post.categories = categories
+
         post.save()
         return True
     except BaseException as e:
@@ -372,7 +379,7 @@ def likePost(post_id, author_id):
     try:
 
         user_profile = Profile.objects.get(id=author_id)
-        summary = user_profile.displayName +" likes your post"
+        summary = user_profile.displayName +" Likes your post"
         new_like = Like.objects.create(author=user_profile, object=post_id, summary= summary)
         user_liked = user_profile.liked
         items_list = user_liked.items
@@ -384,8 +391,8 @@ def likePost(post_id, author_id):
 
     except BaseException as e:
         print(e)
-        return None 
-        
+        return None
+
     # TODO: check if remote
 def likeComment(comment_id, author_id):
 
@@ -405,7 +412,7 @@ def likeComment(comment_id, author_id):
 
     except BaseException as e:
         print(e)
-        return None 
+        return None
 
 
     # TODO

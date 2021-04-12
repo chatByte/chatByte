@@ -16,10 +16,12 @@ urlpatterns = [
 
     path(r"author/<str:AUTHOR_ID>/my_posts/", views.posts, name="make_posts"),
     path(r"author/<str:AUTHOR_ID>/my_posts/<str:POST_ID>/edit/", views.update_post, name="update_posts"),
-    
+
     path(r'author/<str:AUTHOR_ID>/posts/',api.posts_obj, name='make_posts_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>',api.post_obj, name='make_post_obj'),
     path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments',api.comment_list_obj, name='comment_list_obj'),
+    
+    path(r'author/<str:AUTHOR_ID>/posts/<str:POST_ID>/unlisted',views.unlisted, name='unlisted'),
 
     path(r'author/<str:AUTHOR_ID>/github/',api.github_act_obj, name='github_activity_obj'),
 
@@ -88,9 +90,9 @@ urlpatterns = [
     path("author/<str:AUTHOR_ID>/friends/", api.get_friends_obj, name = "get_friends"),
 
     #Get likes for a Post
-    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes/", api.likes_post_obj, name="likes_post"),
+    path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/likes", api.likes_post_obj, name="likes_post"),
     path("author/<str:AUTHOR_ID>/inbox", api.inbox, name="inbox"),
-    path("author/<str:AUTHOR_ID>/likes", api.inbox, name="author_likes"),
+    path("author/<str:AUTHOR_ID>/likes", api.inbox_likes, name="author_likes"),
 
     # # Get likes for a Comment
     path("author/<str:AUTHOR_ID>/posts/<str:POST_ID>/comments/<str:COMMENT_ID>/likes", api.likes_comment_obj, name="likes_post_comment"),
