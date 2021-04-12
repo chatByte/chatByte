@@ -154,7 +154,7 @@
                         <h5><a href="" class="profile-link" id="fullName">{{cur_post.author.displayName}}</a> </h5>
 												<p class="text-grey post-date" >{{cur_post.published}} </p>
 
-                        <p class="text-muted">{{cur_post.categories}}</p>
+                        <p class="text-muted">categories {{cur_post.categories}}</p>
                       </div>
                       <hr class="solid">
                       <div class="post-text">
@@ -177,9 +177,11 @@
 
                       <div class="reaction-img">
                         {% if cur_post.id in liked_objs %}
+
                         <a class="btn text-red" onclick="likePost( '{{ cur_post.id }}', 1 )"><i class="icon ion-ios-heart like"></i>{{ cur_post.num_likes }}</a>
                         {% else %}
                         <a class="btn" onclick="likePost( '{{ cur_post.id }}', 0 )"><i class="icon ion-ios-heart like"></i>{{ cur_post.num_likes }}</a>
+
                         {% endif %}
                         <a class="btn text-green" onclick="reshare('{{ cur_post }}')"><i class="icon ion-share"></i></a>
                       </div>
@@ -212,6 +214,7 @@
                         <a class="btn text-red" onclick="likeComment( '{{ comment.id }}', 1 )"><i class="icon ion-ios-heart like"></i>{{ comment.num_likes }}</a>
                         {% else %}
                         <a class="btn" onclick="likeComment( '{{ comment.id }}', 0 )"><i class="icon ion-ios-heart like"></i>{{ comment.num_likes }}</a>
+
                         {% endif %}
                       </div>
 

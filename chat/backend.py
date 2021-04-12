@@ -191,7 +191,7 @@ def updateProfile(id, display_name, email, url, github):
         return False
 
 # the flag design for reshare, if it is reshare, i need post.origin to be passed, 
-def createPost(title, source, origin, description, content_type, content, author, categories, visibility, unlisted, reshare=False):
+def createPost(title, source, origin, description, content_type, content, author, categories, visibility, unlisted, reshareID=None):
     # Please authenticate before calling this method
     categories_array = []
     categories_array.append(categories)
@@ -204,12 +204,15 @@ def createPost(title, source, origin, description, content_type, content, author
 
         post.comment_url = post.id + "/comments/"
 
-        if not reshare:
-            post.origin = post.id
-        else:
-            post.origin = origin
 
-        post.source = post.id
+        # if it is not, means not None, and it is the original posting
+        if not reshareID:
+            post.origin = post.id
+            post.source = post.id
+        else:
+            post.categories = categories
+            post.origin = origin
+            post.source = reshareID
         post.save()
         author.timeline.add(post)
         author.save()
