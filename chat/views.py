@@ -970,7 +970,7 @@ def unlisted(request, AUTHOR_ID, POST_ID):
     try:
         post = Post.objects.get(id=post_id)
         if post.unlisted:
-            return render(request, "chat/posts_unlisted.html", {"unlisted_post": post})
+            return render(request, "chat/posts_unlisted.html", {"unlisted": post})
         else:
             return render(request, "chat/posts_unlisted.html", {})
     except:
