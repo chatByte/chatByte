@@ -478,7 +478,8 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
-        return followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID, request.data)
+        res = followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID, request.data)
+        return JsonResponse(res.json(), status=res.status_code)
     else:
         # can be optimized
         try:
