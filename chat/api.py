@@ -1090,7 +1090,7 @@ def inbox_likes(request, AUTHOR_ID):
         foreign_server = foreign_author.split('author/')[0]
         foreign_id = foreign_author.split('author/')[1]
         headers = {"X-Server": foreign_server}
-        url = str(host_server) + "author/" + str(foreign_id)
+        url = str(foreign_server) + "author/" + str(foreign_id)
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(request.user.username, request.user.first_name))
         profile_ser = ProfileSerializer(data=response.data)
         if profile_ser.is_valid():
