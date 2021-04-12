@@ -174,7 +174,7 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
         response = requests.post(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "PUT":
-        response = requests.post(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        response = requests.put(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
