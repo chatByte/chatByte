@@ -507,22 +507,20 @@ def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
         elif (request.method == "PUT"):
             print("Putting to followers: ", FOREIGN_AUTHOR_ID)
             #add a follower , with FOREIGN_AUTHOR_ID
-            data = JSONParser().parse(request)
-            serializer = ProfileSerializer(data=data)
-            print("profile serializer: ", serializer)
+            foreign_author = request.META.get("HTTP_X_REQUEST_USER")
             try:
-                follower = Profile.objects.get(id=FOREIGN_AUTHOR_ID)
-                profile.followers.items.add(follower)
-                return JsonResponse({'detail': 'true'}, status=201)
-
-            except Profile.DoesNotExist:
-                if serializer.is_valid(raise_exception=True):
-                    follower_profile = serializer.save()
-                    profile = Profile.objects.get(id=AUTHOR_ID)
-                    # follower = serializer.data
-                    profile.followers.items.add(follower_profile)
-                    profile.save()
-                return JsonResponse(serializer.data, status=201)
+                follower = Profile.objects.get(id=foreign_author)
+            except:
+                foreign_server = foreign_author.split('author/')[0]
+                foreign_id = foreign_author.split('author/')[1]
+                headers = {"X-Server": foreign_server}
+                url = str(host_server) + "author/" + str(foreign_id)
+                response = requests.get(url, headers=headers, auth=HTTPBasicAuth(request.user.username, request.user.first_name))
+                profile_ser = ProfileSerializer(data=response.data)
+                if profile_ser.is_valid():
+                    follower = profile_ser.save()
+            profile.followers.items.add(follower)
+            return JsonResponse({'detail': 'true'}, status=201)
             # return JsonResponse(serializer.errors, status=400)
 
         elif request.method == "DELETE":
