@@ -148,11 +148,13 @@ def my_stream(request, AUTHOR_ID):
                     res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
                     print("stream get post's likes: ", res.json())
                     print("Number of likes: ", len(res.json()))
+                    print(res.json())
                     post['num_likes'] =  len(res.json())
                     for comment in post['comments']:
                         print(comment['id'])
                         comment_id = comment['id'].split('comments/')[1]
                         com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
+                        print(com_res.json())
                         comment['num_likes'] = len(com_res.json())
                         print(comment['num_likes'])
                     remote_posts.append(post)

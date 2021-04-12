@@ -1092,10 +1092,12 @@ def inbox_likes(request, AUTHOR_ID):
         foreign_id = foreign_author.split('author/')[1]
         headers = {"X-Server": foreign_server}
         url = str(foreign_server) + "author/" + str(foreign_id)
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(request.user.username, request.user.first_name))
+        node = User.objects.get(last_name=foreign_server)
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(node.username, node.first_name))
         profile_ser = ProfileSerializer(data=response.json())
         if profile_ser.is_valid():
             author = profile_ser.save()
+    print(author)
     if data['type'] == 'comment':
         original_author_id = data['id'].split('author/')[1].split('/posts')[0]
         print("original author id for the liked object: ", original_author_id)
