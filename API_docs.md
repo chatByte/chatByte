@@ -900,8 +900,7 @@ URL: https://app-chatbyte.herokuapp.com/author/{AUTHOR_ID}/posts/{POST_ID}/comme
 ```
 ```
 Response (200):
-{
-    "likes": [
+       [
         {
             "type": "like",
             "id": "530c2845-8bfb-40d0-bf2f-932698ca19b9",
@@ -933,7 +932,6 @@ Response (200):
             "context": "Like"
         }
     ]
-}
 ```
 #### `POST`
 <i>Create a Like for either a Post or a Comment</i>
