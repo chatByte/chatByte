@@ -325,18 +325,24 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             data = JSONParser().parse(request)
 
             profile_url = request.META.get("HTTP_X_REQUEST_USER")
-            
+            origin_server = profile_url.split('author/')[0]
             author_id = profile_url.split('author/')[1]
             print("author id:", author_id)
             try:
                 author = Profile.objects.get(id=profile_url)
             except:
-                res = profileRequest("GET", origin_server, author_id)
-                print("Profile from comment: ", res)
-                print("Content: ", res.json())
-                author_ser = ProfileSerializer(data=res.json())
-                if author_ser.is_valid():
-                    author = author_ser.save()
+                try:
+                    # if the author's id is not a full url, try this
+                    author = Profile.objects.get(id=author_id)
+                except:
+                    res = profileRequest("GET", origin_server, author_id)
+                    if res.status_code >= 400:
+                        return JsonResponse({"Error": "Profile get failed"}, status=404)
+                    print("Profile from comment: ", res)
+                    print("Content: ", res.json())
+                    author_ser = ProfileSerializer(data=res.json())
+                    if author_ser.is_valid():
+                        author = author_ser.save()
             
             print(author)
             comment = createComment(author, POST_ID, data['content'], data['contentType'])
@@ -1084,9 +1090,9 @@ def inbox_likes(request, AUTHOR_ID):
         foreign_server = foreign_author.split('author/')[0]
         foreign_id = foreign_author.split('author/')[1]
         headers = {"X-Server": foreign_server}
-        url = str(host_server) + "author/" + str(foreign_id)
+        url = str(foreign_server) + "author/" + str(foreign_id)
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(request.user.username, request.user.first_name))
-        profile_ser = ProfileSerializer(data=response.data)
+        profile_ser = ProfileSerializer(data=response.json())
         if profile_ser.is_valid():
             author = profile_ser.save()
     if data['type'] == 'comment':

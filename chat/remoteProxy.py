@@ -15,7 +15,10 @@ def profileRequest(method, origin, user_id, data=None):
     The body of the request is empty if it is a GET request, otherwise, the body is
     the author's profile in json format.
     '''
-    url = str(origin) + "author/" + str(user_id)
+    if origin == "https://hermes-cmput404.herokuapp.com/":
+        url = str(origin) + "api/author/" + str(user_id)
+    else:
+        url = str(origin) + "author/" + str(user_id)
     print("Remote get profile origin: ", origin)
     user = User.objects.get(last_name=origin)
     headers = {
