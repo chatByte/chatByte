@@ -164,12 +164,15 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
     url = str(origin) + "author/" + str(user_id) + str(foreign_author_id) + "/"
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
-    response = JsonResponse({"Error": "Bad request"}, status=400) 
+    response = JsonResponse({"Error": "Bad request"}, status=405) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
-    elif method == "POST":
-        response = requests.post(url, data=json.dumps(data), headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+    elif method == "DELETE":
+        response = requests.post(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        print(response.status_code)
+    elif method == "PUT":
+        response = requests.post(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     return response
 
