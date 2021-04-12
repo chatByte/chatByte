@@ -163,8 +163,10 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
     '''
     url = str(origin) + "author/" + str(user_id) + str(foreign_author_id) + "/"
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(origin) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=405) 
+    print("url", url)
+    print("Method: ", method)
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
