@@ -490,6 +490,32 @@ Request Body:
 }
 ```
 
+```
+POST a friend Request: Response(200)
+Request Body:
+{
+    "type": "Follow",
+    "summary": "Greg wants to follow Lara",
+    "actor": {
+        "type": "author",
+        "id": "http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+        "url": "http://127.0.0.1:5454/author/1d698d25ff008f7538453c120f581471",
+        "host": "http://127.0.0.1:5454/",
+        "displayName": "Greg Johnson",
+        "github": "http://github.com/gjohnson"
+    },
+    "object": {
+        "type": "author",
+        "id": "https://app-chatbyte.herokuapp.com/author/1",
+        "host": "http://127.0.0.1:5454/",
+        "displayName": "Lara Croft",
+        "url": "http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e",
+        "github": "http://github.com/laracroft"
+    }
+}
+```
+
+
 ### ALL POSTS API
 
 #### `GET`
