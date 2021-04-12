@@ -328,7 +328,7 @@ def my_stream(request, AUTHOR_ID):
             }
             # response = request.post(post_id + "/comments", data=json.dumps(send_data), head)
             response = commentRequest("POST", post_id.split('author/')[0], post_id.split('author/')[1].split('/posts/')[0] \
-                , post_id.split('author/')[1].split('/posts/')[1], send_data)
+                , post_id.split('author/')[1].split('/posts/')[1], request.user.id, send_data)
 
             print("response json:", response.json())
             return JsonResponse(response.json(), status=response.status_code)
