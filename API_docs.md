@@ -821,7 +821,7 @@ Response(200):
     "results": [
         {
             "type": "comment",
-            "id": "55e4258c-cbdc-49e6-a4ae-a84a024189b9",
+            "id": "http://127.0.0.1:5454/author/9de17f29c12e8f97bcbbd34cc908f1baba40658e/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments/f6255bb01c648fe967714d52a89e8e9c",
             "author": {
                 "type": "author",
                 "id": "https://app-chatbyte.herokuapp.com/author/1",
