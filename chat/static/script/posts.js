@@ -3,7 +3,7 @@ var contentType = 'text/plain';
 var visibility = 'public';
 var description = "";
 var unlisted = "false";
-var categories = "empty";
+var categories = "nonsense";
 var title = "";
 var form_data = new FormData();
 
@@ -243,7 +243,7 @@ $( document ).ready(function() {
           case "award":
           case "kiss":
           case "web":
-          case "empty":
+          case "nonsense":
             $("#categories").find('i').attr("class", icon);
             categories = id;
             break;
