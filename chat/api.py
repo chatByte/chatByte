@@ -1090,7 +1090,7 @@ def inbox_likes(request, AUTHOR_ID):
     except:
         foreign_server = foreign_author.split('author/')[0]
         foreign_id = foreign_author.split('author/')[1]
-        headers = {"X-Server": foreign_server}
+        headers = {'Origin': host_server, 'X-Request-User': str(host_server) + "author/" + str(AUTHOR_ID), 'Content-type': 'application/json'}
         url = str(foreign_server) + "author/" + str(foreign_id)
         node = User.objects.get(last_name=foreign_server)
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(node.username, node.first_name))
