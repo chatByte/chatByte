@@ -171,7 +171,7 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "DELETE":
-        response = requests.post(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+        response = requests.delete(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
         print(response.status_code)
     elif method == "PUT":
         response = requests.put(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
