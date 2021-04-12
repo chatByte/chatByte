@@ -33,6 +33,8 @@ function getCookie(name) {
     return cookieValue;
 }
 
+
+
 //Preloader
 var preloader = $('#spinner-wrapper');
 $(window).on('load', function() {
