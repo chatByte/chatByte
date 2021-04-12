@@ -466,9 +466,10 @@ POST a post: Response (200)
 ```
 
 ```
-POST a friend: Response(200)
+POST a friend Request: Response(200)
+Request Body:
 {
-    "type": "follow",
+    "type": "Follow",
     "summary": "Greg wants to follow Lara",
     "actor": {
         "type": "author",
