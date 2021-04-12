@@ -142,16 +142,19 @@ def my_stream(request, AUTHOR_ID):
                 # print(data['posts'])
                 for post in data['posts']:
                     remote_post_id = post['id']
-                    remote_origin = remote_post_id.split('autho/')[0]
-                    remote_user_id = remote_post_id.split('autho/')[1].split('posts/')[0]
-                    remote_post_id = remote_post_id.split('autho/')[1].split('posts/')[1]
+                    remote_origin = remote_post_id.split('author/')[0]
+                    remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
+                    remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
                     res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
                     print("stream get post's likes: ", res.json())
                     print("Number of likes: ", len(res.json()))
                     post['num_likes'] =  len(res.json())
                     for comment in post['comments']:
-                        com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment['id'])
+                        print(comment['id'])
+                        comment_id = comment['id'].split('comments/')[1]
+                        com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
                         comment['num_likes'] = len(com_res.json())
+                        print(comment['num_likes'])
                     remote_posts.append(post)
 
                 #     # print("Post id: ", post['id'])
@@ -228,11 +231,14 @@ def my_stream(request, AUTHOR_ID):
         jsonify_public_channel_posts = sorted(jsonify_public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
         for post in jsonify_public_channel_posts:
             print("post:\n", post)
-            post['comments'] = sorted(post['comments'], key=lambda k: k.get('published', 0), reverse=True)
+            post['comments'] = sorted(post['comments'], key=lambda k: k.get('published', 0))
 
 
         # create a paginator
         paginator_public_channel_posts = Paginator(jsonify_public_channel_posts, 8) # Show 8 contacts per page.
+
+        print("--------------------")
+        print(paginator_public_channel_posts)
 
         # if  page_number == None, we will get first page(can be empty)
         page_number = request.GET.get('page')
@@ -271,21 +277,41 @@ def my_stream(request, AUTHOR_ID):
         if contentType == "like":
             object_type = request_post.get("object_type","")
             object_id = request_post.get("object_id","")
-            if object_type == "post":
-
-                likePost(object_id, cur_author_id)
-
-                response = JsonResponse({'redirect_url': "current"}, status=200)
-                # response = render(request, "chat/stream.html", dynamic_contain)
-            elif object_type == "comment":
-
-                # object_id = request_post.get("object_id","")
-                likeComment(object_id, cur_author_id)
-                # response = render(request, "chat/stream.html", dynamic_contain)
-                # pass
-                response = JsonResponse({'redirect_url': "current"}, status=200)
+            # Determine if the liked object is remote or local
+            server_origin = object_id.split('author/')[0]
+            if server_origin not in host_server:
+                print("Sending like to remote server...")
+                if object_type == "post":
+                    like = Like.objects.create(author=request.user.profile, object=object_id, summary= request.user.profile.displayName + " likes a post")
+                else:
+                    like = Like.objects.create(author=request.user.profile, object=object_id, summary= request.user.profile.displayName + " likes a comment")
+                # send the like object to remote server
+                res = inboxRequest("POST", server_origin, AUTHOR_ID, {"type": "like", "data": {"type": object_type, "id": object_id}})
+                if res.status_code < 400:
+                    print("liked object successfully")
+                    # store liked object in current author
+                    request.user.profile.liked.items.add(like)
+                    request.user.profile.liked.save()
+                    
+                else:
+                    like.delete()
+                return JsonResponse(res.json(), status=res.status_code)
             else:
-                response = JsonResponse({}, status=400)
+                if object_type == "post":
+
+                    likePost(object_id, cur_author_id)
+
+                    response = JsonResponse({'redirect_url': "current"}, status=200)
+                    # response = render(request, "chat/stream.html", dynamic_contain)
+                elif object_type == "comment":
+
+                    # object_id = request_post.get("object_id","")
+                    likeComment(object_id, cur_author_id)
+                    # response = render(request, "chat/stream.html", dynamic_contain)
+                    # pass
+                    response = JsonResponse({'redirect_url': "current"}, status=200)
+                else:
+                    response = JsonResponse({"Details", "Invalid like object type"}, status=400)
 
         elif contentType == "comment":
 
@@ -324,49 +350,51 @@ Generate response at friend_profile page , Now is deafault friend Zoe, need to b
 def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
     server = User.objects.get(username=SERVER)
     host = server.last_name
-    foreign_author = getUser(FOREIGN_ID)
-    author_id = host + "author/" + AUTHOR_ID
+    # foreign_author = getUser(FOREIGN_ID)
+    foreign_author = Profile.objects.get(id=host + "author/" + FOREIGN_ID)
+    author_id = host_server + "author/" + AUTHOR_ID
+    print(author_id)
     cur_author = Profile.objects.get(id=author_id)
-    if foreign_author != None:
-        foreign_user_name = foreign_author.username
+    # if foreign_author != None:
+    #     foreign_user_name = foreign_author.username
 
-        if getFriend(request.user.id, foreign_author.id):
-            isFriend = True;
-        else:
-            isFriend = False;
+    #     if getFriend(request.user.id, foreign_author.id):
+    #         isFriend = True;
+    #     else:
+    #         isFriend = False;
 
-        if getFollowing(request.user.id, foreign_author.id):
-            isFollowing = True;
-        else:
-            isFollowing = False;
+    #     if getFollowing(request.user.id, foreign_author.id):
+    #         isFollowing = True;
+    #     else:
+    #         isFollowing = False;
 
         # a list of post
         #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
         # try:
-        res = postsRequest("GET", host, FOREIGN_ID)
-        if res.status_code < 400:
-            foreign_timeline = PostSerializer(res.json()['posts'], many=True).data
-        else:
-            foreign_timeline = []
+        # res = postsRequest("GET", host, FOREIGN_ID)
+        # if res.status_code < 400:
+        #     foreign_timeline = PostSerializer(res.json()['posts'], many=True).data
+        # else:
+        #     foreign_timeline = []
         # except:
         #     foreign_timeline = []
 
-        author_num_follwers = len(foreign_author.profile.followers.items.all())
-        friend_request_num = len(request.user.inbox.friend_requests.all())
+        # author_num_follwers = len(foreign_author.profile.followers.items.all())
+        # friend_request_num = len(request.user.inbox.friend_requests.all())
 
-        dynamic_contain = {
-            'foreignName' : foreign_author.profile.displayName,
-            # 'timeline': foreign_timeline,
-            'author_num_follwers': author_num_follwers,
-            'isFriend': isFriend,
-            'isFollowing': isFollowing,
-            'foreignId':foreign_author.id,
-            'friend_request_num': friend_request_num,
-            'cur_author': cur_author,
-        }
-        response = render(request, "chat/foreign_public_channel.html", dynamic_contain)
-        return response
-    return HttpResponse(404)
+    dynamic_contain = {
+        'foreignName' : foreign_author.displayName,
+        'timeline': [],
+        'author_num_followers': 0,
+        'isFriend': False,
+        'isFollowing': False,
+        'foreignId':foreign_author.id,
+        'friend_request_num': 0,
+        'cur_author': cur_author,
+    }
+    response = render(request, "chat/foreign_public_channel.html", dynamic_contain)
+    return response
+    # return HttpResponse(404)
 
 
 
@@ -436,9 +464,10 @@ def posts(request, AUTHOR_ID):
 
 
         if len(f) > 0:
-            content_type = "image/" + os.path.splitext(f.name)[-1][1:]
+            content_type = "image/" + os.path.splitext(f.name)[-1][1:] + ";base64"
             with f.open("rb") as image_file:
                 content = base64.b64encode(image_file.read())
+                content = content.decode()
         else:
             content = description
 
@@ -707,6 +736,7 @@ def search(request, AUTHOR_ID):
     except:
         return JsonResponse({}, status=409)
     try:
+        print("Search for profile locally...")
         target = Profile.objects.get(id=target_id)
         serializer = ProfileSerializer(target)
 
@@ -722,6 +752,7 @@ def search(request, AUTHOR_ID):
 
         return JsonResponse(json_dict, status=200)
     except Profile.DoesNotExist:
+        print("Trying you get foreign profile...")
         response = profileRequest("GET", author_origin, target_id.split("/")[-1])
         #print(author_origin)
         print(response.status_code)
