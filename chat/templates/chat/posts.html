@@ -210,9 +210,6 @@
 
           <!--             post content mine =====================================================-->
           {% for cur_post in page_obj %}
-                <!-- {% if cur_post.unlisted %} -->
-                <!-- continue -->
-                <!-- {% else %} -->
                 <div class="post-content" id={{cur_post.id}}>
 
                   {% if 'image/' in cur_post.contentType  %}
@@ -362,7 +359,6 @@
                 </div>
                </br>
              </div>
-                <!-- {% endif %} -->
 
           {% endfor %}
 
