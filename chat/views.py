@@ -292,7 +292,7 @@ def my_stream(request, AUTHOR_ID):
                     # store liked object in current author
                     request.user.profile.liked.items.add(like)
                     request.user.profile.liked.save()
-                    
+
                 else:
                     like.delete()
                 return JsonResponse(res.json(), status=res.status_code)
@@ -446,6 +446,7 @@ def posts(request, AUTHOR_ID):
         }
 
         response = render(request, "chat/posts.html", dynamic_contain)
+
         return response
 
     elif request.method == "POST":
@@ -896,6 +897,19 @@ def get_github_activity(request, AUTHOR_ID):
         return None
     # pprint(r.json())
 
+@require_http_methods(["GET"])
+def unlisted(request, AUTHOR_ID, POST_ID):
+    post_id = host_server + "author/" + AUTHOR_ID + '/posts/' + POST_ID
+    try:
+        post = Post.objects.get(id=post_id)
+        print(post)
+        if post.unlisted:
+            return render(request, "chat/posts_unlisted.html", {"unlisted": post})
+        else:
+            return render(request, "chat/posts_unlisted.html", {})
+    except:
+        return render(request, "chat/posts_unlisted.html", {})
+
 
 '''
 Below is the dead code, or previous version, keep it , incase need that in the future
@@ -956,9 +970,9 @@ def unlisted(request, AUTHOR_ID, POST_ID):
     try:
         post = Post.objects.get(id=post_id)
         if post.unlisted:
-            return render(request, "chat/unlisted.html", {"unlisted_post": post})
+            return render(request, "chat/posts_unlisted.html", {"unlisted": post})
         else:
-            return render(request, "chat/unlisted.html", {})
+            return render(request, "chat/posts_unlisted.html", {})
     except:
-        return render(request, "chat/unlisted.html", {})
+        return render(request, "chat/posts_unlisted.html", {})
     

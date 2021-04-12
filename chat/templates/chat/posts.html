@@ -2,7 +2,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ChatByte</title>
+    <title>ChatByte | My Posts</title>
 
     <!-- Stylesheets
     ================================================= -->
@@ -210,6 +210,9 @@
 
           <!--             post content mine =====================================================-->
           {% for cur_post in page_obj %}
+                {% if cur_post.unlisted %}
+                <!-- continue -->
+                {% else %}
                 <div class="post-content" id={{cur_post.id}}>
 
                   {% if 'image/' in cur_post.contentType  %}
@@ -224,8 +227,30 @@
                       <div class="user-info">
                         <h5><a href="" class="profile-link" id="fullName">{{cur_post.author.displayName}}</a> </h5>
                         <p class="text-grey post_date" >{{cur_post.published}} </p>
+                        <div style="display:inline-flex;">
+                          <!-- deal with displaying category -->
+                          <!-- <p class="text-muted">categories {{cur_post.categories}}</p> &ensp; -->
+                          {% if 'nonsense' in cur_post.categories  %}
+                            <span class="text-muted" style="padding-top: 3px; padding-right:7px;"><i class="fas fa-cat"></i></span>
+                          {% elif 'award' in cur_post.categories %}
+                            <span class="text-muted" style="padding-top: 3px; padding-right:7px;"><i class="fas fa-award"></i></span>
+                          {% elif 'ad' in cur_post.categories %}
+                            <span class="text-muted" style="padding-top: 3px; padding-right:7px;"><i class="fas fa-ad"></i></span>
+                          {% elif 'kiss' in cur_post.categories %}
+                            <span class="text-muted" style="padding-top: 3px; padding-right:7px;"><i class="fas fa-kiss-beam"></i></span>
+                          {% elif 'web' in cur_post.categories %}
+                            <span class="text-muted" style="padding-top: 3px; padding-right:7px;"><i class="fas fa-kiss-aws"></i></span>
+                          {% endif %}
 
-                        <p class="text-muted">categories {{cur_post.categories}}</p>
+                          <!-- deal with displaying visibility -->
+                          {% if 'public' in cur_post.visibility  %}
+                            <span class="text-muted" style="padding-top:3px;"><i class="fas fa-users"></i></span>
+                          {% elif 'friend' in cur_post.visibility %}
+                            <span class="text-muted" style="padding-top:3px;"><i class="fas fa-user-friends"></i></span>
+                          {% elif 'private' in cur_post.visibility %}
+                            <span class="text-muted" style="padding-top:3px;"><i class="fas fa-user"></i></span>
+                          {% endif %}
+                        </div>
                       </div>
                       <hr class="solid">
                       <div class="post-text">
@@ -337,6 +362,8 @@
                 </div>
                </br>
              </div>
+                {% endif %}
+
           {% endfor %}
 
           <div class="pagination">

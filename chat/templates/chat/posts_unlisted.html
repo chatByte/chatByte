@@ -1,0 +1,266 @@
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ChatByte | Unlisted Posts</title>
+
+    <!-- Stylesheets
+    ================================================= -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
+    <link href="{% static 'css/emoji.css' %}" rel="stylesheet">
+
+    <!--Google Font-->
+    <link href="https://fonts.googleapis.com/css?family=Archivo" rel="stylesheet">
+
+    <style media="screen">
+      body{
+        font-family:'Archivo';
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Header
+    ================================================= -->
+    <header id="header">
+      <nav class="navbar menu">
+        <div class="container">
+
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <!-- left most logo -->
+          <div class="navbar-header">
+            <a class="navbar-brand" href=""><img src="{% static 'images/logo.png' %}" alt="logo" width="60" height="30" /></a>
+          </div>
+
+          <!-- # search bar -->
+          <!-- Load icon library -->
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+            <!-- <div class="navbar-form navbar-left hidden-sm">
+              <div class="form-group">
+                <input type="text" class="form-control" name="search" id="search_user_input" placeholder="Search for new friends" onkeypress="search()">
+              </div>
+            </div> -->
+
+
+
+
+
+
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <!-- <ul class="nav navbar-nav navbar-right main-menu">
+
+              <li class="dropdown"><a href="../my_stream/">My Stream</a></li>
+              <li class="dropdown"><a href="../my_friends">My Friends</a></li>
+              <li class="dropdown"><a href="../my_posts">My Posts</a></li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Profile <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="../profile/">Edit Profile</a></li>
+                </ul>
+              </li>
+
+              <li class="dropdown" id="myInbox">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
+                <ul class="dropdown-menu">
+                  {% for friend_request in user.inbox.friend_requests.all %}
+                    <li><a >{{friend_request.summary}}</a><button class="accept" onclick="accept_or_reject('accept', '{{friend_request.id}}')">Accept</button><button class="reject" onclick="accept_or_reject('reject', '{{friend_request.id}}')">Reject</button></li>
+                  {% endfor %}
+                </ul>
+              </li>
+
+              <li class="dropdown"><a href="/accounts/logout">Logout</a></li>
+
+            </ul> -->
+
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container -->
+      </nav>
+    </header>
+
+    <div class="page-content">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+          </div>
+          <div class=" col-md-7">
+
+
+          <!--             post content mine =====================================================-->
+          {% if unlisted is defined %}
+
+                <div class="post-content" id={{unlisted.id}}>
+
+                  {% if 'image/' in unlisted.contentType  %}
+                  {% load filter %}
+                  <img alt="post-image" class="img-responsive post-image" src="data:image;base64,{{ unlisted.content | bin_2_img }}"/>
+                  {% endif %}
+                  <div class="post-container">
+                    <img src="{% static 'images/user.png' %}" alt="user" class="profile-photo-md pull-left" />
+                    <div class="post-detail">
+                      <h5>Source: <a href="{{unlisted.source}}">{{unlisted.source}}</a> </h5>
+                      <h5>Origin: <a href="{{unlisted.origin}}">{{unlisted.origin}}</a> </h5>
+                      <div class="user-info">
+                        <h5><a href="" class="profile-link" id="fullName">{{unlisted.author.displayName}}</a> </h5>
+                        <p class="text-grey post_date" >{{unlisted.published}} </p>
+
+                        <div style="display:inline-flex;">
+                          <!-- deal with displaying category -->
+                          <!-- <p class="text-muted">categories {{unlisted.categories}}</p> &ensp; -->
+                          {% if 'nonsense' in unlisted.categories  %}
+                            <span class="text-muted" style="padding-top: 3px; padding-right:7px;"><i class="fas fa-cat"></i></span>
+                          {% elif 'award' in unlisted.categories %}
+                            <span class="text-muted" style="padding-top: 3px; padding-right:7px;"><i class="fas fa-award"></i></span>
+                          {% elif 'ad' in unlisted.categories %}
+                            <span class="text-muted" style="padding-top: 3px; padding-right:7px;"><i class="fas fa-ad"></i></span>
+                          {% elif 'kiss' in unlisted.categories %}
+                            <span class="text-muted" style="padding-top: 3px; padding-right:7px;"><i class="fas fa-kiss-beam"></i></span>
+                          {% elif 'web' in unlisted.categories %}
+                            <span class="text-muted" style="padding-top: 3px; padding-right:7px;"><i class="fas fa-kiss-aws"></i></span>
+                          {% endif %}
+
+                          <!-- deal with displaying visibility -->
+                          {% if 'public' in unlisted.visibility  %}
+                            <span class="text-muted" style="padding-top:3px;"><i class="fas fa-users"></i></span>
+                          {% elif 'friend' in unlisted.visibility %}
+                            <span class="text-muted" style="padding-top:3px;"><i class="fas fa-user-friends"></i></span>
+                          {% elif 'private' in unlisted.visibility %}
+                            <span class="text-muted" style="padding-top:3px;"><i class="fas fa-user"></i></span>
+                          {% endif %}
+                        </div>
+                      </div>
+                      <hr class="solid">
+                      <div class="post-text">
+
+                        <p class="post_title" style="font-weight:700; font-size:18px; color:152238; padding-top: 5px;">
+                          {{ unlisted.title}}
+                        </p>
+
+                        {% if 'plain' in unlisted.contentType or 'image' in unlisted.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ unlisted.description | linebreaks }}
+                        </p>
+                        {% elif 'markdown' in unlisted.contentType %}
+                        <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                          {{ unlisted.description | markdown | safe }}
+                        </p>
+                        {% endif %}
+
+                        
+
+                        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="create-post">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                      <div class="form-group">
+                                          <div class="form-group-col">
+                                            {% csrf_token %}
+                                            <textarea  id="title1" cols="45" rows="1" class="form-title-control" required>{{unlisted.title}}</textarea>
+                                            <img id="uploadImg">
+                                            {% if 'plain' in unlisted.contentType or 'image' in unlisted.contentType %}
+                                            <textarea  id="description1" cols="45" rows="4" class="form-control">{{unlisted.description }}</textarea>
+                                            {% elif 'markdown' in unlisted.contentType %}
+                                            <textarea  id="description1" cols="45" rows="4" class="form-control">{{unlisted.description | markdown | safe}}</textarea>
+                                            {% endif %}
+
+                                            <input type='file' id='imageFile1' accept="image/*" onchange="readImg(this);">
+
+                                            <div class="dropdown">
+                                               <div class="publicity"><a id="contentType1" href="#" style="color: #6d6e71;font-size: 15px;"><i class="fas fa-edit"></i><a></div>
+                                                <div class="dropdown-content">
+                                                  <a href="#" id="text/plain1"><i class="fas fa-edit"></i>&ensp;<span>This is simply a text post</span></a>
+                                                  <a href="#" id="image1"><i class="ion-images"></i>&ensp;<span>This is an image post</span></a>
+                                                  <a href="#" id="text/markdown1"><i class="far fa-file"></i>&ensp;<span>This is a Common Markdown post</span></a>
+                                                </div>
+                                            </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="editPost( '{{ unlisted.id }}')">Save Change</button>
+                              </div>
+                            </div>
+                          </div>
+
+                      </div>
+
+                      <hr class="solid">
+                      <!--              show nested comment  -->
+                      {% for comment in unlisted.comments.all %}
+
+                          <div class="post-comment" id={{comment.id}}>
+                            <img src="{% static 'images/user.png' %}" alt="" class="profile-photo-sm" />
+
+                            <div class="post-commentor">
+                            <a href="{{comment.author.id}}/profile" class="profile-link"> {{ comment.author.displayName }} </a>
+                            <div class="post-comment-contain">
+                              {% if 'plain' in comment.contentType %}
+                              <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                                {{ comment.comment | linebreaks }}
+                              </p>
+                              {% elif 'markdown' in comment.contentType %}
+                              <p style="font-weight:700; font-size:14px; color:152238; padding-top: 5px;">
+                                {{ comment.comment | markdown | safe }}
+                              </p>
+                              {% endif %}
+                            </div>
+                          </div>
+
+                          <div >
+
+                            {% if comment.id in liked_objs %}
+                            <a class="text-red" ><i class="icon ion-ios-heart no_affect_like"></i>{{ comment.likes.all | length }}</a>
+                            {% else %}
+                            <a class="" ><i class="icon ion-ios-heart no_affect_like"></i>{{ comment.likes.all | length }}</a>
+                            {% endif %}
+                          </div>
+
+                        </div>
+                        <hr class="solid">
+                     {% endfor %}
+
+
+                    </div>
+
+                  </div>
+                </div>
+               </br>
+             </div>
+          {% else %}
+          <!-- continue -->
+          <p>No such post...</p>
+          {% endif %}
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!--preloader-->
+    <div id="spinner-wrapper">
+      <div class="spinner"></div>
+    </div>
+    {% load static %}
+    <!-- Scripts
+    ================================================= -->
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
+    <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+
+    <script src="{% static 'script/posts.js' %}"></script>
+    <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
+  </body>
+</html>
