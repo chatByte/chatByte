@@ -331,14 +331,18 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             try:
                 author = Profile.objects.get(id=profile_url)
             except:
-                res = profileRequest("GET", origin_server, author_id)
-                if res.status_code >= 400:
-                    return JsonResponse({"Error": "Profile get failed"}, status=404)
-                print("Profile from comment: ", res)
-                print("Content: ", res.json())
-                author_ser = ProfileSerializer(data=res.json())
-                if author_ser.is_valid():
-                    author = author_ser.save()
+                try:
+                    # if the author's id is not a full url, try this
+                    author = Profile.objects.get(id=author_id)
+                except:
+                    res = profileRequest("GET", origin_server, author_id)
+                    if res.status_code >= 400:
+                        return JsonResponse({"Error": "Profile get failed"}, status=404)
+                    print("Profile from comment: ", res)
+                    print("Content: ", res.json())
+                    author_ser = ProfileSerializer(data=res.json())
+                    if author_ser.is_valid():
+                        author = author_ser.save()
             
             print(author)
             comment = createComment(author, POST_ID, data['content'], data['contentType'])
