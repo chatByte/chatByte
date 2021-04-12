@@ -151,7 +151,7 @@
                       <h5>Source: <a href="{{cur_post.source}}" style="max-width:100px;">{{cur_post.source}}</a> </h5>
                       <h5>Origin: <a href="{{cur_post.origin}}">{{cur_post.origin}}</a> </h5>
                       <div class="user-info">
-                        <h5><a href="" class="profile-link" id="fullName">{{cur_post.author.displayName}}</a> </h5>
+                        <h5><p onclick="search( '{{cur_post.author.id}}' )" class="profile-link">{{cur_post.author.displayName}}</p> </h5>
 												<p class="text-grey post-date" >{{cur_post.published}} </p>
 
                         <p class="text-muted">categories {{cur_post.categories}}</p>

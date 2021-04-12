@@ -26,6 +26,44 @@ $(window).on('load', function() {
     hidePreloader();
 });
 
+
+
+function search(ID){
+  var id = ID;
+  var host = id.split("/");
+  var host_name = host[0]+"//"+host[2]+"/";
+
+
+$.ajax({
+        url : "../search/", // the endpoint
+        type : "POST", // http method
+        dataType: 'json', // what to expect back from the server
+        cache: false,
+        headers: {"X-Server": host_name},
+        contentType: "application/json",
+        processData: false,
+        beforeSend: function(xhr) {
+          console.log("why");
+          xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+          xhr.setRequestHeader("X-Request-User", id);
+        },
+        data: JSON.stringify({"url": id}),
+
+
+        // handle a successful response
+        success: function(json) {
+            console.log("success"); // sanity check
+            console.log("haha");
+            console.log(json);
+            var url = json["url"];
+
+
+            window.location.replace(url);
+        },
+      });
+
+}
+
 // helper function to get csrf token
 function getCookie(name) {
     let cookieValue = null;
@@ -110,7 +148,7 @@ function likePost(post_id, liked) {
 function likeComment(comment_id, liked) {
   // like a post
   if (liked) return;
-    
+
   var csrftoken = getCookie('csrftoken');
 
   // var post_id = $(this).closest('.post-content').attr('id');

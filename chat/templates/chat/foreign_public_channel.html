@@ -85,7 +85,7 @@
             <div class="row">
               <div class="col-md-3">
                 <div class="profile-info">
-                  <img src="{% static 'images/snow-mount.jpg' %}" alt="" class="img-responsive profile-photo" />
+                  <img src="{% static 'images/user.png' %}" alt="" class="img-responsive profile-photo" />
                   <h3 id="fullName">{{foreignName}}</h3>
                   <p class="text-muted"> {{author_num_follwers}} people is following her</p>
                   {% if isFollowing %}
@@ -118,7 +118,7 @@
             <div class="col-md-3">
               <div class="activities">
                 <!--Activity SUmmary-->
-                <div id="sticky-sidebar">
+                <!-- <div id="sticky-sidebar">
                   <h4 class="grey"><a href="" class="profile-link" id="name">{{foreignName}}</a>'s activity</h4>
                   <div class="feed-item">
                     <div class="live-activity">
@@ -126,8 +126,7 @@
                       <p class="text-muted"> xxxx mins ago</p>
                     </div>
                   </div>
-
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="col-sm-1"></div>
@@ -135,26 +134,13 @@
               <div class="posts">
 
                 <!-- if nothing is posted -->
-                {% if not timeline | length %}
                   <div class="error-page">
                     <div class="error-content">
                       <div class="container">
-                        <img src="images/404.png" alt="" class="img-responsive" />
-                        <div class="error-message">
-                          <h1 class="error-title">Whoops!</h1>
-                          <p>Looks like you are lost. But don't worry there is plenty to see!!</p>
-                        </div>
-                        <form class="search-form">
-                          <div class="form-group">
-                            <label for="search_content">Search Content!</label>
-                            <input id="search_content" type="text" class="form-control" value="" placeholder="Search what you want to find...">
-                          </div>
-                          <button type="submit" class="btn btn-primary">Search Now!</button>
-                        </form>
+                        <img src="{% static 'images/preview.png' %}" alt="" class="img-responsive" width="750px" />
                       </div>
                     </div>
                   </div>
-                {% endif %}
 
 
                 {% for cur_post in timeline reversed %}
