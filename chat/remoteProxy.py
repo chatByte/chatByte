@@ -79,7 +79,7 @@ def postRequest(method, origin, user_id, post_id, data=None):
         print(response.status_code)
     return response
 
-def commentRequest(method, origin, user_id, post_id, data=None):
+def commentRequest(method, origin, user_id, post_id, local_user_id, data=None):
     '''
     This function send a request to the remote server at:
         service/author/<author id>/posts/<post id>/comments/
@@ -89,7 +89,7 @@ def commentRequest(method, origin, user_id, post_id, data=None):
     '''
     url = str(origin) + "author/" + str(user_id) + "/posts/" + str(post_id) + "/comments"
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
+    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(local_user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
