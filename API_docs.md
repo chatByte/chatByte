@@ -850,7 +850,7 @@ URL://service/author/{AUTHOR_ID}/posts/{POST_ID}/comments
 For remote Body of Request:
 ```
 {
-    "Content":"Sick Olde English",
+    "content":"Sick Olde English",
     "contentType":"text/markdown",
 }
 ```
