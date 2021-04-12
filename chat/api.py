@@ -325,7 +325,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             data = JSONParser().parse(request)
 
             profile_url = request.META.get("HTTP_X_REQUEST_USER")
-            
+            origin_server = profile_url.split('author/')[0]
             author_id = profile_url.split('author/')[1]
             print("author id:", author_id)
             try:
