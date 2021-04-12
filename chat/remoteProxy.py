@@ -161,7 +161,7 @@ def followerRequest(method, origin, user_id, foreign_author_id,data=None):
     with the corresponding method. Headers are included to ensure secure connections.
     The body of the request is empty.
     '''
-    url = str(origin) + "author/" + str(user_id) + str(foreign_author_id) + "/"
+    url = str(origin) + "author/" + str(user_id) + "/followers/" + str(foreign_author_id)
     user = User.objects.get(last_name=origin)
     headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=405) 
