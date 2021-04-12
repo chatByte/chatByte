@@ -33,7 +33,7 @@
           <!-- Brand and toggle get grouped for better mobile display -->
           <!-- left most logo -->
           <div class="navbar-header">
-            <!-- <a class="navbar-brand" href=""><img src="" alt="logo" width="60" height="30" /></a> -->
+            <a class="navbar-brand" href=""><img src="{% static 'images/logo.png' %}" alt="logo" width="60" height="30" /></a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -85,7 +85,7 @@
                 <div class="profile-info">
                   <img src="{% static 'images/user.png' %}" alt="" class="img-responsive profile-photo" />
                   <h3 id="fullName">{{user.profile.displayName}}</h3>
-                  <p class="text-muted"> {{user.profile.followers.all.count}} people is following me</p>
+                  <p class="text-muted"> {{user.profile.followers.all | length}} people is following me</p>
                 </div>
               </div>
               <div class="col-md-9">

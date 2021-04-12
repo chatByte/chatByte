@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>ChatByte | This is the Coolest Social Network</title>
+		<title>ChatByte | The Coolest Social Network</title>
 		<!-- Stylesheets
     ================================================= -->
     	{% load static %}
@@ -29,27 +29,31 @@
     <div class="container wrapper">
       <div class="row">
         <div class="col-sm-5">
+					<img src="{% static 'images/logo2.png' %}" alt="logo" width="400" height="200" />
           <div class="intro-texts">
             <h1 class="text-white">Meet Awesome Programming Enthusiatics Here!</h1>
-            <p>Chaybyte descriptions</p>
+						<p>Chaybyte is a social network service developed by Team 13 <br />
+              in CMPUT 404. As a user, you may use this is a tech blog to <br />
+              connect with people who share the same interest!</p>
           </div>
         </div>
         <div class="col-sm-6 col-sm-offset-1">
           <div class="reg-form-container">
 
+            <!-- Register/Login Tabs-->
+            <div class="reg-options">
+              <ul class="nav nav-tabs">
+                <li class="active"><a href="#singup" data-toggle="tab">Sign Up</a></li>
+								<li><a href="../login/" >Login</a></li>
+              </ul><!--Tabs End-->
+            </div>
 
             <!--Registration Form Contents-->
             <div class="tab-content">
               <div  id="signup">
                 <h1>Join Today!</h1>
-                <p class="text-muted">An apple a day, keep the doctor away</p>
+                <p class="text-muted">Sign up now and meet programming enthusiatics around the world!</p>
 
-                <!--Sign up Form-->
-                <!-- {% if messages %}
-					{% for message in messages %}
-	   					<p class="text-muted" style="color: red;">{{ message }}</li>
-					{% endfor %}
-				{% endif %} -->
                 <form name="sign_up_form" id='sign_up_form' class="form-inline" method="post" action="../signup/">
 							    {% csrf_token %}
 							    {{ form.as_p }}
