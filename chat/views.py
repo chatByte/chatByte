@@ -865,6 +865,7 @@ def reshare(request, AUTHOR_ID):
     content = post.content
     unlisted = str(post.unlisted)
     createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted, post_id)
+    print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHhh, here for reshare button pressed")
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response
@@ -905,6 +906,7 @@ def unlisted(request, AUTHOR_ID, POST_ID):
     post_id = host_server + "author/" + AUTHOR_ID + '/posts/' + POST_ID
     try:
         post = Post.objects.get(id=post_id)
+        print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHhh, here for unlisted")
         print(post)
         if post.unlisted:
             return render(request, "chat/posts_unlisted.html", {"unlisted": post})
