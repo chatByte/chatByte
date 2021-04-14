@@ -193,7 +193,9 @@ function likeComment(comment_id, liked) {
 }
 
 
-function reshare(post){
+function reshare_js(post){
+  console.log("here, reshare_js");
+
   console.log("post: ", post);
   $.ajax({
     url:"../reshare/",
