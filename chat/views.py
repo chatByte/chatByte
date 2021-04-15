@@ -232,7 +232,7 @@ def my_stream(request, AUTHOR_ID):
 
         jsonify_public_channel_posts = sorted(jsonify_public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
         for post in jsonify_public_channel_posts:
-            print("post:\n", post)
+            # print("post:\n", post)
             post['comments'] = sorted(post['comments'], key=lambda k: k.get('published', 0))
 
 
@@ -850,25 +850,18 @@ reshare a post
 @require_http_methods(["POST"])
 def reshare(request, AUTHOR_ID):
     data = JSONParser().parse(request)
-    post_id = data['post_id']
-    try:
-        post = Post.objects.get(id=post_id)
-    except Exception as e:
-        response_json_text = "no reshare,post id not correct, and ur problem " + e
-        response = JsonResponse({response_json_text : "false"}, status=400)
 
+    # post_id = data['id']
+    #  another way to do it
+    # post = Post.objects.get(id=post_id)
 
-    source = request.user.profile.id
-    origin = post.origin # who origin create
-    title = post.title
-    description = post.description
-    content_type = post.contentType
-    visibility = post.visibility
-    categories = post.categories
-    content = post.content
-    unlisted = str(post.unlisted)
-    createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted, post_id)
+    #actually we need not that source
+    # source = request.user.profile.id
+    # unlisted = str(post.unlisted)
+    # reshare_id =  data['id']
 
+    createFlag = createPost( data['title'], "", data['origin'], data['description'], data['content_type'], data['content'], request.user.profile, data['categories'], data['visibility'], data['unlisted'],  data['id'])
+>>>>>>> youwei1-sudo
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response

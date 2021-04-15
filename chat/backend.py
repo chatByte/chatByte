@@ -193,6 +193,7 @@ def updateProfile(id, display_name, email, url, github):
 # the flag design for reshare, if it is reshare, i need post.origin to be passed, 
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility, unlisted, reshareID=None):
     # Please authenticate before calling this method
+    # here cateories passed is string
     categories_array = []
     categories_array.append(categories)
 

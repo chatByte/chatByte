@@ -183,8 +183,12 @@
                         <a class="btn" onclick="likePost( '{{ cur_post.id }}', 0 )"><i class="icon ion-ios-heart like"></i>{{ cur_post.num_likes }}</a>
 
                         {% endif %}
-                        <!-- <a class="btn text-green" onclick="reshare_js( '{{ cur_post }}' )"><i class="icon ion-share"></i></a> -->
-                        <a class="btn text-green" onclick="reshare('{{ cur_post.id }}')"><i class="icon ion-share"></i></a>
+
+
+<!--                         '{{ cur_post.id }}', '{{ cur_post.title }}' , 
+                         '{{ cur_post.origin }}' , '{{ cur_post.description }}' , '{{ cur_post.contentType }}' , '{{ cur_post.content }}' , '{{ cur_post.visibility }}' , '{{ cur_post.unlisted }}'   -->
+                        <a class="btn text-green" onclick="reshare( '{{ cur_post.id }}', '{{ cur_post.title }}' ,'{{ cur_post.origin }}' , '{{ cur_post.description }}', '{{ cur_post.contentType }}' , '{{ cur_post.content }}', '{{ cur_post.visibility }}', '{{ cur_post.unlisted }}')"><i class="icon ion-share"></i></a>
+
                       </div>
 
                       <hr class="solid">
