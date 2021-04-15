@@ -861,7 +861,6 @@ def reshare(request, AUTHOR_ID):
     # reshare_id =  data['id']
 
     createFlag = createPost( data['title'], "", data['origin'], data['description'], data['content_type'], data['content'], request.user.profile, data['categories'], data['visibility'], data['unlisted'],  data['id'])
->>>>>>> youwei1-sudo
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response
