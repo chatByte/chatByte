@@ -860,7 +860,7 @@ def reshare(request, AUTHOR_ID):
     # unlisted = str(post.unlisted)
     # reshare_id =  data['id']
 
-    createFlag = createPost( data['title'], "", data['origin'], data['description'], data['content_type'], data['content'], request.user.profile, data['categories'], data['visibility'], data['unlisted'],  data['id'])
+    createFlag = createPost( data['title'], "", data['origin'], data['description'], data['content_type'], data['content'], request.user.profile, "reshare", data['visibility'], data['unlisted'],  data['id'])
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response
