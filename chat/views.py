@@ -122,8 +122,6 @@ def my_stream(request, AUTHOR_ID):
         # print(",,,,,,,,,,,,,,,")
         # print(all_public_posts)
 
-
-
         back_json = get_github_activity(request, AUTHOR_ID)
 
         # Get stream from: node origins, since we have plenty remote server
@@ -136,55 +134,58 @@ def my_stream(request, AUTHOR_ID):
                 continue
 
             res = streamRequest(node.origin, request.user.id)
-            try:
-                data = res.json()
-                # remote_posts += data['posts']
-                # print(data['posts'])
-                for post in data['posts']:
-                    remote_post_id = post['id']
-                    remote_origin = remote_post_id.split('author/')[0]
-                    remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
-                    remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
-                    res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
-                    print("stream get post's likes: ", res.json())
-                    print("Number of likes: ", len(res.json()))
-                    post['num_likes'] =  len(res.json())
-                    for comment in post['comments']:
-                        print(comment['id'])
-                        comment_id = comment['id'].split('comments/')[1]
-                        com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
-                        comment['num_likes'] = len(com_res.json())
-                        print(comment['num_likes'])
-                    remote_posts.append(post)
 
-                #     # print("Post id: ", post['id'])
-                #     post_id = post['id']
-                #     try:
-                #         post_obj = Post.objects.get(id=post_id)
-                #         serializer = PostSerializer(post_obj, data=post, partial=True)
-                #         if serializer.is_valid(raise_exception=True):
-                #             serializer.save()
-                #     except Post.DoesNotExist:
-                #         author_dict = post['author']
-                #         # print("Author dict: ", author_dict)
-                #         try:
-                #             author = Profile.objects.get(id=author_dict['id'])
-                #         except Profile.DoesNotExist:
-                #             author_serializer = ProfileSerializer(data=author_dict)
-                #             if author_serializer.is_valid(raise_exception=True):
-                #                 author = author_serializer.save()
+            # specific handling team 14, since they havent finsihed it yet, and they dont have pagenation
+            if node.origin != "https://hermes-cmput404.herokuapp.com/" :
+                try:
+                    data = res.json()
+                    # remote_posts += data['posts']
+                    # print(data['posts'])
+                    for post in data['posts']:
+                        remote_post_id = post['id']
+                        remote_origin = remote_post_id.split('author/')[0]
+                        remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
+                        remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
+                        res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
+                        print("stream get post's likes: ", res.json())
+                        print("Number of likes: ", len(res.json()))
+                        post['num_likes'] =  len(res.json())
+                        for comment in post['comments']:
+                            print(comment['id'])
+                            comment_id = comment['id'].split('comments/')[1]
+                            com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
+                            comment['num_likes'] = len(com_res.json())
+                            print(comment['num_likes'])
+                        remote_posts.append(post)
 
-                #         serializer = PostSerializer(data=post)
+                    #     # print("Post id: ", post['id'])
+                    #     post_id = post['id']
+                    #     try:
+                    #         post_obj = Post.objects.get(id=post_id)
+                    #         serializer = PostSerializer(post_obj, data=post, partial=True)
+                    #         if serializer.is_valid(raise_exception=True):
+                    #             serializer.save()
+                    #     except Post.DoesNotExist:
+                    #         author_dict = post['author']
+                    #         # print("Author dict: ", author_dict)
+                    #         try:
+                    #             author = Profile.objects.get(id=author_dict['id'])
+                    #         except Profile.DoesNotExist:
+                    #             author_serializer = ProfileSerializer(data=author_dict)
+                    #             if author_serializer.is_valid(raise_exception=True):
+                    #                 author = author_serializer.save()
 
-                #         if serializer.is_valid(raise_exception=True):
-                #             serializer.save(author=author) # comments=comments_list
-                #             post_obj = Post.objects.get(id=post_id)
-                #     # add stream post into public channel
-                #     mytimeline.add(post_obj)
-                #     # print("Post object", post_obj)
+                    #         serializer = PostSerializer(data=post)
 
-            except BaseException as e:
-                print(e)
+                    #         if serializer.is_valid(raise_exception=True):
+                    #             serializer.save(author=author) # comments=comments_list
+                    #             post_obj = Post.objects.get(id=post_id)
+                    #     # add stream post into public channel
+                    #     mytimeline.add(post_obj)
+                    #     # print("Post object", post_obj)
+
+                except BaseException as e:
+                    print(e)
 
 
 

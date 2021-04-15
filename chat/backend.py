@@ -211,6 +211,7 @@ def createPost(title, source, origin, description, content_type, content, author
             post.source = post.id
         else:
             post.categories = categories_array
+            # post.categories = categories
             post.origin = origin
             post.source = reshareID
         post.save()
