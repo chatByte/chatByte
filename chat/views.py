@@ -179,7 +179,7 @@ def my_stream(request, AUTHOR_ID):
                         remote_origin = remote_post_id.split('author/')[0]
                         remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
                         remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
-                        res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
+                        res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id, request.user.id)
                         print("stream get post's likes: ", res.json())
                         print("Number of likes: ", len(res.json()))
                         post['num_likes'] =  len(res.json())

@@ -220,12 +220,15 @@ This function send a request to the remote server at:
 with the corresponding method. Headers are included to ensure secure connections.
 The body of the request is empty.
 '''
-def likesRequest(method, origin, user_id, post_id, data=None):
+def likesRequest(method, origin, user_id, post_id, local_user_id=None, data=None):
 
     url = str(origin) + "author/" + str(user_id) + "/posts/" + post_id + "/likes"
     print("get post likes url: ", url)
     user = User.objects.get(last_name=origin)
-    headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
+    if local_user_id == None: 
+        headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
+    else:
+        headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(local_user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     if method == "GET":
         response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
