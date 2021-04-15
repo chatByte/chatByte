@@ -194,7 +194,7 @@ function likeComment(comment_id, liked) {
 
 // post_id, title, origin, description, content_type, content, visibility, unlisted
 function reshare(post_id, title, origin, description, content_type, content,visibility, unlisted ){
-  console.log("testing for reshare");
+  console.log("resharing");
   $.ajax({
     url:"../reshare/",
     type: "POST", // http method
