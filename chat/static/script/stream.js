@@ -192,9 +192,9 @@ function likeComment(comment_id, liked) {
   });
 }
 
-
+ // Reshare function design 
 function reshare(post_id){
-  console.log(post_id)
+  // console.log(post_id)
   $.ajax({
     url:"../reshare/",
     type: "POST", // http method
