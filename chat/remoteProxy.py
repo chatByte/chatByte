@@ -279,6 +279,7 @@ The body of the request is empty.
 def streamRequest(origin, user_id):
 
     if origin == "https://hermes-cmput404.herokuapp.com/" :
+
         team14_streamRequest(origin,user_id)
     else:
         url = str(origin) + "author/" + str(user_id) + "/stream/?page=1&size=1000"
@@ -294,9 +295,10 @@ def streamRequest(origin, user_id):
 Design for specific handling to grab Team 14th posts, currently grabbing all of posts
 '''
 def team14_streamRequest(origin, user_id):
+    print("--------------------------------------team 14 here ")
 
     # url = str(origin) + "author/" + str(user_id) + "/stream/?page=1&size=1000"
-    url = str(origin) + "/api/posts/"
+    url = str(origin) + "api/posts/"
 
     print(url)
     user = User.objects.get(last_name=origin)
