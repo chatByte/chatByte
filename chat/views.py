@@ -138,12 +138,16 @@ def my_stream(request, AUTHOR_ID):
 
             # specific handling team 14, since they havent finsihed it yet, and they dont have pagenation
             if node.origin == "https://hermes-cmput404.herokuapp.com/" :
-                data = res.json()
-                # design as a stop flag, so that we wont have too man post, to crashed our page
-                post_count = 0
-                for post in data['items']:
-                    if post_count > 2 :
-                        break
+                print("handling team 14 , get in stream:----------------")
+                print(res)
+
+                try:
+                    data = res.json()
+                    # design as a stop flag, so that we wont have too man post, to crashed our page
+                    post_count = 0
+                    for post in data['items']:
+                        if post_count > 2 :
+                            break
                     # remote_post_id = post['id']
                     # remote_origin = remote_post_id.split('author/')[0]
                     # remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
@@ -160,6 +164,9 @@ def my_stream(request, AUTHOR_ID):
                     #     print(comment['num_likes'])
                     remote_posts.append(post)
                     post_count = post_count + 1
+                except Exception as e:
+                    print(e)
+
 
             else:
                 try:

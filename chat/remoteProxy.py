@@ -296,6 +296,7 @@ Design for specific handling to grab Team 14th posts, currently grabbing all of 
 '''
 def team14_streamRequest(origin, user_id):
     print("--------------------------------------team 14 here ")
+    
 
     # url = str(origin) + "author/" + str(user_id) + "/stream/?page=1&size=1000"
     url = str(origin) + "api/posts/"
