@@ -284,7 +284,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
-        return commentRequest(request.method,server_origin, USER_ID, USER_POST_ID, request.data)
+        return commentRequest(request.method,server_origin, USER_ID, USER_POST_ID, request.user.id, request.data)
     else:
         # checking, comments' father exist or not
         try:
@@ -1084,17 +1084,21 @@ def inbox_likes(request, AUTHOR_ID):
         # send the like object to remote server
         return inbox(request, AUTHOR_ID)
     foreign_author = request.META.get("HTTP_X_REQUEST_USER")
+    print("X-request-user: ", foreign_author)
     try:
         author = Profile.objects.get(id=foreign_author)
     except:
         foreign_server = foreign_author.split('author/')[0]
         foreign_id = foreign_author.split('author/')[1]
-        headers = {"X-Server": foreign_server}
+        headers = {'Origin': host_server, 'X-Request-User': str(host_server) + "author/" + str(AUTHOR_ID), 'Content-type': 'application/json'}
         url = str(foreign_server) + "author/" + str(foreign_id)
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(request.user.username, request.user.first_name))
+        node = User.objects.get(last_name=foreign_server)
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(node.username, node.first_name))
+        print("Profile data from remote server: ", response.json())
         profile_ser = ProfileSerializer(data=response.json())
         if profile_ser.is_valid():
             author = profile_ser.save()
+    print(author)
     if data['type'] == 'comment':
         original_author_id = data['id'].split('author/')[1].split('/posts')[0]
         print("original author id for the liked object: ", original_author_id)

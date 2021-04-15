@@ -193,8 +193,10 @@ function likeComment(comment_id, liked) {
 }
 
 
-function reshare(post){
-  console.log("post: ", post);
+// post_id, title, origin, description, content_type, content, visibility, unlisted
+function reshare(post_id, title, origin, description, content_type, content,visibility, unlisted ){
+  console.log("resharing");
+
   $.ajax({
     url:"../reshare/",
     type: "POST", // http method
@@ -205,10 +207,19 @@ function reshare(post){
     },
     contentType: 'application/json; charset=utf-8',
     dataType: "json",
+    // give the data of the post, that want to be shared
     data: JSON.stringify({
-      "post": post
+    // # who origin create
+    "origin" : origin,
+    "title" : title,
+    "description" : description,
+    "content_type" : content_type,
+    "visibility": visibility, 
+    "categories": "reshare", 
+    "content":content, 
+    "unlisted" : unlisted,
+    "id": post_id
     }),
-    // fields = ['type','id', 'host', 'displayName', 'url', 'github']
     // handle a successful response
     success : function(data) {
         console.log(data); // sanity check
