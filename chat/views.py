@@ -853,8 +853,10 @@ def reshare(request, AUTHOR_ID):
     post_id = data['post_id']
     try:
         post = Post.objects.get(id=post_id)
-    else:
-        response = JsonResponse({"no reshare,post id not correct": "false"}, status=400)
+    except Exception as e:
+        response_json_text = "no reshare,post id not correct, and ur problem " + e
+        response = JsonResponse({response_json_text : "false"}, status=400)
+
 
     source = request.user.profile.id
     origin = post.origin # who origin create
@@ -866,7 +868,7 @@ def reshare(request, AUTHOR_ID):
     content = post.content
     unlisted = str(post.unlisted)
     createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility, unlisted, post_id)
-    
+
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response
