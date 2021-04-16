@@ -930,7 +930,6 @@ def get_github_activity(request, AUTHOR_ID):
     # pprint(r.json())
 
 
-@login_required
 @require_http_methods(["GET"])
 def unlisted(request, AUTHOR_ID, POST_ID):
     print("unlisted view")
