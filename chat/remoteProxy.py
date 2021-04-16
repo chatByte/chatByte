@@ -309,5 +309,6 @@ def team14_streamRequest(origin, user_id):
     headers = {'Origin': host, 'X-Request-User': str(host) + "author/" + str(user_id)}
     response = JsonResponse({"Error": "Bad request"}, status=400) 
     response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
+    print(response)
     print(response.status_code)
     return response
