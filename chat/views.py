@@ -142,11 +142,11 @@ def my_stream(request, AUTHOR_ID):
                 print(res)
 
                 try:
-                    data = res.content
+                    data = res.json()
                     # design as a stop flag, so that we wont have too man post, to crashed our page
                     post_count = 0
                     for post in data["posts"]:
-                        if post_count > 2 :
+                        if post_count > 5 :
                             break
                     # remote_post_id = post['id']
                     # remote_origin = remote_post_id.split('author/')[0]
