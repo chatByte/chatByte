@@ -142,7 +142,7 @@ def my_stream(request, AUTHOR_ID):
                 print(res)
 
                 try:
-                    data = res.json()
+                    data = res.content
                     # design as a stop flag, so that we wont have too man post, to crashed our page
                     post_count = 0
                     for post in data["posts"]:
