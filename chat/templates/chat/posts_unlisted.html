@@ -94,7 +94,7 @@
 
 
           <!--             post content mine =====================================================-->
-          {% if unlisted %}
+          {% if unlisted is defined %}
 
                 <div class="post-content" id={{unlisted.id}}>
 
@@ -240,6 +240,7 @@
              </div>
           {% else %}
           <!-- continue -->
+          <p>No such post...</p>
           {% endif %}
         </div>
         </div>

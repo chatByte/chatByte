@@ -284,7 +284,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 
     if server_origin is not None and server_origin != host_server:
         print("Remote request body: ", request.data)
-        return commentRequest(request.method,server_origin, USER_ID, USER_POST_ID, request.data)
+        return commentRequest(request.method,server_origin, USER_ID, USER_POST_ID, request.user.id, request.data)
     else:
         # checking, comments' father exist or not
         try:
@@ -325,18 +325,24 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             data = JSONParser().parse(request)
 
             profile_url = request.META.get("HTTP_X_REQUEST_USER")
-            
+            origin_server = profile_url.split('author/')[0]
             author_id = profile_url.split('author/')[1]
             print("author id:", author_id)
             try:
                 author = Profile.objects.get(id=profile_url)
             except:
-                res = profileRequest("GET", origin_server, author_id)
-                print("Profile from comment: ", res)
-                print("Content: ", res.json())
-                author_ser = ProfileSerializer(data=res.json())
-                if author_ser.is_valid():
-                    author = author_ser.save()
+                try:
+                    # if the author's id is not a full url, try this
+                    author = Profile.objects.get(id=author_id)
+                except:
+                    res = profileRequest("GET", origin_server, author_id)
+                    if res.status_code >= 400:
+                        return JsonResponse({"Error": "Profile get failed"}, status=404)
+                    print("Profile from comment: ", res)
+                    print("Content: ", res.json())
+                    author_ser = ProfileSerializer(data=res.json())
+                    if author_ser.is_valid():
+                        author = author_ser.save()
             
             print(author)
             comment = createComment(author, POST_ID, data['content'], data['contentType'])
@@ -794,33 +800,34 @@ def inbox(request, AUTHOR_ID):
             print("Data: ", data)
             if data['type'] == "post":
                 print("Recieved a post inbox...!")
-                serializer = PostSerializer(data=data)
-                # print(serializer)
-                if serializer.is_valid(raise_exception=True):
-                    print("Post id: ", data['id'])
-                    post_id = data['id']
-                    try:
-                        post = Post.objects.get(id=post_id)
-                    except Post.DoesNotExist:
-                        author_dict = data['author']
-                        print("Author dict: ", author_dict)
-                        try:
-                            author = Profile.objects.get(id=author_dict['id'])
-                        except Profile.DoesNotExist:
-                            author_serializer = ProfileSerializer(data=author_dict)
-                            if author_serializer.is_valid(raise_exception=True):
-                                author = author_serializer.save()
-                        post = serializer.save(author=author)
-                    print("Post: ", post)
-                    post = Post.objects.get(id=post_id)
-                    user.inbox.post_inbox.items.add(post)
-                    user.inbox.post_inbox.save()
-                    user.profile.timeline.add(post)
-                    user.profile.save()
-                    return JsonResponse(data, status=200)
-                else:
-                    print("here")
-                    return JsonResponse(serializer.errors, status=400)
+                # serializer = PostSerializer(data=data)
+                # # print(serializer)
+                # if serializer.is_valid(raise_exception=True):
+                #     print("Post id: ", data['id'])
+                #     post_id = data['id']
+                #     try:
+                #         post = Post.objects.get(id=post_id)
+                #     except Post.DoesNotExist:
+                #         author_dict = data['author']
+                #         print("Author dict: ", author_dict)
+                #         try:
+                #             author = Profile.objects.get(id=author_dict['id'])
+                #         except Profile.DoesNotExist:
+                #             author_serializer = ProfileSerializer(data=author_dict)
+                #             if author_serializer.is_valid(raise_exception=True):
+                #                 author = author_serializer.save()
+                #         post = serializer.save(author=author)
+                #     print("Post: ", post)
+                #     post = Post.objects.get(id=post_id)
+                #     user.inbox.post_inbox.items.add(post)
+                #     user.inbox.post_inbox.save()
+                #     user.profile.timeline.add(post)
+                #     user.profile.save()
+                #     return JsonResponse(data, status=200)
+                # else:
+                #     print("here")
+                #     return JsonResponse(serializer.errors, status=400)
+                return JsonResponse(data, status=200)
             elif data['type'].lower() == 'like':
                 print("Recieved a like inbox!")
                 post_url = data['object'].split("/")
@@ -1078,17 +1085,21 @@ def inbox_likes(request, AUTHOR_ID):
         # send the like object to remote server
         return inbox(request, AUTHOR_ID)
     foreign_author = request.META.get("HTTP_X_REQUEST_USER")
+    print("X-request-user: ", foreign_author)
     try:
         author = Profile.objects.get(id=foreign_author)
     except:
         foreign_server = foreign_author.split('author/')[0]
         foreign_id = foreign_author.split('author/')[1]
-        headers = {"X-Server": foreign_server}
-        url = str(host_server) + "author/" + str(foreign_id)
-        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(request.user.username, request.user.first_name))
-        profile_ser = ProfileSerializer(data=response.data)
+        headers = {'Origin': host_server, 'X-Request-User': str(host_server) + "author/" + str(AUTHOR_ID), 'Content-type': 'application/json'}
+        url = str(foreign_server) + "author/" + str(foreign_id)
+        node = User.objects.get(last_name=foreign_server)
+        response = requests.get(url, headers=headers, auth=HTTPBasicAuth(node.username, node.first_name))
+        print("Profile data from remote server: ", response.json())
+        profile_ser = ProfileSerializer(data=response.json())
         if profile_ser.is_valid():
             author = profile_ser.save()
+    print(author)
     if data['type'] == 'comment':
         original_author_id = data['id'].split('author/')[1].split('/posts')[0]
         print("original author id for the liked object: ", original_author_id)

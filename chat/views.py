@@ -122,8 +122,6 @@ def my_stream(request, AUTHOR_ID):
         # print(",,,,,,,,,,,,,,,")
         # print(all_public_posts)
 
-
-
         back_json = get_github_activity(request, AUTHOR_ID)
 
         # Get stream from: node origins, since we have plenty remote server
@@ -136,55 +134,92 @@ def my_stream(request, AUTHOR_ID):
                 continue
 
             res = streamRequest(node.origin, request.user.id)
-            try:
-                data = res.json()
-                # remote_posts += data['posts']
-                # print(data['posts'])
-                for post in data['posts']:
-                    remote_post_id = post['id']
-                    remote_origin = remote_post_id.split('author/')[0]
-                    remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
-                    remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
-                    res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
-                    print("stream get post's likes: ", res.json())
-                    print("Number of likes: ", len(res.json()))
-                    post['num_likes'] =  len(res.json())
-                    for comment in post['comments']:
-                        print(comment['id'])
-                        comment_id = comment['id'].split('comments/')[1]
-                        com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
-                        comment['num_likes'] = len(com_res.json())
-                        print(comment['num_likes'])
-                    remote_posts.append(post)
 
-                #     # print("Post id: ", post['id'])
-                #     post_id = post['id']
-                #     try:
-                #         post_obj = Post.objects.get(id=post_id)
-                #         serializer = PostSerializer(post_obj, data=post, partial=True)
-                #         if serializer.is_valid(raise_exception=True):
-                #             serializer.save()
-                #     except Post.DoesNotExist:
-                #         author_dict = post['author']
-                #         # print("Author dict: ", author_dict)
-                #         try:
-                #             author = Profile.objects.get(id=author_dict['id'])
-                #         except Profile.DoesNotExist:
-                #             author_serializer = ProfileSerializer(data=author_dict)
-                #             if author_serializer.is_valid(raise_exception=True):
-                #                 author = author_serializer.save()
 
-                #         serializer = PostSerializer(data=post)
+            # specific handling team 14, since they havent finsihed it yet, and they dont have pagenation
+            if node.origin == "https://hermes-cmput404.herokuapp.com/" :
+                print("handling team 14 , get in stream:----------------")
+                print(res)
 
-                #         if serializer.is_valid(raise_exception=True):
-                #             serializer.save(author=author) # comments=comments_list
-                #             post_obj = Post.objects.get(id=post_id)
-                #     # add stream post into public channel
-                #     mytimeline.add(post_obj)
-                #     # print("Post object", post_obj)
+                try:
+                    # data = res.json()
+                    # # design as a stop flag, so that we wont have too man post, to crashed our page
+                    # post_count = 0
+                    # for post in data["posts"]:
+                    #     if post_count > 5 :
+                    #         break
+                    # # remote_post_id = post['id']
+                    # # remote_origin = remote_post_id.split('author/')[0]
+                    # # remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
+                    # # remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
+                    # # res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
+                    # # print("stream get post's likes: ", res.json())
+                    # # print("Number of likes: ", len(res.json()))
+                    # # post['num_likes'] =  len(res.json())
+                    # # for comment in post['comments']:
+                    # #     print(comment['id'])
+                    # #     comment_id = comment['id'].split('comments/')[1]
+                    # #     com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
+                    # #     comment['num_likes'] = len(com_res.json())
+                    # #     print(comment['num_likes'])
+                    # remote_posts.append(post)
+                    # post_count = post_count + 1
+                    pass
+                except Exception as e:
+                    print(e)
 
-            except BaseException as e:
-                print(e)
+
+            else:
+                try:
+                    data = res.json()
+                    # remote_posts += data['posts']
+                    # print(data['posts'])
+                    # Problem here 
+                    for post in data['posts']:
+                        remote_post_id = post['id']
+                        remote_origin = remote_post_id.split('author/')[0]
+                        remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
+                        remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
+                        res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id, request.user.id)
+                        print("stream get post's likes: ", res.json())
+                        print("Number of likes: ", len(res.json()))
+                        post['num_likes'] =  len(res.json())
+                        for comment in post['comments']:
+                            print(comment['id'])
+                            comment_id = comment['id'].split('comments/')[1]
+                            com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
+                            comment['num_likes'] = len(com_res.json())
+                            print(comment['num_likes'])
+                        remote_posts.append(post)
+
+                    #     # print("Post id: ", post['id'])
+                    #     post_id = post['id']
+                    #     try:
+                    #         post_obj = Post.objects.get(id=post_id)
+                    #         serializer = PostSerializer(post_obj, data=post, partial=True)
+                    #         if serializer.is_valid(raise_exception=True):
+                    #             serializer.save()
+                    #     except Post.DoesNotExist:
+                    #         author_dict = post['author']
+                    #         # print("Author dict: ", author_dict)
+                    #         try:
+                    #             author = Profile.objects.get(id=author_dict['id'])
+                    #         except Profile.DoesNotExist:
+                    #             author_serializer = ProfileSerializer(data=author_dict)
+                    #             if author_serializer.is_valid(raise_exception=True):
+                    #                 author = author_serializer.save()
+
+                    #         serializer = PostSerializer(data=post)
+
+                    #         if serializer.is_valid(raise_exception=True):
+                    #             serializer.save(author=author) # comments=comments_list
+                    #             post_obj = Post.objects.get(id=post_id)
+                    #     # add stream post into public channel
+                    #     mytimeline.add(post_obj)
+                    #     # print("Post object", post_obj)
+
+                except BaseException as e:
+                    print(e)
 
 
 
@@ -328,7 +363,7 @@ def my_stream(request, AUTHOR_ID):
             }
             # response = request.post(post_id + "/comments", data=json.dumps(send_data), head)
             response = commentRequest("POST", post_id.split('author/')[0], post_id.split('author/')[1].split('/posts/')[0] \
-                , post_id.split('author/')[1].split('/posts/')[1], send_data)
+                , post_id.split('author/')[1].split('/posts/')[1], request.user.id, send_data)
 
             print("response json:", response.json())
             return JsonResponse(response.json(), status=response.status_code)
@@ -419,7 +454,8 @@ def posts(request, AUTHOR_ID):
         alltimeline = cur_author.timeline.all()
         #getTimeline(cur_user_name), by SQL query
         mytimeline = alltimeline.filter(author=cur_author).order_by('-published')
-
+        print("my timeline: ", mytimeline)
+        print("length: ", len(mytimeline))
 
         # create a paginator
         paginator_mytimeline = Paginator(mytimeline, 8) # Show 8 contacts per page.
@@ -465,7 +501,7 @@ def posts(request, AUTHOR_ID):
 
 
         if len(f) > 0:
-            content_type = "image/" + os.path.splitext(f.name)[-1][1:] + ";base64"
+            content_type = "image/" + os.path.splitext(f.name)[-1][1:]
             with f.open("rb") as image_file:
                 content = base64.b64encode(image_file.read())
                 content = content.decode()
@@ -847,6 +883,7 @@ reshare a post
 @require_http_methods(["POST"])
 def reshare(request, AUTHOR_ID):
     data = JSONParser().parse(request)
+
     # post_id = data['id']
     #  another way to do it
     # post = Post.objects.get(id=post_id)
@@ -856,7 +893,7 @@ def reshare(request, AUTHOR_ID):
     # unlisted = str(post.unlisted)
     # reshare_id =  data['id']
 
-    createFlag = createPost( data['title'], "", data['origin'], data['description'], data['content_type'], data['content'], request.user.profile, data['categories'], data['visibility'], data['unlisted'],  data['id'])
+    createFlag = createPost( data['title'], "", data['origin'], data['description'], data['content_type'], data['content'], request.user.profile, "reshare", data['visibility'], data['unlisted'],  data['id'])
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response
@@ -894,15 +931,20 @@ def get_github_activity(request, AUTHOR_ID):
 
 @require_http_methods(["GET"])
 def unlisted(request, AUTHOR_ID, POST_ID):
+    print("unlisted view")
+
     post_id = host_server + "author/" + AUTHOR_ID + '/posts/' + POST_ID
     try:
+        # print("here for unlisted, post id: ", post_id)
         post = Post.objects.get(id=post_id)
+        print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHhh, here for unlisted")
         print(post)
         if post.unlisted:
             return render(request, "chat/posts_unlisted.html", {"unlisted": post})
         else:
             return render(request, "chat/posts_unlisted.html", {})
     except:
+        print("here for unlisted, post id: ", post_id)
         return render(request, "chat/posts_unlisted.html", {})
 
 
@@ -958,3 +1000,16 @@ def edit_in_feed(request, ID):
 BOT<==================================================================
 
 '''
+
+@require_http_methods(["GET"])
+def unlisted(request, AUTHOR_ID, POST_ID):
+    post_id = host_server + "author/" + AUTHOR_ID + "/posts/" + POST_ID + "/unlisted/"
+    try:
+        post = Post.objects.get(id=post_id)
+        if post.unlisted:
+            return render(request, "chat/posts_unlisted.html", {"unlisted": post})
+        else:
+            return render(request, "chat/posts_unlisted.html", {})
+    except:
+        return render(request, "chat/posts_unlisted.html", {})
+    

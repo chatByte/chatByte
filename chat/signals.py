@@ -6,8 +6,8 @@ from rest_framework.authtoken.models import Token
 from .models import *
 
 
-# host = "https://chatbyte.herokuapp.com/"
-host = "http://127.0.0.1:8000/"
+host = "https://chatbyte.herokuapp.com/"
+# host = "http://127.0.0.1:8000/"
 # host = "https://app-chatbyte.herokuapp.com/"
 # host = "https://chatbyte.herokuapp.com/"
 # host = "https://localhost:8000/"
@@ -34,6 +34,7 @@ def update_profile_signal(sender, instance, created, **kwargs):
             Token.objects.create(user=instance)
 
             instance.profile.displayName = instance.username
+            instance.profile.url = instance.id
             instance.profile.host = host
             instance.profile.save()
             instance.inbox.post_inbox.author = instance.id
