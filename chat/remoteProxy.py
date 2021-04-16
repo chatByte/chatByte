@@ -283,7 +283,9 @@ def streamRequest(origin, user_id):
 
     if origin == "https://hermes-cmput404.herokuapp.com/" :
 
-        team14_streamRequest(origin,user_id)
+        response =  team14_streamRequest(origin,user_id)
+        
+        return response
     else:
         url = str(origin) + "author/" + str(user_id) + "/stream/?page=1&size=1000"
         print(url)
