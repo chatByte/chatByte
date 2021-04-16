@@ -43,7 +43,7 @@ https://chatbyte.herokuapp.com/
 * Group 5 
 https://github.com/CMPUT404-wi21-project/CMPUT404-project-socialdistribution
 * Our Two herokuapps
-### (basic connection, one way connection)
+### (basic connection, two way connection)
 * Group 14 
 https://github.com/CMPUT404ProjectTeam2021W/Jan28-group-cmput404-project
 
