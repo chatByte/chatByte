@@ -933,6 +933,7 @@ def get_github_activity(request, AUTHOR_ID):
 def unlisted(request, AUTHOR_ID, POST_ID):
     post_id = host_server + "author/" + AUTHOR_ID + '/posts/' + POST_ID
     try:
+        print("here for unlisted, post id: ", post_id)
         post = Post.objects.get(id=post_id)
         print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHhh, here for unlisted")
         print(post)
