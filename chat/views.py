@@ -174,7 +174,7 @@ def my_stream(request, AUTHOR_ID):
                     data = res.json()
                     # remote_posts += data['posts']
                     # print(data['posts'])
-                    # Problem here 
+                    # Problem here
                     for post in data['posts']:
                         remote_post_id = post['id']
                         remote_origin = remote_post_id.split('author/')[0]
@@ -932,6 +932,7 @@ def get_github_activity(request, AUTHOR_ID):
 @require_http_methods(["GET"])
 def unlisted(request, AUTHOR_ID, POST_ID):
     print("unlisted view")
+    print("unlisted views")
 
     post_id = host_server + "author/" + AUTHOR_ID + '/posts/' + POST_ID
     try:
@@ -1012,4 +1013,3 @@ def unlisted(request, AUTHOR_ID, POST_ID):
             return render(request, "chat/posts_unlisted.html", {})
     except:
         return render(request, "chat/posts_unlisted.html", {})
-    
