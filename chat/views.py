@@ -1001,7 +1001,7 @@ def edit_in_feed(request, ID):
 BOT<==================================================================
 
 '''
-
+@login_required
 @require_http_methods(["GET"])
 def unlisted(request, AUTHOR_ID, POST_ID):
     post_id = host_server + "author/" + AUTHOR_ID + "/posts/" + POST_ID + "/unlisted/"
