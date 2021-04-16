@@ -311,7 +311,7 @@ def team14_streamRequest(origin, user_id):
     response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
 
     try:
-        print(response,json())
+        print(response.content)
     except Exception as e:
         print(e)
 
