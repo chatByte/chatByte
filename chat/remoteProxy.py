@@ -311,11 +311,11 @@ def team14_streamRequest(origin, user_id):
     response = requests.get(url, headers=headers, auth=HTTPBasicAuth(user.username, user.first_name))
 
     try:
-        print(response.json)
-        # content
-        return response
+        print(response,json())
+        print("Getting None in stream request")
     except Exception as e:
+
         print(e)
-        return None
+
     print(response.status_code)
-    
+    return response
