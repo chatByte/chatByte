@@ -56,9 +56,6 @@
               <li class="dropdown" id="myInbox">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >My Inbox <span class="badge">{{friend_request_num}}</span>&thinsp; <span><img src="{% static 'images/down-arrow.png' %}" alt="" /></span></a>
                 <ul class="dropdown-menu">
-                  <!-- {% for friend_requests in user.profile.friend_requests.all %}
-                    <li><a href="" id={{friend_requests.id}}><a href="../public_channel/{{friend.id}}/">{{friend_requests.author.displayName}}</a> has sent you a friend request!</a><button class="accept">Accept</button><button class="reject">Reject</button></li>
-                  {% endfor %} -->
                   {% for friend_request in user.inbox.friend_requests.all %}
                     <li><a >{{friend_request.summary}}</a><button class="accept" onclick="accept_or_reject('accept', '{{friend_request.id}}')">Accept</button><button class="reject" onclick="accept_or_reject('reject', '{{friend_request.id}}')">Reject</button></li>
                   {% endfor %}
@@ -117,15 +114,10 @@
                           <img src="{% static 'images/user.png' %}" alt="user" class="profile-photo-lg" />
                           <div class="friend-info">
                             <button class="btn-primary-sm unfriend pull-right" onclick="unbefriend('{{friend.id}}')" >Unfriend</button>
-                            <!-- <form action="delete/{{friend.id}}" method="post">
-                                {% csrf_token %}
-                                <button class="btn-primary-sm unfollow pull-right" type="submit" value="Delete" >Unfollow<button>
-                            </form> -->
+
                             <div class="">
                               <h5><a style="color: white;">11</a></h5>
-                              <!-- href:/chat/author/+friend.id -->
                               <h5><a href="../public_channel/{{friend.id}}/" class="profile-link">{{friend.displayName}}</a></h5>
-                              <!-- <p class="text-green">Been friends for 10 months</p> -->
                             </div>
                           </div>
                         </div>
@@ -155,8 +147,6 @@
     <script src="{% static 'js/jquery.sticky-kit.min.js' %}"></script>
     <script src="{% static 'js/jquery.scrollbar.min.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
-
-    <!-- <script src="{% static 'script/myFriend.js' %}"></script> -->
     <script src="https://kit.fontawesome.com/cd4cf617b4.js" crossorigin="anonymous"></script>
 
 

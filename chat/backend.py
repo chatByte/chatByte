@@ -10,26 +10,6 @@ from .serializers import PostSerializer, ProfileSerializer
 from requests.auth import HTTPBasicAuth
 from .remoteProxy import inboxRequest
 
-# def setCookie(response, key, value, days_expire=1):
-#     # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
-#     if days_expire is None:
-#         max_age = 365 * 24 * 60 * 60  # one year
-#     else:
-#         max_age = days_expire * 24 * 60 * 60
-#     expires = datetime.datetime.strftime(
-#         datetime.datetime.utcnow() + datetime.timedelta(seconds=max_age),
-#         "%a, %d-%b-%Y %H:%M:%S GMT",
-#     )
-#     response.set_cookie(
-#         key,
-#         value,
-#         max_age=max_age,
-#         expires=expires,
-#         domain=settings.SESSION_COOKIE_DOMAIN,
-#         secure=settings.SESSION_COOKIE_SECURE or None,
-#     )
-# def getUser(usr_id):
-#     return User.objects.get(id=usr_id)
 
 def updateUser(username, password):
     # Please authenticate before calling this method
@@ -190,7 +170,7 @@ def updateProfile(id, display_name, email, url, github):
         print(e)
         return False
 
-# the flag design for reshare, if it is reshare, i need post.origin to be passed, 
+# the flag design for reshare, if it is reshare, i need post.origin to be passed,
 def createPost(title, source, origin, description, content_type, content, author, categories, visibility, unlisted, reshareID=None):
     # Please authenticate before calling this method
     categories_array = []

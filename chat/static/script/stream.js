@@ -27,7 +27,7 @@ $(window).on('load', function() {
 });
 
 
-
+// handle search
 function search(ID){
   var id = ID;
   var host = id.split("/");
@@ -105,17 +105,13 @@ function likePost(post_id, liked) {
 
   var csrftoken = getCookie('csrftoken');
 
-  // var post_id = $(this).closest('.post-content').attr('id');
   console.log("post id: ", post_id)
 
   var data = {type: "like",
               object_type: "post",
               object_id: post_id,
-              // summary: "likes your post",
               csrfmiddlewaretoken: csrftoken
-              // context:
               }
-  // console.log(window.location.origin+'/author/'+ new_url[5].toString() +'/inbox/')
   $.ajax({
     // author/<str:AUTHOR_ID>/inbox/
     type: "POST", // http method
@@ -192,7 +188,7 @@ function likeComment(comment_id, liked) {
   });
 }
 
-
+// handle reshare
 function reshare(post_id){
   console.log(post_id)
   $.ajax({

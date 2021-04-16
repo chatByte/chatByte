@@ -10,6 +10,7 @@ var form_data = new FormData();
 var edit_form_data = new FormData();
 var x_server = window.location.origin;
 
+// handle search
 function search(){
   var input = document.getElementById("search_user_input");
   var id = input.value;
@@ -17,7 +18,7 @@ function search(){
   var host_name = host[0]+"//"+host[2]+"/";
 
 
-$.ajax({
+  $.ajax({
         url : "../search/", // the endpoint
         type : "POST", // http method
         dataType: 'json', // what to expect back from the server
@@ -45,7 +46,7 @@ $.ajax({
         },
       });
 
-}
+};
 
 
 //Preloader
@@ -76,6 +77,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// handle delete post
 function deletePost(id){
   console.log(id);
   var post_id = id.split("posts/")[1]
@@ -129,8 +131,8 @@ function readImg(input) {
 
 
 
-    // deal with submit edit button
-    // submit form data
+// deal with submit edit button
+// submit form data
 function editPost(POST_ID) {
 
 
@@ -178,50 +180,17 @@ function editPost(POST_ID) {
             window.location.reload();
         },
       });
-    }
-
-    // function editButton(title, description) {
-    //   $('body').on('click', 'a.editBtn', function(e) {
-    //     e.preventDefault();
-    //
-    //     var content_holder = $(this).closest('.post-detail').find('p');
-    //
-    //     content_holder.attr("style", "display: none");
-    //     var div_content = $('div .form-group-col').clone();
-    //     var find_element = div_content.find('#title');
-    //     var find_description = div_content.find('#description');
-    //     find_element.attr("id", "editTitle");
-    //     find_element.text(title);
-    //
-    //     find_description.attr("id", "editDescription");
-    //     find_description.text(description);
-    //
-    //     // console.log(find_element);
-    //     var new_div = $(this).closest('.post-detail').find('div .editText')
-    //     new_div.attr("style", "display: block");
-    //     new_div.html(div_content.html());
-    //
-    //
-    //     // show submit btn, hide edit btn
-    //     $(this).attr("style", "display: none");
-    //     $(this).closest('div .edit').find('.submitBtn').attr("style", "display: block");
-    //
-    //   });
-    //
-    // }
+    };
 
 
-
-// ===========================
-
-$( document ).ready(function() {
+$(document).ready(function() {
 
     // get csrftoken, used in AJAX Request
     const csrftoken = getCookie('csrftoken');
     console.log("csrftoken = ", csrftoken);
 
 
-    // deal with 2 dropdown lists: visibility and contentType
+    // deal with 4 dropdown lists: visibility, contentType, unlisted_status and category
     $('div.dropdown-content a').click(function(e)
       {
        var id = $(this).attr("id")
@@ -270,12 +239,9 @@ $( document ).ready(function() {
               $("#imageFile").attr("style", "display: none");
             }
         }
-
-
-
     });
 
-        // deal with 2 dropdown lists: visibility and contentType
+    // deal with 2 dropdown lists fof edit text: visibility and contentType
     $('div.dropdown-content-edit a').click(function(e)
       {
        var id = $(this).attr("id")
@@ -343,4 +309,3 @@ $( document ).ready(function() {
     });
 
 });
-

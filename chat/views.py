@@ -30,42 +30,14 @@ import requests
 views.py receive request and create repose to client,
 Create your views here.
 """
-# =============================================================================
 
-# from pagedown.forms import ImageUploadForm
-
-
-# IMAGE_UPLOAD_PATH = getattr(
-#     settings, 'PAGEDOWN_IMAGE_UPLOAD_PATH', 'pagedown-uploads')
-# IMAGE_UPLOAD_UNIQUE = getattr(
-#     settings, 'PAGEDOWN_IMAGE_UPLOAD_UNIQUE', False)
-# IMAGE_UPLOAD_ENABLED = getattr(
-#     settings, 'PAGEDOWN_IMAGE_UPLOAD_ENABLED', False)
-
-
-# @login_required
-# def image_upload_view(request):
-#     if not request.method == 'POST':
-#         raise PermissionDenied()
-
-#     if not IMAGE_UPLOAD_ENABLED:
-#         raise ImproperlyConfigured('Image upload is disabled')
-
-#     form = ImageUploadForm(request.POST, request.FILES)
-#     if form.is_valid():
-#         image = request.FILES['image']
-#         path_args = [IMAGE_UPLOAD_PATH, image.name]
-#         if IMAGE_UPLOAD_UNIQUE:
-#             path_args.insert(1, str(uuid.uuid4()))
-#         path = os.path.join(*path_args)
-#         path = default_storage.save(path, image)
-#         url = default_storage.url(path)
-#         return JsonResponse({'success': True, 'url': url})
-
-#     return JsonResponse({'success': False, 'error': form.errors})
-# =============================================================================
 @login_required
 def start_homepage(request):
+    '''
+        This function checks if a user visiting website origin has been authenticated,
+        if the user has logged in, the function will return their profile page;
+        if the user hasn't logged in, the function will return login page.
+    '''
     if request.user.is_authenticated:
         return redirect("/author/" + str(request.user.id) + "/profile/")
     else: return redirect("/accounts/login/")
@@ -74,6 +46,9 @@ def start_homepage(request):
 
 
 def signup(request):
+    '''
+        This function is used for new user sign up.
+    '''
     form = UserCreationForm(request.POST)
     print("--------------", request.POST)
     print("--------------", form)
