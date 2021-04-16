@@ -1079,6 +1079,9 @@ def github_act_obj(request, AUTHOR_ID):
 def inbox_likes(request, AUTHOR_ID):
     data = request.data
     print("Inbox likes data: ", data)
+    print("")
+    print("request.META.")
+    print(request.META)
     
     if data['type'] == 'like':
         # from our own server
