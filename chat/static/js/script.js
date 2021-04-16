@@ -234,7 +234,7 @@ function sendFriendRequest(type, summary, author, object) {
 function be_friend(type, id, host, displayName, url, github, foreignId) {
     var summary = displayName + " want to be friend with you";
 
-
+    console.log("Foreign id: ", foreignId);
 
     var actor =
     { type: type,

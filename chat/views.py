@@ -143,27 +143,35 @@ def my_stream(request, AUTHOR_ID):
 
                 try:
                     data = res.json()
+                    print("Data in stream", data)
+                    
                     # design as a stop flag, so that we wont have too man post, to crashed our page
                     post_count = 0
-                    for post in data['items']:
-                        if post_count > 2 :
+                    for post in data["posts"]:
+                        if post['visibility'] != 'public': continue
+                        post['comments'] = []
+                        post['num_likes'] = 0
+                        remote_posts.append(post)
+                        post_count = post_count + 1
+                        if post_count > 5 :
                             break
-                    # remote_post_id = post['id']
-                    # remote_origin = remote_post_id.split('author/')[0]
-                    # remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
-                    # remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
-                    # res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
-                    # print("stream get post's likes: ", res.json())
-                    # print("Number of likes: ", len(res.json()))
-                    # post['num_likes'] =  len(res.json())
-                    # for comment in post['comments']:
-                    #     print(comment['id'])
-                    #     comment_id = comment['id'].split('comments/')[1]
-                    #     com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
-                    #     comment['num_likes'] = len(com_res.json())
-                    #     print(comment['num_likes'])
-                    remote_posts.append(post)
-                    post_count = post_count + 1
+                    # # remote_post_id = post['id']
+                    # # remote_origin = remote_post_id.split('author/')[0]
+                    # # remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
+                    # # remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
+                    # # res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
+                    # # print("stream get post's likes: ", res.json())
+                    # # print("Number of likes: ", len(res.json()))
+                    # # post['num_likes'] =  len(res.json())
+                    # # for comment in post['comments']:
+                    # #     print(comment['id'])
+                    # #     comment_id = comment['id'].split('comments/')[1]
+                    # #     com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
+                    # #     comment['num_likes'] = len(com_res.json())
+                    # #     print(comment['num_likes'])
+                    
+                    # post_count = post_count + 1
+                    pass
                 except Exception as e:
                     print(e)
 
@@ -173,13 +181,13 @@ def my_stream(request, AUTHOR_ID):
                     data = res.json()
                     # remote_posts += data['posts']
                     # print(data['posts'])
-                    # Problem here 
+                    # Problem here
                     for post in data['posts']:
                         remote_post_id = post['id']
                         remote_origin = remote_post_id.split('author/')[0]
                         remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
                         remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
-                        res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
+                        res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id, request.user.id)
                         print("stream get post's likes: ", res.json())
                         print("Number of likes: ", len(res.json()))
                         post['num_likes'] =  len(res.json())
@@ -928,83 +936,24 @@ def get_github_activity(request, AUTHOR_ID):
         return None
     # pprint(r.json())
 
+
 @require_http_methods(["GET"])
 def unlisted(request, AUTHOR_ID, POST_ID):
+    print("unlisted view")
+    print("unlisted views")
+
     post_id = host_server + "author/" + AUTHOR_ID + '/posts/' + POST_ID
     try:
+        # print("here for unlisted, post id: ", post_id)
         post = Post.objects.get(id=post_id)
         print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHhh, here for unlisted")
         print(post)
         if post.unlisted:
+            print("lets render")
             return render(request, "chat/posts_unlisted.html", {"unlisted": post})
         else:
+            print("no render")
             return render(request, "chat/posts_unlisted.html", {})
     except:
+        print("here for unlisted, post id: ", post_id)
         return render(request, "chat/posts_unlisted.html", {})
-
-
-'''
-Below is the dead code, or previous version, keep it , incase need that in the future
-
-
-TOP=================================>
-
-
-"""
-Generate response ,when delete user at home page ,
-For user frinedly feature
-"""
-@login_required
-@require_http_methods(["DELETE", "POST"])
-def delete(request, ID):
-    cur_user_name = None
-    if request.user.is_authenticated:
-        cur_user_name = request.user.username
-    # post_id = request.build_absolute_uri().split("/")[-2][6:]
-    cur_author = request.user.profile #getAuthor(cur_user_name)
-    deletePost(ID)
-
-    # TODO: may not redirect
-    response = redirect("/author/"+ str(request.user.id) + "/public_channel/")
-    return response
-
-
-def edit(request, ID):
-    print(request.POST)
-    new_description = request.POST.get("editText")
-    print(new_description)
-    editPostDescription(ID, new_description)
-    # TODO: may not redirect
-    response = redirect("/chat/feed/")
-
-    return response
-
-# delete later
-# get feed and
-# post: comment/like => send post request to host server(edit post function),
-@require_http_methods(["GET", "POST"])
-def edit_in_feed(request, ID):
-    print(request.POST)
-    new_description = request.POST.get("editText")
-    print(new_description)
-    print(editPostDescription(ID, new_description))
-    response = redirect("/chat/feed/")
-
-    return response
-
-BOT<==================================================================
-
-'''
-
-@require_http_methods(["GET"])
-def unlisted(request, AUTHOR_ID, POST_ID):
-    post_id = host_server + "author/" + AUTHOR_ID + "/posts/" + POST_ID + "/unlisted/"
-    try:
-        post = Post.objects.get(id=post_id)
-        if post.unlisted:
-            return render(request, "chat/posts_unlisted.html", {"unlisted": post})
-        else:
-            return render(request, "chat/posts_unlisted.html", {})
-    except:
-        return render(request, "chat/posts_unlisted.html", {})
-    

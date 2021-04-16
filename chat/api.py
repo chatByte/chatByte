@@ -800,33 +800,34 @@ def inbox(request, AUTHOR_ID):
             print("Data: ", data)
             if data['type'] == "post":
                 print("Recieved a post inbox...!")
-                serializer = PostSerializer(data=data)
-                # print(serializer)
-                if serializer.is_valid(raise_exception=True):
-                    print("Post id: ", data['id'])
-                    post_id = data['id']
-                    try:
-                        post = Post.objects.get(id=post_id)
-                    except Post.DoesNotExist:
-                        author_dict = data['author']
-                        print("Author dict: ", author_dict)
-                        try:
-                            author = Profile.objects.get(id=author_dict['id'])
-                        except Profile.DoesNotExist:
-                            author_serializer = ProfileSerializer(data=author_dict)
-                            if author_serializer.is_valid(raise_exception=True):
-                                author = author_serializer.save()
-                        post = serializer.save(author=author)
-                    print("Post: ", post)
-                    post = Post.objects.get(id=post_id)
-                    user.inbox.post_inbox.items.add(post)
-                    user.inbox.post_inbox.save()
-                    user.profile.timeline.add(post)
-                    user.profile.save()
-                    return JsonResponse(data, status=200)
-                else:
-                    print("here")
-                    return JsonResponse(serializer.errors, status=400)
+                # serializer = PostSerializer(data=data)
+                # # print(serializer)
+                # if serializer.is_valid(raise_exception=True):
+                #     print("Post id: ", data['id'])
+                #     post_id = data['id']
+                #     try:
+                #         post = Post.objects.get(id=post_id)
+                #     except Post.DoesNotExist:
+                #         author_dict = data['author']
+                #         print("Author dict: ", author_dict)
+                #         try:
+                #             author = Profile.objects.get(id=author_dict['id'])
+                #         except Profile.DoesNotExist:
+                #             author_serializer = ProfileSerializer(data=author_dict)
+                #             if author_serializer.is_valid(raise_exception=True):
+                #                 author = author_serializer.save()
+                #         post = serializer.save(author=author)
+                #     print("Post: ", post)
+                #     post = Post.objects.get(id=post_id)
+                #     user.inbox.post_inbox.items.add(post)
+                #     user.inbox.post_inbox.save()
+                #     user.profile.timeline.add(post)
+                #     user.profile.save()
+                #     return JsonResponse(data, status=200)
+                # else:
+                #     print("here")
+                #     return JsonResponse(serializer.errors, status=400)
+                return JsonResponse(data, status=200)
             elif data['type'].lower() == 'like':
                 print("Recieved a like inbox!")
                 post_url = data['object'].split("/")
@@ -1078,16 +1079,28 @@ def github_act_obj(request, AUTHOR_ID):
 def inbox_likes(request, AUTHOR_ID):
     data = request.data
     print("Inbox likes data: ", data)
+    print("")
+    print("request.META.")
+    print(request.META)
     
     if data['type'] == 'like':
         # from our own server
         # send the like object to remote server
         return inbox(request, AUTHOR_ID)
     foreign_author = request.META.get("HTTP_X_REQUEST_USER")
-    print("X-request-user: ", foreign_author)
+
+
     try:
         author = Profile.objects.get(id=foreign_author)
     except:
+
+        # return error message        
+        print("X-request-user: ", foreign_author)
+        if foreign_author == None:
+            return JsonResponse({"error": "X-request-user is empty, plz dont send NONE, it is scary"}, safe=False, status=404)
+
+        print("here, we have inbox special, foreign_author")
+
         foreign_server = foreign_author.split('author/')[0]
         foreign_id = foreign_author.split('author/')[1]
         headers = {'Origin': host_server, 'X-Request-User': str(host_server) + "author/" + str(AUTHOR_ID), 'Content-type': 'application/json'}
