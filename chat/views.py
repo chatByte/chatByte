@@ -142,28 +142,28 @@ def my_stream(request, AUTHOR_ID):
                 print(res)
 
                 try:
-                    data = res.json()
-                    # design as a stop flag, so that we wont have too man post, to crashed our page
-                    post_count = 0
-                    for post in data["posts"]:
-                        if post_count > 5 :
-                            break
-                    remote_post_id = post['id']
-                    remote_origin = remote_post_id.split('author/')[0]
-                    remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
-                    remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
-                    res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
-                    print("stream get post's likes: ", res.json())
-                    print("Number of likes: ", len(res.json()))
-                    post['num_likes'] =  len(res.json())
-                    for comment in post['comments']:
-                        print(comment['id'])
-                        comment_id = comment['id'].split('comments/')[1]
-                        com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
-                        comment['num_likes'] = len(com_res.json())
-                        print(comment['num_likes'])
-                    remote_posts.append(post)
-                    post_count = post_count + 1
+                    # data = res.json()
+                    # # design as a stop flag, so that we wont have too man post, to crashed our page
+                    # post_count = 0
+                    # for post in data["posts"]:
+                    #     if post_count > 5 :
+                    #         break
+                    # # remote_post_id = post['id']
+                    # # remote_origin = remote_post_id.split('author/')[0]
+                    # # remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
+                    # # remote_post_id = remote_post_id.split('author/')[1].split('posts/')[1]
+                    # # res = likesRequest("GET", remote_origin, remote_user_id, remote_post_id)
+                    # # print("stream get post's likes: ", res.json())
+                    # # print("Number of likes: ", len(res.json()))
+                    # # post['num_likes'] =  len(res.json())
+                    # # for comment in post['comments']:
+                    # #     print(comment['id'])
+                    # #     comment_id = comment['id'].split('comments/')[1]
+                    # #     com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
+                    # #     comment['num_likes'] = len(com_res.json())
+                    # #     print(comment['num_likes'])
+                    # remote_posts.append(post)
+                    # post_count = post_count + 1
                     pass
                 except Exception as e:
                     print(e)
