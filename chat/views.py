@@ -142,12 +142,19 @@ def my_stream(request, AUTHOR_ID):
                 print(res)
 
                 try:
-                    # data = res.json()
-                    # # design as a stop flag, so that we wont have too man post, to crashed our page
-                    # post_count = 0
-                    # for post in data["posts"]:
-                    #     if post_count > 5 :
-                    #         break
+                    data = res.json()
+                    print("Data in stream", data)
+                    
+                    # design as a stop flag, so that we wont have too man post, to crashed our page
+                    post_count = 0
+                    for post in data["posts"]:
+                        if post['visibility'] != 'public': continue
+                        post['comments'] = []
+                        post['num_likes'] = 0
+                        remote_posts.append(post)
+                        post_count = post_count + 1
+                        if post_count > 5 :
+                            break
                     # # remote_post_id = post['id']
                     # # remote_origin = remote_post_id.split('author/')[0]
                     # # remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
@@ -162,7 +169,7 @@ def my_stream(request, AUTHOR_ID):
                     # #     com_res = commentLikesRequest("GET", remote_origin, remote_user_id, remote_post_id, comment_id)
                     # #     comment['num_likes'] = len(com_res.json())
                     # #     print(comment['num_likes'])
-                    # remote_posts.append(post)
+                    
                     # post_count = post_count + 1
                     pass
                 except Exception as e:
