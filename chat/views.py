@@ -943,8 +943,10 @@ def unlisted(request, AUTHOR_ID, POST_ID):
         print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHhh, here for unlisted")
         print(post)
         if post.unlisted:
+            print("lets render")
             return render(request, "chat/posts_unlisted.html", {"unlisted": post})
         else:
+            print("no render")
             return render(request, "chat/posts_unlisted.html", {})
     except:
         print("here for unlisted, post id: ", post_id)
