@@ -145,7 +145,7 @@ def my_stream(request, AUTHOR_ID):
                     data = res.json()
                     # design as a stop flag, so that we wont have too man post, to crashed our page
                     post_count = 0
-                    for post in data['items']:
+                    for post in data["posts"]:
                         if post_count > 2 :
                             break
                     # remote_post_id = post['id']
