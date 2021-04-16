@@ -1090,6 +1090,9 @@ def inbox_likes(request, AUTHOR_ID):
         author = Profile.objects.get(id=foreign_author)
     except:
         foreign_server = foreign_author.split('author/')[0]
+        print("here, we have inbox special, foreign_author")
+        print(foreign_author)
+        print(foreign_server)
         foreign_id = foreign_author.split('author/')[1]
         headers = {'Origin': host_server, 'X-Request-User': str(host_server) + "author/" + str(AUTHOR_ID), 'Content-type': 'application/json'}
         url = str(foreign_server) + "author/" + str(foreign_id)
