@@ -1088,14 +1088,20 @@ def inbox_likes(request, AUTHOR_ID):
         # send the like object to remote server
         return inbox(request, AUTHOR_ID)
     foreign_author = request.META.get("HTTP_X_REQUEST_USER")
-    print("X-request-user: ", foreign_author)
+
+
     try:
         author = Profile.objects.get(id=foreign_author)
     except:
-        foreign_server = foreign_author.split('author/')[0]
+
+        # return error message        
+        print("X-request-user: ", foreign_author)
+        if foreign_author == None:
+            return JsonResponse({"error": "X-request-user is empty, plz dont send NONE, it is scary"}, safe=False, status=404)
+
         print("here, we have inbox special, foreign_author")
-        print(foreign_author)
-        print(foreign_server)
+
+        foreign_server = foreign_author.split('author/')[0]
         foreign_id = foreign_author.split('author/')[1]
         headers = {'Origin': host_server, 'X-Request-User': str(host_server) + "author/" + str(AUTHOR_ID), 'Content-type': 'application/json'}
         url = str(foreign_server) + "author/" + str(foreign_id)
