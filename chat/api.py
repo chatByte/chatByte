@@ -157,9 +157,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
             data = JSONParser().parse(request)
             serializer = PostSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
-                serializers.id = POST_ID
-                profile = Profile.objects.get(pk=AUTHOR_ID)
-                serializer.save(author=profile)
+                serializer.save()
                 return JsonResponse(serializer.data, status=201)
             return JsonResponse(serializer.errors, status=400)
 
@@ -220,15 +218,12 @@ def posts_obj(request, AUTHOR_ID):
         elif request.method == 'POST':
             data = JSONParser().parse(request)
             serializer = PostSerializer(data=data)
-            print("----------------")
             if serializer.is_valid(raise_exception=True):
-                print("----------------")
                 post = serializer.save()
                 print(post)
                 post.author.timeline.add(post)
                 post.author.save()
                 return JsonResponse(serializer.data, status=201)
-            print("----------------")
             return JsonResponse(serializer.errors, status=400)
 
 

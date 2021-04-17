@@ -362,7 +362,7 @@ class AccountTests(APITestCase):
         Ensure we can create a post with a specific id and content.
         """
         self.client.login(username=self.username, password=self.password)
-        url = '/chat/author/1/posts/asdf/'
+        url = self.user.profile.id + '/posts/789789'
         post_json = {
             "type": "post",
             "id": "789789",
@@ -413,14 +413,16 @@ class AccountTests(APITestCase):
         print(response.content)
         self.assertEqual(response.status_code, 201)
 
-    # def test_delete_comments(self):
-    #     # TODO
-    #     self.client.login(username=self.username, password=self.password)
-    #     url = '/author/1/posts/3/comments/5'
-    #     response = self.clients.delete(url, **{'Origin': host})
-        
+    def test_friends(self):
+        self.client.login(username=self.username, password=self.password)
+        url = self.user.profile.id + "/friends/"
+        response = self.client.get(url,  **{'HTTP_X_SERVER': host, 'HTTP_X_REQUEST_USER': self.user.profile.id})
+        print(response.content)
+        self.assertEqual(response.status_code, 200)
 
-# TODO: friends
-# TODO: inbox test
+    def test_inbox(self):
+        pass
 
+    def test_likes(self):
+        pass
 
