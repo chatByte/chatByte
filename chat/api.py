@@ -92,19 +92,12 @@ Design for give one post API
 def post_obj(request, AUTHOR_ID, POST_ID):
 
     USER_ID = (AUTHOR_ID + '.')[:-1]
-
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    print("author id: ", AUTHOR_ID)
     USER_POST_ID = POST_ID
     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
-
-    print("post id: ", POST_ID)
-    print(request.META)
     server_origin = request.META.get("HTTP_X_SERVER")
-    print(server_origin)
 
     if server_origin is not None and server_origin != host_server:
-        print("Remote request body: ", request.data)
         return postRequest(request.method,server_origin, USER_ID, USER_POST_ID, request.data)
     else:
         if request.method == "DELETE":
@@ -112,7 +105,7 @@ def post_obj(request, AUTHOR_ID, POST_ID):
             try:
                 Post.objects.get(id=POST_ID)
             except Post.DoesNotExist:
-                print("here post does not exist")
+                print("post does not exist")
                 return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
             deletePost(POST_ID)
             return JsonResponse({'status':'true','message':'successful'}, status=204)
@@ -128,7 +121,6 @@ def post_obj(request, AUTHOR_ID, POST_ID):
             # update the post
             try:
                 post = Post.objects.get(id=POST_ID)
-
             except Post.DoesNotExist:
                 return JsonResponse({'status':'false','message':'post id: ' + POST_ID + ' does not exists'}, status=404)
             data = JSONParser().parse(request)
@@ -162,16 +154,12 @@ design for get a list of posts
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
 def posts_obj(request, AUTHOR_ID):
-    # ex. equest.META[origin] == ("https:\\chatbyte"):
 
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
-        print("Remote request body: ", request.data)
         return postsRequest(request.method,server_origin, USER_ID, request.data)
     else:
         if request.method == 'GET':
@@ -207,7 +195,6 @@ def posts_obj(request, AUTHOR_ID):
             serializer = PostSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
                 post = serializer.save()
-                print(post)
                 post.author.timeline.add(post)
                 post.author.save()
                 return JsonResponse(serializer.data, status=201)
@@ -255,14 +242,10 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
     USER_ID = (AUTHOR_ID + '.')[:-1]
     USER_POST_ID = (POST_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
-    print("author id: ", AUTHOR_ID)
-    print("post id: ", POST_ID)
 
     if server_origin is not None and server_origin != host_server:
-        print("Remote request body: ", request.data)
         return commentRequest(request.method,server_origin, USER_ID, USER_POST_ID, request.user.id, request.data)
     else:
         # checking, comments' father exist or not
@@ -274,7 +257,6 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             # list obj contain a list of comment
             comments = post.comments
             serializer = CommentSerializer(comments, many=True)
-            # pagination
             # pagination
             pagination = PageNumberPagination()
             paginated_results = pagination.paginate_queryset(comments.all(), request)
@@ -305,7 +287,6 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             profile_url = request.META.get("HTTP_X_REQUEST_USER")
             origin_server = profile_url.split('author/')[0]
             author_id = profile_url.split('author/')[-1]
-            print("author id:", author_id)
             try:
                 author = Profile.objects.get(id=profile_url)
             except:
@@ -316,15 +297,10 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
                     res = profileRequest("GET", origin_server, author_id)
                     if res.status_code >= 400:
                         return JsonResponse({"Error": "Profile get failed"}, status=404)
-                    print("Profile from comment: ", res)
-                    print("Content: ", res.json())
                     author_ser = ProfileSerializer(data=res.json())
                     if author_ser.is_valid():
                         author = author_ser.save()
-            
-            print(author)
             comment = createComment(author, POST_ID, data['content'], data['contentType'])
-            print(comment)
             if comment:
                 serializer = CommentSerializer(comment)
                 return JsonResponse(serializer.data, status=201)
@@ -361,14 +337,9 @@ def profile_obj(request, AUTHOR_ID):
     # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    print("Origin: ", host_server)
-    print("Request origin: ", server_origin)
-
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
-        print("Remote request body: ", request.data)
         return profileRequest(request.method,server_origin, USER_ID, request.data)
     else:
         try:
@@ -379,7 +350,6 @@ def profile_obj(request, AUTHOR_ID):
         # query to database
         if request.method == "GET":
             serializer = ProfileSerializer(profile)
-            print(serializer.data)
             return JsonResponse(serializer.data, status=200)
         elif request.method == "POST":
             data = JSONParser().parse(request)
@@ -403,28 +373,18 @@ URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 @permission_classes([IsAuthenticated])
 @api_view(['PUT', 'GET', 'DELETE'])
 def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
-    # ex. request.META[origin] == ("https:\\chatbyte"):
-    # req_origin = request.META["Origin"]
-
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    print("author id: ", AUTHOR_ID)
     FOREIGN_USER_ID = (FOREIGN_AUTHOR_ID + '.')[:-1]
-    print("follower's id: ", FOREIGN_AUTHOR_ID)
-
 
     try:
         FOREIGN_AUTHOR_ID = server_origin + "author/" + FOREIGN_AUTHOR_ID
     except:
         FOREIGN_AUTHOR_ID = host_server + "author/" + FOREIGN_AUTHOR_ID
-    print("server_origin", server_origin)
-    print("host_server", host_server)
 
 
     if server_origin is not None and server_origin != host_server:
-        print("Remote request body: ", request.data)
         res = followerRequest(request.method,server_origin, USER_ID, FOREIGN_USER_ID, request.data)
         return JsonResponse(res.json(), status=res.status_code)
     else:
@@ -494,10 +454,8 @@ def followers_obj(request, AUTHOR_ID):
     server_origin = request.META.get("HTTP_X_SERVER")
 
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
-        print("Remote request body: ", request.data)
         return followersRequest(request.method,server_origin, USER_ID, request.data)
     else:
         try:
@@ -530,10 +488,8 @@ def get_friends_obj(request, AUTHOR_ID):
     server_origin = request.META.get("HTTP_X_SERVER")
 
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
-        print("Remote request body: ", request.data)
         return friendsRequest(request.method,server_origin, USER_ID, request.data)
     else:
         try:
@@ -590,16 +546,11 @@ Response Object Structure: [list of Like objects]
 def likes_post_obj(request, AUTHOR_ID, POST_ID):
     USER_ID = (AUTHOR_ID + '.')[:-1]
     USER_POST_ID = (POST_ID + '.')[:-1]
-    # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
-
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
-    print("author id: ", AUTHOR_ID)
-    print("post id: ", POST_ID)
 
     if server_origin is not None and server_origin != host_server:
-        print("Remote request body: ", request.data)
         return likesRequest(request.method, server_origin, USER_ID, USER_POST_ID, request.data)
     else:
         try:
@@ -630,12 +581,8 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
     COMMENT_ID = POST_ID + "/comments/" + COMMENT_ID
-    print("author id: ", AUTHOR_ID)
-    print("post id: ", POST_ID)
-    print("comment id: ", COMMENT_ID)
 
     if server_origin is not None and server_origin != host_server:
-        print("Remote request body: ", request.data)
         return commentLikesRequest(request.method, server_origin, USER_ID, USER_POST_ID, USER_COMMENT_ID, request.data)
     else:
         try:
@@ -660,16 +607,9 @@ deisgn for like a signle post
 def liked_post_obj(request, AUTHOR_ID):
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    # origin_server = request.META.get("HTTP_ORIGIN")
-    # if origin_server is not None and origin_server not in host_server:
-    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    # else:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    print("author id: ", AUTHOR_ID)
 
     if server_origin is not None and server_origin != host_server:
-        print("Remote request body: ", request.data)
         return likedRequest(request.method,server_origin, USER_ID, request.data)
     else:
         # can be optimized
@@ -700,45 +640,25 @@ DELETE: clear the inbox
 @permission_classes([IsAuthenticated])
 @api_view(['POST', 'GET', 'DELETE'])
 def inbox(request, AUTHOR_ID):
-    # print("inbox: ", request)
     USER_ID = (AUTHOR_ID + '.')[:-1]
-    # Profile/AUTHOR ID is the full url
     server_origin = request.META.get("HTTP_X_SERVER")
-    # origin_server = request.META.get("HTTP_ORIGIN")
-    # if origin_server is not None and origin_server not in host_server:
-    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    # else:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    print("author id: ", AUTHOR_ID)
-    print("user id: ", USER_ID)
 
     if server_origin is not None and server_origin != host_server:
-        print("------ Remote request body: ", request.data)
         res = inboxRequest(request.method,server_origin, USER_ID, request.data)
         return JsonResponse(res.json(), status=res.status_code)
     else:
         if request.method == "POST":
-            print("Using post method")
             user = User.objects.get(pk=USER_ID)
-            print("User", user)
             data = request.data
-            print("Data: ", data)
             if data['type'] == "post":
-                print("Recieved a post inbox...!")
-
                 return JsonResponse(data, status=200)
             elif data['type'].lower() == 'like':
-                print("Recieved a like inbox!")
                 post_url = data['object'].split("/")
                 # like post
                 if len(post_url) == 7:
-                    print("Post url: ", post_url)
                     user_id = post_url[-3]
-                    print("User id: ", user_id)
-                    # post_id = post_url[-1]
                     post_id = host_server + 'author/' + USER_ID + '/posts/' + post_url[-1]
-                    print("Post id: ", post_id)
                     if user_id != USER_ID:
                     # if user_id != AUTHOR_ID: # Now AUTHOR_ID is http://our-host-name/USER_ID
                         return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
@@ -749,8 +669,6 @@ def inbox(request, AUTHOR_ID):
                         if serializer.is_valid(raise_exception=True):
                             like = serializer.save()
                         else:
-                            print("serializer invalid error")
-                            print(serializer.errors)
                             return JsonResponse(serializer.errors, status=400)
                     try:
                         post = Post.objects.get(id=post_id)
@@ -770,8 +688,6 @@ def inbox(request, AUTHOR_ID):
 
                     # comment_id = post_url[8]
                     comment_id = host_server + 'author/' + user_id + '/posts/' + post_url[6] + '/comments/' + post_url[8]
-                    print("post id: ", post_id)
-                    print("comment id: ", comment_id)
                     # if user_id != AUTHOR_ID:
                     if user_id != USER_ID:
                         return JsonResponse({"Error": "Author id is inconsistent"}, status=404)
@@ -782,15 +698,11 @@ def inbox(request, AUTHOR_ID):
                         if serializer.is_valid(raise_exception=True):
                             like = serializer.save()
                         else:
-                            print("serializer invalid error")
-                            print(serializer.errors)
                             return JsonResponse(serializer.errors, status=400)
                     try:
                         comment = Comment.objects.get(id=comment_id)
-                        print(like)
                         comment.likes.add(like)
                         comment.save()
-                        print(comment)
                         return JsonResponse(data, status=200)
                     except:
                         return JsonResponse({"Error": "comment does not exist"}, status=404)
@@ -798,11 +710,6 @@ def inbox(request, AUTHOR_ID):
                     
 
             elif data['type'].lower() == 'follow':
-                print("Recieved a friend request!")
-                print(data['actor'])
-                print(data['object'])
-                print(data['summary'])
-
                 serializer = FriendReuqestSerializer(data=data)
                 if serializer.is_valid(raise_exception=True):
 
@@ -825,8 +732,6 @@ def inbox(request, AUTHOR_ID):
 
                     # -----------------
                     # add to object's inbox
-                    print("Object: ", object)
-                    print("Object's User: ", object.user)
                     object.user.inbox.friend_requests.add(friend_req)
                     # -----------------
                     user.inbox.save()
@@ -846,11 +751,8 @@ def inbox(request, AUTHOR_ID):
             return JsonResponse({}, status=204)
 
         elif request.method == "GET":
-            print("Get request processing...")
             user = User.objects.get(pk=USER_ID)
-            print("User: ", user)
             post_inbox = user.inbox.post_inbox
-            print("Post inbox: ", post_inbox)
             serializer = PostInboxSerializer(post_inbox)
             return JsonResponse(serializer.data, status=200)
 
@@ -869,11 +771,8 @@ def stream_obj(request, AUTHOR_ID):
         AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
     else:
         AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    print("author id: ", AUTHOR_ID)
-    print("Origin header: ", origin_server)
 
     if server_origin is not None and server_origin != host_server:
-        print("Remote request body: ", request.data)
         return likedRequest(request.method,server_origin, AUTHOR_ID, request.data)
     else:
         if request.method == 'GET':
@@ -881,7 +780,6 @@ def stream_obj(request, AUTHOR_ID):
                 posts_result = Post.objects.filter(visibility='public').filter(unlisted=False)
                 try:
                     profile = Profile.objects.get(id=AUTHOR_ID)
-                    print(profile)
 
                     for user in User.objects.all():
                         try:
@@ -892,7 +790,6 @@ def stream_obj(request, AUTHOR_ID):
 
                         except BaseException as e:
                             print(e)
-                            print("profile not found!")
                 
                 except BaseException as e:
                     print(e)
@@ -901,7 +798,6 @@ def stream_obj(request, AUTHOR_ID):
                 print(e)
                 posts_result = []
             # Get posts that's visible to the author
-            print("Post result:", posts_result)
 
             pagination = PageNumberPagination()
             paginated_results = pagination.paginate_queryset(posts_result, request)
@@ -983,8 +879,6 @@ def inbox_likes(request, AUTHOR_ID):
         if foreign_author == None:
             return JsonResponse({"error": "X-request-user is empty, plz dont send NONE, it is scary"}, safe=False, status=404)
 
-        print("here, we have inbox special, foreign_author")
-
         foreign_server = foreign_author.split('author/')[0]
         foreign_id = foreign_author.split('author/')[1]
         headers = {'Origin': host_server, 'X-Request-User': str(host_server) + "author/" + str(AUTHOR_ID), 'Content-type': 'application/json'}
@@ -995,7 +889,6 @@ def inbox_likes(request, AUTHOR_ID):
         profile_ser = ProfileSerializer(data=response.json())
         if profile_ser.is_valid():
             author = profile_ser.save()
-    print(author)
     if data['type'] == 'comment':
         original_author_id = data['id'].split('author/')[1].split('/posts')[0]
         print("original author id for the liked object: ", original_author_id)

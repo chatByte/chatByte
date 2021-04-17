@@ -31,7 +31,6 @@ class CommentSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         author_data = validated_data.pop('author')
-        print(author_data)
         try: 
             author = Profile.objects.get(id=author_data['id'])
         except:
@@ -40,7 +39,6 @@ class CommentSerializer(serializers.ModelSerializer):
         return comment
     
     def update(self, instance, validated_data):
-        print(validated_data)
         instance.type = validated_data.get('type', instance.type)
         instance.id = validated_data.get('id', instance.id)
         author_ser = ProfileSerializer(instance.author, data=validated_data.get('author', instance.author))
@@ -66,7 +64,6 @@ class PostSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         comments_data = validated_data.pop('comments')
         author = validated_data.pop('author')
-        print(author)
         try: 
             author = Profile.objects.get(id=author['id'])
         except:
@@ -84,7 +81,6 @@ class PostSerializer(serializers.ModelSerializer):
         return post
     
     def update(self, instance, validated_data):
-        print(validated_data)
         instance.type = validated_data.get('type', instance.type)
         instance.id = validated_data.get('id', instance.id)
         instance.title = validated_data.get('title', instance.title)
@@ -149,7 +145,6 @@ class LikeSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         author_data = validated_data.pop('author')
-        print(author_data)
         try: 
             author = Profile.objects.get(id=author_data['id'])
         except:

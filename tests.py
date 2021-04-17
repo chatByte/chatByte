@@ -12,43 +12,6 @@ from chat.signals import host
 
 # Create your tests here.
 
-# class AuthorTestCase(TestCase):
-#     def setUp(self):
-#         author1 = Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
-#         author2 = Author.objects.create(HOST='testfriend', DISPLAY_NAME='testfriend', URL='testfriend', GITHUB='testfriend')
-#         post = Post.objects.create(TITLE='title', SOURCE='test', ORIGIN='origin', DESCIPTION='description', CONTENT_TYPE='content_type', CONTENT='content' \
-#             , AUTHOR=author1, CATEGORIES='categories', COMMENTS_NO=0, PAGE_SIZE=0, COMMENTS_FIRST_PAGE='', VISIBILITY='visibility')
-#         author1.TIMELINE.add(post)
-
-#     def test_getTimeline(self):
-#         # print('timeline_all:', Author.objects.filter(DISPLAY_NAME='test')[0].TIMELINE.all())
-#         # print('time line get:', getTimeline('test'))
-#         self.assertEqual(list(getTimeline('test')), list(Author.objects.filter(DISPLAY_NAME='test')[0].TIMELINE.all()))
-
-#     def test_getAuthor(self):
-#         self.assertEqual(getAuthor('test'), Author.objects.filter(DISPLAY_NAME='test')[0])
-
-#     def test_createAuthor(self):
-#         list_before = list(Author.objects.filter(DISPLAY_NAME='testAuthor'))
-#         self.assertEqual(len(list_before), 0)
-#         createAuthor('testHost','testAuthor','','')
-#         list_after = list(Author.objects.filter(DISPLAY_NAME='testAuthor'))
-#         print("after create Author:", list_after)
-#         self.assertEqual(len(list_after), 1)
-
-#     def test_updateAuthor(self):
-#         author = Author.objects.filter(DISPLAY_NAME='test')[0]
-#         self.assertEqual(author.URL, 'test')
-#         updateAuthor('test','testAuthor','','')
-#         author = Author.objects.filter(DISPLAY_NAME='test')[0]
-#         self.assertEqual(author.URL, '')
-
-#     def test_deleteAuthor(self):
-#         list_before = list(Author.objects.filter(DISPLAY_NAME='test'))
-#         deleteAuthor('test')
-#         list_after = list(Author.objects.filter(DISPLAY_NAME='test'))
-#         self.assertEqual(len(list_before) - len(list_after), 1)
-
 class PostTestCase(TestCase):
     def setUp(self):
         self.liked = Liked.objects.create()
@@ -56,7 +19,6 @@ class PostTestCase(TestCase):
         self.user = User.objects.create_user(id=1,email='testuser@123.com',username='1')
         self.user.profile = self.profile
         self.post = Post.objects.create(id=2, title='abc', description='test_des', author=self.user.profile)
-        
         # Post.objects.create(ID=1)
         # Author.objects.create(HOST='test', DISPLAY_NAME='test', URL='test', GITHUB='test')
 
@@ -75,16 +37,11 @@ class PostTestCase(TestCase):
     def test_updatePost(self):
         filter_before = Post.objects.filter(title='abc')
         list_before = list(filter_before)
-        # print("old id:", filter_before[0].ID)
-        # print("len:", len(list_before))
         updatePost(self.post.id, 'abcd', '', 'text/plain', '')
         filter_after = Post.objects.filter(title='abc')
         list_after = list(filter_after)
-        # print("after id:", filter_after[0].ID)
-        # print("len abc:", len(filter_after))
         after = list(filter_after)
         new_after = list(Post.objects.filter(title='abcd'))
-        # print("new len:", len(new_after))
         self.assertEqual(len(after) - len(list_before), -1)
 
 
@@ -100,23 +57,15 @@ class PostTestCase(TestCase):
     def test_editPostDescription(self):
         filter_before = Post.objects.filter(description='test_des')
         list_before = list(filter_before)
-        # print("old id:", filter_before[0].ID)
-        # print("len:", len(list_before))
         editPostDescription(self.post.id, 'new_des')
         filter_after = Post.objects.filter(description='test_des')
         list_after = list(filter_after)
-        
-        # print("after id:", filter_after[0].ID)
-        # print("len abc:", len(filter_after))
         after = list(filter_after)
         new_after = list(Post.objects.filter(description='new_des'))
-        # print("new len:", len(new_after))
         self.assertEqual(len(after) - len(list_before), -1)
 
     def test_likePost(self):
-        print("profile:", self.user.profile)
         user_liked = self.user.profile.liked
-        print("liked:", user_liked)
         author_liked_before = list(self.user.profile.liked.items.all())
         post_likes_before = list(self.post.likes.all())
         likePost(self.post.id, self.user.profile.id)
@@ -292,7 +241,6 @@ class AccountTests(APITestCase):
             "github": "https://github.com/Jeremy0818"
         }
         response = self.client.post(url, user_json, format='json',  **{'HTTP_X_SERVER': host})
-        # print(response.content)
         self.assertEqual(response.status_code, 201)
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
@@ -341,12 +289,7 @@ class AccountTests(APITestCase):
             "unlisted": "False"
         }
         response = self.client.post(url, post_json, format='json',  **{'HTTP_X_SERVER': host})
-        # print(response.content)
         self.assertEqual(response.status_code, 201)
-#         # self.assertJSONEqual(
-#         #     str(response.content, encoding='utf8'),
-#         #     post_json
-#         # )
 
     def test_delete_post(self):
         """
@@ -354,7 +297,6 @@ class AccountTests(APITestCase):
         """
         self.client.login(username=self.username, password=self.password)
         response = self.client.delete(self.post1.id)
-        # print(response.content)
         self.assertEqual(response.status_code, 204)
     
     def test_put_post(self):
@@ -390,39 +332,28 @@ class AccountTests(APITestCase):
             "unlisted": "False"
         }
         response = self.client.put(url, post_json, format='json')
-        # print(response.content)
         self.assertEqual(response.status_code, 201)
     
     def test_get_comments(self):
         self.client.login(username=self.username, password=self.password)
         url = '/author/'+ str(self.user.id) +'/posts/3/comments'
         response = self.client.get(url, **{'HTTP_X_SERVER': host})
-        print("test_get_comments response content:",response.content)
         self.assertEqual(response.status_code, 200)
 
     def test_post_comments(self):
         self.client.login(username=self.username, password=self.password)
         url = '/author/'+ str(self.user.id) +'/posts/3/comments'
-        print("*****post_id:", self.post.id)
         
         comment_json = {
             "content": "test comment",
             "contentType": "text"
         }
         response = self.client.post(url, comment_json, format='json',  **{'HTTP_X_SERVER': host, 'HTTP_X_REQUEST_USER': self.user.profile.id})
-        print(response.content)
         self.assertEqual(response.status_code, 201)
 
-    def test_friends(self):
+    def test_get_friends(self):
         self.client.login(username=self.username, password=self.password)
         url = self.user.profile.id + "/friends/"
         response = self.client.get(url,  **{'HTTP_X_SERVER': host, 'HTTP_X_REQUEST_USER': self.user.profile.id})
-        print(response.content)
         self.assertEqual(response.status_code, 200)
-
-    def test_inbox(self):
-        pass
-
-    def test_likes(self):
-        pass
 

@@ -327,7 +327,6 @@ def createComment(author, post_id, comment, content_type, published=django.utils
         post = Post.objects.get(id=post_id)
         commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type, published=published, parent_post=post)
         post.comments.add(commentObj)
-        print("post_count:", post.count)
         post.count += 1
         post.save()
         return commentObj
