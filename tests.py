@@ -65,7 +65,7 @@ class PostTestCase(TestCase):
         list_before = list(Post.objects.filter(title='test_title'))
         user = User.objects.create(email='abc@123.com')
         # timeline_before = list(author.TIMELINE.all())
-        self.assertTrue(createPost('test_title','test','test','abc','text','content', user.profile,'',''))
+        self.assertTrue(createPost('test_title','test','test','abc','text','content', user.profile,'','', 'false'))
         list_after = list(Post.objects.filter(title='test_title'))
         # author_after = Author.objects.filter(DISPLAY_NAME='test')[0]
         # timeline_after = list(author_after.TIMELINE.all())
@@ -77,7 +77,7 @@ class PostTestCase(TestCase):
         list_before = list(filter_before)
         # print("old id:", filter_before[0].ID)
         # print("len:", len(list_before))
-        updatePost(self.post.id, 'abcd', '', '', '', '', '', '', '')
+        updatePost(self.post.id, 'abcd', '', 'text/plain', '')
         filter_after = Post.objects.filter(title='abc')
         list_after = list(filter_after)
         # print("after id:", filter_after[0].ID)
@@ -117,7 +117,6 @@ class PostTestCase(TestCase):
         print("profile:", self.user.profile)
         user_liked = self.user.profile.liked
         print("liked:", user_liked)
-        print("items", user_liked.items)
         author_liked_before = list(self.user.profile.liked.items.all())
         post_likes_before = list(self.post.likes.all())
         likePost(self.post.id, self.user.profile.id)
@@ -238,6 +237,19 @@ class AccountTests(APITestCase):
                                         size=0,
                                         comment_url='0',
                                         visibility='public')
+        self.post1 = Post.objects.create(id="456",
+                                        title='test_title',
+                                        source='test',
+                                        origin='test',
+                                        description='abc',
+                                        contentType='text',
+                                        content='content', 
+                                        author=self.user.profile,
+                                        categories='',
+                                        count=0,
+                                        size=0,
+                                        comment_url='0',
+                                        visibility='public')
         self.post_id = 3
         self.comment = Comment.objects.create(id="5", 
                                               author=self.user.profile, 
@@ -258,8 +270,8 @@ class AccountTests(APITestCase):
         url = '/author/1/'
         response = self.client.get(url,  **{'HTTP_X_SERVER': host})
         # print(response.content)
-        user_json = {"type": "author", "id": host + "author/1", "host": None, "displayName": "test", "url": None, "github": None}
-        self.assertEqual(response.status_code, 201)
+        user_json = {"type": "author", "id": host + "author/1", "host": 'https://chatbyte.herokuapp.com/', "displayName": "test", "url": '1', "github": None}
+        self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
             user_json
@@ -281,7 +293,7 @@ class AccountTests(APITestCase):
         }
         response = self.client.post(url, user_json, format='json',  **{'HTTP_X_SERVER': host})
         # print(response.content)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
             user_json
@@ -292,7 +304,7 @@ class AccountTests(APITestCase):
         Ensure we can update an author's posts.
         """
         self.client.login(username=self.username, password=self.password)
-        url = '/author/1/posts/'
+        url = '/author/' + str(self.user.id) + '/posts/'
         response = self.client.get(url,  **{'HTTP_X_SERVER': host})
         self.assertEqual(response.status_code, 200)
     
@@ -301,7 +313,7 @@ class AccountTests(APITestCase):
         Ensure we can create a post for an author.
         """
         self.client.login(username=self.username, password=self.password)
-        url = '/author/1/posts/'
+        url = '/author/' + str(self.user.id) + '/posts/'
         post_json = {
             "type": "post",
             "id": "456456",
@@ -314,10 +326,10 @@ class AccountTests(APITestCase):
             "author": {
                 "type": "author",
                 "id": "1",
-                "host": None,
+                "host": "https://chatbyte.herokuapp.com/",
                 "displayName": "test",
-                "url": None,
-                "github": None
+                "url": "https://chatbyte.herokuapp.com/",
+                "github": "https://chatbyte.herokuapp.com/"
             },
             "categories": "text/plain",
             "count": 1,
@@ -326,7 +338,7 @@ class AccountTests(APITestCase):
             "comments": [],
             "published": "2021-03-26T19:04:53Z",
             "visibility": "public",
-            "unlisted": "false"
+            "unlisted": "False"
         }
         response = self.client.post(url, post_json, format='json',  **{'HTTP_X_SERVER': host})
         # print(response.content)
@@ -335,129 +347,69 @@ class AccountTests(APITestCase):
 #         #     str(response.content, encoding='utf8'),
 #         #     post_json
 #         # )
-    
-    # def test_get_post(self):
-    #     """
-    #     Ensure we can update an author's post.
-    #     """
-    #     self.client.login(username=self.username, password=self.password)
-    #     self.user.profile.timeline.add(self.post)
-    #     url = '/author/1/posts/' + str(self.post_id) + '/'
-    #     print(url)
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, 200)
 
+    def test_delete_post(self):
+        """
+        Ensure we can delete an author's post.
+        """
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.delete(self.post1.id)
+        # print(response.content)
+        self.assertEqual(response.status_code, 204)
     
-#     def test_post_post(self):
-#         """
-#         Ensure we can update an author's post.
-#         """
-#         self.client.login(username=self.username, password=self.password)
-#         url = '/chat/author/1/posts/' + str(self.post_id) + '/'
-#         post_json = {
-#             "type": "post",
-#             "id": self.post_id,
-#             "title": "ffffffffffffffffffffffffffffff",
-#             "source": "https://chatbyte.herokuapp.com/",
-#             "origin": "https://chatbyte.herokuapp.com/",
-#             "description": "asdf",
-#             "contentType": "text",
-#             "content": "asdf",
-#             "author": {
-#                 "type": "author",
-#                 "id": "1",
-#                 "host": None,
-#                 "displayName": "test",
-#                 "url": None,
-#                 "github": None
-#             },
-#             "categories": "text/plain",
-#             "count": 1,
-#             "size": 1,
-#             "commentsPage": "1",
-#             "comments": [],
-#             "published": "2021-03-26T19:04:53Z",
-#             "visibility": "public",
-#             "unlisted": "false"
-#         }
-#         response = self.client.post(url, post_json, format='json')
-#         # print(response.content)
-#         self.assertEqual(response.status_code, 201)
-
-#     def test_delete_post(self):
-#         """
-#         Ensure we can delete an author's post.
-#         """
-#         self.client.login(username=self.username, password=self.password)
-#         url = str(self.post_id)
-#         response = self.client.delete(url)
-#         # print(response.content)
-#         self.assertEqual(response.status_code, 204)
-    
-#     def test_put_post(self):
-#         """
-#         Ensure we can delete an author's post.
-#         """
-#         self.client.login(username=self.username, password=self.password)
-#         url = '/chat/author/1/posts/asdf/'
-#         post_json = {
-#             "type": "post",
-#             "id": "asdf",
-#             "title": "ffffffffffffffffffffffffffffff",
-#             "source": "https://chatbyte.herokuapp.com/",
-#             "origin": "https://chatbyte.herokuapp.com/",
-#             "description": "asdf",
-#             "contentType": "text",
-#             "content": "asdf",
-#             "author": {
-#                 "type": "author",
-#                 "id": "1",
-#                 "host": None,
-#                 "displayName": "test",
-#                 "url": None,
-#                 "github": None
-#             },
-#             "categories": "text/plain",
-#             "count": 1,
-#             "size": 1,
-#             "commentsPage": "1",
-#             "comments": [],
-#             "published": "2021-03-26T19:04:53Z",
-#             "visibility": "public",
-#             "unlisted": "false"
-#         }
-#         response = self.client.put(url, post_json, format='json')
-#         # print(response.content)
-#         self.assertEqual(response.status_code, 201)
+    def test_put_post(self):
+        """
+        Ensure we can create a post with a specific id and content.
+        """
+        self.client.login(username=self.username, password=self.password)
+        url = '/chat/author/1/posts/asdf/'
+        post_json = {
+            "type": "post",
+            "id": "789789",
+            "title": "fffffffffff",
+            "source": "https://chatbyte.herokuapp.com/",
+            "origin": "https://chatbyte.herokuapp.com/",
+            "description": "asdf",
+            "contentType": "text",
+            "content": "asdf",
+            "author": {
+                "type": "author",
+                "id": "1",
+                "host": "https://chatbyte.herokuapp.com/",
+                "displayName": "test",
+                "url": "https://chatbyte.herokuapp.com/",
+                "github": "https://chatbyte.herokuapp.com/"
+            },
+            "categories": "text/plain",
+            "count": 1,
+            "size": 1,
+            "comment_url": "1",
+            "comments": [],
+            "published": "2021-03-26T19:04:53Z",
+            "visibility": "public",
+            "unlisted": "False"
+        }
+        response = self.client.put(url, post_json, format='json')
+        # print(response.content)
+        self.assertEqual(response.status_code, 201)
     
     def test_get_comments(self):
         self.client.login(username=self.username, password=self.password)
-        url = '/author/'+ str(self.user.id) +'/posts/3/comments/'
+        url = '/author/'+ str(self.user.id) +'/posts/3/comments'
         response = self.client.get(url, **{'HTTP_X_SERVER': host})
         print("test_get_comments response content:",response.content)
         self.assertEqual(response.status_code, 200)
 
     def test_post_comments(self):
         self.client.login(username=self.username, password=self.password)
-        url = '/author/'+ str(self.user.id) +'/posts/3/comments/'
+        url = '/author/'+ str(self.user.id) +'/posts/3/comments'
         print("*****post_id:", self.post.id)
         
         comment_json = {
-            "type": "comment",
-            "id": host + url + '4',
-            "author": {
-                "type": "author",
-                "id": str(self.user.id),
-                "host": None,
-                "displayName": "test",
-                "url": None,
-                "github": None
-            },
-            "comment": "test comment",
-            "contentType": "text",
-            "published": "2021-03-26T19:04:53Z"
+            "content": "test comment",
+            "contentType": "text"
         }
-        response = self.client.post(url, comment_json, format='json',  **{'HTTP_X_SERVER': host})
+        response = self.client.post(url, comment_json, format='json',  **{'HTTP_X_SERVER': host, 'HTTP_X_REQUEST_USER': self.user.profile.id})
         print(response.content)
         self.assertEqual(response.status_code, 201)
 

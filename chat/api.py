@@ -220,13 +220,15 @@ def posts_obj(request, AUTHOR_ID):
         elif request.method == 'POST':
             data = JSONParser().parse(request)
             serializer = PostSerializer(data=data)
+            print("----------------")
             if serializer.is_valid(raise_exception=True):
-                profile = Profile.objects.get(id=AUTHOR_ID)
+                print("----------------")
                 post = serializer.save()
                 print(post)
-                profile.timeline.add(post)
-                profile.save()
+                post.author.timeline.add(post)
+                post.author.save()
                 return JsonResponse(serializer.data, status=201)
+            print("----------------")
             return JsonResponse(serializer.errors, status=400)
 
 
@@ -326,7 +328,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
 
             profile_url = request.META.get("HTTP_X_REQUEST_USER")
             origin_server = profile_url.split('author/')[0]
-            author_id = profile_url.split('author/')[1]
+            author_id = profile_url.split('author/')[-1]
             print("author id:", author_id)
             try:
                 author = Profile.objects.get(id=profile_url)

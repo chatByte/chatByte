@@ -61,10 +61,10 @@ class PostSerializer(serializers.ModelSerializer):
         comments_data = validated_data.pop('comments')
         author = validated_data.pop('author')
         print(author)
-        # try: 
-        #     author = Profile.objects.get(id=author_data['id'])
-        # except:
-        #     author = Profile.objects.create(**author_data)
+        try: 
+            author = Profile.objects.get(id=author['id'])
+        except:
+            author = Profile.objects.create(**author)
         print("---------******************--------------")
         post = Post.objects.create(author=author, **validated_data)
         print("---------******************************--------------")
