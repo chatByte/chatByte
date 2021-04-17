@@ -9,6 +9,10 @@ from rest_framework.authtoken.admin import TokenAdmin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as OriginalUserAdmin
 
+
+"""
+deisgn for admin page, be awared that you need to activate your user, after creation
+"""
 class UserAdmin(OriginalUserAdmin):
     actions = ['activate_user','deactivate_user']
 

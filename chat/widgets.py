@@ -3,6 +3,9 @@ from django import forms
 from django.contrib.admin import widgets
 
 
+"""
+simple page down template
+"""
 class PagedownWidget(forms.Textarea):
     template_name = 'pagedown/forms/widgets/default.html'
 
@@ -31,6 +34,9 @@ class PagedownWidget(forms.Textarea):
               'pagedown_init.js')
 
 
+"""
+simple page down for admin
+"""
 class AdminPagedownWidget(PagedownWidget, widgets.AdminTextareaWidget):
 
     class Media:
