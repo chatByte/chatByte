@@ -3,6 +3,9 @@ from django.http import JsonResponse
 from .models import *
 
 
+"""
+profile serializer, similar to adapter, force data follow the format
+"""
 class ProfileSerializer(serializers.ModelSerializer):
       class Meta:
         model = Profile
@@ -12,6 +15,11 @@ class ProfileSerializer(serializers.ModelSerializer):
             'id': {'validators': []},
         }
 
+
+
+"""
+Comment serializer, similar to adapter, force data follow the format
+"""
 class CommentSerializer(serializers.ModelSerializer):
     author = ProfileSerializer()
     class Meta:
@@ -22,20 +30,16 @@ class CommentSerializer(serializers.ModelSerializer):
         }
     
     def create(self, validated_data):
-        print("---------***********--------------")
         author_data = validated_data.pop('author')
         print(author_data)
         try: 
             author = Profile.objects.get(id=author_data['id'])
         except:
             author = Profile.objects.create(**author_data)
-        print("---------******************--------------")
         comment = Comment.objects.create(author=author, **validated_data)
-        print("---------******************************--------------")
         return comment
     
     def update(self, instance, validated_data):
-        print("---------***--------------")
         print(validated_data)
         instance.type = validated_data.get('type', instance.type)
         instance.id = validated_data.get('id', instance.id)
@@ -49,6 +53,9 @@ class CommentSerializer(serializers.ModelSerializer):
         return instance
 
 
+"""
+Post serializer, similar to adapter, force data follow the format
+"""
 class PostSerializer(serializers.ModelSerializer):
     author = ProfileSerializer()
     comments = CommentSerializer(many=True)
@@ -57,7 +64,6 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['type','id', 'title', 'source', 'origin', 'description', 'contentType', 'content', 'author', 'categories', 'count', 'size', 'comment_url', 'comments', 'published', 'visibility', 'unlisted'  ]
     
     def create(self, validated_data):
-        print("---------***********--------------")
         comments_data = validated_data.pop('comments')
         author = validated_data.pop('author')
         print(author)
@@ -65,23 +71,19 @@ class PostSerializer(serializers.ModelSerializer):
             author = Profile.objects.get(id=author['id'])
         except:
             author = Profile.objects.create(**author)
-        print("---------******************--------------")
         post = Post.objects.create(author=author, **validated_data)
-        print("---------******************************--------------")
         for comment_data in comments_data:
             author_data = comment_data.pop('author')
             try: 
                 com_author = Profile.objects.get(id=author_data['id'])
             except:
                 com_author = Profile.objects.create(**author_data)
-            print("---------********************************--------------")
             comment = Comment.objects.create(author=com_author, **comment_data)
             post.comments.add(comment)
         post.save()
         return post
     
     def update(self, instance, validated_data):
-        print("---------***--------------")
         print(validated_data)
         instance.type = validated_data.get('type', instance.type)
         instance.id = validated_data.get('id', instance.id)
@@ -114,12 +116,19 @@ class PostSerializer(serializers.ModelSerializer):
         return instance
         
 
+"""
+Inbox post serializer, similar to adapter, force data follow the format
+"""
 class PostInboxSerializer(serializers.ModelSerializer):
     items = PostSerializer(many=True)
     class Meta:
         model = PostInbox
         fields = ['type','author', 'items']
 
+
+"""
+Friend request serializer, similar to adapter, force data follow the format
+"""
 class FriendReuqestSerializer(serializers.ModelSerializer):
     actor = ProfileSerializer(read_only=True)
     object = ProfileSerializer(read_only=True)
@@ -129,6 +138,9 @@ class FriendReuqestSerializer(serializers.ModelSerializer):
         fields = ['type','id', 'summary', 'actor', 'object']
 
 
+"""
+like serializer, similar to adapter, force data follow the format
+"""
 class LikeSerializer(serializers.ModelSerializer):
     author = ProfileSerializer(True)
     class Meta:
@@ -136,44 +148,33 @@ class LikeSerializer(serializers.ModelSerializer):
         fields = ['type','id', 'summary', 'author', 'object', 'context']
     
     def create(self, validated_data):
-        print("---------***********--------------")
         author_data = validated_data.pop('author')
         print(author_data)
         try: 
             author = Profile.objects.get(id=author_data['id'])
         except:
             author = Profile.objects.create(**author_data)
-        print("---------******************--------------")
         like = Like.objects.create(author=author, **validated_data)
-        print("---------******************************--------------")
         return like
 
+
+"""
+Follower serializer, similar to adapter, force data follow the format
+"""
 class FollowerSerializer(serializers.ModelSerializer):
     items = ProfileSerializer(many=True)
     class Meta:
         model = Follower
         fields = ['type', 'items']
 
+
+"""
+Liked item serializer, similar to adapter, force data follow the format
+"""
 class LikedSerializer(serializers.ModelSerializer):
     items = LikeSerializer(many=True)
     class Meta:
         model = Liked
         fields = ['type', 'items']
 
-# class CommentCustomPagination(pagination.PageNumberPagination):
-#     def get_paginated_response(self, data):
-#         return JsonResponse({
-#             'next': self.get_next_link(),
-#             'previous': self.get_previous_link(),
-#             'count': self.page.paginator.count,
-#             'comments': data
-#         }, safe=False)
 
-# class PostCustomPagination(pagination.PageNumberPagination):
-#     def get_paginated_response(self, data):
-#         return JsonResponse({
-#             'next': self.get_next_link(),
-#             'previous': self.get_previous_link(),
-#             'count': self.page.paginator.count,
-#             'posts': data
-#         }, safe=False)

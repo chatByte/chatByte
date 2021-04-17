@@ -24,46 +24,15 @@ from django.views.generic.list import ListView
 
 import requests
 
-
-
 """
 views.py receive request and create repose to client,
 Create your views here.
 """
-# =============================================================================
-
-# from pagedown.forms import ImageUploadForm
 
 
-# IMAGE_UPLOAD_PATH = getattr(
-#     settings, 'PAGEDOWN_IMAGE_UPLOAD_PATH', 'pagedown-uploads')
-# IMAGE_UPLOAD_UNIQUE = getattr(
-#     settings, 'PAGEDOWN_IMAGE_UPLOAD_UNIQUE', False)
-# IMAGE_UPLOAD_ENABLED = getattr(
-#     settings, 'PAGEDOWN_IMAGE_UPLOAD_ENABLED', False)
-
-
-# @login_required
-# def image_upload_view(request):
-#     if not request.method == 'POST':
-#         raise PermissionDenied()
-
-#     if not IMAGE_UPLOAD_ENABLED:
-#         raise ImproperlyConfigured('Image upload is disabled')
-
-#     form = ImageUploadForm(request.POST, request.FILES)
-#     if form.is_valid():
-#         image = request.FILES['image']
-#         path_args = [IMAGE_UPLOAD_PATH, image.name]
-#         if IMAGE_UPLOAD_UNIQUE:
-#             path_args.insert(1, str(uuid.uuid4()))
-#         path = os.path.join(*path_args)
-#         path = default_storage.save(path, image)
-#         url = default_storage.url(path)
-#         return JsonResponse({'success': True, 'url': url})
-
-#     return JsonResponse({'success': False, 'error': form.errors})
-# =============================================================================
+"""
+Home page view to let user see home page redirect to our profile page
+"""
 @login_required
 def start_homepage(request):
     if request.user.is_authenticated:
@@ -71,8 +40,9 @@ def start_homepage(request):
     else: return redirect("/accounts/login/")
 
 
-
-
+"""
+sign up page view
+"""
 def signup(request):
     form = UserCreationForm(request.POST)
     print("--------------", request.POST)
@@ -99,7 +69,7 @@ def signup(request):
 Generate response at home page  => eveyones' post here
 path(r"author/<str:AUTHOR_ID>/public_channel/",
 """
-# get feed and
+# get feed and, user will see all of the posts that they allowed to see
 # post: comment/like => send post request to host server(edit post function),
 @require_http_methods(["GET", "POST"])
 @login_required
@@ -115,11 +85,9 @@ def my_stream(request, AUTHOR_ID):
     if request.method == "GET":
 
         # a list of post, django.db.models.query.QuerySet
-        # mytimeline = cur_author.profile.timeline
         mytimeline = cur_author.profile.timeline.filter(unlisted=False)
         all_public_posts = Post.objects.filter(visibility='public').filter(unlisted=False).all()
 
-        # print(",,,,,,,,,,,,,,,")
         # print(all_public_posts)
 
         back_json = get_github_activity(request, AUTHOR_ID)
@@ -127,8 +95,6 @@ def my_stream(request, AUTHOR_ID):
         # Get stream from: node origins, since we have plenty remote server
         remote_posts = []
         for node in Node.objects.all():
-            # print("Get stream from: ", node.origin)
-            # print("Username: ", node.username, " password: ", node.password)
 
             if node.origin == host_server:
                 continue
@@ -138,7 +104,7 @@ def my_stream(request, AUTHOR_ID):
 
             # specific handling team 14, since they havent finsihed it yet, and they dont have pagenation
             if node.origin == "https://hermes-cmput404.herokuapp.com/" :
-                print("handling team 14 , get in stream:----------------")
+                print("---------------- handling team 14 , get in stream:----------------")
                 print(res)
 
                 try:
@@ -155,6 +121,9 @@ def my_stream(request, AUTHOR_ID):
                         post_count = post_count + 1
                         if post_count > 5 :
                             break
+
+                    # we can do below later for deeper connection with team 14
+
                     # # remote_post_id = post['id']
                     # # remote_origin = remote_post_id.split('author/')[0]
                     # # remote_user_id = remote_post_id.split('author/')[1].split('/posts/')[0]
@@ -199,32 +168,6 @@ def my_stream(request, AUTHOR_ID):
                             print(comment['num_likes'])
                         remote_posts.append(post)
 
-                    #     # print("Post id: ", post['id'])
-                    #     post_id = post['id']
-                    #     try:
-                    #         post_obj = Post.objects.get(id=post_id)
-                    #         serializer = PostSerializer(post_obj, data=post, partial=True)
-                    #         if serializer.is_valid(raise_exception=True):
-                    #             serializer.save()
-                    #     except Post.DoesNotExist:
-                    #         author_dict = post['author']
-                    #         # print("Author dict: ", author_dict)
-                    #         try:
-                    #             author = Profile.objects.get(id=author_dict['id'])
-                    #         except Profile.DoesNotExist:
-                    #             author_serializer = ProfileSerializer(data=author_dict)
-                    #             if author_serializer.is_valid(raise_exception=True):
-                    #                 author = author_serializer.save()
-
-                    #         serializer = PostSerializer(data=post)
-
-                    #         if serializer.is_valid(raise_exception=True):
-                    #             serializer.save(author=author) # comments=comments_list
-                    #             post_obj = Post.objects.get(id=post_id)
-                    #     # add stream post into public channel
-                    #     mytimeline.add(post_obj)
-                    #     # print("Post object", post_obj)
-
                 except BaseException as e:
                     print(e)
 
@@ -259,17 +202,13 @@ def my_stream(request, AUTHOR_ID):
             json_post['num_likes'] = post_num_likes
             jsonify_public_channel_posts.append(json_post)
 
-        # PostSerializer(public_channel_posts, many=True).data
-        # print("PostSerializaer:\n", json.dumps(PostSerializer(public_channel_posts, many=True).data))
-        # public_channel_posts = json.loads(json.dumps(PostSerializer(public_channel_posts, many=True).data)) + remote_posts # a list
-        # print("public_channel_posts:\n", public_channel_posts)
+
         jsonify_public_channel_posts += remote_posts
 
         author_num_follwers = len(cur_author.profile.followers.items.all())
         friend_request_num = len(cur_author.inbox.friend_requests.all())
         # order by date
         # public_channel_posts = public_channel_posts.order_by('-published')
-
         jsonify_public_channel_posts = sorted(jsonify_public_channel_posts, key=lambda k: k.get('published', 0), reverse=True)
         for post in jsonify_public_channel_posts:
             # print("post:\n", post)
@@ -279,9 +218,6 @@ def my_stream(request, AUTHOR_ID):
         # create a paginator
         paginator_public_channel_posts = Paginator(jsonify_public_channel_posts, 8) # Show 8 contacts per page.
 
-        print("--------------------")
-        print(paginator_public_channel_posts)
-
         # if  page_number == None, we will get first page(can be empty)
         page_number = request.GET.get('page')
 
@@ -289,8 +225,7 @@ def my_stream(request, AUTHOR_ID):
         page_obj = paginator_public_channel_posts.get_page(page_number)
 
         liked_objs = cur_author.profile.liked.items.values_list('object', flat=True)
-        # print("Liked objects: ", liked_objs)
-        # print(list(public_channel_posts)[0].likes)
+
 
         dynamic_contain = {
             'myName' : cur_author.profile.displayName,
@@ -362,20 +297,17 @@ def my_stream(request, AUTHOR_ID):
             comment_content_type = request_post.get("content_type","")
 
             #if successful create a comment
-            # if  createComment(cur_author.profile, post_id, comment_contain, comment_content_type) :
-            #     response = JsonResponse({'redirect_url': "current"}, status=200)
             send_data = {
                 'content': comment_contain,
                 'contentType': comment_content_type
             }
-            # response = request.post(post_id + "/comments", data=json.dumps(send_data), head)
+
             response = commentRequest("POST", post_id.split('author/')[0], post_id.split('author/')[1].split('/posts/')[0] \
                 , post_id.split('author/')[1].split('/posts/')[1], request.user.id, send_data)
 
             print("response json:", response.json())
             return JsonResponse(response.json(), status=response.status_code)
-            # else:
-            #     response = JsonResponse({}, status=500)
+
 
         else:
             response = JsonResponse({}, status=400)
@@ -393,36 +325,12 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
     server = User.objects.get(username=SERVER)
     host = server.last_name
     # foreign_author = getUser(FOREIGN_ID)
+
     foreign_author = Profile.objects.get(id=host + "author/" + FOREIGN_ID)
     author_id = host_server + "author/" + AUTHOR_ID
     print(author_id)
     cur_author = Profile.objects.get(id=author_id)
-    # if foreign_author != None:
-    #     foreign_user_name = foreign_author.username
-
-    #     if getFriend(request.user.id, foreign_author.id):
-    #         isFriend = True;
-    #     else:
-    #         isFriend = False;
-
-    #     if getFollowing(request.user.id, foreign_author.id):
-    #         isFollowing = True;
-    #     else:
-    #         isFollowing = False;
-
-        # a list of post
-        #foreign_timeline = foreign_author.profile.timeline.all() #getTimeline(cur_user_name)
-        # try:
-        # res = postsRequest("GET", host, FOREIGN_ID)
-        # if res.status_code < 400:
-        #     foreign_timeline = PostSerializer(res.json()['posts'], many=True).data
-        # else:
-        #     foreign_timeline = []
-        # except:
-        #     foreign_timeline = []
-
-        # author_num_follwers = len(foreign_author.profile.followers.items.all())
-        # friend_request_num = len(request.user.inbox.friend_requests.all())
+  
 
     dynamic_contain = {
         'foreignName' : foreign_author.displayName,
@@ -436,7 +344,7 @@ def foreign_public_channel(request, AUTHOR_ID, SERVER, FOREIGN_ID):
     }
     response = render(request, "chat/foreign_public_channel.html", dynamic_contain)
     return response
-    # return HttpResponse(404)
+
 
 
 
@@ -517,16 +425,14 @@ def posts(request, AUTHOR_ID):
 
         createFlag = createPost(title, source, origin, description, content_type, content, request.user.profile, categories, visibility,unlisted)
         if createFlag:
-            # print("haha, successful create post, info: ", description)
 
-            # response = redirect("/author/"+ str(AUTHOR_ID) + "/public_channel/")
             response = HttpResponse(status=200)
             return response
         else:
             print("server feels sad ", description)
             # expect front end redirect
             response = JsonResponse({}, status=500)
-        # response = render(request, "chat/posts.html", dynamic_contain)
+
         return response
 
 
@@ -595,7 +501,7 @@ def profile(request, AUTHOR_ID):
     inbox = request.user.inbox
 
     friend_request_num = len(inbox.friend_requests.all())
-    # print(friend_request_num)
+
 
     context['friend_request_num']=friend_request_num
     # query to database
@@ -609,18 +515,19 @@ def profile(request, AUTHOR_ID):
         url = post_obj["URL"]
         email = post_obj["email"]
         github = post_obj["GITHUB"]
-        # print("new url:", url)
+
         display_name = post_obj["display_name"]
-        # print("new name:", display_name)
+
         updateProfile(user.id, display_name, email, url, github)
-        # print("profile id:",  str(request.user.profile.id))
-        # response = redirect("author/"+ str(request.user.profile.id).split('/')[-1] + "/profile/")
+
         response = redirect("")
         return response
 
 
 
-
+"""
+Generate response at my_friends list page,
+"""
 @login_required
 @require_http_methods(["GET"])
 @login_required
@@ -628,10 +535,10 @@ def my_friends(request,AUTHOR_ID):
     cur_user_name = None
     if request.user.is_authenticated:
         cur_user_name = request.user.username
-    # print(cur_user_name)
+
     friend_list = getFriends(request.user.id)
 
-    # print(friend_list)
+
     cur_author = request.user.profile
     author_num_follwers = len(cur_author.followers.items.all())
     friend_request_num = len(request.user.inbox.friend_requests.all())
@@ -643,7 +550,7 @@ def my_friends(request,AUTHOR_ID):
     }
 
     return render(request, "chat/myFriends.html", dynamic_contain)
-    # return render(request, "chat/myFriends.html")
+
 
 # @require_http_methods(["DELETE"])
 # TODO: accept only DELETE? How to send delete request by HTML?
@@ -663,7 +570,7 @@ def delete_friend(request, AUTHOR_ID, FRIEND_ID):
     return HttpResponse(status=304)
 
 
-# Method that generate a friend request
+# Method that generate a friend request, method
 @login_required
 def add_friend(request, AUTHOR_ID, FRIEND_ID):
     # print(AUTHOR_ID, FRIEND_ID)
@@ -706,7 +613,9 @@ def if_friend_request(request):
         print(e)
         return HttpResponse(status=304)
 
-
+'''
+design for accept friend request
+'''
 @require_http_methods(["GET"])
 @login_required
 def accept_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
@@ -718,6 +627,9 @@ def accept_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
         return HttpResponse(status=401)
 
 
+'''
+design for reject  friend request
+'''
 @require_http_methods(["GET"])
 @login_required
 def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
@@ -728,7 +640,9 @@ def reject_friend_request(request, AUTHOR_ID, FRIEND_REQUEST_ID):
         return HttpResponse(status=401)
 
 
-
+'''
+design for adding follow
+'''
 @require_http_methods(["GET"])
 @login_required
 def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
@@ -738,11 +652,14 @@ def add_follow(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     except BaseException as e:
         return HttpResponse(status=401)
 
+
+'''
+design for get a specific user
+'''
 @require_http_methods(["GET"])
 @login_required
 def get_user(request,SERVER,AUTHOR_ID):
-    # get
-    # print("---------------------------Getting user ---------------")
+
     try:
         server = User.objects.get(username=SERVER)
         foreign_server = server.last_name
@@ -787,7 +704,6 @@ def search(request, AUTHOR_ID):
         numberID_target = target_id.split("/")[-1]
         server_name = user.username
 
-
         # return response
         redirect_url = "../my_stream/" + server_name +"/" + numberID_target + "/"
 
@@ -806,12 +722,7 @@ def search(request, AUTHOR_ID):
 
         if response.status_code < 400:
             foreign_author = response.json()
-            # foreign_author = {'type': 'author',
-            #                 'id': 'http://127.0.0.1:5000/author/10',
-            #                 'host': 'http://127.0.0.1:5000/author/10',
-            #                 'displayName': 'Jonathan',
-            #                 'url': 'http://127.0.0.1:5000/author/10',
-            #                 'github': 'http://127.0.0.1:5000/author/10'}
+
             serializer = ProfileSerializer(data=foreign_author)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
@@ -891,27 +802,20 @@ reshare a post
 def reshare(request, AUTHOR_ID):
     data = JSONParser().parse(request)
 
-    # post_id = data['id']
-    #  another way to do it
-    # post = Post.objects.get(id=post_id)
-
-    #actually we need not that source
-    # source = request.user.profile.id
-    # unlisted = str(post.unlisted)
-    # reshare_id =  data['id']
-
     createFlag = createPost( data['title'], "", data['origin'], data['description'], data['content_type'], data['content'], request.user.profile, "reshare", data['visibility'], data['unlisted'],  data['id'])
     if createFlag:
         response = JsonResponse({"reshare": "true"}, status=200)
         return response
     else:
         response = JsonResponse({"reshare": "false"}, status=400)
-    # response = render(request, "chat/posts.html", dynamic_contain)
+
     return response
-    # except:
-    #     return JsonResponse({}, status=400)
 
 
+
+'''
+Get git  hub activity, render the obj list in json format
+'''
 @login_required
 @require_http_methods(["GET"])
 def get_github_activity(request, AUTHOR_ID):
@@ -919,24 +823,24 @@ def get_github_activity(request, AUTHOR_ID):
         token = os.getenv('GITHUB_TOKEN')
         user = User.objects.get(id=AUTHOR_ID)
         github_name = user.profile.github.split('/')[-1]
-        # print(token)
-        # owner = "MartinHeinz"
-        # repo = "python-project-blueprint"
-        # query_url = f"https://api.github.com/users/${github_name}/events"
+
         query_url = f"https://api.github.com/users/%s/events" %github_name
         params = {
             "state": "open",
         }
         headers = {'Authorization': f'token {token}'}
         r = requests.get(query_url)
-        # pprint(r.json())
+
         return r.json()
     except Exception as e:
         print(e)
         return None
-    # pprint(r.json())
 
 
+
+'''
+Get unlisted page
+'''
 @require_http_methods(["GET"])
 def unlisted(request, AUTHOR_ID, POST_ID):
     print("unlisted view")
@@ -944,10 +848,9 @@ def unlisted(request, AUTHOR_ID, POST_ID):
 
     post_id = host_server + "author/" + AUTHOR_ID + '/posts/' + POST_ID
     try:
-        # print("here for unlisted, post id: ", post_id)
+
         post = Post.objects.get(id=post_id)
-        print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHhh, here for unlisted")
-        print(post)
+
         if post.unlisted:
             print("lets render")
             return render(request, "chat/posts_unlisted.html", {"unlisted": post})

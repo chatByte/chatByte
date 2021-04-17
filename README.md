@@ -1,7 +1,11 @@
 # chatByte
 Project wiki: https://github.com/chatByte/chatByte/wiki 
 
+We are happy to answer your questions; you can always reach out to us by the contact information listed in our wiki.
+
 Working progress controled by our product backlog: https://github.com/chatByte/chatByte/projects/1
+
+
 ## API documentation:
 :bowtie: FULL API doc <br />
 https://github.com/chatByte/chatByte/blob/main/API_docs.md <br />
@@ -68,8 +72,11 @@ In the chatByte/mysite directory:
 
     python manage.py createsuperuser
     
-## Restful endpoints
+## Restful endpoints  :smirk:
 
+    This a full Restful application,  For more details you can always look up our documentaion, and have fun; 
+    
+   
     chat/author/<author_id>/                                   (profile html / single author endpoint)
     chat/author/<author_id>/posts                              (home html / list of posts endpoint)
     chat/author/<author_id>/posts/<post_id>                    (profile html / single post endpoint)

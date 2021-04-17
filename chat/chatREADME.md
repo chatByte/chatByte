@@ -1,9 +1,4 @@
 
-CLass info
-
-remoteProxy.py: design for handling the request from other nodess
-
-
 
 Usefull  method:
 

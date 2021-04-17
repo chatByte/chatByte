@@ -5,22 +5,11 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
-# class Actor(models.Model):
-#     # for authorization only
-#     ID = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
-#     USERNAME = models.CharField(max_length=50, unique=True)
-# class NewPost(models.Model):
-#     name = models.CharField(max_length=128)
-#     description = models.TextField(blank=True)
-#     lyrics = models.TextField(blank=True)
-
-#     def __str__(self):
-#         return self.name
-
-#     def get_absolute_url(self):
-#         return reverse('music:songs:detail', args=[str(self.id)])
 
 
+"""
+profile model, saved in batabase
+"""
 class Profile(models.Model):
     type = models.CharField(max_length=200, default="author")
     id = models.CharField(max_length=200, primary_key=True, default=uuid.uuid4)
@@ -37,19 +26,20 @@ class Profile(models.Model):
     # a group of author, that i am currently following
     followings = models.ManyToManyField("Profile", related_name='%(class)s_followings', blank=True)
     timeline = models.ManyToManyField("Post", blank=True)
-    # the friend request i received
-    # friend_requests = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests', blank=True)
-    # the friend request i snet
-    # friend_requests_sent = models.ManyToManyField("FriendRequest", related_name='%(class)s_friend_requests_sent', blank=True)
-    # the iteams, that i currenly liked
+
     liked = models.OneToOneField('Liked', on_delete=models.CASCADE, null=True, blank=True)
 
     def __unicode__(self): # for Python 2
         return self.user.username
 
-    class Meta:
-        managed = False
+    # design for local method
+    # class Meta:
+    #     managed = False
 
+
+"""
+Comment model, saved in batabase
+"""
 class Comment(models.Model):
     type = models.CharField(max_length=200, default="comment")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
@@ -64,7 +54,9 @@ class Comment(models.Model):
     parent_post = models.ForeignKey("Post", on_delete= models.CASCADE, null=True, blank=True)
 
 
-
+"""
+Post model, saved in batabase
+"""
 class Post(models.Model):
     type = models.CharField(max_length=200, default="post")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
@@ -78,11 +70,11 @@ class Post(models.Model):
     content = models.TextField()
     # the author has an ID where by authors can be disambiguated
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    # categories = ArrayField(
-    #     models.CharField(max_length=200, blank=True),
-    #     size=200,
-    # )
-    categories = models.CharField(max_length=200, blank=True)
+    categories = ArrayField(
+        models.CharField(max_length=200, blank=True),
+        size=200,
+    )
+    # categories = models.CharField(max_length=200, blank=True)
     count = models.IntegerField(default=0)
     size = models.IntegerField(default=0)
     comment_url = models.CharField(max_length=200, blank=True)
@@ -93,18 +85,29 @@ class Post(models.Model):
     unlisted = models.BooleanField(default=False)
     likes = models.ManyToManyField('Like', blank=True)
 
+"""
+Post inbox model, saved in batabase
+"""
 class PostInbox(models.Model):
     type = models.CharField(max_length=200, default="inbox", blank=True)
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     author = models.CharField(max_length=200, blank=True, null=True)
     items = models.ManyToManyField('Post', blank=True)
 
+
+"""
+Inbox model, saved in batabase
+"""
 class Inbox(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     post_inbox = models.OneToOneField('PostInbox', on_delete=models.CASCADE, null=True, blank=True)
     like_inbox = models.ManyToManyField('Like', blank=True)
     friend_requests = models.ManyToManyField('FriendRequest', blank=True)
 
+
+"""
+Followed model, saved in batabase
+"""
 class Follower(models.Model):
     # get a list of authors who are their followers
     type = models.CharField(max_length=200, default="followers")
@@ -112,6 +115,10 @@ class Follower(models.Model):
     # Here items are Authors , which is Profiles
     items = models.ManyToManyField('Profile', related_name='%(class)s_followers_items', blank=True)
 
+
+"""
+Friedn request model, saved in batabase
+"""
 class FriendRequest(models.Model):
     type = models.CharField(max_length=200, default="follow")
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
@@ -119,6 +126,10 @@ class FriendRequest(models.Model):
     actor = models.ForeignKey('Profile', related_name='%(class)s_author', on_delete=models.CASCADE,)
     object = models.ForeignKey('Profile', related_name='%(class)s_object', on_delete=models.CASCADE,)
 
+
+"""
+Like model, saved in batabase
+"""
 # Inbox liked
 class Like(models.Model):
     type = models.CharField(max_length=200, default="like")
@@ -140,6 +151,10 @@ class Liked(models.Model):
     id = models.CharField(max_length=200, primary_key=True, unique=True, default=uuid.uuid4)
     items = models.ManyToManyField('Like', blank=True)
 
+
+"""
+Nodes model, saved in batabase, deisgn for connection
+"""
 class Node(models.Model):
     username = models.CharField(max_length=200, blank=True)
     password = models.CharField(max_length=200,  blank=True)
