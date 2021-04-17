@@ -1,5 +1,6 @@
 # chatByte
 Project wiki: https://github.com/chatByte/chatByte/wiki 
+
 We are happy to answer your questions; you can always reach out to us by the contact information listed in our wiki.
 
 Working progress controled by our product backlog: https://github.com/chatByte/chatByte/projects/1
