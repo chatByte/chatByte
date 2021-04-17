@@ -32,12 +32,6 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
         return  # To not perform the csrf check previously happening
 
 
-
-
-
-
-
-
 '''
 Design for giving our brother all posts, since we love each other
 '''
@@ -84,8 +78,9 @@ def all_posts_obj(request):
 
 
 
-
-
+'''
+Design for give one post API 
+'''
 # No CSRF token
 @csrf_exempt
 # methdo
@@ -95,14 +90,9 @@ def all_posts_obj(request):
 # permission, -> auth
 @permission_classes([IsAuthenticated])
 def post_obj(request, AUTHOR_ID, POST_ID):
-    # ex. equest.META[Origin] == ("https:\\chatbyte"):
-    # req_origin = request.META["Origin"]
+
     USER_ID = (AUTHOR_ID + '.')[:-1]
-    # origin_server = request.META.get("HTTP_ORIGIN")
-    # if origin_server is not None and origin_server not in host_server:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    # else:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     USER_POST_ID = POST_ID
@@ -165,7 +155,9 @@ def post_obj(request, AUTHOR_ID, POST_ID):
 
 
 
-
+"""
+design for get a list of posts
+"""
 #author/<str:AUTHOR_ID>/posts/'
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -173,14 +165,10 @@ def post_obj(request, AUTHOR_ID, POST_ID):
 @permission_classes([IsAuthenticated])
 def posts_obj(request, AUTHOR_ID):
     # ex. equest.META[origin] == ("https:\\chatbyte"):
-    # req_origin = request.META["Origin"]
+
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    # origin_server = request.META.get("HTTP_ORIGIN")
-    # if origin_server is not None and origin_server not in host_server:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    # else:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
@@ -191,10 +179,9 @@ def posts_obj(request, AUTHOR_ID):
         if request.method == 'GET':
             profile = Profile.objects.get(id=AUTHOR_ID)
             posts = profile.timeline
-            # print(posts.all())
+            
             posts = posts.filter(author=profile).order_by('-published')
 
-            # serializer = PostSerializer(posts, many=True)
             # pagination
             pagination = PageNumberPagination()
             paginated_results = pagination.paginate_queryset(posts.all(), request)
@@ -253,7 +240,9 @@ http://127.0.0.1:8000/chat/author/1/posts/3d93a8ea-3175-4e75-b1ae-03655c663b75/c
 }
 
 '''
-
+"""
+get a list of comment 
+"""
 @csrf_exempt
 @api_view(['GET', 'POST', 'DELETE'])
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
@@ -264,19 +253,12 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
     Response Object Structure: [list of Like objects] using json
     '''
 
-
     # ex. equest.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
     USER_POST_ID = (POST_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    # origin_server = request.META.get("HTTP_ORIGIN")
-    # if origin_server is not None and origin_server not in host_server:
-    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    #     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
-    # else:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    #     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
+
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
     print("author id: ", AUTHOR_ID)
@@ -295,7 +277,6 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             # list obj contain a list of comment
             comments = post.comments
             serializer = CommentSerializer(comments, many=True)
-
             # pagination
             # pagination
             pagination = PageNumberPagination()
@@ -353,26 +334,7 @@ def comment_list_obj(request, AUTHOR_ID, POST_ID):
             else:
                 return JsonResponse({"Error": "can't create comment properly"}, status=400)
 
-                # save comments to post obj, update
-                # post.comments.add
-                # post_serializer = PostSerializer(post, data=data)
-                # if post_serializer.is_valid(raise_exception=True):
-                #     post_serializer.save()
-                # may be we should user seralzier to test profile obj, and post obj
-                # ex: post_serializer.errors?
-                # profile = Profile.objects.get(id=AUTHOR_ID)
 
-                # if (createComment(profile, POST_ID, data["comment"], data["contentType"], data["published"])):
-
-                #     return JsonResponse(serializer.data, status=201)
-                # else:
-                #     return JsonResponse(serializer.data, status=403)
-
-        # elif request.method == "DELETE":
-        #     # TODO
-        #     pass
-
-        # return JsonResponse(serializer.errors, status=400)
 
 '''
 Tetsing format:
@@ -385,6 +347,10 @@ Tetsing format:
     "github": "http://github.com/gjohnson"
 }
 '''
+
+"""
+design for get a profile
+"""
 @csrf_exempt
 @api_view(['GET', 'POST'])
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
@@ -400,11 +366,7 @@ def profile_obj(request, AUTHOR_ID):
     server_origin = request.META.get("HTTP_X_SERVER")
     print("Origin: ", host_server)
     print("Request origin: ", server_origin)
-    # origin_server = request.META.get("HTTP_ORIGIN")
-    # if origin_server is not None and origin_server not in host_server:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    # else:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
@@ -429,21 +391,14 @@ def profile_obj(request, AUTHOR_ID):
                 serializer.save()
                 return JsonResponse(serializer.data, status=201)
             return JsonResponse(serializer.errors, status=400)
-            # post_obj = json.loads(request.body)
-            # url = post_obj["url"]
-            # displayName = post_obj["displayName"]
-            # github = post_obj["github"]
-            # # we do not allowed leave our server
-            # # host = post_obj["host"]
-            # updateProfile(displayName, url, github)
-            # return post_obj
+
 
 
 
 
 
 '''
-
+Design for get a follower obj
 URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 '''
 @csrf_exempt
@@ -453,21 +408,10 @@ URL: ://service/author/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}
 def follower_obj(request, AUTHOR_ID, FOREIGN_AUTHOR_ID):
     # ex. request.META[origin] == ("https:\\chatbyte"):
     # req_origin = request.META["Origin"]
-# <<<<<<< HEAD
-#     # print(request.META)
-#     server_origin = request.META["HTTP_X_SERVER"]
-#     print(server_origin)
-#     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-#     print("author id: ", AUTHOR_ID)
 
-# =======
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    # origin_server = request.META.get("HTTP_ORIGIN")
-    # if origin_server is not None and origin_server not in host_server:
-    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    # else:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
     FOREIGN_USER_ID = (FOREIGN_AUTHOR_ID + '.')[:-1]
@@ -551,11 +495,7 @@ def followers_obj(request, AUTHOR_ID):
     # ex. equest.META[origin] == ("https:\\chatbyte"):
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    # origin_server = request.META.get("HTTP_ORIGIN")
-    # if origin_server is not None and origin_server not in host_server:
-    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    # else:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
@@ -578,16 +518,11 @@ def followers_obj(request, AUTHOR_ID):
 
 
 
-# @csrf_exempt
-# @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
-# @permission_classes([IsAuthenticated])
-# @api_view(['POST'])
-# def add_friend_obj(request, AUTHOR_ID, FRIEND_ID):
-#     return None
 
 
-
-
+"""
+design for get friends 
+"""
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
@@ -596,11 +531,7 @@ def get_friends_obj(request, AUTHOR_ID):
     # req_origin = request.META["Origin"]
     USER_ID = (AUTHOR_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    # origin_server = request.META.get("HTTP_ORIGIN")
-    # if origin_server is not None and origin_server not in host_server:
-    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    # else:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
+
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     print("author id: ", AUTHOR_ID)
 
@@ -620,6 +551,11 @@ def get_friends_obj(request, AUTHOR_ID):
 
         return JsonResponse(serializer.errors, status=400)
 
+
+
+"""
+design for befriend 
+"""
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
@@ -659,13 +595,7 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
     USER_POST_ID = (POST_ID + '.')[:-1]
     # req_origin = request.META["Origin"]
     server_origin = request.META.get("HTTP_X_SERVER")
-    # origin_server = request.META.get("HTTP_ORIGIN")
-    # if origin_server is not None and origin_server not in host_server:
-    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    #     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
-    # else:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    #     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
+
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
     print("author id: ", AUTHOR_ID)
@@ -684,8 +614,11 @@ def likes_post_obj(request, AUTHOR_ID, POST_ID):
         # if serializer.is_valid(raise_exception=True):
         return JsonResponse(serializer.data, status=200, safe=False)
 
-        # return JsonResponse(serializer.errors, status=400)
 
+
+"""
+deisgn for like a signle comment
+"""
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
@@ -696,13 +629,7 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
     USER_POST_ID = (POST_ID + '.')[:-1]
     USER_COMMENT_ID = (COMMENT_ID + '.')[:-1]
     server_origin = request.META.get("HTTP_X_SERVER")
-    # origin_server = request.META.get("HTTP_ORIGIN")
-    # if origin_server is not None and origin_server not in host_server:
-    #     AUTHOR_ID = origin_server + "author/" + AUTHOR_ID
-    #     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
-    # else:
-    #     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
-    #     POST_ID = AUTHOR_ID + "/posts/" + POST_ID
+
     AUTHOR_ID = host_server + "author/" + AUTHOR_ID
     POST_ID = host_server + "author/" + USER_ID + "/posts/" + POST_ID
     COMMENT_ID = POST_ID + "/comments/" + COMMENT_ID
@@ -723,10 +650,12 @@ def likes_comment_obj(request, AUTHOR_ID, POST_ID, COMMENT_ID):
         # if serializer.is_valid(raise_exception=True):
         return JsonResponse(serializer.data, status=200, safe=False)
 
-        # return JsonResponse(serializer.errors, status=400)
 
 
 
+"""
+deisgn for like a signle post
+"""
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
@@ -800,33 +729,7 @@ def inbox(request, AUTHOR_ID):
             print("Data: ", data)
             if data['type'] == "post":
                 print("Recieved a post inbox...!")
-                # serializer = PostSerializer(data=data)
-                # # print(serializer)
-                # if serializer.is_valid(raise_exception=True):
-                #     print("Post id: ", data['id'])
-                #     post_id = data['id']
-                #     try:
-                #         post = Post.objects.get(id=post_id)
-                #     except Post.DoesNotExist:
-                #         author_dict = data['author']
-                #         print("Author dict: ", author_dict)
-                #         try:
-                #             author = Profile.objects.get(id=author_dict['id'])
-                #         except Profile.DoesNotExist:
-                #             author_serializer = ProfileSerializer(data=author_dict)
-                #             if author_serializer.is_valid(raise_exception=True):
-                #                 author = author_serializer.save()
-                #         post = serializer.save(author=author)
-                #     print("Post: ", post)
-                #     post = Post.objects.get(id=post_id)
-                #     user.inbox.post_inbox.items.add(post)
-                #     user.inbox.post_inbox.save()
-                #     user.profile.timeline.add(post)
-                #     user.profile.save()
-                #     return JsonResponse(data, status=200)
-                # else:
-                #     print("here")
-                #     return JsonResponse(serializer.errors, status=400)
+
                 return JsonResponse(data, status=200)
             elif data['type'].lower() == 'like':
                 print("Recieved a like inbox!")
@@ -923,24 +826,12 @@ def inbox(request, AUTHOR_ID):
                         return JsonResponse({"Error": "object does not exist"}, status=404)
                     friend_req = serializer.save(actor=actor, object=object)
 
-                    #friend_req = serializer.save()
-
-
                     # -----------------
                     # add to object's inbox
                     print("Object: ", object)
                     print("Object's User: ", object.user)
                     object.user.inbox.friend_requests.add(friend_req)
                     # -----------------
-
-
-
-                    # user.inbox.friend_requests.add(friend_req)
-                    #print("friend req: ", friend_req)
-
-                    # should not be id, should be obj 
-                    # print(friend_req.dict)
-
                     user.inbox.save()
                     return JsonResponse(data, status=200)
                 return JsonResponse(serializer.errors, status=400)
@@ -966,6 +857,10 @@ def inbox(request, AUTHOR_ID):
             serializer = PostInboxSerializer(post_inbox)
             return JsonResponse(serializer.data, status=200)
 
+
+"""
+design for get all posts that are allowed them to see from the reqested user, which are allowed for the user required
+"""
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
@@ -1005,18 +900,6 @@ def stream_obj(request, AUTHOR_ID):
                 except BaseException as e:
                     print(e)
                 
-                
-
-
-                # print(posts_result)
-                # all_author_posts = Post.objects.filter(author=profile)
-                # print(all_author_posts)
-                # all_following = Follower.objects.filter(items__id=profile)
-                # print(all_following)
-                # posts_result = all_author_posts
-                # print("Result: ", posts_result)
-                # for following in all_following:
-                #     posts_result = posts_result | following.timeline.filter(visibility='public')
             except BaseException as e:
                 print(e)
                 posts_result = []
@@ -1046,6 +929,9 @@ def stream_obj(request, AUTHOR_ID):
             return JsonResponse(data, safe=False)
 
 
+"""
+design for get github activites
+"""
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
@@ -1055,10 +941,7 @@ def github_act_obj(request, AUTHOR_ID):
         token = os.getenv('GITHUB_TOKEN')
         user = User.objects.get(id=AUTHOR_ID)
         github_name = user.profile.github.split('/')[-1]
-        # print(token)
-        # owner = "MartinHeinz"
-        # repo = "python-project-blueprint"
-        # query_url = f"https://api.github.com/users/${github_name}/events"
+
         query_url = f"https://api.github.com/users/%s/events" %github_name
         params = {
             "state": "open",
@@ -1070,8 +953,12 @@ def github_act_obj(request, AUTHOR_ID):
     except Exception as e:
         print(e)
         return None
-    # pprint(r.json())    
+   
 
+
+"""
+design for inbox_likes
+"""
 @csrf_exempt
 @authentication_classes([CsrfExemptSessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
