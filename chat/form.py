@@ -24,18 +24,3 @@ class ProfileForm(forms.Form):
     URL = forms.URLField(max_length=200)
     GITHUB = forms.URLField(max_length=200)
     email = forms.CharField(max_length=200)
-
-
-# class PagedownField(forms.CharField):
-#     widget = PagedownWidget
-
-
-# class AdminPagedownField(forms.CharField):
-#     widget = AdminPagedownWidget
-
-
-# class ImageUploadForm(forms.Form):
-#     image = forms.ImageField(
-#         required=True,
-#         validators=[FileExtensionValidator(
-#             allowed_extensions=IMAGE_UPLOAD_EXTENSIONS)])

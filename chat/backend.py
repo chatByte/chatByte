@@ -10,27 +10,10 @@ from .serializers import PostSerializer, ProfileSerializer
 from requests.auth import HTTPBasicAuth
 from .remoteProxy import inboxRequest
 
-# def setCookie(response, key, value, days_expire=1):
-#     # https://stackoverflow.com/questions/1622793/django-cookies-how-can-i-set-them
-#     if days_expire is None:
-#         max_age = 365 * 24 * 60 * 60  # one year
-#     else:
-#         max_age = days_expire * 24 * 60 * 60
-#     expires = datetime.datetime.strftime(
-#         datetime.datetime.utcnow() + datetime.timedelta(seconds=max_age),
-#         "%a, %d-%b-%Y %H:%M:%S GMT",
-#     )
-#     response.set_cookie(
-#         key,
-#         value,
-#         max_age=max_age,
-#         expires=expires,
-#         domain=settings.SESSION_COOKIE_DOMAIN,
-#         secure=settings.SESSION_COOKIE_SECURE or None,
-#     )
-# def getUser(usr_id):
-#     return User.objects.get(id=usr_id)
 
+"""
+design for handling updateUser request in view , to update info 
+"""
 def updateUser(username, password):
     # Please authenticate before calling this method
     try:
@@ -44,6 +27,9 @@ def updateUser(username, password):
         return False
 
 
+"""
+design for handling addFriend request in view , to update info 
+"""
 def addFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
@@ -59,6 +45,10 @@ def addFriend(usr_id, friend_id):
         print(e)
         return False
 
+
+"""
+design for handling deleteFriend request in view , to update info 
+"""
 def deleteFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
@@ -70,6 +60,10 @@ def deleteFriend(usr_id, friend_id):
         print(e)
         return False
 
+
+"""
+design for handling getFollowing request in view , to update info 
+"""
 def getFollowing(usr_id, following_id):
     try:
         user = User.objects.get(id=usr_id)
@@ -80,6 +74,10 @@ def getFollowing(usr_id, following_id):
         print(e)
         return None
 
+
+"""
+design for handling getFriend request in view , to update info 
+"""
 def getFriend(usr_id, friend_id):
     try:
         user = User.objects.get(id=usr_id)
@@ -90,6 +88,10 @@ def getFriend(usr_id, friend_id):
         print(e)
         return None
 
+
+"""
+design for handling getFriends request in view , to update info 
+"""
 def getFriends(usr_id):
     try:
         user = User.objects.get(id=usr_id)
@@ -98,6 +100,10 @@ def getFriends(usr_id):
         print(e)
         return None
 
+
+"""
+design for handling addFollow request in view , to update info 
+"""
 def addFollow(usr_id, follow_id):
     user = User.objects.get(id=usr_id)
     follow = User.objects.get(id=follow_id)
@@ -109,12 +115,19 @@ def addFollow(usr_id, follow_id):
     return True
 
 
+"""
+design for handling createFriendRequest  in view , to update info 
+"""
 def createFriendRequest(usr_id, friend_id):
     object = User.objects.get(id=usr_id)
     author = User.objects.get(id=friend_id)
     friendRequestObj = FriendRequest.objects.create(summary=author.profile.displayName + 'wants to add ' + object.profile.displayName + ' as friend', author=author, object=object)
     return friendRequestObj
 
+
+"""
+design for handling addFriendRequest  in view , to update info 
+"""
 def addFriendRequest(usr_id, friend_id):
     try:
         object = User.objects.get(id=usr_id)
@@ -130,10 +143,12 @@ def addFriendRequest(usr_id, friend_id):
         return False
 
 
+"""
+design for handling deleteFriendRequestin view , to update info 
+"""
 def deleteFriendRequest(usr_id, friend_request_id):
     try:
         user = User.objects.get(id=usr_id)
-        # friend = User.objects.get(id=friend_id)
         friend_request = user.profile.friend_requests.get(id=friend_request_id)
         user.profile.friend_requests.remove(friend_request)
         user.save()
@@ -142,19 +157,24 @@ def deleteFriendRequest(usr_id, friend_request_id):
         print(e)
         return False
 
+
+"""
+design for handling addFriendViaRequest in view , to update info 
+"""
 def addFriendViaRequest(usr_id, friend_request_id):
     try:
         user = User.objects.get(id=usr_id)
         friend_request = user.profile.friend_requests.get(id=friend_request_id)
-        # print(friend_request)
-        # friend_profile = friend_request.actor
-        # user_profile = friend_request.object
         addFriend(friend_request.object.id, friend_request.actor.id)
         return True
     except BaseException as e:
         print(e)
         return False
 
+
+"""
+design for handling getALLFriendRequests  in view , to update info 
+"""
 def getALLFriendRequests(usr_id):
 
     print("getALLFriendRequests")
@@ -170,15 +190,15 @@ def getALLFriendRequests(usr_id):
         return None
 
 
+"""
+design for handling updateProfile request in view , to update info 
+"""
 def updateProfile(id, display_name, email, url, github):
     # Please authenticate before calling this method
     try:
         user = User.objects.get(pk=id)
         profile = user.profile
-        # profile = Profile.objects.get(pk=id)
-        # update element here
-        # user.first_name = first_name
-        # user.last_name = last_name
+
         user.email = email
         profile.url = url
         profile.github = github
@@ -268,6 +288,10 @@ def updatePost(id, title, description, content_type, content):
         print(e)
         return False
 
+
+"""
+design for handling editPostDescription request in view , to update info 
+"""
 def editPostDescription(id, description):
     # Please authenticate before calling this method
     try:
@@ -281,6 +305,10 @@ def editPostDescription(id, description):
         print(e)
         return False
 
+
+"""
+design for handling deletePost request in view , to update info 
+"""
 def deletePost(id):
     # Please authenticate before calling this method
     try:
@@ -289,6 +317,7 @@ def deletePost(id):
     except BaseException as e:
         print(e)
         return False
+
 
 '''
 Design for create comment, here author is a profile
@@ -309,28 +338,14 @@ def createComment(author, post_id, comment, content_type, published=django.utils
         return False
 
 
-# # designed for api.py send json obj
-# def createComment_obj(author, post_id, comment, content_type, published):
-#     try:
-#         post = Post.objects.get(id=post_id)
-#         commentObj = Comment.objects.create(author=author, comment=comment, contentType=content_type)
-#         post.comments.add(commentObj)
-#         print('comment:',commentObj)
-#         post.save()
-#         return True
-#     except BaseException as e:
-#         print(repr(e))
-#         traceback.print_exc()
-#         print(e)
-#         return False
-
-
-
+"""
+design for handling updateComment request in view , to update info 
+"""
 def updateComment(id):
     # Please authenticate before calling this method
     try:
         comment = Comment.objects.filter(id=id)[0]
-        # print('====comment====', comment)
+
         # update field here
         comment.save()
         return True
@@ -338,6 +353,9 @@ def updateComment(id):
         print(e)
         return False
 
+"""
+design for handling deleteComment request in view , to update info 
+"""
 def deleteComment(id):
     # Please authenticate before calling this method
     try:
@@ -366,6 +384,10 @@ def getComments(post_id):
         print(e)
         return None
 
+
+"""
+design for handling getUser request in view , to update info 
+"""
 def getUser(usr_id):
     try:
         user = User.objects.get(id=usr_id)
@@ -374,10 +396,12 @@ def getUser(usr_id):
         print(e)
         return None
 
+
+"""
+design for handling likePost request in view , to update info 
+"""
 def likePost(post_id, author_id):
 
-    # print("________post_id__", post_id)
-    # print("author_id  ", author_id)
     try:
 
         user_profile = Profile.objects.get(id=author_id)
@@ -395,10 +419,13 @@ def likePost(post_id, author_id):
         print(e)
         return None
 
-    # TODO: check if remote
+
+"""
+design for handling likeComment request in view , to update info 
+"""
+# TODO: check if remote, currently handling in fornt end
 def likeComment(comment_id, author_id):
 
-    # print("here, author_id", author_id)
 
     try:
         user_profile = Profile.objects.get(id=author_id)
@@ -415,7 +442,3 @@ def likeComment(comment_id, author_id):
     except BaseException as e:
         print(e)
         return None
-
-
-    # TODO
-    pass

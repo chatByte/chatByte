@@ -70,7 +70,7 @@ def create_post_signal(sender, instance, created, **kwargs):
 
 
 """
-design for handling update_profile_signal , to update db 
+design for handling create_comment_signal , to update db 
 """
 @receiver(post_save, sender=Comment)
 def create_comment_signal(sender, instance, created, **kwargs):
@@ -92,7 +92,7 @@ def create_comment_signal(sender, instance, created, **kwargs):
 
 
 """
-design for handling update_profile_signal , to update db 
+design for handling create_node_signal , to update db 
 """
 @receiver(post_save, sender=Node)
 def create_node_signal(sender, instance, created, **kwargs):
